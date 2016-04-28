@@ -28,46 +28,50 @@ import javax.inject.Inject;
 @RequestMapping("/manage")
 public class CityController {
 
-  @Inject
-  private CityService cityService;
+    @Inject
+    private CityService cityService;
 
-  @RequestMapping(value = "/city",method = RequestMethod.GET)
-  public ModelAndView goShowCityPage(@RequestParam(value = "page", required = false) Integer offset,
-                                     @RequestParam(value = "per_page", required = false) Integer limit,
-                                     Model model){
-    model.addAttribute("cities", cityService
-        .findCitiesByPage(PaginationUtil.generatePageRequest(offset, limit)));
-    return MvUtil.go("/merchant/cityList");
-  }
-
-  @RequestMapping("/city/ajax")
-  public @ResponseBody List<City> findAllCity(){
-    return  cityService.findAllCity();
-  }
-
-  @RequestMapping(value = "/city/edit",method = RequestMethod.GET)
-  public ModelAndView goEditCityPage(@RequestParam(value = "id",required = false) Long id,Model model){
-        if(id!=null){
-          model.addAttribute("city",cityService.findCityById(id));
-        }
-    return MvUtil.go("/merchant/cityEdit");
+    @RequestMapping(value = "/city", method = RequestMethod.GET)
+    public ModelAndView goShowCityPage(@RequestParam(value = "page", required = false) Integer offset,
+                                       @RequestParam(value = "per_page", required = false) Integer limit,
+                                       Model model) {
+        model.addAttribute("cities", cityService
+                .findCitiesByPage(PaginationUtil.generatePageRequest(offset, limit)));
+        return MvUtil.go("/merchant/cityList");
     }
 
-  @RequestMapping(value = "/city",method = RequestMethod.POST,produces = MediaType.APPLICATION_JSON_VALUE)
-  public LejiaResult createCity(@RequestBody City city){
-    cityService.createCity(city);
-    return LejiaResult.ok("创建城市成功");
-  }
+    //测试提交
+    @RequestMapping("/city/ajax")
+    public
+    @ResponseBody
+    List<City> findAllCity() {
+        return cityService.findAllCity();
+    }
 
-  @RequestMapping(value = "/city",method = RequestMethod.PUT,produces = MediaType.APPLICATION_JSON_VALUE)
-  public LejiaResult editCity(@RequestBody City city){
-    cityService.editCity(city);
-    return LejiaResult.ok("修改城市成功");
-  }
-  @RequestMapping(value = "/city/{id}",method = RequestMethod.DELETE,produces = MediaType.APPLICATION_JSON_VALUE)
-  public LejiaResult deleteCity(@PathVariable Long id){
-    cityService.deleteCity(id);
-    return LejiaResult.ok("删除城市成功");
-  }
+    @RequestMapping(value = "/city/edit", method = RequestMethod.GET)
+    public ModelAndView goEditCityPage(@RequestParam(value = "id", required = false) Long id, Model model) {
+        if (id != null) {
+            model.addAttribute("city", cityService.findCityById(id));
+        }
+        return MvUtil.go("/merchant/cityEdit");
+    }
+
+    @RequestMapping(value = "/city", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+    public LejiaResult createCity(@RequestBody City city) {
+        cityService.createCity(city);
+        return LejiaResult.ok("创建城市成功");
+    }
+
+    @RequestMapping(value = "/city", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+    public LejiaResult editCity(@RequestBody City city) {
+        cityService.editCity(city);
+        return LejiaResult.ok("修改城市成功");
+    }
+
+    @RequestMapping(value = "/city/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
+    public LejiaResult deleteCity(@PathVariable Long id) {
+        cityService.deleteCity(id);
+        return LejiaResult.ok("删除城市成功");
+    }
 
 }

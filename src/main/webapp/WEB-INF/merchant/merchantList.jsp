@@ -62,7 +62,7 @@
                             <tr>
                                 <th class="text-center">商品序号</th>
                                 <th class="text-center">商户名称</th>
-                                <th class="text-center">商品图片</th>
+                                <th class="text-center">商户图片</th>
                                 <th class="text-center">商户地址</th>
                                 <th class="text-center">返利百分比</th>
                                 <th class="text-center">折扣</th>
@@ -74,7 +74,7 @@
                                 <tr class="active">
                                     <td class="text-center">${merchant.sid}</td>
                                     <td class="text-center">${merchant.name}</td>
-                                    <td class="text-center"><img src="${merchant.thumb}"></td>
+                                    <td class="text-center"><img src="${merchant.picture}"></td>
                                     <td class="text-center">${merchant.location}</td>
                                     <td class="text-center">${merchant.rebate}%</td>
                                     <td class="text-center">${merchant.discount}</td>
