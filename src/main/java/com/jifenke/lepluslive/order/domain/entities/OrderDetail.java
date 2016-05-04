@@ -22,7 +22,7 @@ public class OrderDetail {
   private Long id;
 
   @ManyToOne
-  private Order order;
+  private OnLineOrder onLineOrder;
 
   @ManyToOne
   private Product product;
@@ -66,11 +66,11 @@ public class OrderDetail {
     this.id = id;
   }
 
-  public Order getOrder() {
-    return order;
+  public OnLineOrder getOnLineOrder() {
+    return onLineOrder;
   }
 
-  public void setOrder(Order order) {
-    this.order = order;
+  public void setOnLineOrder(OnLineOrder onLineOrder) {
+    this.onLineOrder = onLineOrder;
   }
 }

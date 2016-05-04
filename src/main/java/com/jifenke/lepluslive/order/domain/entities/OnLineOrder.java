@@ -1,8 +1,9 @@
 package com.jifenke.lepluslive.order.domain.entities;
 
-import com.jifenke.lepluslive.user.domain.entities.LeJiaUser;
 import com.jifenke.lepluslive.global.util.MvUtil;
 import com.jifenke.lepluslive.Address.domain.entities.Address;
+import com.jifenke.lepluslive.user.domain.entities.LeJiaUser;
+
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -22,15 +23,16 @@ import javax.persistence.Table;
  * Created by wcg on 16/3/20.
  */
 @Entity
-@Table(name = "PRODUCT_ORDER")
-public class Order {
+@Table(name = "ON_LINE_ORDER")
+public class OnLineOrder {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
-  @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "order")
+  @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true,mappedBy = "onLineOrder")
   private List<OrderDetail> orderDetails = new ArrayList<OrderDetail>();
+
 
   private Long totalPrice;
 
@@ -50,7 +52,7 @@ public class Order {
   @ManyToOne
   private Address address;
 
-  private Integer state = 0;//0 未支付 1 已支付 2 已发货 3已收获 4 订单取消
+  private Integer state;//0 未支付 1 已支付 2 已发货 3已收获 4 订单取消
 
   private String payWay;
 
@@ -149,4 +151,5 @@ public class Order {
   public void setAddress(Address address) {
     this.address = address;
   }
+
 }

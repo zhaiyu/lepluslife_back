@@ -211,6 +211,7 @@ public class ProductService {
     };
   }
 
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public String qrCodeManage(Long id) {
 
     Product product = productRepository.findOne(id);
