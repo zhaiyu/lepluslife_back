@@ -38,6 +38,14 @@
     <div class="m-right">
         <div class="main">
             <div class="container-fluid">
+                <ul class="nav nav-tabs" style="margin-bottom: 10px">
+                    <li  class="show"><a data-toggle="tab" onclick="stateChange()">所有</a></li>
+                    <li class="show"><a data-toggle="tab" onclick="stateChange(0)">未付款</a></li>
+                    <li class="show"><a data-toggle="tab" onclick="stateChange(1)">未发货</a></li>
+                    <li class="show"><a data-toggle="tab" onclick="stateChange(2)">已发货</a></li>
+                    <li class="show"><a data-toggle="tab" onclick="stateChange(3)">已完成</a></li>
+                    <li class="show"><a data-toggle="tab" onclick="stateChange(4)">已取消</a></li>
+                </ul>
                 <table class="table table-bordered table-hover">
                     <thead>
                     <tr>
@@ -60,7 +68,9 @@
                             <td class="text-center">${order.address.name}${order.address.phoneNumber}${order.address.province}${order.address.city}${order.address.county}${order.address.location}</td>
                             <td class="text-center">${order.totalPrice/100}</td>
                             <td class="text-center">${order.truePrice/100}+${order.trueScore}积分</td>
-                            <td class="text-center"><fmt:formatNumber type="number" value="${order.truePrice*12/10000}" maxFractionDigits="2"/></td>
+                            <td class="text-center"><fmt:formatNumber type="number"
+                                                                      value="${order.truePrice*12/10000}"
+                                                                      maxFractionDigits="2"/></td>
                             <td class="text-center"><fmt:formatDate value="${order.createDate}"
                                                                     type="both"/></td>
                             <td class="text-center">
@@ -93,68 +103,76 @@
                 </table>
                 <nav class="pull-right">
                     <ul class="pagination pagination-lg">
-                        <li><a href="#" aria-label="Previous"><span aria-hidden="true">«</span></a>
-                        </li>
-                        <c:if test="${pages<=5}">
-                            <c:forEach begin="1" end="${pages}" varStatus="index">
-                                <c:if test="${index.count==currentPage}">
-                                    <li><a href="/manage/order"
-                                           class="focusClass">${currentPage}</a></li>
-                                </c:if>
-                                <c:if test="${index.count!=currentPage}">
-                                    <li>
-                                        <a href="/manage/order?page=${index.count}">${index.count}</a>
-                                    </li>
-                                </c:if>
-                            </c:forEach>
+                        <c:if test="${currentPage>1}">
+                            <li><a aria-label="Previous"
+                                   onclick="pageChange(${currentPage-1})"><span
+                                    aria-hidden="true">«</span></a></li>
                         </c:if>
-                        <c:if test="${pages>5}">
-                            <c:if test="${currentPage<=3}">
-                                <c:forEach begin="1" end="5" varStatus="index">
+                        <c:if test="${pages>1}">
+                            <c:if test="${pages<=5}">
+                                <c:forEach begin="1" end="${pages}" varStatus="index">
                                     <c:if test="${index.count==currentPage}">
-                                        <li><a href="/manage/order"
+                                        <li><a href="/manage/product"
                                                class="focusClass">${currentPage}</a></li>
                                     </c:if>
                                     <c:if test="${index.count!=currentPage}">
                                         <li>
-                                            <a href="/manage/order?page=${index.count}">${index.count}</a>
+                                            <a onclick="pageChange(${index.count})">${index.count}</a>
                                         </li>
                                     </c:if>
                                 </c:forEach>
                             </c:if>
-                            <c:if test="${currentPage>3}">
-                                <c:if test="${pages-currentPage>=2}">
-                                    <li>
-                                        <a href="/manage/order?page=${currentPage-2}">${currentPage-2}</a>
-                                    </li>
-                                    <li>
-                                        <a href="/manage/order?page=${currentPage-1}">${currentPage-1}</a>
-                                    </li>
-                                    <li><a href="/manage/order?page=${currentPage}"
-                                           class="focusClass">${currentPage}</a></li>
-                                    <li>
-                                        <a href="/manage/order?page=${currentPage+1}">${currentPage+1}</a>
-                                    </li>
-                                    <li>
-                                        <a href="/manage/order?page=${currentPage+2}">${currentPage+2}</a>
-                                    </li>
-                                </c:if>
-                                <c:if test="${pages-currentPage<2}">
-                                    <c:forEach begin="${pages-5}" end="${pages}" varStatus="index">
-                                        <c:if test="${index.current==currentPage}">
-                                            <li><a href="/manage/order?page=${currentPage}"
-                                                   class="focusClass">${currentPage}</a></li>
+                            <c:if test="${pages>5}">
+                                <c:if test="${currentPage<=3}">
+                                    <c:forEach begin="1" end="5" varStatus="index">
+                                        <c:if test="${index.count==currentPage}">
+                                            <li><a class="focusClass">${currentPage}</a></li>
                                         </c:if>
-                                        <c:if test="${index.current!=currentPage}">
+                                        <c:if test="${index.count!=currentPage}">
                                             <li>
-                                                <a href="/manage/order?page=${index.current}">${index.current}</a>
+                                                <a onclick="pageChange(${index.count})">${index.count}</a>
                                             </li>
                                         </c:if>
                                     </c:forEach>
                                 </c:if>
+                                <c:if test="${currentPage>3}">
+                                    <c:if test="${pages-currentPage>=2}">
+                                        <li>
+                                            <a onclick="pageChange(${currentPage-2})">${currentPage-2}</a>
+                                        </li>
+                                        <li>
+                                            <a onclick="pageChange(${currentPage-1})">${currentPage-1}</a>
+                                        </li>
+                                        <li><a
+                                                class="focusClass">${currentPage}</a></li>
+                                        <li>
+                                            <a onclick="pageChange(${currentPage+1})">${currentPage+1}</a>
+                                        </li>
+                                        <li>
+                                            <a onclick="pageChange(${currentPage+2})">${currentPage+2}</a>
+                                        </li>
+                                    </c:if>
+                                    <c:if test="${pages-currentPage<2}">
+                                        <c:forEach begin="${pages-5}" end="${pages}"
+                                                   varStatus="index">
+                                            <c:if test="${index.current==currentPage}">
+                                                <li><a
+                                                        class="focusClass">${currentPage}</a></li>
+                                            </c:if>
+                                            <c:if test="${index.current!=currentPage}">
+                                                <li>
+                                                    <a onclick="pageChange(${index.current})">${index.current}</a>
+                                                </li>
+                                            </c:if>
+                                        </c:forEach>
+                                    </c:if>
+                                </c:if>
                             </c:if>
                         </c:if>
-                        <li><a href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
+                        <c:if test="${pages>currentPage}">
+                            <li><a onclick="pageChange(${currentPage+1})" aria-label="Next"><span
+                                    aria-hidden="true">»</span></a></li>
+                        </c:if>
                     </ul>
                 </nav>
             </div>
@@ -179,7 +197,9 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal" id="delivery-confirm">确认</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal"
+                        id="delivery-confirm">确认
+                </button>
             </div>
         </div>
     </div>
@@ -198,7 +218,9 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal" id="cancle-confirm">确认</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal"
+                        id="cancle-confirm">确认
+                </button>
             </div>
         </div>
     </div>
@@ -209,11 +231,19 @@
 <script src="${resourceUrl}/js/bootstrap.min.js"></script>
 <script>
 
-    function cancleOrder(id){
-        $("#cancle-confirm").bind("click",function(){
+    $(function(){
+       if(${orderCriteria.state!=null}){
+           $(".show").eq(${orderCriteria.state+1}).addClass("active");
+       }else{
+           $(".show").eq(0).addClass("active");
+       }
+    });
+
+    function cancleOrder(id) {
+        $("#cancle-confirm").bind("click", function () {
             $.ajax({
                        type: "get",
-                       url: "/manage/orderCancle/"+id,
+                       url: "/manage/orderCancle/" + id,
                        contentType: "application/json",
                        success: function (data) {
                            alert(data.msg);
@@ -226,11 +256,11 @@
         $("#deleteWarn").modal("show");
     }
 
-    function delivery(id){
-        $("#delivery-confirm").bind("click",function(){
+    function delivery(id) {
+        $("#delivery-confirm").bind("click", function () {
             $.ajax({
                        type: "get",
-                       url: "/manage/order/delivery/"+id,
+                       url: "/manage/order/delivery/" + id,
                        contentType: "application/json",
                        success: function (data) {
                            alert(data.msg);
@@ -241,6 +271,17 @@
                    });
         });
         $("#confirmWarn").modal("show");
+    }
+    function stateChange(state){
+        if(state!=null){
+        location.href = "/manage/order?state="+state;
+        }else{
+            location.href = "/manage/order";
+        }
+    }
+    function pageChange(page) {
+        location.href =
+        "/manage/order?state=${orderCriteria.state}"+ "&page=" + page;
     }
 </script>
 </body>

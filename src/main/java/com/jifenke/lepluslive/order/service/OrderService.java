@@ -2,7 +2,8 @@ package com.jifenke.lepluslive.order.service;
 
 import com.jifenke.lepluslive.global.config.Constants;
 import com.jifenke.lepluslive.job.OrderConfirmJob;
-import com.jifenke.lepluslive.order.domain.entities.Order;
+import com.jifenke.lepluslive.order.domain.entities.OnLineOrder;
+import com.jifenke.lepluslive.order.domain.entities.OrderCriteria;
 import com.jifenke.lepluslive.order.repository.OrderRepository;
 import com.jifenke.lepluslive.product.service.ProductService;
 import com.jifenke.lepluslive.user.domain.entities.LeJiaUser;
@@ -16,6 +17,7 @@ import org.quartz.TriggerKey;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -26,6 +28,10 @@ import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 
 /**
@@ -46,49 +52,49 @@ public class OrderService {
   private static String jobGroupName = "ORDER_CONFIRM_JOBGROUP_NAME";
   private static String triggerGroupName = "ORDER_CONFIRM_TRIGGERGROUP_NAME";
 
-  public Map<String,Long> accountTurnover(){
+  public Map<String, Long> accountTurnover() {
     Long count = orderRepository.countOrder();
     Long turnover = orderRepository.countAllTurnover();
 
     HashMap<String, Long> map = new HashMap<>();
-  map.put("orderCount",count);
-    map.put("turnover",turnover);
+    map.put("orderCount", count);
+    map.put("turnover", turnover);
     return map;
   }
 
-  public Page findOrderByPage(Integer offset) {
-    if(offset==null){
-      offset=1;
-    }
+  public Page findOrderByPage(Integer offset, OrderCriteria orderCriteria) {
     Sort sort = new Sort(Sort.Direction.DESC, "createDate");
-  return orderRepository.findAll(new PageRequest(offset - 1, 10,sort));
+    return orderRepository
+        .findAll(getWhereClause(orderCriteria), new PageRequest(offset - 1, 10, sort));
   }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public void cancleOrder(Long id) {
-   Order order = orderRepository.findOne(id);
-    order.setState(4);
-    productService.orderCancle(order.getOrderDetails());
-    orderRepository.save(order);
+    OnLineOrder onLineOrder = orderRepository.findOne(id);
+    onLineOrder.setState(4);
+    productService.orderCancle(onLineOrder.getOrderDetails());
+    orderRepository.save(onLineOrder);
   }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public void orderDelivery(Long id) {
-    Order order = orderRepository.findOne(id);
+    OnLineOrder onLineOrder = orderRepository.findOne(id);
 
-    order.setState(2);
+    onLineOrder.setState(2);
     //默认10天后会自动收货
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     try {
-      Date time = sdf.parse(sdf.format(order.getCreateDate().getTime() + Constants.ORDER_EXPIRED));
+      Date
+          time =
+          sdf.parse(sdf.format(onLineOrder.getCreateDate().getTime() + Constants.ORDER_EXPIRED));
       JobDetail completedOrderJobDetail = JobBuilder.newJob(OrderConfirmJob.class)
-          .withIdentity("OrderConfirmJob" + order.getId(), jobGroupName)
-          .usingJobData("orderId", order.getId())
+          .withIdentity("OrderConfirmJob" + onLineOrder.getId(), jobGroupName)
+          .usingJobData("orderId", onLineOrder.getId())
           .build();
       Trigger completedOrderJobTrigger = TriggerBuilder.newTrigger()
           .withIdentity(
               TriggerKey.triggerKey("autoOrderConfirmJobTrigger"
-                                    + order.getId(), triggerGroupName))
+                                    + onLineOrder.getId(), triggerGroupName))
           .startAt(time)
           .build();
       scheduler.scheduleJob(completedOrderJobDetail, completedOrderJobTrigger);
@@ -97,22 +103,42 @@ public class OrderService {
     } catch (Exception e) {
       e.printStackTrace();
     }
-    orderRepository.save(order);
+    orderRepository.save(onLineOrder);
 
   }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public void changeOrderStateOver(Long id) {
-    Order order = orderRepository.findOne(id);
-    if(order.getState()==2) {
-      order.setState(3);
+    OnLineOrder onLineOrder = orderRepository.findOne(id);
+    if (onLineOrder.getState() == 2) {
+      onLineOrder.setState(3);
     }
-    orderRepository.save(order);
+    orderRepository.save(onLineOrder);
   }
 
   public Long countUserConsumptionTimes(LeJiaUser leJiaUser) {
 
-   return orderRepository.countUserConsumptionTimes(leJiaUser.getId());
+    return orderRepository.countUserConsumptionTimes(leJiaUser.getId());
 
+  }
+
+  public static Specification<OnLineOrder> getWhereClause(OrderCriteria orderCriteria) {
+    return new Specification<OnLineOrder>() {
+      @Override
+      public Predicate toPredicate(Root<OnLineOrder> r, CriteriaQuery<?> q,
+                                   CriteriaBuilder cb) {
+        Predicate predicate = cb.conjunction();
+        if (orderCriteria.getState() != null) {
+          predicate.getExpressions().add(
+              cb.equal(r.get("state"),
+                       orderCriteria.getState()));
+        }
+        if (orderCriteria.getOrderSid() != null) {
+          predicate.getExpressions().add(
+              cb.like(r.get("orderSid"), orderCriteria.getOrderSid()));
+        }
+        return predicate;
+      }
+    };
   }
 }
