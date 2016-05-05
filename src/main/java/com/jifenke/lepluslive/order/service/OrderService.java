@@ -135,7 +135,7 @@ public class OrderService {
         }
         if (orderCriteria.getOrderSid() != null) {
           predicate.getExpressions().add(
-              cb.like(r.get("orderSid"), orderCriteria.getOrderSid()));
+              cb.like(r.get("orderSid"), "%"+orderCriteria.getOrderSid()+"%"));
         }
         return predicate;
       }
