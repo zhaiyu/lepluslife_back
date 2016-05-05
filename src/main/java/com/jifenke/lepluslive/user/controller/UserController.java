@@ -8,6 +8,7 @@ import com.jifenke.lepluslive.score.service.ScoreAService;
 import com.jifenke.lepluslive.score.service.ScoreBService;
 import com.jifenke.lepluslive.user.controller.dto.LeJiaUserDto;
 import com.jifenke.lepluslive.user.domain.entities.LeJiaUser;
+import com.jifenke.lepluslive.user.domain.entities.WeiXinUser;
 import com.jifenke.lepluslive.user.service.UserService;
 
 import org.apache.commons.beanutils.BeanUtils;
@@ -56,6 +57,7 @@ public class UserController {
       LeJiaUserDto leJiaUserDto = new LeJiaUserDto();
       ScoreA scoreA = scoreAService.findScoreAByWeiXinUser(leJiaUser);
       ScoreB scoreB = scoreBService.findScoreBByWeiXinUser(leJiaUser);
+      WeiXinUser weiXinUser = leJiaUser.getWeiXinUser();
       try {
         BeanUtils.copyProperties(leJiaUserDto,leJiaUser);
         leJiaUserDto.setScoreA(scoreA.getScore());
@@ -63,6 +65,8 @@ public class UserController {
         leJiaUserDto.setScoreB(scoreB.getScore());
         leJiaUserDto.setTotalScoreB(scoreB.getTotalScore());
         leJiaUserDto.setOnLineCount(orderService.countUserConsumptionTimes(leJiaUser));
+        leJiaUserDto.setHeadImageUrl(weiXinUser != null ? weiXinUser.getHeadImageUrl() : null);
+        leJiaUserDto.setNickname(weiXinUser != null ? weiXinUser.getNickname():null);
       } catch (Exception e) {
         e.printStackTrace();
       }

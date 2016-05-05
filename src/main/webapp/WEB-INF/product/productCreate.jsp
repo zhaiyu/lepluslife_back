@@ -120,7 +120,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="productPrice" class="col-sm-2 control-label">正常价格</label>
+                        <label for="productPrice" class="col-sm-2 control-label">最低价格</label>
 
                         <div class="col-sm-4">
                             <input type="text" class="form-control" id="productPrice"
@@ -128,38 +128,14 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="productMinPrice" class="col-sm-2 control-label">真实价格</label>
+                        <label for="productMinPrice" class="col-sm-2 control-label">最高价格</label>
 
                         <div class="col-sm-4">
                             <input type="text" class="form-control" id="productMinPrice"
                                    value="${product.minPrice/100}">
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">可选品类</label>
 
-                        <div class="col-sm-4" id="productKind1">
-                            <c:forEach items="${productSpecs}" var="productSpec">
-                                <div class="pull-left">
-                                    <input type="text" class="text-primary"
-                                           value="${productSpec.specDetail}">
-                                    <input type="hidden" value="${productSpec.id}"/>
-                                </div>
-                            </c:forEach>
-                            <input class="btn btn-primary addWarn" data-target="#addWarn"
-                                   type="button" value="添加">
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="col-sm-2 control-label">各品类库存</label>
-
-                        <div class="col-sm-4" id="productNum2">
-                            <c:forEach items="${productSpecs}" var="productSpec">
-                                <input type="text" value="${productSpec.repository}">
-                            </c:forEach>
-                        </div>
-                    </div>
                     <div class="form-group">
                         <div class="col-sm-offset-2 col-sm-4">
                             <input type="button" class="btn btn-primary" id="submit" value="提交"/>
@@ -173,41 +149,7 @@
 <div id="bottomIframe">
     <%@include file="../common/bottom.jsp" %>
 </div>
-<!--添加提示框-->
-<div class="modal" id="addWarn">
-    <div class="modal-dialog">
-        <div class="modal-content">
-            <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span
-                        aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title">添加（品类和库存均不能为空）</h4>
-            </div>
-            <div class="modal-body">
-                <form class="form-horizontal">
-                    <div class="form-group">
-                        <label for="productKind" class="col-sm-2 control-label">品类</label>
 
-                        <div class="col-sm-9">
-                            <input type="text" class="form-control" id="productKind">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="productNum1" class="col-sm-2 control-label">库存</label>
-
-                        <div class="col-sm-9">
-                            <input type="number" class="form-control" id="productNum1">
-                        </div>
-                    </div>
-                </form>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-primary add-product">确认</button>
-                <input type="hidden" id="productId" value="${product.id}"/>
-            </div>
-        </div>
-    </div>
-</div>
 
 <script src="${resourceUrl}/js/bootstrap.min.js"></script>
 <script>
@@ -243,31 +185,6 @@
 //        数组
         $("#productType option[value=${product.productType.id}]").attr("selected", true);
 
-        var indexVal = 0;
-        $('.addWarn').click(function () {
-            var beforeStr = '<div class="pull-left"><input type="text" class="text-primary" value="请编辑"> <span class="label label-default" data-index="'
-                            + indexVal + '">X</span></div>';
-            $('.addWarn').before(beforeStr);
-            bindListener();
-            var afterStr = '<input type="text" data-index="' + indexVal + '" value="请编辑">';
-            $('#productNum2').append(afterStr);
-            indexVal++;
-        });
-
-        <%--bindListener();--%>
-        //规格选择
-        function bindListener() {
-            var divs = $('#productKind1 div');
-            divs.each(function (i) {
-                divs.eq(i).find('span').unbind().bind('click', function () {
-                    //获取当前的规格的dom节点序号
-                    var index = $(this).attr('data-index');
-                    $(this).parent('div').remove();
-                    var name = '#productNum2 input[data-index="' + index + '"]';
-                    $(name).remove();
-                })
-            });
-        }
     });
 
     $("#submit").bind("click", function () {
@@ -286,19 +203,7 @@
         productDto.minPrice = $("#productMinPrice").val();
         productDto.picture = $("#productPicture").attr("src");
         productDto.thumb = $("#productThumb").attr("src");
-        var productSpecs = [];
-        var divs = $('#productKind1 div');
-        var inputs = $('#productNum2 input');
-        divs.each(function (i) {
-            //获取当前的规格的dom节点序号
-            var productSpec = {};
-            productSpec.specDetail = divs.eq(i).find('input[type=text]').val();
-            productSpec.id = divs.eq(i).find('input[type=hidden]').val();
-            var index = $(this).attr('data-index');
-            productSpec.repository = inputs.eq(i).val();
-            productSpecs[i] = productSpec;
-        });
-        productDto.productSpecs = productSpecs;
+
         if (${product!=null}) {
             productDto.id = $("#productId").val();
             $.ajax({

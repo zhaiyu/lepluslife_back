@@ -150,7 +150,7 @@
                                         onclick="editProduct(${product.id})">编辑
                                 </button>
                                 <button type="button" class="btn btn-default"
-                                        onclick="pictureManage(${product.id})">图片管理
+                                        onclick="pictureManage(${product.id})">内容管理
                                 </button>
                                 <button type="button" class="btn btn-default"
                                         onclick="qrCodeManage(${product.id})">二维码

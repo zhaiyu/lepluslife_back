@@ -39,6 +39,25 @@ public class LeJiaUserDto {
 
   private Long onLineCount;
 
+  private String nickname;
+
+  private String headImageUrl;
+
+  public String getNickname() {
+    return nickname;
+  }
+
+  public void setNickname(String nickname) {
+    this.nickname = nickname;
+  }
+
+  public String getHeadImageUrl() {
+    return headImageUrl;
+  }
+
+  public void setHeadImageUrl(String headImageUrl) {
+    this.headImageUrl = headImageUrl;
+  }
 
   public Long getId() {
     return id;

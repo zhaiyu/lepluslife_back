@@ -57,11 +57,79 @@
                 </button>
                 <hr>
                 <ul id="myTab" class="nav nav-tabs">
-                    <li class="active"><a href="#lunbotu" data-toggle="tab">轮播图</a></li>
+                    <li class="active"><a href="#guige" data-toggle="tab">规格管理</a></li>
+                    <li><a href="#lunbotu" data-toggle="tab">轮播图</a></li>
                     <li><a href="#xiangqing" data-toggle="tab">详情图片</a></li>
                 </ul>
                 <div id="myTabContent" class="tab-content">
-                    <div class="tab-pane fade in active" id="lunbotu">
+
+                    <div class="tab-pane fade in active" id="guige">
+                        <button type="button" class="btn btn-primary createWarn"
+                                style="margin:10px;" onclick="editProductSpec()">新增规格
+                        </button>
+                        <table class="table table-bordered table-hover">
+                            <thead>
+                            <tr>
+                                <th class="text-center">单品ID</th>
+                                <th class="text-center">规格品类</th>
+                                <th class="text-center">正常价格</th>
+                                <th class="text-center">最低价格</th>
+                                <th class="text-center">状态</th>
+                                <th class="text-center">缩略图</th>
+                                <th class="text-center">库存</th>
+                                <th class="text-center">操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <c:forEach items="${productSpecs}" var="productSpec">
+                                <tr class="active">
+                                    <td class="text-center">${productSpec.id}</td>
+                                    <td class="text-center">${productSpec.specDetail}</td>
+                                    <td class="text-center">${productSpec.price}</td>
+                                    <td class="text-center">${productSpec.minPrice}</td>
+                                    <td class="text-center">
+                                        <c:if test="${productSpec.state==1}">
+                                            已上架
+                                        </c:if>
+                                        <c:if test="${productSpec.state==0}">
+                                            <font color="red">已下架</font>
+                                        </c:if>
+                                    </td>
+                                    <td class="text-center"><img src="${productSpec.picture}"></td>
+                                    <td class="text-center">${productSpec.repository}</td>
+                                    <td class="text-center">
+                                        <button type="button" class="btn btn-default createWarn"
+                                                onclick="editProductSpecNumber(${productSpec.id},1)">
+                                            进库
+                                        </button>
+                                        <button type="button" class="btn btn-default createWarn"
+                                                onclick="editProductSpecNumber(${productSpec.id},0)">
+                                            出库
+                                        </button>
+                                        <button type="button" class="btn btn-default createWarn"
+                                                onclick="editProductSpec(${productSpec.id})">编辑
+                                        </button>
+                                        <c:if test="${productSpec.state==1}">
+                                            <button type="button" class="btn btn-default upWarn"
+                                                    data-target="#upWarn"
+                                                    onclick="putOff(${productSpec.id})">下架
+                                            </button>
+                                        </c:if>
+                                        <c:if test="${productSpec.state==0}">
+                                            <button type="button" class="btn btn-default downWarn"
+                                                    data-target="#downWarn"
+                                                    onclick="putOn(${productSpec.id})">
+                                                上架
+                                            </button>
+                                        </c:if>
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <div class="tab-pane fade" id="lunbotu">
                         <button type="button" class="btn btn-primary createWarn"
                                 style="margin:10px;" onclick="editScrollPicture()">添加轮播图
                         </button>
@@ -211,23 +279,232 @@
     </div>
 </div>
 
+<!--添加或修改规格提示框-->
+<div class="modal" id="createSpecWarn">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span
+                        aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal">
+
+                    <div class="form-group">
+                        <label for="specDetail" class="col-sm-2 control-label">规格名称</label>
+
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="specDetail"
+                                   placeholder="请输入规格名称">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="price" class="col-sm-2 control-label">正常价格</label>
+
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="price"
+                                   placeholder="请输入正常价格">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="minPrice" class="col-sm-2 control-label">最低价格</label>
+
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="minPrice"
+                                   placeholder="请输入最低价格">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="repository" class="col-sm-2 control-label">初始库存</label>
+
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="repository"
+                                   placeholder="请输入初始库存">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="specPicture" class="col-sm-2 control-label">商品图片</label>
+
+                        <div class="col-sm-4">
+                            <!--<div class="thumbnail">-->
+                            <img src="" alt="..." id="picture">
+                            <!--</div>-->
+                            <input type="file" class="form-control" id="specPicture" name="file"
+                                   data-url="/manage/file/saveImage"/>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal"
+                        id="productSpec-confim">确认
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--添加规格数量提示框-->
+<div class="modal" id="addNumberWarn">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span
+                        aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal">
+
+                    <div class="form-group">
+                        <label for="productName" class="col-sm-2 control-label">进库数量</label>
+
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="addNumber"
+                                   placeholder="请输入进库数量">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="productName" class="col-sm-2 control-label">备注信息</label>
+
+                        <div class="col-sm-4">
+                            <textarea class="form-control" id="detail1"
+                                   placeholder="请输入备注信息"></textarea>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal"
+                        id="addNumber-confim">确认
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--减少规格数量提示框-->
+<div class="modal" id="deleteNumberWarn">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span
+                        aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title"></h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal">
+
+                    <div class="form-group">
+                        <label for="productName" class="col-sm-2 control-label">出库数量</label>
+
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="deleteNumber"
+                                   placeholder="请输入出库数量">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="productName" class="col-sm-2 control-label">备注信息</label>
+
+                        <div class="col-sm-4">
+                            <textarea class="form-control" id="detail2"
+                                   placeholder="请输入备注信息"></textarea>
+                        </div>
+                    </div>
+
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal"
+                        id="deleteNumber-confim">确认
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!--下架提示框-->
+<div class="modal" id="downWarn">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span
+                        aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">下架</h4>
+            </div>
+            <div class="modal-body">
+                <h4>确定要下架商品规格吗？</h4>
+
+                <p>下架后，该商品规格将不再展示给消费者，但您随时可以将该商品规格可以再次上架销售。</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal"
+                        id="putOff-cancle">取消
+                </button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal"
+                        id="putOff-confirm">确认
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<!--上架提示框-->
+<div class="modal" id="upWarn">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span
+                        aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">上架</h4>
+            </div>
+            <div class="modal-body">
+                <h4>确定要上架商品规格吗？</h4>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal"
+                        id="putOn-confirm">确认
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <script src="${resourceUrl}/js/bootstrap.min.js"></script>
 <script>
     $(function () {
         $('#productPic').fileupload({
-            dataType: 'json',
-            maxFileSize: 5000000,
-            acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
-            add: function (e, data) {
-                data.submit();
-            },
-            done: function (e, data) {
-                var resp = data.result;
-                $('#image').attr('src',
-                                 '${ossImageReadRoot}/'
-                                 + resp.data);
-            }
-        });
+                                        dataType: 'json',
+                                        maxFileSize: 5000000,
+                                        acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+                                        add: function (e, data) {
+                                            data.submit();
+                                        },
+                                        done: function (e, data) {
+                                            var resp = data.result;
+                                            $('#image').attr('src',
+                                                             '${ossImageReadRoot}/'
+                                                             + resp.data);
+                                        }
+                                    });
+        $('#specPicture').fileupload({
+                                        dataType: 'json',
+                                        maxFileSize: 5000000,
+                                        acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+                                        add: function (e, data) {
+                                            data.submit();
+                                        },
+                                        done: function (e, data) {
+                                            var resp = data.result;
+                                            $('#picture').attr('src',
+                                                             '${ossImageReadRoot}/'
+                                                             + resp.data);
+                                        }
+                                    });
 
         var url = location.search;
         var str = url.substr(1);
@@ -239,6 +516,146 @@
         }
 
     })
+
+    function editProductSpec(id) {//编辑规格
+        if (id != null) {
+            $.get("/manage/productSpec/" + id, null, function (data) {
+                $("#picture").attr("src", data.picture);
+                $("#specDetail").val(data.specDetail);
+                $("#price").val(data.price);
+                $("#minPrice").val(data.minPrice);
+                $("#repository").val(data.repository);
+                $("#productSpec-confim").bind("click", function () {
+                    var productSpec = {};
+                    productSpec.picture = $("#picture").attr("src");
+                    productSpec.specDetail = $("#specDetail").val();
+                    productSpec.price = $("#price").val();
+                    productSpec.minPrice = $("#minPrice").val();
+                    productSpec.repository = $("#repository").val();
+                    productSpec.id = id;
+                    var product = {};
+                    product.id = ${product.id};
+                    productSpec.product = product;
+                    $.ajax({
+                               type: "put",
+                               url: "/manage/productSpec",
+                               contentType: "application/json",
+                               data: JSON.stringify(productSpec),
+                               success: function (data) {
+                                   alert(data.msg);
+                                   setTimeout(function () {
+                                       location.href =
+                                       "/manage/product/pictureManage?id=${product.id}&productDetail=false";
+                                   }, 0);
+                               }
+                           });
+                });
+            });
+            $("#createSpecWarn").modal("show");
+        } else {
+            $("#productSpec-confim").bind("click", function () {
+                var productSpec = {};
+                productSpec.picture = $("#picture").attr("src");
+                productSpec.specDetail = $("#specDetail").val();
+                productSpec.price = $("#price").val();
+                productSpec.minPrice = $("#minPrice").val();
+                productSpec.repository = $("#repository").val();
+                var product = {};
+                product.id = ${product.id};
+                productSpec.product = product;
+                $.ajax({
+                           type: "post",
+                           url: "/manage/productSpec",
+                           contentType: "application/json",
+                           data: JSON.stringify(productSpec),
+                           success: function (data) {
+                               alert(data.msg);
+                               setTimeout(function () {
+                                   location.href =
+                                   "/manage/product/pictureManage?id=${product.id}&productDetail=false";
+                               }, 0);
+                           }
+                       });
+            });
+            $("#createSpecWarn").modal("show");
+        }
+    }
+    function editProductSpecNumber(id, state) {//修改规格数量
+        if (id != null) {
+            var productSpec = {};
+            productSpec.id = id;
+            var productSpecLog = {};
+            productSpecLog.productSpec = productSpec;
+            if (state == 0) {
+                $("#deleteNumber-confim").bind("click", function () {
+                    productSpecLog.detail = $("#detail2").val();
+                    productSpecLog.state = 0;
+                    productSpecLog.number = $("#deleteNumber").val();
+                    $.ajax({
+                               type: "post",
+                               url: "/manage/productSpec/editRepository",
+                               contentType: "application/json",
+                               data: JSON.stringify(productSpecLog),
+                               success: function (data) {
+                                   alert(data.msg);
+                                   setTimeout(function () {
+                                       location.href =
+                                       "/manage/product/pictureManage?id=${product.id}&productDetail=false";
+                                   }, 0);
+                               }
+                           });
+                });
+                $("#deleteNumberWarn").modal("show");
+            } else if (state == 1) {
+                $("#addNumber-confim").bind("click", function () {
+                    productSpecLog.detail = $("#detail1").val();
+                    productSpecLog.state = 1;
+                    productSpecLog.number = $("#addNumber").val();
+                    $.ajax({
+                               type: "post",
+                               url: "/manage/productSpec/editRepository",
+                               contentType: "application/json",
+                               data: JSON.stringify(productSpecLog),
+                               success: function (data) {
+                                   alert(data.msg);
+                                   setTimeout(function () {
+                                       location.href =
+                                       "/manage/product/pictureManage?id=${product.id}&productDetail=false";
+                                   }, 0);
+                               }
+                           });
+                });
+                $("#addNumberWarn").modal("show");
+            }
+        }
+    }
+
+    function putOn(id) {  //上架商品规格
+        $("#putOn-confirm").bind("click", function () {
+            $.post("/manage/productSpec/putOn/" + id, null, function (data) {
+                alert(data.msg);
+                setTimeout(function () {
+                    location.reload(true);
+                }, 1000);
+
+            });
+        });
+        $("#upWarn").modal("show");
+    }
+
+    function putOff(id) { //下架商品规格
+        $("#putOff-confirm").bind("click", function () {
+            $.post("/manage/productSpec/putOff/" + id, null, function (data) {
+                alert(data.msg);
+                setTimeout(function () {
+                    location.reload(true);
+                }, 1000);
+
+            });
+        });
+        $("#downWarn").modal("show");
+    }
+
     function editScrollPicture(id) {
         if (id != null) {
             $.get("/manage/scrollPicture/" + id, null, function (data) {

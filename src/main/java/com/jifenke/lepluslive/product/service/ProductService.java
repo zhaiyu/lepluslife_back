@@ -110,10 +110,7 @@ public class ProductService {
     origin.setThumb(productDto.getThumb());
     origin.setPrice((long) Float.parseFloat(productDto.getPrice()) * 100);
     origin.setProductType(productDto.getProductType());
-    for (ProductSpec productSpec : productDto.getProductSpecs()) {
-      productSpec.setProduct(origin);
-      productSpecRepository.save(productSpec);
-    }
+
     productRepository.save(origin);
   }
 
@@ -177,10 +174,10 @@ public class ProductService {
     return productDetailRepository.findAllByProduct(product);
   }
 
-  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-  public List<ProductSpec> findProductSpecsByProduct(Product product) {
-    return productSpecRepository.findAllByProduct(product);
-  }
+//  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+//  public List<ProductSpec> findProductSpecsByProduct(Product product) {
+//    return productSpecRepository.findAllByProduct(product);
+//  }
 
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)

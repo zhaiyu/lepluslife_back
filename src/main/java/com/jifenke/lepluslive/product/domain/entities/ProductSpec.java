@@ -3,6 +3,7 @@ package com.jifenke.lepluslive.product.domain.entities;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -31,6 +32,26 @@ public class ProductSpec {
 
   private String specDetail;
 
+  @NotNull
+  private String picture;
+
+  @NotNull
+  private Long price;
+
+  @Column(name = "min_price")
+  @NotNull
+  private Long minPrice;
+
+  private Integer state;
+
+  public Integer getState() {
+    return state;
+  }
+
+  public void setState(Integer state) {
+    this.state = state;
+  }
+
   public Product getProduct() {
     return product;
   }
@@ -53,6 +74,30 @@ public class ProductSpec {
 
   public void setId(Integer id) {
     this.id = id;
+  }
+
+  public String getPicture() {
+    return picture;
+  }
+
+  public void setPicture(String picture) {
+    this.picture = picture;
+  }
+
+  public Long getPrice() {
+    return price;
+  }
+
+  public void setPrice(Long price) {
+    this.price = price;
+  }
+
+  public Long getMinPrice() {
+    return minPrice;
+  }
+
+  public void setMinPrice(Long minPrice) {
+    this.minPrice = minPrice;
   }
 
   public Integer getRepository() {

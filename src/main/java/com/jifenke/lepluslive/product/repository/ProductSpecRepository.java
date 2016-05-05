@@ -10,7 +10,7 @@ import java.util.List;
 /**
  * Created by wcg on 16/3/25.
  */
-public interface ProductSpecRepository extends JpaRepository<ProductSpec, Long> {
+public interface ProductSpecRepository extends JpaRepository<ProductSpec, Integer> {
 
   List<ProductSpec> findAllByProduct(Product product);
 

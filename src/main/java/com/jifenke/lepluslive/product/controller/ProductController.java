@@ -8,6 +8,7 @@ import com.jifenke.lepluslive.product.domain.entities.ProductType;
 import com.jifenke.lepluslive.product.service.ProductService;
 import com.jifenke.lepluslive.global.util.LejiaResult;
 import com.jifenke.lepluslive.global.util.PaginationUtil;
+import com.jifenke.lepluslive.product.service.ProductSpecService;
 import com.jifenke.lepluslive.product.service.ScrollPictureService;
 
 import org.springframework.data.domain.Page;
@@ -38,6 +39,9 @@ public class ProductController {
 
   @Inject
   private ScrollPictureService scrollPictureService;
+
+  @Inject
+  private ProductSpecService productSpecService;
 
   //分页
   @RequestMapping(value = "/product", method = RequestMethod.GET)
@@ -107,7 +111,7 @@ public class ProductController {
     Product product = productService.findOneProduct(id);
     model.addAttribute("product", product);
     model.addAttribute("productTypes", productService.findAllProductType());
-    model.addAttribute("productSpecs", productService.findProductSpecsByProduct(product));
+    model.addAttribute("productSpecs", productSpecService.findProductSpecsByProduct(product));
     return MvUtil.go("/product/productCreate");
   }
 
@@ -160,6 +164,7 @@ public class ProductController {
     model.addAttribute("product", product);
     model.addAttribute("productDetails", productService.findAllProductDetailsByProduct(product));
     model.addAttribute("scrollPictures", scrollPictureService.findAllScorllPicture(product));
+    model.addAttribute("productSpecs",productSpecService.findProductSpecsByProduct(product));
     return MvUtil.go("/product/pictureManage");
   }
 

@@ -39,7 +39,7 @@
         <div class="main">
             <div class="container-fluid">
                 <ul class="nav nav-tabs" style="margin-bottom: 10px">
-                    <li  class="show"><a data-toggle="tab" onclick="stateChange()">所有</a></li>
+                    <li class="show"><a data-toggle="tab" onclick="stateChange()">所有</a></li>
                     <li class="show"><a data-toggle="tab" onclick="stateChange(0)">未付款</a></li>
                     <li class="show"><a data-toggle="tab" onclick="stateChange(1)">未发货</a></li>
                     <li class="show"><a data-toggle="tab" onclick="stateChange(2)">已发货</a></li>
@@ -64,7 +64,11 @@
                     <c:forEach items="${orders}" var="order">
                         <tr class="active">
                             <td class="text-center">${order.orderSid}</td>
-                            <td class="text-center">${order.orderDetails[0].product.name}X${order.orderDetails[0].productNumber}</td>
+                            <td class="text-center">
+                                <c:forEach items="${order.orderDetails}" var="orderDetail">
+                                    ${orderDetail.product.name}X${orderDetail.productNumber}<br>
+                                </c:forEach>
+                            </td>
                             <td class="text-center">${order.address.name}${order.address.phoneNumber}${order.address.province}${order.address.city}${order.address.county}${order.address.location}</td>
                             <td class="text-center">${order.totalPrice/100}</td>
                             <td class="text-center">${order.truePrice/100}+${order.trueScore}积分</td>
@@ -231,12 +235,12 @@
 <script src="${resourceUrl}/js/bootstrap.min.js"></script>
 <script>
 
-    $(function(){
-       if(${orderCriteria.state!=null}){
-           $(".show").eq(${orderCriteria.state+1}).addClass("active");
-       }else{
-           $(".show").eq(0).addClass("active");
-       }
+    $(function () {
+        if (${orderCriteria.state!=null}) {
+            $(".show").eq(${orderCriteria.state+1}).addClass("active");
+        } else {
+            $(".show").eq(0).addClass("active");
+        }
     });
 
     function cancleOrder(id) {
@@ -272,16 +276,16 @@
         });
         $("#confirmWarn").modal("show");
     }
-    function stateChange(state){
-        if(state!=null){
-        location.href = "/manage/order?state="+state;
-        }else{
+    function stateChange(state) {
+        if (state != null) {
+            location.href = "/manage/order?state=" + state;
+        } else {
             location.href = "/manage/order";
         }
     }
     function pageChange(page) {
         location.href =
-        "/manage/order?state=${orderCriteria.state}"+ "&page=" + page;
+        "/manage/order?state=${orderCriteria.state}" + "&page=" + page;
     }
 </script>
 </body>
