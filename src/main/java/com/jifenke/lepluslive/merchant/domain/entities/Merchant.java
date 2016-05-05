@@ -1,13 +1,19 @@
 package com.jifenke.lepluslive.merchant.domain.entities;
 
+import com.jifenke.lepluslive.global.util.MvUtil;
+
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
+import java.util.List;
+
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
 /**
@@ -22,6 +28,11 @@ public class Merchant {
   private Long id;
 
   private Integer sid;
+
+  @OneToMany(fetch = FetchType.LAZY)
+  private List<MerchantBank> merchantBanks;
+
+  private String merchantSid = MvUtil.getMerchantSid();
 
   @ManyToOne
   private City city;
@@ -49,6 +60,14 @@ public class Merchant {
 
   @ManyToOne
   private Area area;
+
+  public String getMerchantSid() {
+    return merchantSid;
+  }
+
+  public void setMerchantSid(String merchantSid) {
+    this.merchantSid = merchantSid;
+  }
 
   public String getThumb() {
     return thumb;

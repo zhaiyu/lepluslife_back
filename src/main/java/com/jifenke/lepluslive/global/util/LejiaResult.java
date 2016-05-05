@@ -136,4 +136,5 @@ public class LejiaResult implements Serializable{
       return null;
     }
   }
+
 }
