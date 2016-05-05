@@ -48,6 +48,8 @@
                     <thead>
                     <tr>
                         <th class="text-center">会员ID</th>
+                        <th class="text-center">头像</th>
+                        <th class="text-center">昵称</th>
                         <th class="text-center">注册来源</th>
                         <th class="text-center">绑定商户</th>
                         <th class="text-center">手机号</th>
@@ -64,6 +66,8 @@
                     <c:forEach var="user" items="${users}">
                         <tr class="active">
                             <td class="text-center">${user.userSid}</td>
+                            <td class="text-center"><img src="${user.headImageUrl}" alt="..."></td>
+                            <td class="text-center">${user.nickname}</td>
                             <td class="text-center"><c:if
                                     test="${user.registerOrigin.originType==0}">微信</c:if>
                                 <c:if test="${user.registerOrigin.originType==1}">app</c:if>

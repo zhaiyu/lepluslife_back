@@ -42,6 +42,8 @@ public class OnLineOrder {
 
   private Long trueScore;
 
+  private Long freightPrice;     //运费
+
   @ManyToOne
   private LeJiaUser leJiaUser;
 
@@ -55,6 +57,24 @@ public class OnLineOrder {
   private Integer state;//0 未支付 1 已支付 2 已发货 3已收获 4 订单取消
 
   private String payWay;
+
+  private String expressNumber;  //快递单号
+
+  public String getExpressNumber() {
+    return expressNumber;
+  }
+
+  public void setExpressNumber(String expressNumber) {
+    this.expressNumber = expressNumber;
+  }
+
+  public Long getFreightPrice() {
+    return freightPrice;
+  }
+
+  public void setFreightPrice(Long freightPrice) {
+    this.freightPrice = freightPrice;
+  }
 
   public Long getTruePrice() {
     return truePrice;
