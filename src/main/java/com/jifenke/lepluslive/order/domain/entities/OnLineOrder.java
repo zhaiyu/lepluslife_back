@@ -30,7 +30,7 @@ public class OnLineOrder {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
-  @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true,mappedBy = "onLineOrder")
+  @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "onLineOrder")
   private List<OrderDetail> orderDetails = new ArrayList<OrderDetail>();
 
 
@@ -59,6 +59,16 @@ public class OnLineOrder {
   private String payWay;
 
   private String expressNumber;  //快递单号
+
+  private String expressCompany; //快递公司名称
+
+  public String getExpressCompany() {
+    return expressCompany;
+  }
+
+  public void setExpressCompany(String expressCompany) {
+    this.expressCompany = expressCompany;
+  }
 
   public String getExpressNumber() {
     return expressNumber;
