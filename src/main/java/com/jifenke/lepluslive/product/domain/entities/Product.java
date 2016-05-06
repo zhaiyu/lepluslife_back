@@ -47,13 +47,13 @@ public class Product implements Serializable {
 
 
   @Column(name = "sale_num")
-  private Integer saleNumber;
+  private Integer saleNumber = 0;
 
   @Column(name = "points_count")
-  private Long pointsCount;
+  private Long pointsCount = 0L;
 
   @Column(name = "packet_count")
-  private Long packetCount;
+  private Long packetCount = 0L;
 
   private String description;
 
