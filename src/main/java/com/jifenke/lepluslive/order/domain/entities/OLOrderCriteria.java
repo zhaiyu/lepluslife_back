@@ -21,6 +21,16 @@ public class OLOrderCriteria {
 
   private PayWay payWay;
 
+  private Integer offset;
+
+  public Integer getOffset() {
+    return offset;
+  }
+
+  public void setOffset(Integer offset) {
+    this.offset = offset;
+  }
+
   public Date getStartDate() {
     return startDate;
   }

@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
@@ -35,10 +36,13 @@ public class OffLineOrderService {
   @Inject
   private OffLineOrderRepository offLineOrderRepository;
 
-  public Page findOrderByPage(Integer offset, OLOrderCriteria orderCriteria) {
-    Sort sort = new Sort(Sort.Direction.DESC, "createDate");
+  public Page findOrderByPage( OLOrderCriteria orderCriteria) {
+    Sort sort = new Sort(Sort.Direction.DESC, "createdDate");
+    if(orderCriteria.getOffset()==null){
+      orderCriteria.setOffset(1);
+    }
     return offLineOrderRepository
-        .findAll(getWhereClause(orderCriteria), new PageRequest(offset - 1, 10, sort));
+        .findAll(getWhereClause(orderCriteria), new PageRequest(orderCriteria.getOffset() - 1, 10, sort));
   }
 
   public static Specification<OffLineOrder> getWhereClause(OLOrderCriteria orderCriteria) {
@@ -56,6 +60,11 @@ public class OffLineOrderService {
           predicate.getExpressions().add(
               cb.like(r.<LeJiaUser>get("leJiaUser").get("phoneNumber"),
                       "%" + orderCriteria.getPhoneNumber() + "%"));
+        }
+        if (orderCriteria.getUserSid() != null) {
+          predicate.getExpressions().add(
+              cb.like(r.<LeJiaUser>get("leJiaUser").get("userSid"),
+                      "%" + orderCriteria.getUserSid() + "%"));
         }
 
         if (orderCriteria.getStartDate() != null) {
@@ -76,7 +85,7 @@ public class OffLineOrderService {
                         "%" + orderCriteria.getMerchant() + "%"));
           }else {
             predicate.getExpressions().add(
-                cb.like(r.<Merchant>get("Merchant").get("name"),
+                cb.like(r.<Merchant>get("merchant").get("name"),
                         "%" + orderCriteria.getMerchant() + "%"));
           }
         }
@@ -87,5 +96,11 @@ public class OffLineOrderService {
 
   public List<Object[]> countTransferMoney(Date start, Date end) {
     return offLineOrderRepository.countTransferMoney(start,end);
+  }
+
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  public void changeOrderStateToPaid(Long id) {
+    OffLineOrder offLineOrder = offLineOrderRepository.findOne(id);
+    offLineOrder.setState(1);
   }
 }

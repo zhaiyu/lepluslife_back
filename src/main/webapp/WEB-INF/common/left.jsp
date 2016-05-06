@@ -36,13 +36,14 @@
         <li><h4 class="M4"><span></span>订单管理</h4></li>
         <li><h4 class="M5"><span></span>专题模块</h4></li>
         <li><h4 class="M6"><span></span>会员管理</h4></li>
+        <li><h4 class="M7"><span></span>线下订单</h4></li>
     </ul>
 </div>
 <script>navList(12);</script>
 <script>
     $(function () {
 //        数组
-        var htmlArr=['/manage/index','/manage/product','/manage/product','picManger.html','/manage/merchant','/manage/order','/manage/topic','/manage/user'];
+        var htmlArr=['/manage/index','/manage/product','/manage/product','picManger.html','/manage/merchant','/manage/order','/manage/topic','/manage/user','/manage/offLineOrder'];
         $('.M1').click(function () {
             window.location.href=htmlArr[0];
         });
@@ -60,6 +61,9 @@
         });
         $('.M6').click(function () {
             window.location.href=htmlArr[7];
+        });
+        $('.M7').click(function () {
+            window.location.href=htmlArr[8];
         });
         $('.btn-create').click(function () {
             window.location.href=htmlArr[2];
