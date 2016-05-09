@@ -2,6 +2,8 @@ package com.jifenke.lepluslive.order.domain.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
 
+import java.util.Date;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -31,6 +33,16 @@ public class ExpressInfo {
   private Integer status;  //快递状态  1 在途中 2 派件中 3 已签收 4 派送失败(拒签等)
 
   private String content;   //内容
+
+  private Date freshDate;
+
+  public Date getFreshDate() {
+    return freshDate;
+  }
+
+  public void setFreshDate(Date freshDate) {
+    this.freshDate = freshDate;
+  }
 
   public Long getId() {
     return id;

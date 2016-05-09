@@ -22,6 +22,8 @@ public final class Constants {
 
   public static final String BAR_CODE_EXT = "png";
 
+  public static final Integer COOKIE_DISABLE_TIME = 7200;
+
   private Constants() {
   }
 }

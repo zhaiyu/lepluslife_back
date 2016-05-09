@@ -77,9 +77,10 @@ public class OrderService {
   }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-  public void orderDelivery(Long id) {
-    OnLineOrder onLineOrder = orderRepository.findOne(id);
-
+  public void orderDelivery(OnLineOrder order) {
+    OnLineOrder onLineOrder = orderRepository.findOne(order.getId());
+    onLineOrder.setExpressCompany(order.getExpressCompany());
+    onLineOrder.setExpressNumber(order.getExpressNumber());
     onLineOrder.setState(2);
     //默认10天后会自动收货
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -140,5 +141,14 @@ public class OrderService {
         return predicate;
       }
     };
+  }
+
+
+  /**
+   * 根据订单id查询线上订单信息
+   */
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+  public OnLineOrder findOnLineOrderById(Long id) {
+    return orderRepository.findOne(id);
   }
 }
