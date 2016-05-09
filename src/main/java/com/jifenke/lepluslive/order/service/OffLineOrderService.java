@@ -107,7 +107,7 @@ public class OffLineOrderService {
   }
 
   public Page findFinancialByCirterial(FinancialCriteria financialCriteria, Integer limit) {
-    Sort sort = new Sort(Sort.Direction.DESC, "createdDate");
+    Sort sort = new Sort(Sort.Direction.DESC, "balanceDate");
     return financialStatisticRepository
         .findAll(getFinancialClause(financialCriteria),
                  new PageRequest(financialCriteria.getOffset() - 1, limit, sort));

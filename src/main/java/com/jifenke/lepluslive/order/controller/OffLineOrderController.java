@@ -89,7 +89,7 @@ public class OffLineOrderController {
     return LejiaResult.ok();
   }
 
-  @RequestMapping(value = "/offLineOrder/export", method = RequestMethod.POST)
+  @RequestMapping(value = "/financial/export", method = RequestMethod.POST)
   public ModelAndView exporeExcel(FinancialCriteria financialCriteria) {
     if (financialCriteria.getOffset() == null) {
       financialCriteria.setOffset(1);

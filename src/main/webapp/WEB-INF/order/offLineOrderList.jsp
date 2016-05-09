@@ -31,8 +31,8 @@
         }
     </style>
     <script type="text/javascript" src="${resourceUrl}/js/jquery-2.0.3.min.js"></script>
-    <%--<script type="text/javascript" src="${resourceUrl}/js/jquery.jqpagination.min.js"></script>--%>
-    <script type="text/javascript" src="${resourceUrl}/js/jquery.jqpagination.js"></script>
+    <script type="text/javascript" src="${resourceUrl}/js/jquery.jqpagination.min.js"></script>
+    <%--<script type="text/javascript" src="${resourceUrl}/js/jquery.jqpagination.js"></script>--%>
 </head>
 
 <body>
@@ -318,11 +318,11 @@
                    }
                });
     }
-    function initPage(currentPage, totalPage) {
+    function initPage(page, totalPage) {
         $('.pagination').jqPagination({
-                                          current_page: currentPage, //设置当前页 默认为1
+                                          current_page: page, //设置当前页 默认为1
                                           max_page: totalPage, //设置最大页 默认为1
-                                          page_string: '当前第{current_page}页,共{max_page}页',
+                                          page_string: '当前第'+page+'页,共'+totalPage+'页',
                                           paged: function (page) {
                                               olOrderCriteria.offset = page;
                                               getOffLineOrderByAjax(olOrderCriteria);
@@ -398,6 +398,7 @@
     }
 
     function searchOrderByState(state) {
+        olOrderCriteria.offset = 1;
         if (state != null) {
             olOrderCriteria.state = state;
         } else {
