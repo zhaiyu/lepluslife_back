@@ -93,11 +93,20 @@
                                 </c:if>
                                 <c:if test="${order.state==1}">
                                     <button type="button" class="btn confirmWarn"
-                                            onclick="delivery(${order.id})">确认发货
+                                            onclick="delivery('${order.id}','${order.expressCompany}','${order.expressNumber}')">确认发货
                                     </button>
                                     <button type="button" class="btn btn-default deleteWarn"
                                             data-target="#deleteWarn"
                                             onclick="cancleOrder(${order.id})">取消订单
+                                    </button>
+                                </c:if>
+                                <c:if test="${order.state==2}">
+                                    <button type="button" class="btn confirmWarn"
+                                            onclick="showExpress(${order.id})">查看物流信息
+                                    </button>
+                                    <button type="button" class="btn btn-default deleteWarn"
+                                            data-target="#deleteWarn"
+                                            onclick="delivery('${order.id}','${order.expressCompany}','${order.expressNumber}')">修改物流信息
                                     </button>
                                 </c:if>
                             </td>
@@ -197,7 +206,25 @@
                 <h4 class="modal-title">确认发货</h4>
             </div>
             <div class="modal-body">
-                <p>确认发货吗?</p>
+                <form class="form-horizontal">
+
+                    <div class="form-group">
+                        <label for="expressCompany" class="col-sm-2 control-label">物流公司名称</label>
+
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="expressCompany"
+                                   placeholder="请输入公司名称">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="expressNumber" class="col-sm-2 control-label">订单物流单号</label>
+
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="expressNumber"
+                                   placeholder="请输入物流单号">
+                        </div>
+                    </div>
+                </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
@@ -208,6 +235,7 @@
         </div>
     </div>
 </div>
+
 <!--取消订单提示框-->
 <div class="modal" id="deleteWarn">
     <div class="modal-dialog">
@@ -260,12 +288,19 @@
         $("#deleteWarn").modal("show");
     }
 
-    function delivery(id) {
+    function delivery(id,expressCompany,expressNumber) {
+        $("#expressCompany").val(expressCompany);
+        $("#expressNumber").val(expressNumber);
         $("#delivery-confirm").bind("click", function () {
+            var onLineOrder = {};
+            onLineOrder.id = id;
+            onLineOrder.expressCompany = $("#expressCompany").val();
+            onLineOrder.expressNumber = $("#expressNumber").val();
             $.ajax({
-                       type: "get",
-                       url: "/manage/order/delivery/" + id,
+                       type: "post",
+                       url: "/manage/order/delivery",
                        contentType: "application/json",
+                       data: JSON.stringify(onLineOrder),
                        success: function (data) {
                            alert(data.msg);
                            setTimeout(function () {
@@ -276,6 +311,7 @@
         });
         $("#confirmWarn").modal("show");
     }
+
     function stateChange(state) {
         if (state != null) {
             location.href = "/manage/order?state=" + state;
@@ -283,6 +319,13 @@
             location.href = "/manage/order";
         }
     }
+
+    function showExpress(id) {//查看物流信息
+        if (id != null) {
+            location.href = "/manage/showExpress/" + id;
+        }
+    }
+
     function pageChange(page) {
         location.href =
         "/manage/order?state=${orderCriteria.state}" + "&page=" + page;
