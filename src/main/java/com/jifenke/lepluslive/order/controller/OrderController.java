@@ -7,11 +7,9 @@ import com.jifenke.lepluslive.global.util.LejiaResult;
 import com.jifenke.lepluslive.global.util.MvUtil;
 import com.jifenke.lepluslive.global.util.PaginationUtil;
 import com.jifenke.lepluslive.order.controller.dto.ExpressDto;
+import com.jifenke.lepluslive.order.domain.criteria.OrderCriteria;
 import com.jifenke.lepluslive.order.domain.entities.ExpressInfo;
-import com.jifenke.lepluslive.order.domain.entities.OLOrderCriteria;
-import com.jifenke.lepluslive.order.domain.entities.OffLineOrder;
 import com.jifenke.lepluslive.order.domain.entities.OnLineOrder;
-import com.jifenke.lepluslive.order.domain.entities.OrderCriteria;
 import com.jifenke.lepluslive.order.service.ExpressInfoService;
 import com.jifenke.lepluslive.order.service.OffLineOrderService;
 import com.jifenke.lepluslive.order.service.OrderService;
@@ -45,9 +43,6 @@ public class OrderController {
 
   @Inject
   private OrderService orderService;
-
-  @Inject
-  private OffLineOrderService offLineOrderService;
 
   @Inject
   private ExpressInfoService expressInfoService;
@@ -91,25 +86,6 @@ public class OrderController {
     return LejiaResult.build(200, "成功");
   }
 
-  @RequestMapping("/offLineOrder")
-  public ModelAndView offLineOrder() {
-    return MvUtil.go("/order/offLineOrderList");
-  }
-
-  @RequestMapping(value = "/offLineOrder", method = RequestMethod.POST)
-  public LejiaResult getOffLineOrder(@RequestBody OLOrderCriteria olOrderCriteria) {
-    Page page = offLineOrderService.findOrderByPage(olOrderCriteria);
-    if (olOrderCriteria.getOffset() == null) {
-      olOrderCriteria.setOffset(1);
-    }
-    return LejiaResult.ok(page);
-  }
-
-  @RequestMapping(value = "/offLineOrder/{id}", method = RequestMethod.POST)
-  public LejiaResult changeOrderStateToPaid(@PathVariable Long id) {
-    offLineOrderService.changeOrderStateToPaid(id);
-    return LejiaResult.ok();
-  }
 
   /**
    * 查看物流信息

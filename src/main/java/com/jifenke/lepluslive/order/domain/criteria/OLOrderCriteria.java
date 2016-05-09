@@ -1,4 +1,4 @@
-package com.jifenke.lepluslive.order.domain.entities;
+package com.jifenke.lepluslive.order.domain.criteria;
 
 import java.util.Date;
 
@@ -7,9 +7,9 @@ import java.util.Date;
  */
 public class OLOrderCriteria {
 
-  private Date startDate;
+  private String startDate;
 
-  private Date endDate;
+  private String endDate;
 
   private Integer state;
 
@@ -19,7 +19,7 @@ public class OLOrderCriteria {
 
   private String merchant;
 
-  private PayWay payWay;
+  private Long payWay;
 
   private Integer offset;
 
@@ -31,19 +31,19 @@ public class OLOrderCriteria {
     this.offset = offset;
   }
 
-  public Date getStartDate() {
+  public String getStartDate() {
     return startDate;
   }
 
-  public void setStartDate(Date startDate) {
+  public void setStartDate(String startDate) {
     this.startDate = startDate;
   }
 
-  public Date getEndDate() {
+  public String getEndDate() {
     return endDate;
   }
 
-  public void setEndDate(Date endDate) {
+  public void setEndDate(String endDate) {
     this.endDate = endDate;
   }
 
@@ -79,11 +79,11 @@ public class OLOrderCriteria {
     this.merchant = merchant;
   }
 
-  public PayWay getPayWay() {
+  public Long getPayWay() {
     return payWay;
   }
 
-  public void setPayWay(PayWay payWay) {
+  public void setPayWay(Long payWay) {
     this.payWay = payWay;
   }
 }

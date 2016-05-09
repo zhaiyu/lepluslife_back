@@ -1,6 +1,7 @@
-package com.jifenke.lepluslive.merchant.domain.entities;
+package com.jifenke.lepluslive.order.domain.entities;
 
 import com.jifenke.lepluslive.global.util.MvUtil;
+import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
 
 import java.util.Date;
 
@@ -8,6 +9,7 @@ import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
+import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
@@ -27,6 +29,36 @@ public class FinancialStatistic {
 
   private Date transferDate; //转账日期
 
+  @ManyToOne
+  private Merchant merchant;
+
+  private Long transferPrice;
+
+  private Integer state;
+
+  public Integer getState() {
+    return state;
+  }
+
+  public void setState(Integer state) {
+    this.state = state;
+  }
+
+  public Merchant getMerchant() {
+    return merchant;
+  }
+
+  public void setMerchant(Merchant merchant) {
+    this.merchant = merchant;
+  }
+
+  public Long getTransferPrice() {
+    return transferPrice;
+  }
+
+  public void setTransferPrice(Long transferPrice) {
+    this.transferPrice = transferPrice;
+  }
 
   public Date getTransferDate() {
     return transferDate;

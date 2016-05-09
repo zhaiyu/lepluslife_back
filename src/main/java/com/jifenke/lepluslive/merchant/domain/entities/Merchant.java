@@ -58,8 +58,26 @@ public class Merchant {
 
   private Double lat;
 
+  private String payee;
+
   @ManyToOne
   private Area area;
+
+  public String getPayee() {
+    return payee;
+  }
+
+  public void setPayee(String payee) {
+    this.payee = payee;
+  }
+
+  public List<MerchantBank> getMerchantBanks() {
+    return merchantBanks;
+  }
+
+  public void setMerchantBanks(List<MerchantBank> merchantBanks) {
+    this.merchantBanks = merchantBanks;
+  }
 
   public String getMerchantSid() {
     return merchantSid;

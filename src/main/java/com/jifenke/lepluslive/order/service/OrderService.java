@@ -3,7 +3,7 @@ package com.jifenke.lepluslive.order.service;
 import com.jifenke.lepluslive.global.config.Constants;
 import com.jifenke.lepluslive.job.OrderConfirmJob;
 import com.jifenke.lepluslive.order.domain.entities.OnLineOrder;
-import com.jifenke.lepluslive.order.domain.entities.OrderCriteria;
+import com.jifenke.lepluslive.order.domain.criteria.OrderCriteria;
 import com.jifenke.lepluslive.order.repository.OrderRepository;
 import com.jifenke.lepluslive.product.service.ProductService;
 import com.jifenke.lepluslive.user.domain.entities.LeJiaUser;

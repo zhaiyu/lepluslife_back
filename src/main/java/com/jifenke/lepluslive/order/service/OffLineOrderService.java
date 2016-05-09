@@ -1,11 +1,12 @@
 package com.jifenke.lepluslive.order.service;
 
 import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
-import com.jifenke.lepluslive.order.domain.entities.OLOrderCriteria;
+import com.jifenke.lepluslive.order.domain.criteria.FinancialCriteria;
+import com.jifenke.lepluslive.order.domain.criteria.OLOrderCriteria;
+import com.jifenke.lepluslive.order.domain.entities.FinancialStatistic;
 import com.jifenke.lepluslive.order.domain.entities.OffLineOrder;
-import com.jifenke.lepluslive.order.domain.entities.OnLineOrder;
-import com.jifenke.lepluslive.order.domain.entities.OrderCriteria;
 import com.jifenke.lepluslive.order.domain.entities.PayWay;
+import com.jifenke.lepluslive.order.repository.FinancialStatisticRepository;
 import com.jifenke.lepluslive.order.repository.OffLineOrderRepository;
 import com.jifenke.lepluslive.user.domain.entities.LeJiaUser;
 
@@ -36,13 +37,14 @@ public class OffLineOrderService {
   @Inject
   private OffLineOrderRepository offLineOrderRepository;
 
-  public Page findOrderByPage( OLOrderCriteria orderCriteria) {
+  @Inject
+  private FinancialStatisticRepository financialStatisticRepository;
+
+  public Page findOrderByPage(OLOrderCriteria orderCriteria, Integer limit) {
     Sort sort = new Sort(Sort.Direction.DESC, "createdDate");
-    if(orderCriteria.getOffset()==null){
-      orderCriteria.setOffset(1);
-    }
     return offLineOrderRepository
-        .findAll(getWhereClause(orderCriteria), new PageRequest(orderCriteria.getOffset() - 1, 10, sort));
+        .findAll(getWhereClause(orderCriteria),
+                 new PageRequest(orderCriteria.getOffset() - 1, limit, sort));
   }
 
   public static Specification<OffLineOrder> getWhereClause(OLOrderCriteria orderCriteria) {
@@ -56,34 +58,34 @@ public class OffLineOrderService {
               cb.equal(r.get("state"),
                        orderCriteria.getState()));
         }
-        if (orderCriteria.getPhoneNumber() != null) {
+        if (orderCriteria.getPhoneNumber() != null && orderCriteria.getPhoneNumber() != "") {
           predicate.getExpressions().add(
               cb.like(r.<LeJiaUser>get("leJiaUser").get("phoneNumber"),
                       "%" + orderCriteria.getPhoneNumber() + "%"));
         }
-        if (orderCriteria.getUserSid() != null) {
+        if (orderCriteria.getUserSid() != null && orderCriteria.getUserSid() != "") {
           predicate.getExpressions().add(
               cb.like(r.<LeJiaUser>get("leJiaUser").get("userSid"),
                       "%" + orderCriteria.getUserSid() + "%"));
         }
 
-        if (orderCriteria.getStartDate() != null) {
+        if (orderCriteria.getStartDate() != null && orderCriteria.getStartDate() != "") {
           predicate.getExpressions().add(
-              cb.between(r.get("completeDate"), orderCriteria.getStartDate(),
-                         orderCriteria.getEndDate()));
+              cb.between(r.get("completeDate"), new Date(orderCriteria.getStartDate()),
+                         new Date(orderCriteria.getEndDate())));
         }
 
         if (orderCriteria.getPayWay() != null) {
           predicate.getExpressions().add(
               cb.equal(r.<PayWay>get("payWay"),
-                       orderCriteria.getPayWay()));
+                       new PayWay(orderCriteria.getPayWay())));
         }
-        if(orderCriteria.getMerchant()!=null){
-          if(orderCriteria.getMerchant().matches("^\\d{1,6}$")){
+        if (orderCriteria.getMerchant() != null && orderCriteria.getMerchant() != "") {
+          if (orderCriteria.getMerchant().matches("^\\d{1,6}$")) {
             predicate.getExpressions().add(
                 cb.like(r.<Merchant>get("merchant").get("merchantSid"),
                         "%" + orderCriteria.getMerchant() + "%"));
-          }else {
+          } else {
             predicate.getExpressions().add(
                 cb.like(r.<Merchant>get("merchant").get("name"),
                         "%" + orderCriteria.getMerchant() + "%"));
@@ -95,12 +97,62 @@ public class OffLineOrderService {
   }
 
   public List<Object[]> countTransferMoney(Date start, Date end) {
-    return offLineOrderRepository.countTransferMoney(start,end);
+    return offLineOrderRepository.countTransferMoney(start, end);
   }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public void changeOrderStateToPaid(Long id) {
     OffLineOrder offLineOrder = offLineOrderRepository.findOne(id);
     offLineOrder.setState(1);
+  }
+
+  public Page findFinancialByCirterial(FinancialCriteria financialCriteria, Integer limit) {
+    Sort sort = new Sort(Sort.Direction.DESC, "balanceDate");
+    return financialStatisticRepository
+        .findAll(getFinancialClause(financialCriteria),
+                 new PageRequest(financialCriteria.getOffset() - 1, limit, sort));
+  }
+
+
+  public static Specification<FinancialStatistic> getFinancialClause(
+      FinancialCriteria financialCriteria) {
+    return new Specification<FinancialStatistic>() {
+      @Override
+      public Predicate toPredicate(Root<FinancialStatistic> r, CriteriaQuery<?> q,
+                                   CriteriaBuilder cb) {
+        Predicate predicate = cb.conjunction();
+        if (financialCriteria.getState() != null) {
+          predicate.getExpressions().add(
+              cb.equal(r.get("state"),
+                       financialCriteria.getState()));
+        }
+
+        if (financialCriteria.getStartDate() != null && financialCriteria.getStartDate() != "") {
+          predicate.getExpressions().add(
+              cb.between(r.get("completeDate"), new Date(financialCriteria.getStartDate()),
+                         new Date(financialCriteria.getEndDate())));
+        }
+
+        if (financialCriteria.getMerchant() != null && financialCriteria.getMerchant() != "") {
+          if (financialCriteria.getMerchant().matches("^\\d{1,6}$")) {
+            predicate.getExpressions().add(
+                cb.like(r.<Merchant>get("merchant").get("merchantSid"),
+                        "%" + financialCriteria.getMerchant() + "%"));
+          } else {
+            predicate.getExpressions().add(
+                cb.like(r.<Merchant>get("merchant").get("name"),
+                        "%" + financialCriteria.getMerchant() + "%"));
+          }
+        }
+        return predicate;
+      }
+    };
+  }
+
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  public void changeFinancialStateToTransfer(Long id) {
+    FinancialStatistic financialStatistic = financialStatisticRepository.findOne(id);
+    financialStatistic.setState(1);
+    financialStatisticRepository.save(financialStatistic);
   }
 }

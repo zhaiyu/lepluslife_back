@@ -19,7 +19,7 @@
     <title>乐+生活 后台模板管理系统</title>
     <link href="${resourceUrl}/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="${resourceUrl}/css/jqpagination.css"/>
-    <link rel="stylesheet" href="${resourceUrl}/css/bootstrap-datetimepicker.min.css">
+    <link rel="stylesheet" href="${resourceUrl}/css/daterangepicker-bs3.css">
     <link type="text/css" rel="stylesheet" href="${resourceUrl}/css/commonCss.css"/>
     <style>
         thead th, tbody td {
@@ -31,8 +31,8 @@
         }
     </style>
     <script type="text/javascript" src="${resourceUrl}/js/jquery-2.0.3.min.js"></script>
-    <%--<script type="text/javascript" src="${resourceUrl}/js/jquery.jqpagination.min.js"></script>--%>
-    <script type="text/javascript" src="${resourceUrl}/js/jquery.jqpagination.js"></script>
+    <script type="text/javascript" src="${resourceUrl}/js/jquery.jqpagination.min.js"></script>
+    <%--<script type="text/javascript" src="${resourceUrl}/js/jquery.jqpagination.js"></script>--%>
 </head>
 
 <body>
@@ -47,13 +47,13 @@
         <div class="main">
             <div class="container-fluid">
                 <div class="row" style="margin-top: 30px">
-                    <div class="form-group col-md-3">
+                    <div class="form-group col-md-6">
                         <label for="date-end">交易完成时间</label>
 
-                        <div class='input-group date' id='date-end'>
-                            <input type='text' class="form-control"/>
-                            <span class="input-group-addon"><span
-                                    class="glyphicon glyphicon-calendar"></span></span>
+                        <div id="date-end" class="form-control">
+                            <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
+                            <span id="searchDateRange"></span>
+                            <b class="caret"></b>
                         </div>
                     </div>
                     <div class="form-group col-md-3">
@@ -86,13 +86,14 @@
                                 onclick="searchOrderByCriteria()">查询
                         </button>
                     </div>
-                    <div class="form-group col-md-3"></div>
                 </div>
                 <ul id="myTab" class="nav nav-tabs">
-                    <li><a href="#tab1" data-toggle="tab">全部订单</a></li>
-                    <li class="active"><a href="#tab2" data-toggle="tab">未支付</a></li>
-                    <li><a href="#tab3" data-toggle="tab">已完成</a></li>
-                    <li><a href="#tab4" data-toggle="tab">已转账</a></li>
+                    <li><a href="#tab1" data-toggle="tab" onclick="searchOrderByState()">全部订单</a>
+                    </li>
+                    <li class="active"><a href="#tab2" data-toggle="tab"
+                                          onclick="searchOrderByState(0)">未支付</a></li>
+                    <li><a href="#tab3" data-toggle="tab" onclick="searchOrderByState(1)">已完成</a>
+                    </li>
                 </ul>
                 <div id="myTabContent" class="tab-content">
                     <div class="tab-pane fade in active" id="tab1">
@@ -128,6 +129,9 @@
                         <a href="#" class="next" data-action="next">&rsaquo;</a>
                         <a href="#" class="last" data-action="last">&raquo;</a>
                     </div>
+                    <button class="btn btn-primary" style="margin-top: 24px"
+                            onclick="exportExcel()">导出excel
+                    </button>
                 </div>
             </div>
         </div>
@@ -143,10 +147,9 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span
                         aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title">上架</h4>
             </div>
             <div class="modal-body">
-                <h4>确定要删除商品：唐古拉黑糖玛？</h4>
+                <h4>操作确定</h4>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
@@ -159,16 +162,16 @@
 </div>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="${resourceUrl}/js/bootstrap.min.js"></script>
-<script src="${resourceUrl}/js/bootstrap-datetimepicker.min.js"></script>
-<script src="${resourceUrl}/js/bootstrap-datetimepicker.zh-CN.js"></script>
+<script src="${resourceUrl}/js/daterangepicker.js"></script>
+<%--<script src="${resourceUrl}/js/bootstrap-datetimepicker.zh-CN.js"></script>--%>
 <script src="${resourceUrl}/js/moment.min.js"></script>
 <script>
     var olOrderCriteria = {};
     var orderContent = document.getElementById("orderContent");
     $(function () {
-//        tab切换
+        // tab切换
         $('#myTab li:eq(0) a').tab('show');
-//        提示框
+        // 提示框
         $(".deleteWarn").click(function () {
             $("#deleteWarn").modal("toggle");
         });
@@ -176,35 +179,75 @@
             $("#createWarn").modal("toggle");
         });
 
-        //        时间选择器
-        $('#date-start').datetimepicker({
-                                            todayBtn: true,
-                                            format: 'yyyy/mm/dd hh:ii',
-                                            language: 'zh-CN'
-                                        });
-        $('#date-end').datetimepicker({
-                                          todayBtn: true,
-                                          format: 'yyyy/mm/dd hh:ii',
-                                          language: 'zh-CN'
-                                      });
+        // 时间选择器
+        $(document).ready(function () {
+            $('#date-end span').html(moment().subtract('hours', 1).format('YYYY/MM/DD HH:mm:ss')
+                                     + ' - ' +
+                                     moment().format('YYYY/MM/DD HH:mm:ss'));
+            $('#date-end').daterangepicker({
+                                               maxDate: moment(), //最大时间
+                                               dateLimit: {
+                                                   days: 30
+                                               }, //起止时间的最大间隔
+                                               showDropdowns: true,
+                                               showWeekNumbers: false, //是否显示第几周
+                                               timePicker: true, //是否显示小时和分钟
+                                               timePickerIncrement: 60, //时间的增量，单位为分钟
+                                               timePicker12Hour: false, //是否使用12小时制来显示时间
+                                               ranges: {
+                                                   '最近1小时': [moment().subtract('hours', 1),
+                                                             moment()],
+                                                   '今日': [moment().startOf('day'), moment()],
+                                                   '昨日': [moment().subtract('days',
+                                                                            1).startOf('day'),
+                                                          moment().subtract('days',
+                                                                            1).endOf('day')],
+                                                   '最近7日': [moment().subtract('days', 6), moment()],
+                                                   '最近30日': [moment().subtract('days', 29),
+                                                             moment()]
+                                               },
+                                               opens: 'right', //日期选择框的弹出位置
+                                               buttonClasses: ['btn btn-default'],
+                                               applyClass: 'btn-small btn-primary blue',
+                                               cancelClass: 'btn-small',
+                                               format: 'YYYY-MM-DD HH:mm:ss', //控件中from和to 显示的日期格式
+                                               separator: ' to ',
+                                               locale: {
+                                                   applyLabel: '确定',
+                                                   cancelLabel: '取消',
+                                                   fromLabel: '起始时间',
+                                                   toLabel: '结束时间',
+                                                   customRangeLabel: '自定义',
+                                                   daysOfWeek: ['日', '一', '二', '三', '四', '五', '六'],
+                                                   monthNames: ['一月', '二月', '三月', '四月', '五月', '六月',
+                                                                '七月', '八月', '九月', '十月', '十一月',
+                                                                '十二月'],
+                                                   firstDay: 1
+                                               }
+                                           }, function (start, end, label) {//格式化日期显示框
+                $('#date-end span').html(start.format('YYYY/MM/DD HH:mm:ss') + ' - '
+                                         + end.format('YYYY/MM/DD HH:mm:ss'));
+            });
+        })
         olOrderCriteria.offset = 1;
 
         getOffLineOrderByAjax(olOrderCriteria);
-    })
+    });
 
     function getOffLineOrderByAjax(olOrderCriteria) {
         orderContent.innerHTML = "";
         $.ajax({
                    type: "post",
                    url: "/manage/offLineOrder",
+                   async: false,
                    data: JSON.stringify(olOrderCriteria),
                    contentType: "application/json",
                    success: function (data) {
                        var page = data.data;
                        var content = page.content;
                        var totalPage = page.totalPages;
-                       if(totalPage ==0){
-                           totalPage =1;
+                       if (totalPage == 0) {
+                           totalPage = 1;
                        }
                        var orderContent = document.getElementById("orderContent");
                        for (i = 0; i < content.length; i++) {
@@ -245,23 +288,41 @@
                            if (content[i].state == 0) {
                                contentStr += '<td>未付款</td>';
                                contentStr +=
-                               '<td><button class="btn btn-primary" onlick="changeOrderToPaid('
-                               + content[i].id + ')">设为已支付</button></td></tr>';
+                               '<td><input type="hidden" class="id-hidden" value="' + content[i].id
+                               + '"><button class="btn btn-primary changeOrderToPaid")">设为已支付</button></td></tr>';
                            }
                            if (content[i].state == 1) {
                                contentStr += '<td>已支付</td></tr>'
                            }
                            orderContent.innerHTML += contentStr;
+
                        }
+                       $(".changeOrderToPaid").each(function (i) {
+                           $(".changeOrderToPaid").eq(i).bind("click", function () {
+                               var id = $(this).parent().find(".id-hidden").val();
+                               $("#paid-confirm").bind("click", function () {
+                                   $.ajax({
+                                              type: "get",
+                                              url: "/manage/offLineOrder/" + id,
+                                              contentType: "application/json",
+                                              success: function (data) {
+                                                  alert(data.msg);
+                                                  getOffLineOrderByAjax(olOrderCriteria);
+                                              }
+                                          });
+                               });
+                               $("#deleteWarn").modal("show");
+                           });
+                       });
                        initPage(olOrderCriteria.offset, totalPage);
                    }
                });
     }
-    function initPage(currentPage, totalPage) {
+    function initPage(page, totalPage) {
         $('.pagination').jqPagination({
-                                          current_page: currentPage, //设置当前页 默认为1
+                                          current_page: page, //设置当前页 默认为1
                                           max_page: totalPage, //设置最大页 默认为1
-                                          page_string: '当前第{current_page}页,共{max_page}页',
+                                          page_string: '当前第'+page+'页,共'+totalPage+'页',
                                           paged: function (page) {
                                               olOrderCriteria.offset = page;
                                               getOffLineOrderByAjax(olOrderCriteria);
@@ -306,45 +367,84 @@
         }
         return fmt;
     }
-    function changeOrderToPaid(id) {
-        $("#paid-confirm").bind("click", function () {
-            $.ajax({
-                       type: "get",
-                       url: "/manage/offLineOrder/" + id,
-                       contentType: "application/json",
-                       success: function (data) {
-                           alert(data.msg);
-                           getOffLineOrderByAjax(olOrderCriteria);
-                       }
-                   });
-        });
-        $("#deleteWarn").modal("show");
-    }
 
     function searchOrderByCriteria() {
+        var dateStr = $('#date-end span').text().split("-");
+        var startDate =dateStr[0].replace(/-/g, "/");
+        var endDate = dateStr[1].replace(/-/g, "/");
+        olOrderCriteria.startDate = startDate;
+        olOrderCriteria.endDate = endDate;
         if ($("#pay-style").val() != 0) {
-            var payWay = {};
-            payWay.id = $("#pay-style").val();
-            olOrderCriteria.payWay = payWay;
-        }else{
+            olOrderCriteria.payWay = $("#pay-style").val();
+        } else {
             olOrderCriteria.payWay = null;
         }
         if ($("#customer-ID").val() != "" && $("#customer-ID").val() != null) {
             olOrderCriteria.userSid = $("#customer-ID").val();
-        }else{
+        } else {
             olOrderCriteria.userSid = null;
         }
         if ($("#customer-tel").val() != "" && $("#customer-tel").val() != null) {
             olOrderCriteria.phoneNumber = $("#customer-tel").val();
-        }else{
+        } else {
             olOrderCriteria.phoneNumber = null;
         }
         if ($("#merchant-name").val() != "" && $("#merchant-name").val() != null) {
             olOrderCriteria.merchant = $("#merchant-name").val();
-        }else{
-            olOrderCriteria.merchant=null;
+        } else {
+            olOrderCriteria.merchant = null;
         }
         getOffLineOrderByAjax(olOrderCriteria);
+    }
+
+    function searchOrderByState(state) {
+        olOrderCriteria.offset = 1;
+        if (state != null) {
+            olOrderCriteria.state = state;
+        } else {
+            olOrderCriteria.state = null;
+        }
+        getOffLineOrderByAjax(olOrderCriteria);
+    }
+    function post(URL, PARAMS) {
+        var temp = document.createElement("form");
+        temp.action = URL;
+        temp.method = "post";
+        temp.style.display = "none";
+        for (var x in PARAMS) {
+            var opt = document.createElement("textarea");
+            opt.name = x;
+            opt.value = PARAMS[x];
+            // alert(opt.name)
+            temp.appendChild(opt);
+        }
+        document.body.appendChild(temp);
+        temp.submit();
+        return temp;
+    }
+    function exportExcel() {
+        if (olOrderCriteria.state == null) {
+            olOrderCriteria.state = null;
+        }
+        if (olOrderCriteria.startDate == null) {
+            olOrderCriteria.startDate = null;
+        }
+        if (olOrderCriteria.endDate == null) {
+            olOrderCriteria.endDate = null;
+        }
+        if (olOrderCriteria.payWay == null) {
+            olOrderCriteria.payWay = null;
+        }
+        if (olOrderCriteria.userSid == null) {
+            olOrderCriteria.userSid = null;
+        }
+        if (olOrderCriteria.phoneNumber == null) {
+            olOrderCriteria.phoneNumber = null;
+        }
+        if (olOrderCriteria.merchant == null) {
+            olOrderCriteria.merchant = null;
+        }
+        post("/manage/offLineOrder/export", olOrderCriteria);
     }
 </script>
 </body>
