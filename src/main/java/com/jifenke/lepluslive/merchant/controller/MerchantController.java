@@ -80,11 +80,12 @@ public class MerchantController {
   }
 
   @RequestMapping(value = "/merchant/{id}",method = RequestMethod.DELETE,produces = MediaType.APPLICATION_JSON_VALUE)
-  public LejiaResult deleteMerchant(@PathVariable Long id){
+   public LejiaResult deleteMerchant(@PathVariable Long id){
     merchantService.deleteMerchant(id);
 
     return LejiaResult.ok("删除商户成功");
   }
+
 
 
 

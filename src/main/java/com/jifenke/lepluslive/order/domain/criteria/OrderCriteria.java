@@ -1,4 +1,4 @@
-package com.jifenke.lepluslive.order.domain.entities;
+package com.jifenke.lepluslive.order.domain.criteria;
 
 /**
  * Created by wcg on 16/4/28.
@@ -20,7 +20,6 @@ public class OrderCriteria {
   public Integer getState() {
     return state;
   }
-
 
   public void setState(Integer state) {
     this.state = state;

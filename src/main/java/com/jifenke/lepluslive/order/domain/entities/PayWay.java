@@ -35,4 +35,10 @@ public class PayWay {
   public void setPayWay(String payWay) {
     this.payWay = payWay;
   }
+
+  public PayWay(Long id) {
+    this.id = id;
+  }
+  public PayWay() {
+  }
 }
