@@ -47,7 +47,8 @@
     <div class="m-right">
         <div class="main">
             <div class="container-fluid">
-                <button type="button" class="btn btn-primary btn-return" style="margin:10px;" onclick="goMerchantPage()">
+                <button type="button" class="btn btn-primary btn-return" style="margin:10px;"
+                        onclick="goMerchantPage()">
                     返回商户列表
                 </button>
                 <hr>
@@ -90,6 +91,34 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label for="cooperate-style" class="col-sm-2 control-label">合作方式</label>
+
+                        <div class="col-sm-3" id="cooperate-style">
+                            <div class="radio-inline">
+                                <label>
+                                    <input type="radio" class="radio-change" name="optionsRadios"
+                                           id="optionsRadios1" value="0" checked>
+                                    普通商户
+                                </label>
+                            </div>
+                            <div class="radio-inline">
+                                <label>
+                                    <input type="radio" class="radio-change" name="optionsRadios"
+                                           id="optionsRadios2" value="1">
+                                    加盟商户
+                                </label>
+                            </div>
+
+                        </div>
+                        <div class="col-sm-4">
+                            <div class="inline changeDisplay" style="display: none">
+                                <label for="yongjin">佣金点<input type="text" id="yongjin"
+                                                               value="${merchant.ljCommission}"
+                                                               style="margin-left: 10px">%</label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <label for="merchantPic" class="col-sm-2 control-label">商户图片</label>
 
                         <div class="col-sm-4">
@@ -126,20 +155,54 @@
                                    id="lat" value="${merchant.lat}">
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="rebate" class="col-sm-2 control-label">返利点</label>
+                    <%--<div class="form-group">--%>
+                    <%--<label for="rebate" class="col-sm-2 control-label">返利点</label>--%>
 
-                        <div class="col-sm-4 form-inline">
-                            <input type="text" class="form-control input-inline" id="rebate"
-                                   value="${merchant.rebate}">%
-                        </div>
-                    </div>
+                    <%--<div class="col-sm-4 form-inline">--%>
+                    <%--<input type="text" class="form-control input-inline" id="rebate"--%>
+                    <%--value="${merchant.rebate}">%--%>
+                    <%--</div>--%>
+                    <%--</div>--%>
                     <div class="form-group">
                         <label for="discount" class="col-sm-2 control-label">折扣</label>
 
                         <div class="col-sm-4 form-inline">
                             <input type="text" class="form-control" id="discount"
                                    value="${merchant.discount}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="bindTel" class="col-sm-2 control-label">绑定手机</label>
+
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="bindTel"
+                                   placeholder="请输入手机号" value="${merchant.merchantPhone}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="merchantBankNumber" class="col-sm-2 control-label">银行卡号</label>
+
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="merchantBankNumber"
+                                   placeholder="请输入银行卡号"
+                                   value="${merchant.merchantBank.bankNumber}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="merchantBankName" class="col-sm-2 control-label">所在支行</label>
+
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="merchantBankName"
+                                   placeholder="请输入所在支行地址"
+                                   value="${merchant.merchantBank.bankName}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="payee" class="col-sm-2 control-label">收款人</label>
+
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="payee"
+                                   placeholder="请输入收款人姓名" value="${merchant.payee}">
                         </div>
                     </div>
                     <div class="form-group">
@@ -154,6 +217,7 @@
     </div>
 </div>
 <input type="hidden" id="merchantId" value="${merchant.id}"/>
+<input type="hidden" id="merchantBankId" value="${merchant.merchantBank.id}"/>
 
 <div id="bottomIframe">
     <%@include file="../common/bottom.jsp" %>
@@ -163,49 +227,64 @@
 <script>
     $(function () {
 
+        if (${merchant.partnership==1}) {
+            $("#optionsRadios2").prop("checked", true);
+            $(".changeDisplay").css("display", 'block');
+        }
+
+        $("input[name='optionsRadios']").change(function () {
+            var value = $("input[name='optionsRadios']:checked").val();
+            // alert($selectedvalue);
+            if (value == 1) {
+                $(".changeDisplay").css("display", 'block');
+            } else {
+                $(".changeDisplay").css("display", 'none');
+            }
+        });
+
         $('#merchantPic').fileupload({
-             dataType: 'json',
-             maxFileSize: 5000000,
-             acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
-             add: function (e, data) {
-                 data.submit();
-             },
-             done: function (e, data) {
-                 var resp = data.result;
-                 $('#merchantPicture').attr('src',
-                                            '${ossImageReadRoot}/'
-                                            + resp.data);
-             }
-         });
+                                         dataType: 'json',
+                                         maxFileSize: 5000000,
+                                         acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+                                         add: function (e, data) {
+                                             data.submit();
+                                         },
+                                         done: function (e, data) {
+                                             var resp = data.result;
+                                             $('#merchantPicture').attr('src',
+                                                                        '${ossImageReadRoot}/'
+                                                                        + resp.data);
+                                         }
+                                     });
 
 //        数组
 
 //        调数据
         $.ajax({
-           type: 'GET',
-           url: '/manage/city/ajax',
-           async: false,
-           dataType: 'json',
-           success: function (data) {
-               console.log(data[0]);
-               var dataStr1 = '',
-                       dataStr2 = '';
-               $.each(data, function (i) {
-                   dataStr1 +=
-                   '<option value="' + data[i].id + '">' + data[i].name + '</option>';
+                   type: 'GET',
+                   url: '/manage/city/ajax',
+                   async: false,
+                   dataType: 'json',
+                   success: function (data) {
+                       console.log(data[0]);
+                       var dataStr1 = '',
+                               dataStr2 = '';
+                       $.each(data, function (i) {
+                           dataStr1 +=
+                           '<option value="' + data[i].id + '">' + data[i].name + '</option>';
+                       });
+                       $.each(data[0].areas, function (j) {
+                           dataStr2 +=
+                           '<option value="' + data[0].areas[j].id + '">' + data[0].areas[j].name
+                           + '</option>';
+                       });
+                       $('#locationCity').empty().append(dataStr1);
+                       $('#locationArea').empty().append(dataStr2);
+                   },
+                   error: function (jqXHR) {
+                       alert('发生错误：' + jqXHR.status);
+                   }
                });
-               $.each(data[0].areas, function (j) {
-                   dataStr2 +=
-                   '<option value="' + data[0].areas[j].id + '">' + data[0].areas[j].name
-                   + '</option>';
-               });
-               $('#locationCity').empty().append(dataStr1);
-               $('#locationArea').empty().append(dataStr2);
-           },
-           error: function (jqXHR) {
-               alert('发生错误：' + jqXHR.status);
-           }
-       });
         $('#locationCity').change(function () {
             var val = $(this).val();
             $.ajax({
@@ -240,16 +319,33 @@
 
     function submit() {
         var merchant = {};
+        var value = $("input[name='optionsRadios']:checked").val();
+        // alert($selectedvalue);
+        var merchantBank = {};
+        merchantBank.bankNumber = $("#merchantBankNumber").val();
+        merchantBank.bankName = $("#merchantBankName").val();
+        merchantBank.id = $("#merchantBankId").val();
+        merchant.merchantBank = merchantBank;
+        if (value == 1) {
+            merchant.partnership = 1;
+            merchant.ljCommission = $("#yongjin").val();
+        } else {
+            merchant.partnership = 0;
+            merchant.ljCommission = 0;
+        }
+        merchant.merchantPhone = $("#bindTel").val();
         merchant.id = $("#merchantId").val();
         var city = {};
         city.id = $("#locationCity").val();
         merchant.city = city;
         var area = {};
         area.id = $("#locationArea").val();
+        merchant.payee = $("#payee").val();
         merchant.area = area;
         var merchantType = {};
         if ($("#merchantType").val() == null || $("#merchantType").val() == 0) {
             alert("请输入商户类型")
+            return;
         }
         merchantType.id = $("#merchantType").val();
         merchant.location = $("#locationDetail").val()
@@ -258,9 +354,8 @@
         merchant.lng = $("#lng").val();
         merchant.lat = $("#lat").val();
         merchant.discount = $("#discount").val();
-        merchant.rebate = $("#rebate").val();
         merchant.picture = $("#merchantPicture").attr("src");
-        merchant.phoneNumber=$("#merchantPhone").val()
+        merchant.phoneNumber = $("#merchantPhone").val()
         if (merchant.id == null || merchant.id == "") {
             $.ajax({
                        type: "post",
@@ -274,7 +369,7 @@
                            }, 0);
                        }
                    });
-        }else{
+        } else {
             $.ajax({
                        type: "put",
                        url: "/manage/merchant",
@@ -292,19 +387,19 @@
 
     //        控制字数
     $("#merchantName").bind("input propertychange", function () {
-        if($(this).val().length>=12){
+        if ($(this).val().length >= 12) {
             alert("已经是最大字数了哦！");
-            $(this).val($(this).val().slice(0,13));
+            $(this).val($(this).val().slice(0, 13));
         }
     });
     $("#locationDetail").bind("input propertychange", function () {
-        if($(this).val().length>=35){
+        if ($(this).val().length >= 35) {
             alert("已经是最大字数了哦！");
-            $(this).val($(this).val().slice(0,35));
+            $(this).val($(this).val().slice(0, 35));
         }
     });
 
-    function goMerchantPage(){
+    function goMerchantPage() {
         location.href = "/manage/merchant";
     }
 </script>

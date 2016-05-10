@@ -9,11 +9,31 @@ public class FinancialCriteria {
 
   private String endDate;
 
+  private String transferStartDate;
+
+  private String transferEndDate;
+
   private String merchant;
 
   private Integer offset;
 
   private Integer state;
+
+  public String getTransferStartDate() {
+    return transferStartDate;
+  }
+
+  public void setTransferStartDate(String transferStartDate) {
+    this.transferStartDate = transferStartDate;
+  }
+
+  public String getTransferEndDate() {
+    return transferEndDate;
+  }
+
+  public void setTransferEndDate(String transferEndDate) {
+    this.transferEndDate = transferEndDate;
+  }
 
   public Integer getState() {
     return state;

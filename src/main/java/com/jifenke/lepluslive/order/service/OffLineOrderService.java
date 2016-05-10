@@ -129,8 +129,14 @@ public class OffLineOrderService {
 
         if (financialCriteria.getStartDate() != null && financialCriteria.getStartDate() != "") {
           predicate.getExpressions().add(
-              cb.between(r.get("completeDate"), new Date(financialCriteria.getStartDate()),
+              cb.between(r.get("balanceDate"), new Date(financialCriteria.getStartDate()),
                          new Date(financialCriteria.getEndDate())));
+        }
+
+        if (financialCriteria.getTransferEndDate() != null && financialCriteria.getTransferStartDate() != "") {
+          predicate.getExpressions().add(
+              cb.between(r.get("transferDate"), new Date(financialCriteria.getTransferStartDate()),
+                         new Date(financialCriteria.getTransferEndDate())));
         }
 
         if (financialCriteria.getMerchant() != null && financialCriteria.getMerchant() != "") {

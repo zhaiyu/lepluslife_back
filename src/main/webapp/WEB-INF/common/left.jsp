@@ -24,6 +24,8 @@
         .M4 span{background:url(${resourceUrl}/images/ioc.png) -72px -70px;}
         .M5 span{background:url(${resourceUrl}/images/ioc.png) -72px -70px;}
         .M6 span{background:url(${resourceUrl}/images/ioc.png) -72px -70px;}
+        .M7 span{background:url(${resourceUrl}/images/ioc.png) -72px -70px;}
+        .M8 span{background:url(${resourceUrl}/images/ioc.png) -72px -70px;}
     </style>
     <script type="text/javascript" src="${resourceUrl}/js/menu.js"></script>
 <div class="left_menu">
@@ -37,13 +39,14 @@
         <li><h4 class="M5"><span></span>专题模块</h4></li>
         <li><h4 class="M6"><span></span>会员管理</h4></li>
         <li><h4 class="M7"><span></span>线下订单</h4></li>
+        <li><h4 class="M8"><span></span>财务结算</h4></li>
     </ul>
 </div>
 <script>navList(12);</script>
 <script>
     $(function () {
 //        数组
-        var htmlArr=['/manage/index','/manage/product','/manage/product','picManger.html','/manage/merchant','/manage/order','/manage/topic','/manage/user','/manage/offLineOrder'];
+        var htmlArr=['/manage/index','/manage/product','/manage/product','picManger.html','/manage/merchant','/manage/order','/manage/topic','/manage/user','/manage/offLineOrder','/manage/financial'];
         $('.M1').click(function () {
             window.location.href=htmlArr[0];
         });
@@ -64,6 +67,9 @@
         });
         $('.M7').click(function () {
             window.location.href=htmlArr[8];
+        });
+        $('.M8').click(function () {
+            window.location.href=htmlArr[9];
         });
         $('.btn-create').click(function () {
             window.location.href=htmlArr[2];
