@@ -1,15 +1,20 @@
 package com.jifenke.lepluslive.merchant.service;
 
+import com.jifenke.lepluslive.merchant.domain.criteria.MerchantCriteria;
 import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantType;
 import com.jifenke.lepluslive.merchant.repository.MerchantRepository;
 import com.jifenke.lepluslive.merchant.repository.MerchantTypeRepository;
+import com.jifenke.lepluslive.order.domain.criteria.OLOrderCriteria;
 import com.jifenke.lepluslive.user.domain.entities.RegisterOrigin;
 import com.jifenke.lepluslive.user.repository.RegisterOriginRepository;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -18,6 +23,11 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 
 import javax.inject.Inject;
+import javax.inject.Inject;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 /**
  * Created by wcg on 16/3/17.
@@ -36,8 +46,11 @@ public class MerchantService {
   private RegisterOriginRepository registerOriginRepository;
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-  public Page findMerchantsByPage(Pageable pageable) {
-    return merchantRepository.findAll(pageable);
+  public Page findMerchantsByPage(MerchantCriteria  merchantCriteria, Integer limit) {
+    Sort sort = new Sort(Sort.Direction.DESC, "sid");
+    return merchantRepository
+        .findAll(getWhereClause(merchantCriteria),
+                 new PageRequest(merchantCriteria.getOffset() - 1, limit, sort));
   }
 
   public Merchant findMerchantById(Long id) {
@@ -76,14 +89,50 @@ public class MerchantService {
   }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-  public void deleteMerchant(Long id) {
-    if (merchantRepository.findOne(id) == null) {
+  public void disableMerchant(Long id) {
+   Merchant merchant =  merchantRepository.findOne(id);
+    if (merchant == null) {
       throw new RuntimeException("不存在的商户");
     }
-    merchantRepository.delete(id);
+    merchant.setState(0);
+    merchantRepository.save(merchant);
   }
 
   public List<MerchantType> findAllMerchantTypes() {
     return merchantTypeRepository.findAll();
+  }
+
+  public static Specification<Merchant> getWhereClause(MerchantCriteria merchantCriteria) {
+    return new Specification<Merchant>() {
+      @Override
+      public Predicate toPredicate(Root<Merchant> r, CriteriaQuery<?> q,
+                                   CriteriaBuilder cb) {
+        Predicate predicate = cb.conjunction();
+        if (merchantCriteria.getPartnership() != null) {
+          predicate.getExpressions().add(
+              cb.equal(r.get("partnership"),
+                       merchantCriteria.getPartnership()));
+        }
+
+        if (merchantCriteria.getMerchantType() != null) {
+          predicate.getExpressions().add(
+              cb.equal(r.get("merchantType"),
+                       new MerchantType(merchantCriteria.getMerchantType())));
+        }
+
+        if (merchantCriteria.getMerchant() != null && merchantCriteria.getMerchant() != "") {
+          if (merchantCriteria.getMerchant().matches("^\\d{1,6}$")) {
+            predicate.getExpressions().add(
+                cb.like(r.<Merchant>get("merchant").get("merchantSid"),
+                        "%" + merchantCriteria.getMerchant() + "%"));
+          } else {
+            predicate.getExpressions().add(
+                cb.like(r.<Merchant>get("merchant").get("name"),
+                        "%" + merchantCriteria.getMerchant() + "%"));
+          }
+        }
+        return predicate;
+      }
+    };
   }
 }

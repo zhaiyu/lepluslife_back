@@ -2,6 +2,7 @@ package com.jifenke.lepluslive.order.controller;
 
 import com.jifenke.lepluslive.global.util.LejiaResult;
 import com.jifenke.lepluslive.global.util.MvUtil;
+import com.jifenke.lepluslive.order.controller.view.FinancialViewExcel;
 import com.jifenke.lepluslive.order.controller.view.OrderViewExcel;
 import com.jifenke.lepluslive.order.domain.criteria.FinancialCriteria;
 import com.jifenke.lepluslive.order.domain.criteria.OLOrderCriteria;
@@ -12,6 +13,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -34,6 +36,9 @@ public class OffLineOrderController {
   @Inject
   private OffLineOrderService offLineOrderService;
 
+  @Inject
+  private FinancialViewExcel financialViewExcel;
+
 
   @RequestMapping("/offLineOrder")
   public ModelAndView offLineOrder() {
@@ -41,7 +46,7 @@ public class OffLineOrderController {
   }
 
   @RequestMapping(value = "/offLineOrder", method = RequestMethod.POST)
-  public LejiaResult getOffLineOrder(@RequestBody OLOrderCriteria olOrderCriteria) {
+  public @ResponseBody LejiaResult getOffLineOrder(@RequestBody OLOrderCriteria olOrderCriteria) {
     Page page = offLineOrderService.findOrderByPage(olOrderCriteria, 10);
     if (olOrderCriteria.getOffset() == null) {
       olOrderCriteria.setOffset(1);
@@ -50,7 +55,7 @@ public class OffLineOrderController {
   }
 
   @RequestMapping(value = "/offLineOrder/{id}", method = RequestMethod.GET)
-  public LejiaResult changeOrderStateToPaid(@PathVariable Long id) {
+  public @ResponseBody LejiaResult changeOrderStateToPaid(@PathVariable Long id) {
     offLineOrderService.changeOrderStateToPaid(id);
     return LejiaResult.ok();
   }
@@ -74,7 +79,7 @@ public class OffLineOrderController {
 
 
   @RequestMapping(value = "/financial", method = RequestMethod.POST)
-  public LejiaResult searchFinancialBycriterial(@RequestBody FinancialCriteria financialCriteria) {
+  public @ResponseBody LejiaResult searchFinancialBycriterial(@RequestBody FinancialCriteria financialCriteria) {
     if (financialCriteria.getOffset() == null) {
       financialCriteria.setOffset(1);
     }
@@ -84,7 +89,7 @@ public class OffLineOrderController {
 
 
   @RequestMapping(value = "/financial/{id}", method = RequestMethod.GET)
-  public LejiaResult changeFinancialStateToTransfer(@PathVariable Long id) {
+  public @ResponseBody LejiaResult changeFinancialStateToTransfer(@PathVariable Long id) {
     offLineOrderService.changeFinancialStateToTransfer(id);
     return LejiaResult.ok();
   }
@@ -96,8 +101,8 @@ public class OffLineOrderController {
     }
     Page page = offLineOrderService.findFinancialByCirterial(financialCriteria, 10000);
     Map map = new HashMap();
-    map.put("orderList", page.getContent());
-    return new ModelAndView(orderViewExcel, map);
+    map.put("financialList", page.getContent());
+    return new ModelAndView(financialViewExcel, map);
   }
 
 }

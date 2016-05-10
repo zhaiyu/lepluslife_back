@@ -18,10 +18,12 @@
     <title>乐+生活 后台模板管理系统</title>
     <link href="${resourceUrl}/css/bootstrap.min.css" rel="stylesheet">
     <link type="text/css" rel="stylesheet" href="${resourceUrl}/css/commonCss.css"/>
+    <link rel="stylesheet" href="${resourceUrl}/css/jqpagination.css"/>
     <style>
-        .pagination > li > a.focusClass {
-            background-color: #ddd;
+        thead th, tbody td {
+            text-align: center;
         }
+
         table tr td img {
             width: 80px;
             height: 80px;
@@ -35,7 +37,14 @@
             line-height: 60px;
         }
     </style>
+    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
+    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
+    <!--[if lt IE 9]>
+    <script src="js/html5shiv.min.js"></script>
+    <script src="js/respond.min.js"></script>
+    <![endif]-->
     <script type="text/javascript" src="${resourceUrl}/js/jquery-2.0.3.min.js"></script>
+    <script type="text/javascript" src="${resourceUrl}/js/jquery.jqpagination.min.js"></script>
 </head>
 
 <body>
@@ -49,116 +58,68 @@
     <div class="m-right">
         <div class="main">
             <div class="container-fluid" style="padding-top: 20px">
+                <div class="row" style="margin-bottom: 30px">
+                    <div class="form-group col-md-3">
+                        <label for="partnership">商户分类</label>
+                        <select class="form-control" id="partnership">
+                            <option value="-1">全部分类</option>
+                            <option value="0">普通商户</option>
+                            <option value="1">联盟商户</option>
+                        </select></div>
+                    <div class="form-group col-md-2">
+                        <label for="merchantType">所属类型</label>
+                        <select class="form-control" id="merchantType">
+                            <option value="0">全部分类</option>
+                            <c:forEach items="${merchantTypes}" var="merchantType">
+                                <option value="${merchantType.id}">${merchantType.name}</option>
+                            </c:forEach>
+                        </select></div>
+                    <div class="form-group col-md-3">
+                        <label for="merchant-name">商户名称</label>
+                        <input type="text" id="merchant-name" class="form-control"
+                               placeholder="请输入商户名称或ID"/>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <button class="btn btn-primary" style="margin-top: 24px" onclick="searchMerchantByCriteria()">筛选</button>
+                    </div>
+                    <div class="form-group col-md-3"></div>
+                </div>
                 <ul id="myTab" class="nav nav-tabs">
                     <li><a href="#lunbotu" data-toggle="tab">商户管理</a></li>
                 </ul>
                 <div id="myTabContent" class="tab-content">
                     <div class="tab-pane fade in active" id="lunbotu">
                         <button type="button" class="btn btn-primary createLocation"
-                                style="margin:10px 0;" onclick="goMerchantCreatePage()">新增商户
+                                style="margin:10px 0;" onclick="createMerchant()">新增商户
                         </button>
                         <table class="table table-bordered table-hover">
                             <thead>
-                            <tr>
-                                <th class="text-center">商品序号</th>
-                                <th class="text-center">商户名称</th>
-                                <th class="text-center">商户图片</th>
-                                <th class="text-center">商户地址</th>
-                                <th class="text-center">返利百分比</th>
-                                <th class="text-center">折扣</th>
-                                <th class="text-center">操作</th>
+                            <tr class="active">
+                                <th>商品序号</th>
+                                <th>商品名称</th>
+                                <th>商品图片</th>
+                                <th>商户地址</th>
+                                <th>商户分类</th>
+                                <th>佣金点</th>
+                                <th>所属类型</th>
+                                <th>所属区域</th>
+                                <th>待转账金额</th>
+                                <th>累计转账金额</th>
+                                <th>操作</th>
                             </tr>
                             </thead>
-                            <tbody>
-                            <c:forEach items="${merchants}" var="merchant">
-                                <tr class="active">
-                                    <td class="text-center">${merchant.sid}</td>
-                                    <td class="text-center">${merchant.name}</td>
-                                    <td class="text-center"><img src="${merchant.picture}"></td>
-                                    <td class="text-center">${merchant.location}</td>
-                                    <td class="text-center">${merchant.rebate}%</td>
-                                    <td class="text-center">${merchant.discount}</td>
-                                    <td class="text-center">
-                                        <button type="button" class="btn btn-default"
-                                                onclick="editMerchant(${merchant.id})">编辑
-                                        </button>
-                                        <button type="button" class="btn btn-default deleteWarn"
-                                                data-target="#deleteWarn"
-                                                onclick="deleteMerchant(${merchant.id})">删除
-                                        </button>
-                                    </td>
-                                </tr>
-                            </c:forEach>
+                            <tbody id="merchantContent">
                             </tbody>
                         </table>
                     </div>
                 </div>
-                <nav class="pull-right">
-                    <ul class="pagination pagination-lg">
-                        <li><a href="#" aria-label="Previous"><span aria-hidden="true" onclick="goPage(${currentPage-1})">«</span></a>
-                        </li>
-                        <c:if test="${pages<=5}">
-                            <c:forEach begin="1" end="${pages}" varStatus="index">
-                                <c:if test="${index.count==currentPage}">
-                                    <li><a href="/manage/merchant"
-                                           class="focusClass">${currentPage}</a></li>
-                                </c:if>
-                                <c:if test="${index.count!=currentPage}">
-                                    <li>
-                                        <a href="/manage/merchant?page=${index.count}">${index.count}</a>
-                                    </li>
-                                </c:if>
-                            </c:forEach>
-                        </c:if>
-                        <c:if test="${pages>5}">
-                            <c:if test="${currentPage<=3}">
-                                <c:forEach begin="1" end="5" varStatus="index">
-                                    <c:if test="${index.count==currentPage}">
-                                        <li><a href="/manage/merchant"
-                                               class="focusClass">${currentPage}</a></li>
-                                    </c:if>
-                                    <c:if test="${index.count!=currentPage}">
-                                        <li>
-                                            <a href="/manage/merchant?page=${index.count}">${index.count}</a>
-                                        </li>
-                                    </c:if>
-                                </c:forEach>
-                            </c:if>
-                            <c:if test="${currentPage>3}">
-                                <c:if test="${pages-currentPage>=2}">
-                                    <li>
-                                        <a href="/manage/merchant?page=${currentPage-2}">${currentPage-2}</a>
-                                    </li>
-                                    <li>
-                                        <a href="/manage/merchant?page=${currentPage-1}">${currentPage-1}</a>
-                                    </li>
-                                    <li><a href="/manage/merchant?page=${currentPage}"
-                                           class="focusClass">${currentPage}</a></li>
-                                    <li>
-                                        <a href="/manage/merchant?page=${currentPage+1}">${currentPage+1}</a>
-                                    </li>
-                                    <li>
-                                        <a href="/manage/merchant?page=${currentPage+2}">${currentPage+2}</a>
-                                    </li>
-                                </c:if>
-                                <c:if test="${pages-currentPage<2}">
-                                    <c:forEach begin="${pages-5}" end="${pages}" varStatus="index">
-                                        <c:if test="${index.current==currentPage}">
-                                            <li><a href="/manage/merchant?page=${currentPage}"
-                                                   class="focusClass">${currentPage}</a></li>
-                                        </c:if>
-                                        <c:if test="${index.current!=currentPage}">
-                                            <li>
-                                                <a href="/manage/merchant?page=${index.current}">${index.current}</a>
-                                            </li>
-                                        </c:if>
-                                    </c:forEach>
-                                </c:if>
-                            </c:if>
-                        </c:if>
-                        <li><a href="#" aria-label="Next"><span aria-hidden="true" onclick="goPage(${currentPage+1})">»</span></a></li>
-                    </ul>
-                </nav>
+                <div class="pagination">
+                    <a href="#" class="first" data-action="first">&laquo;</a>
+                    <a href="#" class="previous" data-action="previous">&lsaquo;</a>
+                    <input id="page" type="text" readonly="readonly" data-max-page="1"/>
+                    <a href="#" class="next" data-action="next">&rsaquo;</a>
+                    <a href="#" class="last" data-action="last">&raquo;</a>
+                </div>
             </div>
         </div>
     </div>
@@ -167,63 +128,201 @@
     <%@include file="../common/bottom.jsp" %>
 </div>
 
-<!--删除提示框-->
+<!--停用提示框-->
 <div class="modal" id="deleteWarn">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span
                         aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title"></h4>
+                <h4 class="modal-title">停用</h4>
             </div>
             <div class="modal-body">
-                <h4>确定要删除商户吗？</h4>
+                <h4 id="merchantWarn"></h4>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal" id="merchant-confirm">确认</button>
-                <input type="hidden" value="${pages}" id="pages" />
+                <button type="button" class="btn btn-primary" data-dismiss="modal"
+                        id="disable-confirm">确认
+                </button>
             </div>
         </div>
     </div>
 </div>
-
-
+<!--二维码提示框-->
+<div class="modal" id="rvCodeWorn">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span
+                        aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">二维码</h4>
+            </div>
+            <div class="modal-body">
+                <%--<img src="..." alt="..." style="width: 300px;height: 300px;margin: 40px 135px">--%>
+            </div>
+            <!--<div class="modal-footer">-->
+            <!--<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>-->
+            <!--<button type="button" class="btn btn-primary" data-dismiss="modal">确认</button>-->
+            <!--</div>-->
+        </div>
+    </div>
+</div>
+<!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="${resourceUrl}/js/bootstrap.min.js"></script>
 <script>
-    function goPage(page){
-        if(page==0){
-            location.href="/manage/merchant";
-        }
-        if(page>=$("#pages").val()){
-            location.href="/manage/merchant?page="+$("#pages").val();
-        }
-        location.href = "/manage/merchant?page="+page;
+    var merchantCriteria = {};
+    var merchantContent = document.getElementById("merchantContent");
+    var merchantWarn = document.getElementById("merchantWarn");
+    $(function () {
+//        tab切换
+        $('#myTab li:eq(0) a').tab('show');
+//        提示框
+        $(".deleteWarn").click(function () {
+            $("#deleteWarn").modal("toggle");
+        });
+        $(".rvCodeWorn").click(function () {
+            $("#rvCodeWorn").modal("toggle");
+        });
+        merchantCriteria.offset = 1;
+
+        getMerchantByAjax(merchantCriteria);
+    })
+
+    function getMerchantByAjax(merchantCriteria) {
+        merchantContent.innerHTML = "";
+        $.ajax({
+                   type: "post",
+                   url: "/manage/merchant/search",
+                   async: false,
+                   data: JSON.stringify(merchantCriteria),
+                   contentType: "application/json",
+                   success: function (data) {
+                       var page = data.data;
+                       var content = page.content;
+                       var totalPage = page.totalPages;
+                       if (totalPage == 0) {
+                           totalPage = 1;
+                       }
+                       for (i = 0; i < content.length; i++) {
+                           var contentStr = '<tr><td>' + content[i].merchantSid + '</td>';
+                           contentStr += '<td>'+content[i].name+'</td>'
+                           contentStr +=
+                           '<td><img src="' + content[i].picture + '"></td>'
+                           contentStr +=
+                           '<td>' + content[i].location + '</td>';
+                           if (content[i].partnership == 0) {
+                               contentStr +=
+                               '<td>普通商户</td>'
+                           } else {
+                               contentStr +=
+                               '<td>联盟商户</td>'
+                           }
+                           contentStr +=
+                           '<td>' + content[i].ljCommission + '%</td>'
+                           contentStr += '<td>' + content[i].merchantType.name + '</td>'
+                           contentStr += '<td>' + content[i].area.name + '</td>'
+                           contentStr += '<td>￥00</td>'
+                           contentStr += '<td>￥00</td>'
+                           contentStr += '<td><input type="hidden" class="name-hidden" value="' + content[i].name
+                           + '"><input type="hidden" class="id-hidden" value="' + content[i].id
+                           + '"><button type="button" class="btn btn-default createUser">账户</button>';
+                           contentStr +='<button type="button" class="btn btn-default showQRCode">二维码</button>';
+                           contentStr +='<button type="button" class="btn btn-default editMerchant">编辑</button>';
+                           contentStr +='<button type="button" class="btn btn-default disableMerchant">停用</button></td></tr>';
+                           merchantContent.innerHTML += contentStr;
+
+                       }
+                       $(".createUser").each(function (i) {
+                           $(".createUser").eq(i).bind("click", function () {
+                               var id = $(this).parent().find(".id-hidden").val();
+                               location.href = "/manage/merchant/user/" + id;
+                           });
+                       });
+                       $(".showQRCode").each(function (i) {
+                           $(".showQRCode").eq(i).bind("click", function () {
+                               var id = $(this).parent().find(".id-hidden").val();
+
+//                               $("#transfer-confirm").bind("click", function () {
+//                                   $.ajax({
+//                                              type: "get",
+//                                              url: "/manage/financial/" + id,
+//                                              contentType: "application/json",
+//                                              success: function (data) {
+//                                                  alert(data.msg);
+//                                                  getFinancialByAjax(financialCriteria);
+//                                              }
+//                                          });
+//                               });
+                               $("#rvCodeWorn").modal("show");
+                           });
+                       });
+                       $(".editMerchant").each(function (i) {
+                           $(".editMerchant").eq(i).bind("click", function () {
+                               var id = $(this).parent().find(".id-hidden").val();
+                               location.href = "/manage/merchant/edit/" + id;
+                           });
+                       });
+                       $(".disableMerchant").each(function (i) {
+                           $(".disableMerchant").eq(i).bind("click", function () {
+                               merchantWarn.innerHTML = ""
+                               var id = $(this).parent().find(".id-hidden").val();
+                               var name = $(this).parent().find(".name-hidden").val();
+                               merchantWarn.innerHTML = "确认停用商户" + name + "吗";
+                               $("#disable-confirm").bind("click", function () {
+                                   $.ajax({
+                                              type: "get",
+                                              url: "/manage/merchant/disable/" + id,
+                                              contentType: "application/json",
+                                              success: function (data) {
+                                                  alert(data.msg);
+                                                  getMerchantByAjax(merchantCriteria);
+                                              }
+                                          });
+                               });
+                               $("#deleteWarn").modal("show");
+                           });
+                       });
+                       initPage(merchantCriteria.offset, totalPage);
+                   }
+               });
     }
 
-    function goMerchantCreatePage(){
+    function createMerchant() {
         location.href = "/manage/merchant/edit";
     }
-
-    function editMerchant(id){
-        location.href = "/manage/merchant/edit/"+id;
+    function initPage(page, totalPage) {
+        $('.pagination').jqPagination({
+                                          current_page: page, //设置当前页 默认为1
+                                          max_page: totalPage, //设置最大页 默认为1
+                                          page_string: '当前第' + page + '页,共' + totalPage + '页',
+                                          paged: function (page) {
+                                              merchantCriteria.offset = page;
+                                              getMerchantByAjax(merchantCriteria);
+                                          }
+                                      });
     }
-    function deleteMerchant(id){
-        $("#merchant-confirm").bind("click", function () {
-            $.ajax({
-                       type: "delete",
-                       url: "/manage/merchant/"+id,
-                       success: function (data) {
-                           alert(data.msg);
-                           setTimeout(function () {
-                               location.reload(true);
-                           }, 0);
-                       }
-                   });
-        });
-        $("#deleteWarn").modal("show");
+    function searchMerchantByCriteria() {
+        if ($("#merchant-name").val() != "" && $("#merchant-name").val() != null) {
+            merchantCriteria.merchant = $("#merchant-name").val();
+        } else {
+            merchantCriteria.merchant = null;
+        }
+        if($("#partnership").val()!=-1){
+            merchantCriteria.partnership = $("#partnership").val();
+        }else{
+            merchantCriteria.partnership =null;
+        }
+
+        if($("#merchantType").val()!=0){
+            merchantCriteria.merchantType = $("#merchantType").val();
+        }else{
+            merchantCriteria.merchantType =null;
+        }
+        getMerchantByAjax(merchantCriteria);
     }
 </script>
 </body>
 </html>
+
 

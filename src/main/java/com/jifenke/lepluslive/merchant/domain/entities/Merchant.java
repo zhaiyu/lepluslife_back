@@ -7,6 +7,7 @@ import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import java.util.List;
 
+import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
@@ -14,6 +15,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
@@ -29,8 +31,8 @@ public class Merchant {
 
   private Integer sid;
 
-  @OneToMany(fetch = FetchType.LAZY)
-  private List<MerchantBank> merchantBanks;
+  @OneToOne(cascade = CascadeType.ALL)
+  private MerchantBank merchantBank;
 
   private String merchantSid = MvUtil.getMerchantSid();
 
@@ -48,7 +50,9 @@ public class Merchant {
 
   private String picture;
 
-  private String phoneNumber;
+  private String phoneNumber; //商户电话
+
+  private Integer partnership; //合作关系
 
   private Integer discount; //折扣
 
@@ -60,8 +64,46 @@ public class Merchant {
 
   private String payee;
 
+  private Integer ljCommission;//佣金点 如果为0代表普通商户
+
+  private String merchantPhone; //绑定手机号
+
+  private Integer state=1;
+
   @ManyToOne
   private Area area;
+
+  public Integer getState() {
+    return state;
+  }
+
+  public void setState(Integer state) {
+    this.state = state;
+  }
+
+  public String getMerchantPhone() {
+    return merchantPhone;
+  }
+
+  public void setMerchantPhone(String merchantPhone) {
+    this.merchantPhone = merchantPhone;
+  }
+
+  public Integer getPartnership() {
+    return partnership;
+  }
+
+  public void setPartnership(Integer partnership) {
+    this.partnership = partnership;
+  }
+
+  public Integer getLjCommission() {
+    return ljCommission;
+  }
+
+  public void setLjCommission(Integer ljCommission) {
+    this.ljCommission = ljCommission;
+  }
 
   public String getPayee() {
     return payee;
@@ -71,12 +113,12 @@ public class Merchant {
     this.payee = payee;
   }
 
-  public List<MerchantBank> getMerchantBanks() {
-    return merchantBanks;
+  public MerchantBank getMerchantBank() {
+    return merchantBank;
   }
 
-  public void setMerchantBanks(List<MerchantBank> merchantBanks) {
-    this.merchantBanks = merchantBanks;
+  public void setMerchantBank(MerchantBank merchantBank) {
+    this.merchantBank = merchantBank;
   }
 
   public String getMerchantSid() {

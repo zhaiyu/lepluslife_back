@@ -3,7 +3,7 @@ package com.jifenke.lepluslive.merchant.controller;
 import com.jifenke.lepluslive.global.util.LejiaResult;
 import com.jifenke.lepluslive.global.util.MvUtil;
 import com.jifenke.lepluslive.global.util.PaginationUtil;
-import com.jifenke.lepluslive.merchant.domain.entities.City;
+import com.jifenke.lepluslive.merchant.domain.criteria.MerchantCriteria;
 import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
 import com.jifenke.lepluslive.merchant.service.CityService;
 import com.jifenke.lepluslive.merchant.service.MerchantService;
@@ -16,10 +16,9 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
-
-import java.util.List;
 
 import javax.inject.Inject;
 
@@ -37,18 +36,19 @@ public class MerchantController {
   private CityService cityService;
 
   @RequestMapping(value = "/merchant",method = RequestMethod.GET)
-  public ModelAndView goShowMerchantPage(@RequestParam(value = "page", required = false) Integer offset,
-                                     @RequestParam(value = "per_page", required = false) Integer limit,
-                                     Model model){
-    Page page = merchantService
-        .findMerchantsByPage(PaginationUtil.generatePageRequest(offset, limit));
-    model.addAttribute("merchants", page.getContent());
-    model.addAttribute("pages", page.getTotalPages());
-    if (offset == null) {
-      offset = 1;
-    }
-    model.addAttribute("currentPage", offset);
+  public ModelAndView goShowMerchantPage(Model model){
+    model.addAttribute("merchantTypes",merchantService.findAllMerchantTypes());
     return MvUtil.go("/merchant/merchantList");
+  }
+
+  @RequestMapping(value = "/merchant/search", method = RequestMethod.POST)
+  public @ResponseBody
+  LejiaResult getMerchants(@RequestBody MerchantCriteria merchantCriteria) {
+    if (merchantCriteria.getOffset() == null) {
+      merchantCriteria.setOffset(1);
+    }
+    Page page = merchantService.findMerchantsByPage(merchantCriteria, 10);
+    return LejiaResult.ok(page);
   }
 
 
@@ -79,12 +79,14 @@ public class MerchantController {
     return LejiaResult.ok("修改商户成功");
   }
 
-  @RequestMapping(value = "/merchant/{id}",method = RequestMethod.DELETE,produces = MediaType.APPLICATION_JSON_VALUE)
+  @RequestMapping(value = "/merchant/disable/{id}",method = RequestMethod.GET,produces = MediaType.APPLICATION_JSON_VALUE)
    public LejiaResult deleteMerchant(@PathVariable Long id){
-    merchantService.deleteMerchant(id);
+    merchantService.disableMerchant(id);
 
-    return LejiaResult.ok("删除商户成功");
+    return LejiaResult.ok("成功停用商户");
   }
+
+
 
 
 
