@@ -28,6 +28,26 @@ public class ScoreBDetail {
   @ManyToOne
   private ScoreB scoreB;
 
+  private Integer origin;  //1=线上返还  2=线上消费  3=线下消费  4=线下返还
+
+  private String orderSid;  //对应的订单号
+
+  public Integer getOrigin() {
+    return origin;
+  }
+
+  public void setOrigin(Integer origin) {
+    this.origin = origin;
+  }
+
+  public String getOrderSid() {
+    return orderSid;
+  }
+
+  public void setOrderSid(String orderSid) {
+    this.orderSid = orderSid;
+  }
+
   public ScoreB getScoreB() {
     return scoreB;
   }
