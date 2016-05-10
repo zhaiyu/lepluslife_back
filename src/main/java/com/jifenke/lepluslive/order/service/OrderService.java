@@ -76,11 +76,14 @@ public class OrderService {
     orderRepository.save(onLineOrder);
   }
 
+  /**
+   * 确认发货
+   */
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-  public void orderDelivery(OnLineOrder order) {
-    OnLineOrder onLineOrder = orderRepository.findOne(order.getId());
-    onLineOrder.setExpressCompany(order.getExpressCompany());
-    onLineOrder.setExpressNumber(order.getExpressNumber());
+  public void orderDelivery(OnLineOrder onLineOrder, String expressCompany, String expressNumber) {
+
+    onLineOrder.setExpressCompany(expressCompany);
+    onLineOrder.setExpressNumber(expressNumber);
     onLineOrder.setState(2);
     //默认10天后会自动收货
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
@@ -104,6 +107,19 @@ public class OrderService {
     } catch (Exception e) {
       e.printStackTrace();
     }
+    orderRepository.save(onLineOrder);
+
+  }
+
+  /**
+   * 修改物流信息
+   */
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  public void orderEditDelivery(OnLineOrder onLineOrder, String expressCompany,
+                                String expressNumber) {
+
+    onLineOrder.setExpressCompany(expressCompany);
+    onLineOrder.setExpressNumber(expressNumber);
     orderRepository.save(onLineOrder);
 
   }
@@ -136,7 +152,7 @@ public class OrderService {
         }
         if (orderCriteria.getOrderSid() != null) {
           predicate.getExpressions().add(
-              cb.like(r.get("orderSid"), "%"+orderCriteria.getOrderSid()+"%"));
+              cb.like(r.get("orderSid"), "%" + orderCriteria.getOrderSid() + "%"));
         }
         return predicate;
       }

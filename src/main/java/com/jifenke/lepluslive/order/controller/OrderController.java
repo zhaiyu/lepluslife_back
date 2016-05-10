@@ -1,20 +1,18 @@
 package com.jifenke.lepluslive.order.controller;
 
-import com.jifenke.lepluslive.global.config.Constants;
-import com.jifenke.lepluslive.global.util.CookieUtils;
+
+import com.jifenke.lepluslive.Address.domain.entities.Address;
 import com.jifenke.lepluslive.global.util.JsonUtils;
 import com.jifenke.lepluslive.global.util.LejiaResult;
 import com.jifenke.lepluslive.global.util.MvUtil;
-import com.jifenke.lepluslive.global.util.PaginationUtil;
 import com.jifenke.lepluslive.order.controller.dto.ExpressDto;
 import com.jifenke.lepluslive.order.domain.criteria.OrderCriteria;
 import com.jifenke.lepluslive.order.domain.entities.ExpressInfo;
 import com.jifenke.lepluslive.order.domain.entities.OnLineOrder;
 import com.jifenke.lepluslive.order.service.ExpressInfoService;
-import com.jifenke.lepluslive.order.service.OffLineOrderService;
 import com.jifenke.lepluslive.order.service.OrderService;
-import com.jifenke.lepluslive.product.domain.entities.ProductSpec;
-import com.sun.javafx.sg.prism.NGShape;
+import com.jifenke.lepluslive.user.domain.entities.WeiXinUser;
+import com.jifenke.lepluslive.weixin.service.WxTemMsgService;
 
 import org.springframework.data.domain.Page;
 import org.springframework.ui.Model;
@@ -26,13 +24,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.ArrayList;
 import java.util.List;
-import java.util.Map;
 
 import javax.inject.Inject;
-import javax.servlet.http.HttpServletRequest;
-import javax.servlet.http.HttpServletResponse;
 
 /**
  * Created by wcg on 16/4/6.
@@ -46,6 +40,9 @@ public class OrderController {
 
   @Inject
   private ExpressInfoService expressInfoService;
+
+  @Inject
+  private WxTemMsgService wxTemMsgService;
 
   @RequestMapping("/order")
   public ModelAndView findOrderByPage(
@@ -82,7 +79,31 @@ public class OrderController {
 
   @RequestMapping(value = "/order/delivery", method = RequestMethod.POST)
   public LejiaResult orderDelivery(@RequestBody OnLineOrder onLineOrder) {
-    orderService.orderDelivery(onLineOrder);
+    OnLineOrder order = orderService.findOnLineOrderById(onLineOrder.getId());
+    //state=1 修改物流信息  0=确认发货
+    if (onLineOrder.getState() == 0) {
+      orderService
+          .orderDelivery(order, onLineOrder.getExpressCompany(), onLineOrder.getExpressNumber());
+
+      //如果用户有对应的微信信息，则异步发送一个模板消息
+      WeiXinUser weiXinUser = order.getLeJiaUser().getWeiXinUser();
+      if (weiXinUser != null) {
+        Address address = order.getAddress();
+        String[] keys = new String[4];
+        keys[0] = "订单号(" + order.getOrderSid() + ")";
+        keys[1] = order.getExpressCompany();
+        keys[2] = order.getExpressNumber();
+        keys[3] =
+            address.getName() + " " + address.getCity() + address.getCounty() + address
+                .getLocation();
+        wxTemMsgService.sendTemMessage(weiXinUser.getOpenId(), 1L, keys);
+      }
+    } else if (onLineOrder.getState() == 1) {
+      orderService
+          .orderEditDelivery(order, onLineOrder.getExpressCompany(),
+                             onLineOrder.getExpressNumber());
+    }
+
     return LejiaResult.build(200, "成功");
   }
 
@@ -91,54 +112,20 @@ public class OrderController {
    * 查看物流信息
    */
   @RequestMapping(value = "/showExpress/{id}", method = RequestMethod.GET)
-  public ModelAndView showExpress(@PathVariable Long id, HttpServletRequest request,
-                                  HttpServletResponse response, Model model) {
+  public ModelAndView showExpress(@PathVariable Long id, Model model) {
 
     OnLineOrder order = orderService.findOnLineOrderById(id);
-    String expressNumber = order.getExpressNumber();
 
-    //获取cookie中的物流信息
-    String expresses = CookieUtils.getCookieValue(request, "expressList");
-    List<ExpressInfo> expressInfoList = null;
-    if (expresses != null) {
-      expressInfoList = JsonUtils.jsonToList(expresses, ExpressInfo.class);
-      boolean tag = false;
-      for (ExpressInfo expressInfo : expressInfoList) {
+    //调接口获取物流信息，存入数据库
+    ExpressInfo expressInfo = expressInfoService.findExpressAndSave(order);
 
-        if (expressInfo.getExpressNumber().equals(expressNumber)) {
-          List<ExpressDto>
-              expressDtoList =
-              JsonUtils.jsonToList(expressInfo.getContent(), ExpressDto.class);
-          model.addAttribute("expressList", expressDtoList);
-          tag = true;
-          break;
-        }
-      }
-      if (!tag) {
-        //调接口获取物流信息，如果已完成，存入数据库，并存入cookie
-        ExpressInfo expressInfo = expressInfoService.findExpressAndSave(order);
-        expressInfoList.add(expressInfo);
-        List<ExpressDto>
-            expressDtoList =
-            JsonUtils.jsonToList(expressInfo.getContent(), ExpressDto.class);
-        model.addAttribute("expressList", expressDtoList);
-        CookieUtils
-            .setCookie(request, response, "expressList", JsonUtils.objectToJson(expressInfoList),
-                       Constants.COOKIE_DISABLE_TIME);
-      }
-    } else {
-      expressInfoList = new ArrayList<ExpressInfo>();
-      //调接口获取物流信息，如果已完成，存入数据库，并存入cookie
-      ExpressInfo expressInfo = expressInfoService.findExpressAndSave(order);
-      expressInfoList.add(expressInfo);
-      List<ExpressDto>
-          expressDtoList =
-          JsonUtils.jsonToList(expressInfo.getContent(), ExpressDto.class);
-      model.addAttribute("expressList", expressDtoList);
-      CookieUtils
-          .setCookie(request, response, "expressList", JsonUtils.objectToJson(expressInfoList),
-                     Constants.COOKIE_DISABLE_TIME);
-    }
+    List<ExpressDto>
+        expressDtoList =
+        JsonUtils.jsonToList(expressInfo.getContent(), ExpressDto.class);
+    model.addAttribute("expressList", expressDtoList);
+
+    model.addAttribute("expressCompany", order.getExpressCompany());
+    model.addAttribute("expressNumber", order.getExpressNumber());
 
     return MvUtil.go("/order/orderExpress");
   }

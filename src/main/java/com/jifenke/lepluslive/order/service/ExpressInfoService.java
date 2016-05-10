@@ -46,26 +46,33 @@ public class ExpressInfoService {
 
     //查询数据库是否已保存
     ExpressInfo expressInfo = expressInfoRepository.findOneByOnLineOrder(order);
+
     if (expressInfo != null && (3 == expressInfo.getStatus())) {
       return expressInfo;
     }
-
+    Date date = new Date();
+    if (expressInfo != null && ((date.getTime() - expressInfo.getFreshDate().getTime())
+                                < 7200000)) {
+      return expressInfo;
+    }
 
     Map<String, Object> map = getExpressInfo(order.getExpressNumber());
-
-    expressInfo = new ExpressInfo();
-    expressInfo.setExpressCompany(order.getExpressCompany());
     JSONObject jasonObject = JSONObject.fromObject(map.get("result"));
     Map mapList = (Map) jasonObject;
-    expressInfo.setExpressNumber(mapList.get("number").toString());
+    if (expressInfo == null) {
+      expressInfo = new ExpressInfo();
+      expressInfo.setOnLineOrder(order);
+      expressInfo.setExpressCompany(order.getExpressCompany());
+      expressInfo.setExpressNumber(mapList.get("number").toString());
+    }
+
     Integer status = Integer.parseInt(mapList.get("deliverystatus").toString());
     expressInfo.setStatus(status);
     expressInfo.setContent(mapList.get("list").toString());
-    if (3 == status) { //订单完成，存入数据库
-      expressInfo.setFreshDate(new Date());
-      expressInfo.setOnLineOrder(order);
-      expressInfoRepository.save(expressInfo);
-    }
+    expressInfo.setFreshDate(date);
+
+    expressInfoRepository.save(expressInfo);
+
     return expressInfo;
   }
 

@@ -93,7 +93,8 @@
                                 </c:if>
                                 <c:if test="${order.state==1}">
                                     <button type="button" class="btn confirmWarn"
-                                            onclick="delivery('${order.id}','${order.expressCompany}','${order.expressNumber}')">确认发货
+                                            onclick="delivery('${order.id}','${order.expressCompany}','${order.expressNumber}',0)">
+                                        确认发货
                                     </button>
                                     <button type="button" class="btn btn-default deleteWarn"
                                             data-target="#deleteWarn"
@@ -106,7 +107,8 @@
                                     </button>
                                     <button type="button" class="btn btn-default deleteWarn"
                                             data-target="#deleteWarn"
-                                            onclick="delivery('${order.id}','${order.expressCompany}','${order.expressNumber}')">修改物流信息
+                                            onclick="delivery('${order.id}','${order.expressCompany}','${order.expressNumber}',1)">
+                                        修改物流信息
                                     </button>
                                 </c:if>
                             </td>
@@ -288,7 +290,7 @@
         $("#deleteWarn").modal("show");
     }
 
-    function delivery(id,expressCompany,expressNumber) {
+    function delivery(id, expressCompany, expressNumber, state) { //state=1 修改物流信息  =0确认发货
         $("#expressCompany").val(expressCompany);
         $("#expressNumber").val(expressNumber);
         $("#delivery-confirm").bind("click", function () {
@@ -296,6 +298,7 @@
             onLineOrder.id = id;
             onLineOrder.expressCompany = $("#expressCompany").val();
             onLineOrder.expressNumber = $("#expressNumber").val();
+            onLineOrder.state = state;
             $.ajax({
                        type: "post",
                        url: "/manage/order/delivery",
