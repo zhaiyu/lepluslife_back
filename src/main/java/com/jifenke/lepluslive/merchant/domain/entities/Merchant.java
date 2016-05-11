@@ -68,10 +68,20 @@ public class Merchant {
 
   private String merchantPhone; //绑定手机号
 
-  private Integer state=1;
+  private Integer state = 1;
+
+  private String qrCodePicture; //商户收款码
 
   @ManyToOne
   private Area area;
+
+  public String getQrCodePicture() {
+    return qrCodePicture;
+  }
+
+  public void setQrCodePicture(String qrCodePicture) {
+    this.qrCodePicture = qrCodePicture;
+  }
 
   public Integer getState() {
     return state;

@@ -33,7 +33,6 @@ public class OnLineOrder {
   @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "onLineOrder")
   private List<OrderDetail> orderDetails = new ArrayList<OrderDetail>();
 
-
   private Long totalPrice;
 
   private Long totalScore;
@@ -50,6 +49,8 @@ public class OnLineOrder {
   private Date createDate = new Date();
 
   private Date confirmDate;  //订单确认收货时间
+
+  private Date deliveryDate;
 
   private String orderSid = MvUtil.getOrderNumber();
 
@@ -192,4 +193,11 @@ public class OnLineOrder {
     this.address = address;
   }
 
+  public Date getDeliveryDate() {
+    return deliveryDate;
+  }
+
+  public void setDeliveryDate(Date deliveryDate) {
+    this.deliveryDate = deliveryDate;
+  }
 }

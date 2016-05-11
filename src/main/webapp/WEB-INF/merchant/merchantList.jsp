@@ -80,7 +80,9 @@
                                placeholder="请输入商户名称或ID"/>
                     </div>
                     <div class="form-group col-md-3">
-                        <button class="btn btn-primary" style="margin-top: 24px" onclick="searchMerchantByCriteria()">筛选</button>
+                        <button class="btn btn-primary" style="margin-top: 24px"
+                                onclick="searchMerchantByCriteria()">筛选
+                        </button>
                     </div>
                     <div class="form-group col-md-3"></div>
                 </div>
@@ -150,7 +152,7 @@
     </div>
 </div>
 <!--二维码提示框-->
-<div class="modal" id="rvCodeWorn">
+<div class="modal" id="qrWarn">
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
@@ -159,7 +161,7 @@
                 <h4 class="modal-title">二维码</h4>
             </div>
             <div class="modal-body">
-                <%--<img src="..." alt="..." style="width: 300px;height: 300px;margin: 40px 135px">--%>
+                <img id="qrCode" src="" alt="" style="width: 300px;height: 300px;margin: 40px 135px">
             </div>
             <!--<div class="modal-footer">-->
             <!--<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>-->
@@ -206,7 +208,7 @@
                        }
                        for (i = 0; i < content.length; i++) {
                            var contentStr = '<tr><td>' + content[i].merchantSid + '</td>';
-                           contentStr += '<td>'+content[i].name+'</td>'
+                           contentStr += '<td>' + content[i].name + '</td>'
                            contentStr +=
                            '<td><img src="' + content[i].picture + '"></td>'
                            contentStr +=
@@ -224,12 +226,16 @@
                            contentStr += '<td>' + content[i].area.name + '</td>'
                            contentStr += '<td>￥00</td>'
                            contentStr += '<td>￥00</td>'
-                           contentStr += '<td><input type="hidden" class="name-hidden" value="' + content[i].name
+                           contentStr +=
+                           '<td><input type="hidden" class="name-hidden" value="' + content[i].name
                            + '"><input type="hidden" class="id-hidden" value="' + content[i].id
                            + '"><button type="button" class="btn btn-default createUser">账户</button>';
-                           contentStr +='<button type="button" class="btn btn-default showQRCode">二维码</button>';
-                           contentStr +='<button type="button" class="btn btn-default editMerchant">编辑</button>';
-                           contentStr +='<button type="button" class="btn btn-default disableMerchant">停用</button></td></tr>';
+                           contentStr +=
+                           '<button type="button" class="btn btn-default showQRCode">二维码</button>';
+                           contentStr +=
+                           '<button type="button" class="btn btn-default editMerchant">编辑</button>';
+                           contentStr +=
+                           '<button type="button" class="btn btn-default disableMerchant">停用</button></td></tr>';
                            merchantContent.innerHTML += contentStr;
 
                        }
@@ -242,19 +248,17 @@
                        $(".showQRCode").each(function (i) {
                            $(".showQRCode").eq(i).bind("click", function () {
                                var id = $(this).parent().find(".id-hidden").val();
-
-//                               $("#transfer-confirm").bind("click", function () {
-//                                   $.ajax({
-//                                              type: "get",
-//                                              url: "/manage/financial/" + id,
-//                                              contentType: "application/json",
-//                                              success: function (data) {
-//                                                  alert(data.msg);
-//                                                  getFinancialByAjax(financialCriteria);
-//                                              }
-//                                          });
-//                               });
-                               $("#rvCodeWorn").modal("show");
+                               $.ajax({
+                                          type: "get",
+                                          data: {id: id},
+                                          url: "/manage/merchant/qrCode",
+                                          success: function (data) {
+                                              var url = "${productUrl}" + id;
+                                              $("#productUrl").text(url);
+                                              $("#qrCode").attr("src", data.msg);
+                                              $("#qrWarn").modal("show");
+                                          }
+                                      });
                            });
                        });
                        $(".editMerchant").each(function (i) {
@@ -308,16 +312,16 @@
         } else {
             merchantCriteria.merchant = null;
         }
-        if($("#partnership").val()!=-1){
+        if ($("#partnership").val() != -1) {
             merchantCriteria.partnership = $("#partnership").val();
-        }else{
-            merchantCriteria.partnership =null;
+        } else {
+            merchantCriteria.partnership = null;
         }
 
-        if($("#merchantType").val()!=0){
+        if ($("#merchantType").val() != 0) {
             merchantCriteria.merchantType = $("#merchantType").val();
-        }else{
-            merchantCriteria.merchantType =null;
+        } else {
+            merchantCriteria.merchantType = null;
         }
         getMerchantByAjax(merchantCriteria);
     }
