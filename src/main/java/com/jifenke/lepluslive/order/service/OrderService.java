@@ -84,6 +84,7 @@ public class OrderService {
 
     onLineOrder.setExpressCompany(expressCompany);
     onLineOrder.setExpressNumber(expressNumber);
+    onLineOrder.setDeliveryDate(new Date());
     onLineOrder.setState(2);
     //默认10天后会自动收货
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
