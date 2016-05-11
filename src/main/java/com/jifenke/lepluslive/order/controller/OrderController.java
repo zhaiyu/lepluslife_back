@@ -96,7 +96,7 @@ public class OrderController {
         keys[3] =
             address.getName() + " " + address.getCity() + address.getCounty() + address
                 .getLocation();
-        wxTemMsgService.sendTemMessage(weiXinUser.getOpenId(), 1L, keys,order.getId());
+        wxTemMsgService.sendTemMessage(weiXinUser.getOpenId(), 1L, keys);
       }
     } else if (onLineOrder.getState() == 1) {
       orderService

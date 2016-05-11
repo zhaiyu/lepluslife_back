@@ -40,9 +40,10 @@ public class WxTemMsgService {
   private WxTemMsgRepository wxTemMsgRepository;
 
   /**
-   * 根据temId不同，发送不同的消息 keys  封装参数
+   * 根据temId不同，发送不同的消息
+   * keys  封装参数
    */
-  public void sendTemMessage(String openId, Long temId, String[] keys, Long id) {
+  public void sendTemMessage(String openId, Long temId, String[] keys) {
 
     WxTemMsg wxTemMsg = wxTemMsgRepository.findOne(temId);
 
@@ -74,7 +75,7 @@ public class WxTemMsgService {
 
     param.put("touser", openId);
     param.put("template_id", wxTemMsg.getTemplateId());
-    param.put("url", wxTemMsg.getUrl() + id);
+    param.put("url", "");
     param.put("data", map2);
 
     sendTemplateMessage(param);
@@ -91,9 +92,7 @@ public class WxTemMsgService {
         try {
           // 绑定到请求 Entry
 
-          StringEntity
-              se =
-              new StringEntity(new String(param.toString().getBytes("utf8"), "iso8859-1"));
+          StringEntity se = new StringEntity(new String(param.toString().getBytes("utf8"), "iso8859-1"));
 
           //获取token
           String token = WeixinPayUtil.getAccessToken().getAccessToken();

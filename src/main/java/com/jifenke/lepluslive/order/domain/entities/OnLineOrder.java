@@ -49,8 +49,6 @@ public class OnLineOrder {
 
   private Date createDate = new Date();
 
-  private Date deliveryDate;
-
   private Date confirmDate;  //订单确认收货时间
 
   private String orderSid = MvUtil.getOrderNumber();
@@ -65,14 +63,6 @@ public class OnLineOrder {
   private String expressNumber;  //快递单号
 
   private String expressCompany; //快递公司名称
-
-  public Date getDeliveryDate() {
-    return deliveryDate;
-  }
-
-  public void setDeliveryDate(Date deliveryDate) {
-    this.deliveryDate = deliveryDate;
-  }
 
   public Date getConfirmDate() {
     return confirmDate;
