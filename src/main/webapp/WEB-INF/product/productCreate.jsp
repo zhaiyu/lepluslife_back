@@ -90,7 +90,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="productName" class="col-sm-2 control-label">商品描述</label>
+                        <label for="productDescription" class="col-sm-2 control-label">商品描述</label>
 
                         <div class="col-sm-4">
                             <input type="text" class="form-control" id="productDescription"
@@ -138,6 +138,7 @@
 
                     <div class="form-group">
                         <div class="col-sm-offset-2 col-sm-4">
+                            <input type="hidden" id="productId" value="${product.id}"/>
                             <input type="button" class="btn btn-primary" id="submit" value="提交"/>
                         </div>
                     </div>
