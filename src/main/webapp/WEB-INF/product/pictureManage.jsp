@@ -85,8 +85,8 @@
                                 <tr class="active">
                                     <td class="text-center">${productSpec.id}</td>
                                     <td class="text-center">${productSpec.specDetail}</td>
-                                    <td class="text-center">${productSpec.price}</td>
-                                    <td class="text-center">${productSpec.minPrice}</td>
+                                    <td class="text-center">${productSpec.price/100}</td>
+                                    <td class="text-center">${productSpec.minPrice/100}</td>
                                     <td class="text-center">
                                         <c:if test="${productSpec.state==1}">
                                             已上架
@@ -371,7 +371,7 @@
 
                         <div class="col-sm-4">
                             <textarea class="form-control" id="detail1"
-                                   placeholder="请输入备注信息"></textarea>
+                                      placeholder="请输入备注信息"></textarea>
                         </div>
                     </div>
 
@@ -411,7 +411,7 @@
 
                         <div class="col-sm-4">
                             <textarea class="form-control" id="detail2"
-                                   placeholder="请输入备注信息"></textarea>
+                                      placeholder="请输入备注信息"></textarea>
                         </div>
                     </div>
 
@@ -492,19 +492,19 @@
                                         }
                                     });
         $('#specPicture').fileupload({
-                                        dataType: 'json',
-                                        maxFileSize: 5000000,
-                                        acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
-                                        add: function (e, data) {
-                                            data.submit();
-                                        },
-                                        done: function (e, data) {
-                                            var resp = data.result;
-                                            $('#picture').attr('src',
-                                                             '${ossImageReadRoot}/'
-                                                             + resp.data);
-                                        }
-                                    });
+                                         dataType: 'json',
+                                         maxFileSize: 5000000,
+                                         acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+                                         add: function (e, data) {
+                                             data.submit();
+                                         },
+                                         done: function (e, data) {
+                                             var resp = data.result;
+                                             $('#picture').attr('src',
+                                                                '${ossImageReadRoot}/'
+                                                                + resp.data);
+                                         }
+                                     });
 
         var url = location.search;
         var str = url.substr(1);
@@ -522,15 +522,15 @@
             $.get("/manage/productSpec/" + id, null, function (data) {
                 $("#picture").attr("src", data.picture);
                 $("#specDetail").val(data.specDetail);
-                $("#price").val(data.price);
-                $("#minPrice").val(data.minPrice);
+                $("#price").val(data.price / 100);
+                $("#minPrice").val(data.minPrice / 100);
                 $("#repository").val(data.repository);
                 $("#productSpec-confim").bind("click", function () {
                     var productSpec = {};
                     productSpec.picture = $("#picture").attr("src");
                     productSpec.specDetail = $("#specDetail").val();
-                    productSpec.price = $("#price").val();
-                    productSpec.minPrice = $("#minPrice").val();
+                    productSpec.price = $("#price").val() * 100;
+                    productSpec.minPrice = $("#minPrice").val() * 100;
                     productSpec.repository = $("#repository").val();
                     productSpec.id = id;
                     var product = {};
@@ -557,8 +557,8 @@
                 var productSpec = {};
                 productSpec.picture = $("#picture").attr("src");
                 productSpec.specDetail = $("#specDetail").val();
-                productSpec.price = $("#price").val();
-                productSpec.minPrice = $("#minPrice").val();
+                productSpec.price = $("#price").val() * 100;
+                productSpec.minPrice = $("#minPrice").val() * 100;
                 productSpec.repository = $("#repository").val();
                 var product = {};
                 product.id = ${product.id};
