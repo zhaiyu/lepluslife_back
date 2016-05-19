@@ -10,9 +10,11 @@ import com.jifenke.lepluslive.merchant.domain.criteria.MerchantCriteria;
 import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantType;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantUser;
+import com.jifenke.lepluslive.merchant.domain.entities.MerchantWallet;
 import com.jifenke.lepluslive.merchant.repository.MerchantRepository;
 import com.jifenke.lepluslive.merchant.repository.MerchantTypeRepository;
 import com.jifenke.lepluslive.merchant.repository.MerchantUserRepository;
+import com.jifenke.lepluslive.merchant.repository.MerchantWalletRepository;
 import com.jifenke.lepluslive.order.domain.criteria.OLOrderCriteria;
 import com.jifenke.lepluslive.user.domain.entities.RegisterOrigin;
 import com.jifenke.lepluslive.user.repository.RegisterOriginRepository;
@@ -31,6 +33,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.inject.Inject;
@@ -64,6 +67,9 @@ public class MerchantService {
   @Inject
   private FileImageService fileImageService;
 
+  @Inject
+  private MerchantWalletRepository merchantWalletRepository;
+
   @Value("${bucket.ossBarCodeReadRoot}")
   private String barCodeRootUrl;
 
@@ -85,10 +91,36 @@ public class MerchantService {
       throw new RuntimeException("新建商户ID不能存在");
     }
     merchant.setSid((int) merchantRepository.count());
+    String merchantSid = MvUtil.getMerchantSid();
+    while (merchantRepository.findByMerchantSid(merchantSid).isPresent()) {
+      merchantSid = MvUtil.getMerchantSid();
+    }
+    merchant.setMerchantSid(merchantSid);
+    byte[]
+        bytes =
+        new byte[0];
+    try {
+      bytes = barcodeService.qrCode(Constants.MERCHANT_URL + merchant.getMerchantSid(),
+                                    BarcodeConfig.QRCode.defaultConfig());
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    String filePath = MvUtil.getFilePath(Constants.BAR_CODE_EXT);
+
+    merchant.setQrCodePicture(barCodeRootUrl + "/" + filePath);
+    final byte[] finalBytes = bytes;
+    new Thread(() -> {
+      fileImageService.SaveBarCode(finalBytes, filePath);
+    }).start();
     merchantRepository.save(merchant);
     RegisterOrigin registerOrigin = new RegisterOrigin();
     registerOrigin.setOriginType(3);
     registerOrigin.setMerchant(merchant);
+    MerchantWallet merchantWallet = new MerchantWallet();
+    merchantWallet.setMerchant(merchant);
+    merchantWalletRepository.save(merchantWallet);
     registerOriginRepository.save(registerOrigin);
   }
 
@@ -188,7 +220,7 @@ public class MerchantService {
           bytes =
           new byte[0];
       try {
-        bytes = barcodeService.qrCode(Constants.MERCHANT_URL + id,
+        bytes = barcodeService.qrCode(Constants.MERCHANT_URL + merchant.getMerchantSid(),
                                       BarcodeConfig.QRCode.defaultConfig());
       } catch (InterruptedException e) {
         e.printStackTrace();

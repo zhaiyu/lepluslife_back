@@ -9,6 +9,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.Optional;
+
 /**
  * Created by wcg on 16/3/17.
  */
@@ -19,4 +21,6 @@ public interface MerchantRepository extends JpaRepository<Merchant,Long>{
   int getMerchantSid(String location);
 
   Page findAll(Specification<Merchant> whereClause, Pageable pageable);
+
+  Optional<Merchant> findByMerchantSid(String merchantSid);
 }

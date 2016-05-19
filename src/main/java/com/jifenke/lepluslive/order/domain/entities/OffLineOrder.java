@@ -55,6 +55,15 @@ public class OffLineOrder {
 
   private Integer state;
 
+  private Long transferMoney;
+
+  public Long getTransferMoney() {
+    return transferMoney;
+  }
+
+  public void setTransferMoney(Long transferMoney) {
+    this.transferMoney = transferMoney;
+  }
 
   public Long getId() {
     return id;
