@@ -509,10 +509,12 @@
         var url = location.search;
         var str = url.substr(1);
         var strs = str.split("&");
-        if (eval(strs[1].split("=")[1])) {
+        if (eval(strs[1].split("=")[1]) == 1) {
+            $('#myTab li:eq(0) a').tab('show');
+        } else if (eval(strs[1].split("=")[1]) == 2) {
             $('#myTab li:eq(1) a').tab('show');
         } else {
-            $('#myTab li:eq(0) a').tab('show');
+            $('#myTab li:eq(2) a').tab('show');
         }
 
     })
@@ -529,8 +531,8 @@
                     var productSpec = {};
                     productSpec.picture = $("#picture").attr("src");
                     productSpec.specDetail = $("#specDetail").val();
-                    productSpec.price = $("#price").val() * 100;
-                    productSpec.minPrice = $("#minPrice").val() * 100;
+                    productSpec.price =Math.round($("#price").val() * 100);
+                    productSpec.minPrice =Math.round($("#minPrice").val() * 100);
                     productSpec.repository = $("#repository").val();
                     productSpec.id = id;
                     var product = {};
@@ -545,7 +547,7 @@
                                    alert(data.msg);
                                    setTimeout(function () {
                                        location.href =
-                                       "/manage/product/pictureManage?id=${product.id}&productDetail=false";
+                                       "/manage/product/pictureManage?id=${product.id}&productDetail=1";
                                    }, 0);
                                }
                            });
@@ -572,7 +574,7 @@
                                alert(data.msg);
                                setTimeout(function () {
                                    location.href =
-                                   "/manage/product/pictureManage?id=${product.id}&productDetail=false";
+                                   "/manage/product/pictureManage?id=${product.id}&productDetail=1";
                                }, 0);
                            }
                        });
@@ -600,7 +602,7 @@
                                    alert(data.msg);
                                    setTimeout(function () {
                                        location.href =
-                                       "/manage/product/pictureManage?id=${product.id}&productDetail=false";
+                                       "/manage/product/pictureManage?id=${product.id}&productDetail=1";
                                    }, 0);
                                }
                            });
@@ -620,7 +622,7 @@
                                    alert(data.msg);
                                    setTimeout(function () {
                                        location.href =
-                                       "/manage/product/pictureManage?id=${product.id}&productDetail=false";
+                                       "/manage/product/pictureManage?id=${product.id}&productDetail=1";
                                    }, 0);
                                }
                            });
@@ -635,7 +637,8 @@
             $.post("/manage/productSpec/putOn/" + id, null, function (data) {
                 alert(data.msg);
                 setTimeout(function () {
-                    location.reload(true);
+                    location.href =
+                    "/manage/product/pictureManage?id=${product.id}&productDetail=1";
                 }, 1000);
 
             });
@@ -648,7 +651,8 @@
             $.post("/manage/productSpec/putOff/" + id, null, function (data) {
                 alert(data.msg);
                 setTimeout(function () {
-                    location.reload(true);
+                    location.href =
+                    "/manage/product/pictureManage?id=${product.id}&productDetail=1";
                 }, 1000);
 
             });
@@ -680,7 +684,7 @@
                                    alert(data.msg);
                                    setTimeout(function () {
                                        location.href =
-                                       "/manage/product/pictureManage?id=${product.id}&productDetail=false";
+                                       "/manage/product/pictureManage?id=${product.id}&productDetail=2";
                                    }, 0);
                                }
                            });
@@ -705,7 +709,7 @@
                                alert(data.msg);
                                setTimeout(function () {
                                    location.href =
-                                   "/manage/product/pictureManage?id=${product.id}&productDetail=false";
+                                   "/manage/product/pictureManage?id=${product.id}&productDetail=2";
                                }, 0);
                            }
                        });
@@ -724,7 +728,7 @@
                            alert(data.msg);
                            setTimeout(function () {
                                location.href =
-                               "/manage/product/pictureManage?id=${product.id}&productDetail=false";
+                               "/manage/product/pictureManage?id=${product.id}&productDetail=2";
                            }, 0);
                        }
                    });
@@ -756,7 +760,7 @@
                                    alert(data.msg);
                                    setTimeout(function () {
                                        location.href =
-                                       "/manage/product/pictureManage?id=${product.id}&productDetail=true";
+                                       "/manage/product/pictureManage?id=${product.id}&productDetail=3";
                                    }, 0);
                                }
                            });
@@ -781,7 +785,7 @@
                                alert(data.msg);
                                setTimeout(function () {
                                    location.href =
-                                   "/manage/product/pictureManage?id=${product.id}&productDetail=true";
+                                   "/manage/product/pictureManage?id=${product.id}&productDetail=3";
                                }, 0);
                            }
                        });
@@ -800,7 +804,7 @@
                            alert(data.msg);
                            setTimeout(function () {
                                location.href =
-                               "/manage/product/pictureManage?id=${product.id}&productDetail=true";
+                               "/manage/product/pictureManage?id=${product.id}&productDetail=3";
                            }, 0);
                        }
                    });
