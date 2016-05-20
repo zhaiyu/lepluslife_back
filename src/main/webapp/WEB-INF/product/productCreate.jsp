@@ -120,7 +120,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="productPrice" class="col-sm-2 control-label">最低价格</label>
+                        <label for="productPrice" class="col-sm-2 control-label">最高价格</label>
 
                         <div class="col-sm-4">
                             <input type="text" class="form-control" id="productPrice"
@@ -128,7 +128,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="productMinPrice" class="col-sm-2 control-label">最高价格</label>
+                        <label for="productMinPrice" class="col-sm-2 control-label">最低价格</label>
 
                         <div class="col-sm-4">
                             <input type="text" class="form-control" id="productMinPrice"

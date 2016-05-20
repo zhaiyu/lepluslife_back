@@ -108,7 +108,7 @@ public class ProductService {
     origin.setDescription(productDto.getDescription());
     origin.setSaleNumber(productDto.getSaleNumber());
     origin.setThumb(productDto.getThumb());
-    origin.setPrice((long) Float.parseFloat(productDto.getPrice()) * 100);
+    origin.setPrice((long) (Float.parseFloat(productDto.getPrice()) * 100));
     origin.setProductType(productDto.getProductType());
 
     productRepository.save(origin);
