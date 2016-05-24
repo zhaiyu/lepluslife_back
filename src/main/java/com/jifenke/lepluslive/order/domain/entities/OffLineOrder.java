@@ -57,6 +57,17 @@ public class OffLineOrder {
 
   private Long transferMoney;
 
+  private Integer rebateWay;
+
+
+  public Integer getRebateWay() {
+    return rebateWay;
+  }
+
+  public void setRebateWay(Integer rebateWay) {
+    this.rebateWay = rebateWay;
+  }
+
   public Long getTransferMoney() {
     return transferMoney;
   }

@@ -127,6 +127,7 @@ public class MerchantService {
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public void editMerchant(Merchant merchant) {
     Merchant origin = merchantRepository.findOne(merchant.getId());
+    String sid = origin.getMerchantSid();
     if (origin == null) {
       throw new RuntimeException("不存在的商户");
     }
@@ -139,6 +140,7 @@ public class MerchantService {
     }
     long l = merchant.getId();
     origin.setSid((int) l);
+    origin.setMerchantSid(sid);
     merchantRepository.save(origin);
   }
 
@@ -236,5 +238,10 @@ public class MerchantService {
     }
 
     return merchant.getQrCodePicture();
+  }
+
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  public List<MerchantUser> findMerchantUserByMerchant(Merchant merchant) {
+    return merchantUserRepository.findAllByMerchant(merchant);
   }
 }

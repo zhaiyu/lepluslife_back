@@ -10,6 +10,7 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
+import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -35,6 +36,9 @@ public class ProductSpec {
   @NotNull
   private String picture;
 
+  @Version
+  private Long version = 0L;
+
   @NotNull
   private Long price;
 
@@ -43,6 +47,14 @@ public class ProductSpec {
   private Long minPrice;
 
   private Integer state;
+
+  public Long getVersion() {
+    return version;
+  }
+
+  public void setVersion(Long version) {
+    this.version = version;
+  }
 
   public Integer getState() {
     return state;

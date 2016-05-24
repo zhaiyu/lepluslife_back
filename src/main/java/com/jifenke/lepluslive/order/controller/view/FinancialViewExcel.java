@@ -9,7 +9,9 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.view.document.AbstractExcelView;
 
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -24,13 +26,22 @@ public class FinancialViewExcel extends AbstractExcelView {
 
   @Override
   protected void buildExcelDocument(Map<String, Object> map, HSSFWorkbook hssfWorkbook,
-                                    HttpServletRequest httpServletRequest,
-                                    HttpServletResponse httpServletResponse) throws Exception {
+                                    HttpServletRequest request,
+                                    HttpServletResponse response) throws Exception {
     HSSFSheet sheet = hssfWorkbook.createSheet("list");
     setExcelHeader(sheet);
 
     List<FinancialStatistic> financialList = (List<FinancialStatistic>) map.get("financialList");
     setExcelRows(sheet, financialList);
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    String filename =sdf.format(new Date())+".xls";//设置下载时客户端Excel的名称
+    response.setContentType("application/vnd.ms-excel");
+    response.setHeader("Content-disposition", "attachment;filename=" + filename);
+
+    OutputStream ouputStream = response.getOutputStream();
+    hssfWorkbook.write(ouputStream);
+    ouputStream.flush();
+    ouputStream.close();
 
   }
 
@@ -53,7 +64,7 @@ public class FinancialViewExcel extends AbstractExcelView {
       excelRow.createCell(0).setCellValue(financialStatistic.getStatisticId());
       SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
       excelRow.createCell(1).setCellValue(sdf.format(financialStatistic.getBalanceDate()));
-      excelRow.createCell(2).setCellValue(sdf.format(financialStatistic.getTransferDate()));
+      excelRow.createCell(2).setCellValue(financialStatistic.getTransferDate()==null?"结算未完成":sdf.format(financialStatistic.getTransferDate()));
       excelRow.createCell(3).setCellValue(
           financialStatistic.getMerchant().getName() + "(" + financialStatistic.getMerchant()
               .getMerchantSid() + ")");

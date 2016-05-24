@@ -7,13 +7,13 @@
         body{font-family:Microsoft YaHei,Verdana,Arial,SimSun;color:#666;font-size:14px;background:#f6f6f6; overflow:hidden}
         .block, #block{display:block;}
         .none, #none{display:none;}
-        .left_menu{float:left;width:300px;background:#32323a;height:100%;position:absolute;top:0;left:0;overflow:auto;}
-        .left_menu ul li {width:300px; display:inline; }
+        .left_menu{float:left;width:200px;background:#32323a;height:100%;position:absolute;top:0;left:0;overflow:auto;}
+        .left_menu ul li {width:200px; display:inline; }
         .left_menu ul li .list-item a{width:230px;padding-left:110px;text-decoration:none;font-size:14px;color:#f5f5f5;line-height:30px;display:block;}
         .left_menu ul li a.noline { border-bottom:none; }
         .left_menu ul li a:hover{ color:#fff; }
         .left_menu ul li a.selected:hover { color:#fff; }
-        .left_menu ul li h4 { cursor:pointer; background:url(${resourceUrl}/images/bg1.png) no-repeat 270px 18px; padding-left:60px; text-decoration:none; font-size:16px; color:#f5f5f5; display:block;  line-height:48px; font-weight:normal; }
+        .left_menu ul li h4 { cursor:pointer; background:url(${resourceUrl}/images/bg1.png) no-repeat 90% 18px; padding-left:10px; text-decoration:none; font-size:14px; color:#f5f5f5; display:block;  line-height:48px; font-weight:normal; }
         .left_menu ul li.noline { border-bottom:none; }
         .left_menu ul li.selected h4 { background-position:270px -45px;background-color:#00a5a5;}
         .left_menu li .list-item { padding:5px 0; position:relative; zoom:1 ;background:#11b6b6;overflow:hidden;}

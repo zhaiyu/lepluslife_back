@@ -88,15 +88,17 @@ public class OrderController {
       //如果用户有对应的微信信息，则异步发送一个模板消息
       WeiXinUser weiXinUser = order.getLeJiaUser().getWeiXinUser();
       if (weiXinUser != null) {
-        Address address = order.getAddress();
-        String[] keys = new String[4];
-        keys[0] = "订单号(" + order.getOrderSid() + ")";
-        keys[1] = order.getExpressCompany();
-        keys[2] = order.getExpressNumber();
-        keys[3] =
-            address.getName() + " " + address.getCity() + address.getCounty() + address
-                .getLocation();
-        wxTemMsgService.sendTemMessage(weiXinUser.getOpenId(), 1L, keys,order.getId());
+        new Thread(()->{
+          Address address = order.getAddress();
+          String[] keys = new String[4];
+          keys[0] = "订单号(" + order.getOrderSid() + ")";
+          keys[1] = order.getExpressCompany();
+          keys[2] = order.getExpressNumber();
+          keys[3] =
+              address.getName() + " " + address.getCity() + address.getCounty() + address
+                  .getLocation();
+          wxTemMsgService.sendTemMessage(weiXinUser.getOpenId(), 1L, keys,order.getId());
+        }).start();
       }
     } else if (onLineOrder.getState() == 1) {
       orderService

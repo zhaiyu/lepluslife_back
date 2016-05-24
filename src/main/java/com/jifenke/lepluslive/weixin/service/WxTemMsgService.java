@@ -22,6 +22,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.io.Serializable;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
@@ -42,7 +43,7 @@ public class WxTemMsgService {
   /**
    * 根据temId不同，发送不同的消息 keys  封装参数
    */
-  public void sendTemMessage(String openId, Long temId, String[] keys, Long id) {
+  public void sendTemMessage(String openId, Long temId, String[] keys, Serializable id) {
 
     WxTemMsg wxTemMsg = wxTemMsgRepository.findOne(temId);
 
@@ -77,52 +78,82 @@ public class WxTemMsgService {
     param.put("url", wxTemMsg.getUrl() + id);
     param.put("data", map2);
 
-    sendTemplateMessage(param);
+    sendTemplateMessage(param,39L);
+  }
+
+
+
+  /**
+   * 根据temId不同，发送不同的消息 keys  封装参数
+   */
+  public void sendTemMessage(String openId, Long temId, String[] keys, Serializable sid, Long wxId,
+                             HashMap<String, Object> map2) {
+
+    WxTemMsg wxTemMsg = wxTemMsgRepository.findOne(temId);
+
+    HashMap<String, Object> mapfirst = new HashMap<>();
+    mapfirst.put("value", wxTemMsg.getFirst());
+    mapfirst.put("color", wxTemMsg.getColor());
+
+    int i = 1;
+
+    for (String key : keys) {
+      HashMap<String, Object> mapKey = new HashMap<>();
+      mapKey.put("value", key);
+      mapKey.put("color", wxTemMsg.getColor());
+      map2.put("keyword" + i, mapKey);
+      i++;
+    }
+
+    // 先封装一个 JSON 对象
+    JSONObject param = new JSONObject();
+
+    param.put("touser", openId);
+    param.put("template_id", wxTemMsg.getTemplateId());
+    param.put("url", wxTemMsg.getUrl() + sid);
+    param.put("data", map2);
+
+    sendTemplateMessage(param, wxId);
   }
 
 
   /**
    * 发送模板消息
    */
-  private void sendTemplateMessage(JSONObject param) {
-    new Thread(new Runnable() {
-      @Override
-      public void run() {
-        try {
-          // 绑定到请求 Entry
+  private void sendTemplateMessage(JSONObject param, Long wxId) {
+    try {
+      // 绑定到请求 Entry
 
-          StringEntity
-              se =
-              new StringEntity(new String(param.toString().getBytes("utf8"), "iso8859-1"));
+      StringEntity
+          se =
+          new StringEntity(new String(param.toString().getBytes("utf8"), "iso8859-1"));
 
-          //获取token
-          String token = WeixinPayUtil.getAccessToken().getAccessToken();
+      //获取token
+      String token = WeixinPayUtil.getAccessToken(wxId).getAccessToken();
 
-          String
-              getUrl =
-              "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + token;
-          CloseableHttpClient httpclient = HttpClients.createDefault();
-          HttpPost httpPost = new HttpPost(getUrl);
-          httpPost.addHeader("Content-Type", "application/json");
-          httpPost.setEntity(se);
-          CloseableHttpResponse response = null;
+      String
+          getUrl =
+          "https://api.weixin.qq.com/cgi-bin/message/template/send?access_token=" + token;
+      CloseableHttpClient httpclient = HttpClients.createDefault();
+      HttpPost httpPost = new HttpPost(getUrl);
+      httpPost.addHeader("Content-Type", "application/json");
+      httpPost.setEntity(se);
+      CloseableHttpResponse response = null;
 
-          response = httpclient.execute(httpPost);
-          HttpEntity entity = response.getEntity();
-          ObjectMapper mapper = new ObjectMapper();
-          Map<String, Object>
-              map =
-              mapper.readValue(
-                  new BufferedReader(new InputStreamReader(entity.getContent(), "utf-8")),
-                  Map.class);
-          EntityUtils.consume(entity);
-          response.close();
-          System.out.println(map.toString());
-        } catch (IOException e) {
-          e.printStackTrace();
-        }
-      }
-    }).start();
+      response = httpclient.execute(httpPost);
+      HttpEntity entity = response.getEntity();
+      ObjectMapper mapper = new ObjectMapper();
+      Map<String, Object>
+          map =
+          mapper.readValue(
+              new BufferedReader(new InputStreamReader(entity.getContent(), "utf-8")),
+              Map.class);
+      EntityUtils.consume(entity);
+      response.close();
+      System.out.println(map.toString());
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
   }
 
 }

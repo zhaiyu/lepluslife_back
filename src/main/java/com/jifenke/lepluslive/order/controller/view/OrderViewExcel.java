@@ -1,5 +1,6 @@
 package com.jifenke.lepluslive.order.controller.view;
 
+import com.jifenke.lepluslive.global.util.MvUtil;
 import com.jifenke.lepluslive.order.domain.entities.OffLineOrder;
 
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -8,7 +9,9 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.view.document.AbstractExcelView;
 
+import java.io.OutputStream;
 import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
@@ -23,13 +26,22 @@ public class OrderViewExcel extends AbstractExcelView {
 
   @Override
   protected void buildExcelDocument(Map<String, Object> map, HSSFWorkbook hssfWorkbook,
-                                    HttpServletRequest httpServletRequest,
-                                    HttpServletResponse httpServletResponse) throws Exception {
+                                    HttpServletRequest request,
+                                    HttpServletResponse response) throws Exception {
     HSSFSheet sheet = hssfWorkbook.createSheet("list");
     setExcelHeader(sheet);
 
     List<OffLineOrder> orderList = (List<OffLineOrder>) map.get("orderList");
     setExcelRows(sheet, orderList);
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    String filename =sdf.format(new Date())+".xls";//设置下载时客户端Excel的名称
+    response.setContentType("application/vnd.ms-excel");
+    response.setHeader("Content-disposition", "attachment;filename=" + filename);
+
+    OutputStream ouputStream = response.getOutputStream();
+    hssfWorkbook.write(ouputStream);
+    ouputStream.flush();
+    ouputStream.close();
 
   }
 
@@ -57,9 +69,12 @@ public class OrderViewExcel extends AbstractExcelView {
     for (OffLineOrder order : orderList) {
       HSSFRow excelRow = excelSheet.createRow(record++);
       excelRow.createCell(0).setCellValue(order.getOrderSid());
-      SimpleDateFormat sdf=new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-      excelRow.createCell(1).setCellValue(sdf.format(order.getCompleteDate()));
-      excelRow.createCell(2).setCellValue(order.getMerchant().getName()+"("+order.getMerchant().getMerchantSid()+")");
+      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+      excelRow.createCell(1).setCellValue(order.getCompleteDate() == null ? "未完成的订单"
+                                                                          : sdf
+                                              .format(order.getCompleteDate()));
+      excelRow.createCell(2).setCellValue(
+          order.getMerchant().getName() + "(" + order.getMerchant().getMerchantSid() + ")");
       if (order.getLeJiaUser().getPhoneNumber() == null) {
         excelRow.createCell(3).setCellValue("未绑定手机号(" + order.getLeJiaUser().getUserSid() + ")");
       } else {

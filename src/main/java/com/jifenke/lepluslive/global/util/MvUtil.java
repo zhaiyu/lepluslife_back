@@ -65,21 +65,19 @@ public class MvUtil {
   }
 
 //  public static void main(String[] args) {
-//    Calendar calendar = Calendar.getInstance();
-//    calendar.setTime(new Date());
-//    calendar.add(Calendar.DAY_OF_MONTH, -1);
-//    calendar.set(Calendar.HOUR_OF_DAY, 0);
-//    calendar.set(Calendar.MINUTE, 0);
-//    calendar.set(Calendar.SECOND, 0);
+//    Date start = new Date();
+//    String s = "1111111222222";
+////    String s1 =  s.substring(0,s.length()-4);
+////    String s3 = s1.replaceAll("\\d", "*");
+////    String s2 =     s.substring(s.length() - 4, s.length());
 //
-//    Date start = calendar.getTime();
-//    calendar.add(Calendar.DAY_OF_MONTH, 1);
-//    calendar.add(Calendar.SECOND, -1);
-//
-//    Date end = calendar.getTime();
-//
-//    System.out.println(start);
-//    System.out.println(end);
+//    StringBuffer sb = new StringBuffer(s.substring(s.length() - 4,s.length()));
+//    for(int i =0;i<s.length()-4;i++){
+//      sb.insert(0,"*");
+//    }
+//    System.out.println(sb.toString());
+//    Date end = new Date();
+//    System.out.println(end.getTime() - start.getTime());
 //  }
 
 }

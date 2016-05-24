@@ -27,14 +27,14 @@ public class TopicController {
 
   @RequestMapping(value = "/topic", method = RequestMethod.GET)
   public ModelAndView goTopicManagePage(Model model) {
-    model.addAttribute("topics",topicService.findAllTopic());
+    model.addAttribute("topics", topicService.findAllTopic());
     return MvUtil.go("/topic/topicList");
   }
 
 
   @RequestMapping(value = "/topic/edit/{id}", method = RequestMethod.GET)
   public ModelAndView goTopicEditPage(@PathVariable Long id, Model model) {
-    model.addAttribute("topic",topicService.findTopicById(id));
+    model.addAttribute("topic", topicService.findTopicById(id));
     return MvUtil.go("/topic/topicCreate");
   }
 
@@ -75,6 +75,11 @@ public class TopicController {
       e.printStackTrace();
       return LejiaResult.build(500, "删除失败");
     }
+  }
+
+  @RequestMapping(value = "/test")
+  public ModelAndView test() {
+    return MvUtil.go("/test");
   }
 
 }

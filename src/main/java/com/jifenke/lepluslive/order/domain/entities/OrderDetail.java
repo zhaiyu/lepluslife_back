@@ -33,6 +33,16 @@ public class OrderDetail {
   private ProductSpec productSpec;
 
 
+  private Integer state;
+
+
+  public Integer getState() {
+    return state;
+  }
+
+  public void setState(Integer state) {
+    this.state = state;
+  }
 
   public ProductSpec getProductSpec() {
     return productSpec;

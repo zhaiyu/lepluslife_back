@@ -23,7 +23,7 @@ public class FinancialStatistic {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
-  private String statisticId = MvUtil.getMerchantSid();
+  private String statisticId = MvUtil.getOrderNumber();
 
   private Date balanceDate; //结算日期
 
@@ -34,7 +34,7 @@ public class FinancialStatistic {
 
   private Long transferPrice;
 
-  private Integer state;
+  private Integer state = 0;
 
   public Integer getState() {
     return state;

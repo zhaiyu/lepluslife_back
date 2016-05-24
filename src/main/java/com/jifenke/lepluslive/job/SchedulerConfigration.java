@@ -29,37 +29,36 @@ public class SchedulerConfigration {
   private ResourceLoader resourceLoader;
 
   @Bean(name = "offLineOrderDetail")
-  public JobDetailFactoryBean offLineOrderDetail(OffLineOrderJob scheduledTasks){
-    JobDetailFactoryBean bean = new JobDetailFactoryBean ();
+  public JobDetailFactoryBean offLineOrderDetail(OffLineOrderJob scheduledTasks) {
+    JobDetailFactoryBean bean = new JobDetailFactoryBean();
     bean.setJobClass(OffLineOrderJob.class);
     bean.setDurability(false);
     return bean;
   }
 
   @Bean(name = "offLineOrderTrigger")
-    public CronTriggerFactoryBean cronTriggerBean(JobDetailFactoryBean offLineOrderDetail){
-    CronTriggerFactoryBean tigger = new CronTriggerFactoryBean ();
+  public CronTriggerFactoryBean cronTriggerBean(JobDetailFactoryBean offLineOrderDetail) {
+    CronTriggerFactoryBean tigger = new CronTriggerFactoryBean();
     tigger.setJobDetail(offLineOrderDetail.getObject());
     try {
-      //tigger.setCronExpression ("*/5 * * * * ? ");//每天凌晨1点执行
-      tigger.setCronExpression ("0 0 1 * * ? ");//每天凌晨1点执行
+      //tigger.setCronExpression ("0 0/5 * * * ? ");//每天凌晨1点执行
+      tigger.setCronExpression("0 0 1 * * ? ");//每天凌晨1点执行
     } catch (Exception e) {
-      e.printStackTrace ();
+      e.printStackTrace();
     }
     return tigger;
-
   }
 
   @Bean
-  public SchedulerFactoryBean schedulerFactory(CronTriggerFactoryBean cronTriggerBean ){
-    SchedulerFactoryBean bean = new SchedulerFactoryBean ();
+  public SchedulerFactoryBean schedulerFactory(CronTriggerFactoryBean cronTriggerBean) {
+    SchedulerFactoryBean bean = new SchedulerFactoryBean();
     bean.setConfigLocation(resourceLoader.getResource("classpath:quartz.properties"));
     bean.setApplicationContextSchedulerContextKey("applicationContextKey");
     bean.setDataSource(dataSource);
     ArrayList<Trigger> trigger = new ArrayList<>();
     bean.setTriggers(cronTriggerBean.getObject());
     bean.setSchedulerName("orderConfrim");
-   // bean.setTriggers (orderTrigger);
+    // bean.setTriggers (orderTrigger);
     return bean;
   }
 }

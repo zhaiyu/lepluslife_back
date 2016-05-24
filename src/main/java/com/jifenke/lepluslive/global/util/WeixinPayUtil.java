@@ -30,10 +30,10 @@ import java.util.Map;
  */
 public class WeixinPayUtil {
 
-  public static AccessToken getAccessToken() {
+  public static AccessToken getAccessToken(Long wxId) {
     String
         getUrl =
-        "http://www.lepluslife.com:8081/accessToken";
+        "http://www.lepluslife.com:8081/accessToken/"+wxId;
     CloseableHttpClient httpclient = HttpClients.createDefault();
     HttpGet httpGet = new HttpGet(getUrl);
     httpGet.addHeader("Content-Type", "application/json;charset=utf8mb4");

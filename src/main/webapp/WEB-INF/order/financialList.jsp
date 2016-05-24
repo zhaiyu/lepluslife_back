@@ -91,7 +91,7 @@
                         <a href="#" class="next" data-action="next">&rsaquo;</a>
                         <a href="#" class="last" data-action="last">&raquo;</a>
                     </div>
-                    <button class="btn btn-primary btn-sm" onclick="exportExcel()">导出表格</button>
+                    <button class="btn btn-primary pull-right" style="margin-top: 5px" onclick="exportExcel()">导出表格</button>
                 </div>
             </div>
         </div>
@@ -225,7 +225,7 @@
                            dateContent.innerHTML = "结算日期";
                        }
                        if (financialCriteria.state == 1) {
-                           headContent.innerHTML += "<th>转账金额</th>";
+                           headContent.innerHTML += "<th>转账金额</th><th>转账日期</th>";
                            dateContent.innerHTML = "转账日期";
                        }
 
@@ -233,7 +233,7 @@
                            var contentStr = '<tr><td>' + content[i].statisticId + '</td>';
                            contentStr +=
                            '<td><span>'
-                           + new Date(content[i].balanceDate).format('yyyy-MM-dd HH:mm:ss')
+                           + new Date(content[i].balanceDate).format('yyyy-MM-dd')
                            + '</span></td>';
                            contentStr +=
                            '<td><span>' + content[i].merchant.name + '</span><br><span>('
@@ -248,6 +248,8 @@
                                contentStr +=
                                '<td><input type="hidden" class="id-hidden" value="' + content[i].id
                                + '"><button class="btn btn-primary btn-sm changeFinancialToTransfer">确认转账</button></td>';
+                           }else{
+                               contentStr += '<td>' +  new Date(content[i].transferDate).format('yyyy-MM-dd HH:mm:ss') + '</td>'
                            }
                            financialContent.innerHTML += contentStr;
 

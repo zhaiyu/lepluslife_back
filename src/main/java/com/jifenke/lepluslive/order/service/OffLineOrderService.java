@@ -156,9 +156,11 @@ public class OffLineOrderService {
   }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-  public void changeFinancialStateToTransfer(Long id) {
+  public FinancialStatistic changeFinancialStateToTransfer(Long id) {
     FinancialStatistic financialStatistic = financialStatisticRepository.findOne(id);
     financialStatistic.setState(1);
+    financialStatistic.setTransferDate(new Date());
     financialStatisticRepository.save(financialStatistic);
+    return financialStatistic;
   }
 }

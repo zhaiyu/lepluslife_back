@@ -129,7 +129,7 @@
                         <a href="#" class="next" data-action="next">&rsaquo;</a>
                         <a href="#" class="last" data-action="last">&raquo;</a>
                     </div>
-                    <button class="btn btn-primary" style="margin-top: 24px"
+                    <button class="btn btn-primary pull-right" style="margin-top: 5px"
                             onclick="exportExcel()">导出excel
                     </button>
                 </div>
@@ -252,10 +252,16 @@
                        var orderContent = document.getElementById("orderContent");
                        for (i = 0; i < content.length; i++) {
                            var contentStr = '<tr><td>' + content[i].orderSid + '</td>';
-                           contentStr +=
-                           '<td><span>'
-                           + new Date(content[i].completeDate).format('yyyy-MM-dd HH:mm:ss')
-                           + '</span></td>';
+                           if(content[i].completeDate==null){
+                               contentStr +=
+                               '<td><span>未完成的订单</span></td>';
+                           }else{
+                               contentStr +=
+                               '<td><span>'
+                               + new Date(content[i].completeDate).format('yyyy-MM-dd HH:mm:ss')
+                               + '</span></td>';
+                           }
+
                            contentStr +=
                            '<td><span>' + content[i].merchant.name + '</span><br><span>('
                            + content[i].merchant.merchantSid + ')</span></td>'
@@ -274,14 +280,18 @@
                            contentStr += '<td>' + content[i].payWay.payWay + '</td>'
                            contentStr += '<td>' + content[i].truePay / 100 + '</td>'
                            contentStr += '<td>' + content[i].ljCommission / 100 + '</td>'
-                           var payToMerchant = content[i].totalPrice / 100 - content[i].ljCommission
-                                                                             / 100;
+                           var payToMerchant = content[i].transferMoney/100;
                            contentStr +=
                            '<td>' + payToMerchant + '</td>'
                            contentStr += '<td>' + content[i].wxCommission / 100 + '</td>'
-                           contentStr += '<td>' + content[i].rebate / 100 + '</td>'
-                           var share = (content[i].ljCommission - content[i].wxCommission
-                                        - content[i].rebate) / 100;
+                           contentStr += '<td>' + content[i].rebate / 100 + '</td>';
+                           var share = 0;
+                           if(content[i].rebateWay==0){
+                               share = 0;
+                           }else{
+                               share = (content[i].ljCommission-content[i].wxCommission-content[i].rebate)/100;
+                           }
+
                            contentStr +=
                            '<td>' + share + '</td>'
                            contentStr += '<td>' + content[i].scoreB + '</td>'
