@@ -214,7 +214,7 @@ public class MerchantService {
   }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-  public String qrCodeManage(Long id) {
+  public Merchant qrCodeManage(Long id) {
     Merchant merchant = merchantRepository.findOne(id);
 
     if (merchant.getQrCodePicture() == null) {
@@ -237,7 +237,7 @@ public class MerchantService {
       merchantRepository.save(merchant);
     }
 
-    return merchant.getQrCodePicture();
+    return merchant;
   }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)

@@ -101,8 +101,8 @@ public class BarcodeConfig {
 
 		public static QRCode defaultConfig() {
 			QRCode qrConfig = new QRCode();
-			qrConfig.setWidth(400);
-			qrConfig.setHeight(400);
+			qrConfig.setWidth(500);
+			qrConfig.setHeight(500);
 			qrConfig.setImageType(ImageType.JPG);
 			return qrConfig;
 		}

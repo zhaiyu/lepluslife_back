@@ -139,7 +139,7 @@ public class MerchantController {
   public
   @ResponseBody
   LejiaResult productQrCode(@RequestParam Long id) {
-    return LejiaResult.build(200, merchantService.qrCodeManage(id));
+    return LejiaResult.ok(merchantService.qrCodeManage(id));
   }
 
 

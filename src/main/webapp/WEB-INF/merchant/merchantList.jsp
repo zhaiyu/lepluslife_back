@@ -36,6 +36,45 @@
         .table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th {
             line-height: 60px;
         }
+
+        .modal-body .main{
+            width: 345px;
+            height: 480px;
+            margin: 0 auto;
+            background: url("${resourceUrl}/images/lefuma.png") no-repeat;
+            background-size: 100% 100%;
+            position: relative;
+        }
+        .modal-body #myShowImage{
+            width: 345px;
+            height: 480px;
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            margin: auto;
+            display: none;
+        }
+        .modal-body .main .rvCode{
+            width: 230px;
+            height: 230px;
+            position: absolute;
+            top: 120px;
+            left: 0;
+            right: 0;
+            margin:auto;
+        }
+        .modal-body .main .shopName{
+            text-align: center;
+            font-size: 24px;
+            color: #fff;
+            position: absolute;
+            top: 365px;
+            left: 0;
+            right: 0;
+            margin: auto;
+            font-family: Arial;
+        }
     </style>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
@@ -45,6 +84,7 @@
     <![endif]-->
     <script type="text/javascript" src="${resourceUrl}/js/jquery-2.0.3.min.js"></script>
     <script type="text/javascript" src="${resourceUrl}/js/jquery.jqpagination.min.js"></script>
+    <script type="text/javascript" src="${resourceUrl}/js/html2canvas.js"></script>
 </head>
 
 <body>
@@ -117,10 +157,10 @@
                 </div>
                 <div class="pagination">
                     <a href="#" class="first" data-action="first">&laquo;</a>
-                    <a href="#" class="previous" data-action="previous">&lsaquo;</a>
+                    <a href="#" class="previous" data-action="previous">&laquo;</a>
                     <input id="page" type="text" readonly="readonly" data-max-page="1"/>
-                    <a href="#" class="next" data-action="next">&rsaquo;</a>
-                    <a href="#" class="last" data-action="last">&raquo;</a>
+                    <a href="#" class="next" data-action="next">&laquo;</a>
+                    <a href="#" class="last" data-action="last">&laquo;</a>
                 </div>
             </div>
         </div>
@@ -161,12 +201,16 @@
                 <h4 class="modal-title">二维码</h4>
             </div>
             <div class="modal-body">
-                <img id="qrCode" src="" alt="" style="width: 300px;height: 300px;margin: 40px 135px">
+                <div class="main">
+                    <img class="rvCode" id="qrCode" src="" alt=""/>
+                    <p class="shopName"></p>
+                </div>
+                <img id="myShowImage" style="margin: 0 auto" src="" />
+                <h4 class="text-center text-danger">点击“生成图片”按钮，再右键将图片存到本地</h4>
             </div>
-            <!--<div class="modal-footer">-->
-            <!--<button type="button" class="btn btn-default" data-dismiss="modal">取消</button>-->
-            <!--<button type="button" class="btn btn-primary" data-dismiss="modal">确认</button>-->
-            <!--</div>-->
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary savePic">生成图片</button>
+            </div>
         </div>
     </div>
 </div>
@@ -189,8 +233,27 @@
         merchantCriteria.offset = 1;
 
         getMerchantByAjax(merchantCriteria);
-    })
-
+    });
+    //    $(".savePic").click(function () {
+    //        html2canvas($(".modal-body .main"), {
+    //            allowTaint: true,
+    //            taintTest: false,
+    //            onrendered: function (canvas) {
+    //                canvas.id = "mycanvas";
+    //                var image = canvas.toDataURL("image/png").replace("image/png",
+    //                                                                  "image/octet-stream");
+    //                var save_link = document.createElement('a');
+    //                save_link.href = image;
+    //                save_link.download = "1.png";
+    //
+    //                var event = document.createEvent('MouseEvents');
+    //                event.initMouseEvent('click', true, false, null, 0, 0, 0, 0, 0, false, false, false,
+    //                                     false, 0, null);
+    //                save_link.dispatchEvent(event);
+    //
+    //            }
+    //        });
+    //    })
     function getMerchantByAjax(merchantCriteria) {
         merchantContent.innerHTML = "";
         $.ajax({
@@ -253,10 +316,39 @@
                                           data: {id: id},
                                           url: "/manage/merchant/qrCode",
                                           success: function (data) {
+                                              var merchant = data.data;
                                               var url = "${productUrl}" + id;
-                                              $("#productUrl").text(url);
-                                              $("#qrCode").attr("src", data.msg);
+                                              $(".shopName").html(merchant.name);
+                                              $("#qrCode").attr("src", merchant.qrCodePicture);
                                               $("#qrWarn").modal("show");
+                                              document.querySelector(".savePic").addEventListener("click",
+                                                                                                  function () {
+                                                                                                      html2canvas($(".modal-body .main"), {
+                                                                                                          allowTaint: true,
+                                                                                                          taintTest: false,
+                                                                                                          onrendered: function (canvas) {
+                                                                                                              canvas.id = "mycanvas";
+                                                                                                              var dataUrl = canvas.toDataURL();
+                                                                                                              $("#myShowImage").attr("src", dataUrl).css({'display': 'block'});
+                                                                                                              $(".main").css({'display': 'none'});
+//                                                                                                              ctx.webkitImageSmoothingEnabled = false;
+//                                                                                                              ctx.mozImageSmoothingEnabled = false;
+//                                                                                                              ctx.imageSmoothingEnabled = false;
+//                                                                                                              ctx.drawImage(canvas, 0, 0, 345, 480);
+//                                                                                                              var image = canvas.toDataURL();
+////                                                                                                              $("#myShowImage").attr("src", dataUrl).css({'display': 'block'});
+////                                                                                                              $(".main").css({'display': 'none'});
+//                                                                                                              var save_link = document.createElement('a');
+//                                                                                                              save_link.href = image;
+//                                                                                                              save_link.download = "1.png";
+//
+//                                                                                                              var event = document.createEvent('MouseEvents');
+//                                                                                                              event.initMouseEvent('click', true, false, null, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
+//                                                                                                              save_link.dispatchEvent(event);
+                                                                                                          }
+                                                                                                      });
+                                                                                                  },
+                                                                                                  false);
                                           }
                                       });
                            });
@@ -325,6 +417,7 @@
         }
         getMerchantByAjax(merchantCriteria);
     }
+
 </script>
 </body>
 </html>
