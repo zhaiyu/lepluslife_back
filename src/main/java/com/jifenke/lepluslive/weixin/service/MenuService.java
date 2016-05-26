@@ -113,7 +113,7 @@ public class MenuService {
           new StringEntity(new String(buttonString.getBytes("utf8"), "iso8859-1"));
 
       //获取token
-      String token = WeixinPayUtil.getAccessToken().getAccessToken();
+      String token = WeixinPayUtil.getAccessToken(39L).getAccessToken();
       String
           getUrl =
           "https://api.weixin.qq.com//cgi-bin/menu/create?access_token=" + token;
@@ -149,7 +149,7 @@ public class MenuService {
 
     try {
 
-      String token = WeixinPayUtil.getAccessToken().getAccessToken();
+      String token = WeixinPayUtil.getAccessToken(39L).getAccessToken();
       String
           getUrl =
           "https://api.weixin.qq.com//cgi-bin/menu/delete?access_token=" + token;
