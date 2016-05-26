@@ -51,7 +51,7 @@
                     <tr>
                         <th class="text-center">订单编号</th>
                         <th class="text-center">商品信息</th>
-                        <th class="text-center">买家信息</th>
+                        <th class="text-center">商品信息</th>
                         <th class="text-center">总价</th>
                         <th class="text-center">实际支付</th>
                         <th class="text-center">红包返还</th>
@@ -66,7 +66,7 @@
                             <td class="text-center">${order.orderSid}</td>
                             <td class="text-center">
                                 <c:forEach items="${order.orderDetails}" var="orderDetail">
-                                    ${orderDetail.product.name}X${orderDetail.productNumber}<br>
+                                    ${orderDetail.product.name}(${orderDetail.productSpec.specDetail})X${orderDetail.productNumber}<br>
                                 </c:forEach>
                             </td>
                             <td class="text-center">${order.address.name}${order.address.phoneNumber}${order.address.province}${order.address.city}${order.address.county}${order.address.location}</td>
