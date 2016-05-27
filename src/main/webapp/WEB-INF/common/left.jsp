@@ -9,14 +9,14 @@
         .none, #none{display:none;}
         .left_menu{float:left;width:200px;background:#32323a;height:100%;position:absolute;top:0;left:0;overflow:auto;}
         .left_menu ul li {width:200px; display:inline; }
-        .left_menu ul li .list-item a{width:230px;padding-left:110px;text-decoration:none;font-size:14px;color:#f5f5f5;line-height:30px;display:block;}
+        .left_menu ul li .list-item a{width:230px;padding-left:65px;text-decoration:none;font-size:14px;color:#f5f5f5;line-height:30px;display:block;}
         .left_menu ul li a.noline { border-bottom:none; }
         .left_menu ul li a:hover{ color:#fff; }
         .left_menu ul li a.selected:hover { color:#fff; }
         .left_menu ul li h4 { cursor:pointer; background:url(${resourceUrl}/images/bg1.png) no-repeat 90% 18px; padding-left:10px; text-decoration:none; font-size:14px; color:#f5f5f5; display:block;  line-height:48px; font-weight:normal; }
         .left_menu ul li.noline { border-bottom:none; }
-        .left_menu ul li.selected h4 { background-position:270px -45px;background-color:#00a5a5;}
-        .left_menu li .list-item { padding:5px 0; position:relative; zoom:1 ;background:#11b6b6;overflow:hidden;}
+        .left_menu ul li.selected h4 { background-position:270px -45px;background-color:#337AB7;}
+        .left_menu li .list-item { padding:5px 0; position:relative; zoom:1 ;background:#387FC1;overflow:hidden;}
         .left_menu h4 span{display: block;float: left;width: 35px;height: 26px;margin-right: 10px;padding-right: 10px;background-repeat: no-repeat;margin-top: 12px;}
         .M1 span{background:url(${resourceUrl}/images/ioc.png) 0 -6px;}
         .M2 span{background:url(${resourceUrl}/images/ioc.png) -36px -6px;}
@@ -26,6 +26,7 @@
         .M6 span{background:url(${resourceUrl}/images/ioc.png) -72px -70px;}
         .M7 span{background:url(${resourceUrl}/images/ioc.png) -72px -70px;}
         .M8 span{background:url(${resourceUrl}/images/ioc.png) -72px -70px;}
+        .M9 span{background:url(${resourceUrl}/images/ioc.png) -72px -70px;}
     </style>
     <script type="text/javascript" src="${resourceUrl}/js/menu.js"></script>
 <div class="left_menu">
@@ -40,13 +41,22 @@
         <li><h4 class="M6"><span></span>会员管理</h4></li>
         <li><h4 class="M7"><span></span>线下订单</h4></li>
         <li><h4 class="M8"><span></span>财务结算</h4></li>
+
+        <li><h4 class="M9"><span></span>公众号配置</h4></li>
+        <%--<li>--%>
+            <%--<h4 class="M9"><span></span>公众号配置</h4>--%>
+            <%--<div class="list-item none">--%>
+                <%--<a href='/weixin/menu/list'>自定义菜单</a>--%>
+                <%--<a href='/weixin/reply/list'>微信回复规则</a>--%>
+            <%--</div>--%>
+        <%--</li>--%>
     </ul>
 </div>
 <script>navList(12);</script>
 <script>
     $(function () {
 //        数组
-        var htmlArr=['/manage/index','/manage/product','/manage/product','picManger.html','/manage/merchant','/manage/order','/manage/topic','/manage/user','/manage/offLineOrder','/manage/financial'];
+        var htmlArr=['/manage/index','/manage/product','/manage/product','picManger.html','/manage/merchant','/manage/order','/manage/topic','/manage/user','/manage/offLineOrder','/manage/financial','/weixin/index'];
         $('.M1').click(function () {
             window.location.href=htmlArr[0];
         });
@@ -76,6 +86,10 @@
         });
         $('.picManger').click(function () {
             window.location.href=htmlArr[3];
+        });
+
+        $('.M9').click(function () {
+            window.location.href=htmlArr[10];
         });
     })
 </script>

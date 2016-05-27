@@ -34,6 +34,11 @@ public class MenuController {
   @Inject
   private MenuService menuService;
 
+  @RequestMapping(value = "/index")
+  public ModelAndView index() {
+    return MvUtil.go("/weixin/index");
+  }
+
   @RequestMapping(value = "/menu/list")
   public ModelAndView list(Model model) {
     List<Menu> menuList = menuService.findAllMenu();
