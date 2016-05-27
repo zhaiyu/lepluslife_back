@@ -51,7 +51,7 @@
                     <tr>
                         <th class="text-center">订单编号</th>
                         <th class="text-center">商品信息</th>
-                        <th class="text-center">商品信息</th>
+                        <th class="text-center">买家信息</th>
                         <th class="text-center">总价</th>
                         <th class="text-center">实际支付</th>
                         <th class="text-center">红包返还</th>

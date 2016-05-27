@@ -104,6 +104,8 @@ public class OffLineOrderService {
   public void changeOrderStateToPaid(Long id) {
     OffLineOrder offLineOrder = offLineOrderRepository.findOne(id);
     offLineOrder.setState(1);
+    offLineOrder.setCompleteDate(new Date());
+    offLineOrderRepository.save(offLineOrder);
   }
 
   public Page findFinancialByCirterial(FinancialCriteria financialCriteria, Integer limit) {
@@ -133,7 +135,8 @@ public class OffLineOrderService {
                          new Date(financialCriteria.getEndDate())));
         }
 
-        if (financialCriteria.getTransferEndDate() != null && financialCriteria.getTransferStartDate() != "") {
+        if (financialCriteria.getTransferEndDate() != null
+            && financialCriteria.getTransferStartDate() != "") {
           predicate.getExpressions().add(
               cb.between(r.get("transferDate"), new Date(financialCriteria.getTransferStartDate()),
                          new Date(financialCriteria.getTransferEndDate())));

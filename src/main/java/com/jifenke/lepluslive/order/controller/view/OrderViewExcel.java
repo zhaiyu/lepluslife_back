@@ -60,7 +60,7 @@ public class OrderViewExcel extends AbstractExcelView {
     excelHeader.createCell(10).setCellValue("手续费");
     excelHeader.createCell(11).setCellValue("发放红包");
     excelHeader.createCell(12).setCellValue("分润金额");
-    excelHeader.createCell(13).setCellValue("发放金额");
+    excelHeader.createCell(13).setCellValue("发放积分");
     excelHeader.createCell(14).setCellValue("状态");
   }
 
@@ -87,11 +87,15 @@ public class OrderViewExcel extends AbstractExcelView {
       excelRow.createCell(7).setCellValue(order.getTruePay() / 100.0);
       excelRow.createCell(8).setCellValue(order.getLjCommission() / 100.0);
       excelRow.createCell(9)
-          .setCellValue((order.getTotalPrice() - order.getLjCommission()) / 100.0);
+          .setCellValue(order.getTransferMoney()/100.0);
       excelRow.createCell(10).setCellValue(order.getWxCommission() / 100.0);
       excelRow.createCell(11).setCellValue(order.getRebate() / 100.0);
-      excelRow.createCell(12).setCellValue(
-          (order.getLjCommission() - order.getWxCommission() - order.getRebate()) / 100.0);
+      if(order.getRebateWay()==0){
+        excelRow.createCell(12).setCellValue(0);
+      }else {
+        excelRow.createCell(12).setCellValue(
+            (order.getLjCommission() - order.getWxCommission() - order.getRebate()) / 100.0);
+      }
       excelRow.createCell(13).setCellValue(order.getScoreB());
       if (order.getState() == 0) {
         excelRow.createCell(14).setCellValue("未支付");
