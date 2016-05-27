@@ -3,7 +3,7 @@
 <%--
   Created by IntelliJ IDEA.
   User: zhangwen
-  Date: 16/5/24
+  Date: 16/5/25
   Time: 下午1:25
   To change this template use File | Settings | File Templates.
 --%>
@@ -14,8 +14,26 @@
     .pagination > li > a.focusClass {
         background-color: #ddd;
     }
+
+    table tr td img {
+        width: 80px;
+    }
+
+    .table > thead > tr > td, .table > thead > tr > th {
+        line-height: 40px;
+    }
+
+    .table > tbody > tr > td, .table > tbody > tr > th, .table > tfoot > tr > td, .table > tfoot > tr > th {
+        line-height: 80px;
+    }
+
+    .active img {
+        width: 80px;
+        height: 80px;
+    }
+
 </style>
-<html>
+
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -28,6 +46,8 @@
 </head>
 
 <body>
+
+
 <div id="topIframe">
     <%@include file="../common/top.jsp" %>
 </div>
@@ -38,7 +58,113 @@
     <div class="m-right">
         <div class="main">
 
+            <h3 class="page-title">
 
+            </h3>
+            <h3 style="margin:20px;"> 微信回复规则</h3>
+
+            <div class="row">
+                <div class="col-md-12">
+                    <div class="portlet">
+                        <div class="portlet-title">
+                            <div class="caption">
+
+                            </div>
+                        </div>
+
+                        <div class="portlet-body">
+                            <div class="table-container">
+                                <div class="form-horizontal">
+                                    <div class="form-body">
+                                        <div class="table-toolbar">
+                                            <div class="row">
+                                                <div class="col-md-2">
+
+                                                </div>
+
+                                                <div class="col-md-3 col-md-offset-9">
+                                                    <button type="button" class="btn btn-primary " style="margin:10px;"
+                                                            id="addTextRule">新增文字回复规则
+                                                    </button>
+                                                    <button type="button" class="btn btn-primary " style="margin:10px;"
+                                                            id="addImageRule">新增图文回复规则
+                                                    </button>
+                                                </div>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                <table class="table table-bordered table-hover">
+                                    <thead>
+                                    <tr>
+                                        <th class="text-center">关键字</th>
+                                        <th class="text-center">规则类型</th>
+                                        <th class="text-center">回复类型</th>
+                                        <th class="text-center">回复内容</th>
+                                        <th class="text-center">操作</th>
+                                    </tr>
+                                    </thead>
+                                    <tbody>
+                                    <c:forEach items="${replyRuleList}" var="replyRule">
+                                        <tr class="active">
+                                            <td class="text-center">${replyRule.keyword}</td>
+                                            <td class="text-center">
+                                                <c:if test="${replyRule.replyType == 'focusReply'}">
+                                                    关注公众号自动回复
+                                                </c:if>
+                                                <c:if test="${replyRule.replyType == 'defaultReply'}">
+                                                    默认自动回复
+                                                </c:if>
+                                                <c:if test="${replyRule.replyType == 'keywordReply'}">
+                                                    关键字自动回复
+                                                </c:if>
+                                            </td>
+                                            <td class="text-center">
+                                                <c:if test="${replyRule.replyText == null || replyRule.replyText == ''}">
+                                                    图文回复
+                                                </c:if>
+                                                <c:if test="${replyRule.replyText != null && replyRule.replyText != ''}">
+                                                    文字回复
+                                                </c:if>
+                                            </td>
+                                            <td class="text-center">
+                                                <c:if test="${replyRule.replyText != null && replyRule.replyText != ''}">
+                                                    ${replyRule.replyText}
+                                                </c:if>
+                                                <c:if test="${replyRule.replyText == null || replyRule.replyText == ''}">
+                                                    <img src="${replyRule.replyImageText0.imageUrl}"/>${replyRule.replyImageText0.textTitle}
+                                                </c:if>
+                                            </td>
+
+                                            <td class="text-center">
+                                                <c:if test="${replyRule.replyText != null && replyRule.replyText != ''}">
+                                                    <button type="button" class="btn btn-default"
+                                                            onclick="editTextRule(${replyRule.id})">
+                                                        编辑
+                                                    </button>
+                                                </c:if>
+                                                <c:if test="${replyRule.replyText == null || replyRule.replyText == ''}">
+                                                    <button type="button" class="btn btn-default"
+                                                            onclick="editImageRule(${replyRule.id})">
+                                                        编辑
+                                                    </button>
+                                                </c:if>
+
+                                                <button type="button" class="btn btn-default"
+                                                        onclick="deleteAutoRule(${replyRule.id})">
+                                                    删除
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </c:forEach>
+                                    </tbody>
+                                </table>
+
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
 </div>
@@ -49,8 +175,60 @@
 
 <!--如果只是做布局的话不需要下面两个引用-->
 <script src="${resourceUrl}/js/bootstrap.min.js"></script>
+<script src="${resourceUrl}/js/global/plugins/bootstrap-touchspin/bootstrap.touchspin.js"
+        type="text/javascript"></script>
 <script>
 
+    var ajaxParams = {};
+    jQuery(document).ready(function () {
+        window.menuList = null;
+        $('input[name=displayOrder]').TouchSpin({
+                                                    min: 0,
+                                                    max: 1000000000,
+                                                    step: 1,
+                                                    maxboostedstep: 100,
+                                                    prefix: '序号'
+                                                });
+
+        $('#addTextRule').on('click', function () {
+            location.href = "/weixin/reply/textEdit/0";
+        });
+        $('#addImageRule').on('click', function () {
+            location.href = "/weixin/reply/imageEdit/0";
+        });
+
+    });
+
+    function editTextRule(id) {
+        location.href = "/weixin/reply/textEdit/" + id;
+    }
+    function editImageRule(id) {
+        location.href = "/weixin/reply/imageEdit/" + id;
+    }
+
+    function deleteAutoRule(ruleId) {
+
+        if (!confirm('确定删除该回复规则？')) {
+            return false;
+        }
+        if (ruleId) {
+            $.ajax({
+                       type: "delete",
+                       url: "/weixin/reply/deleteAutoReply/" + ruleId,
+                       success: function (data) {
+                           if (data.status == 200) {
+                               alert(data.msg);
+                               setTimeout(function () {
+                                   location.reload(true);
+                               }, 100);
+                           } else {
+                               alert(data.msg);
+                           }
+
+                       }
+                   });
+        }
+    }
 
 
 </script>

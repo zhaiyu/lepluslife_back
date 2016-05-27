@@ -41,7 +41,7 @@
     <title>乐+生活 后台模板管理系统</title>
     <link href="${resourceUrl}/css/bootstrap.min.css" rel="stylesheet">
     <link type="text/css" rel="stylesheet" href="${resourceUrl}/css/commonCss.css"/>
-
+    <script type="text/javascript" src="${resourceUrl}/js/jquery-2.0.3.min.js"></script>
 </head>
 
 <body>
@@ -57,19 +57,14 @@
     <div class="m-right">
         <div class="main">
 
-
-            <h3 class="page-title">
-                自定义菜单
-            </h3>
+            <h3 style="margin:20px;">自定义菜单列表   <button type="button" class="btn btn-primary " style="margin:10px;"
+                                                       id="btnNewMenu">创建商品
+            </button></h3>
 
             <div class="row">
                 <div class="col-md-12">
                     <div class="portlet">
-                        <div class="portlet-title">
-                            <div class="caption">
-                                自定义菜单列表
-                            </div>
-                        </div>
+
 
                         <div class="portlet-body">
                             <div class="table-container">
@@ -78,18 +73,19 @@
                                         <div class="table-toolbar">
                                             <div class="row">
                                                 <div class="col-md-2">
-                                                    <a class="btn btn-md green" id="btnNewMenu">
-                                                        <i class="fa fa-plus">新增菜单</i>
-                                                    </a>
+
+
                                                 </div>
 
                                                 <div class="col-md-2 col-md-offset-8">
-                                                    <a class="btn btn-md blue" id="btnGenerateMenu">
-                                                        <i class="fa fa-plus">生成菜单到公众号</i>
-                                                    </a>
-                                                    <a class="btn btn-md blue" id="btnDeleteMenu">
-                                                        <i class="fa fa-plus">删除菜单</i>
-                                                    </a>
+
+                                                    <button type="button" class="btn btn-primary " style="margin:10px;"
+                                                            id="btnGenerateMenu">生成菜单
+                                                    </button>
+                                                    <button type="button" class="btn btn-primary " style="margin:10px;"
+                                                            id="btnDeleteMenu">删除菜单
+                                                    </button>
+
                                                 </div>
                                             </div>
                                         </div>
@@ -186,11 +182,6 @@
                                         <option value="${parentMenu.id}">${parentMenu.name}</option>
                                     </c:forEach>
                                 </select>
-                                <%--<g:select name="parentMenu"--%>
-                                <%--from="${htmlSelectService.weixinTopMenuSelect()}"--%>
-                                <%--optionKey="id" optionValue="name"--%>
-                                <%--noSelection="${['': '无']}"--%>
-                                <%--class="form-control"></g:select>--%>
                             </div>
                         </div>
 
@@ -225,19 +216,7 @@
 </div>
 
 <!--如果只是做布局的话不需要下面两个引用-->
-
-<script type="text/javascript" src="${resourceUrl}/js/jquery-2.0.3.min.js"></script>
 <script src="${resourceUrl}/js/bootstrap.min.js"></script>
-<%--<script type="text/javascript" src="${resourceUrl}/js/global/scripts/moment.js"></script>--%>
-<%--<script type="text/javascript"--%>
-<%--src="${resourceUrl}/js/global/plugins/datatables/media/js/jquery.dataTables.js"></script>--%>
-<%--<script type="text/javascript"--%>
-<%--src="${resourceUrl}/js/global/plugins/datatables/plugins/bootstrap/dataTables.bootstrap.js"></script>--%>
-<%--<script src="${resourceUrl}/js/global/scripts/datatable.js"></script>--%>
-<%--<script type="text/javascript"--%>
-<%--src="${resourceUrl}/js/global/plugins/bootstrap-datetimepicker/js/bootstrap-datetimepicker.js"></script>--%>
-<%--<script type="text/javascript"--%>
-<%--src="${resourceUrl}/js/global/plugins/bootstrap-datetimepicker/js/locales/bootstrap-datetimepicker.zh-CN.js"></script>--%>
 <script src="${resourceUrl}/js/global/plugins/bootstrap-touchspin/bootstrap.touchspin.js"
         type="text/javascript"></script>
 
@@ -264,6 +243,9 @@
             var errText = checkLimit(weixinBody);
             if (errText) {
                 alert(errText);
+                return false;
+            }
+            if (!confirm('确定生成公众号菜单？')) {
                 return false;
             }
             var url = '';
@@ -503,17 +485,6 @@
                        alert(data.msg);
                    }
                });
-//        $.post(url, {
-//            buttonString: JSON.stringify(weixinBody)
-//        }, function (res) {
-//            if (!res.errcode) {
-//                alert('生成菜单成功，请重新关注公众号查看新菜单！');
-//                return;
-//            } else {
-//                alert('生成菜单发生错误，错误代码为' + res.errcode);
-//                return;
-//            }
-//        });
     }
 
     function getByteLength(str) {
