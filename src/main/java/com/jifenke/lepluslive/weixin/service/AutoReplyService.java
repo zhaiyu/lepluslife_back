@@ -5,6 +5,8 @@ import com.jifenke.lepluslive.weixin.domain.entities.AutoReplyRule;
 import com.jifenke.lepluslive.weixin.repository.AutoReplyImageTextRepository;
 import com.jifenke.lepluslive.weixin.repository.AutoReplyRuleRepository;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -27,8 +29,11 @@ public class AutoReplyService {
   private AutoReplyImageTextRepository autoReplyImageTextRepository;
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-  public List<AutoReplyRule> findAllReplyRule() {
-    return autoReplyRuleRepository.findAll();
+  public Page findAllReplyRule(Integer offset) {
+    Page<AutoReplyRule>
+        page =
+        autoReplyRuleRepository.findAll(new PageRequest(offset - 1, 10));
+    return page;
   }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
