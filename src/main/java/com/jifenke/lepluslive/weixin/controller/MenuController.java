@@ -7,6 +7,7 @@ import com.jifenke.lepluslive.topic.domain.entities.Topic;
 import com.jifenke.lepluslive.weixin.domain.entities.Menu;
 import com.jifenke.lepluslive.weixin.service.MenuService;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -41,6 +42,7 @@ public class MenuController {
 
   @RequestMapping(value = "/menu/list")
   public ModelAndView list(Model model) {
+
     List<Menu> menuList = menuService.findAllMenu();
     List<Menu> parentMenuList = menuService.findAllParentMenu();
     model.addAttribute("menuList", menuList);

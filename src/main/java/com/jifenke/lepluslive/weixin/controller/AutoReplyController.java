@@ -6,11 +6,13 @@ import com.jifenke.lepluslive.global.util.MvUtil;
 import com.jifenke.lepluslive.weixin.domain.entities.AutoReplyRule;
 import com.jifenke.lepluslive.weixin.service.AutoReplyService;
 
+import org.springframework.data.domain.Page;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -30,9 +32,18 @@ public class AutoReplyController {
   private AutoReplyService autoReplyService;
 
   @RequestMapping(value = "/reply/list")
-  public ModelAndView list(Model model) {
-    List<AutoReplyRule> replyRuleList = autoReplyService.findAllReplyRule();
-    model.addAttribute("replyRuleList", replyRuleList);
+  public ModelAndView list(@RequestParam(value = "page", required = false) Integer offset,
+                           Model model) {
+    if (offset == null) {
+      offset = 1;
+    }
+    Page page = autoReplyService.findAllReplyRule(offset);
+
+    model.addAttribute("replyRuleList", page.getContent());
+
+    model.addAttribute("pages", page.getTotalPages());
+    model.addAttribute("currentPage", offset);
+
     return MvUtil.go("/weixin/replyList");
   }
 

@@ -58,7 +58,7 @@
         <div class="main">
 
             <h3 style="margin:20px;">自定义菜单列表   <button type="button" class="btn btn-primary " style="margin:10px;"
-                                                       id="btnNewMenu">创建商品
+                                                       id="btnNewMenu">创建菜单
             </button></h3>
 
             <div class="row">

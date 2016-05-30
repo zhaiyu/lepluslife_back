@@ -2,6 +2,7 @@ package com.jifenke.lepluslive.weixin.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jifenke.lepluslive.global.util.WeixinPayUtil;
+import com.jifenke.lepluslive.product.domain.entities.Product;
 import com.jifenke.lepluslive.weixin.domain.entities.Menu;
 import com.jifenke.lepluslive.weixin.repository.MenuRepository;
 
@@ -14,6 +15,9 @@ import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -22,6 +26,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
 
@@ -39,8 +44,22 @@ public class MenuService {
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
   public List<Menu> findAllMenu() {
-    return menuRepository.findAllByIsDisabledOrderByDisplayOrderDesc(0);
+    return menuRepository.findAllByIsDisabledOrderByParentMenuAscDisplayOrderAsc(0);
   }
+
+//  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+//  public Page findAllMenu(Integer offset) {
+//    List<Sort.Order> sortList = new ArrayList<>();
+//    Sort s1 = new Sort(Sort.Direction.ASC);
+//    Sort s2 = new Sort(Sort.Direction.ASC);
+//    sortList.add(s1.getOrderFor("parentMenu"));
+//    sortList.add(s2.getOrderFor("displayOrder"));
+//    Sort sort = new Sort(sortList);
+//    Page<Menu>
+//        page =
+//        menuRepository.findAll(new PageRequest(offset - 1, 10, sort));
+//    return page;
+//  }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
   public List<Menu> findAllParentMenu() {
@@ -113,7 +132,10 @@ public class MenuService {
           new StringEntity(new String(buttonString.getBytes("utf8"), "iso8859-1"));
 
       //获取token
-      String token = WeixinPayUtil.getAccessToken(39L).getAccessToken();
+      //  String token = WeixinPayUtil.getAccessToken(39L).getAccessToken();
+      String
+          token =
+          "OhOO8HwthjesyDmW4wDrD0HKIecrFWii6loAHtACmIyIzOLJ6LeWXCMQphRcN1J4aUGLabYYlA8oYdf6tLqbSyqm_GBZJAvCYjgXBNnyNG1_71xfCRF4jg4qe4EUV0DaKUCjAJARBJ";
       String
           getUrl =
           "https://api.weixin.qq.com//cgi-bin/menu/create?access_token=" + token;

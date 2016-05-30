@@ -11,7 +11,7 @@ import java.util.List;
  */
 public interface MenuRepository extends JpaRepository<Menu,Long>{
 
-    List<Menu> findAllByIsDisabledOrderByDisplayOrderDesc(Integer isDisabled);
+    List<Menu> findAllByIsDisabledOrderByParentMenuAscDisplayOrderAsc(Integer isDisabled);
 
     List<Menu> findAllByParentMenuIsNull();
 }

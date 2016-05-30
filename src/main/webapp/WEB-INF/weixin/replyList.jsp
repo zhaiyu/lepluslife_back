@@ -61,6 +61,7 @@
             <h3 class="page-title">
 
             </h3>
+
             <h3 style="margin:20px;"> 微信回复规则</h3>
 
             <div class="row">
@@ -83,10 +84,12 @@
                                                 </div>
 
                                                 <div class="col-md-3 col-md-offset-9">
-                                                    <button type="button" class="btn btn-primary " style="margin:10px;"
+                                                    <button type="button" class="btn btn-primary "
+                                                            style="margin:10px;"
                                                             id="addTextRule">新增文字回复规则
                                                     </button>
-                                                    <button type="button" class="btn btn-primary " style="margin:10px;"
+                                                    <button type="button" class="btn btn-primary "
+                                                            style="margin:10px;"
                                                             id="addImageRule">新增图文回复规则
                                                     </button>
                                                 </div>
@@ -160,6 +163,88 @@
                                     </tbody>
                                 </table>
 
+                                <nav class="pull-right">
+                                    <ul class="pagination pagination-lg">
+                                        <c:if test="${currentPage>1}">
+                                            <li><a aria-label="Previous"
+                                                   onclick="pageChange(${currentPage-1})"><span
+                                                    aria-hidden="true">«</span></a></li>
+                                        </c:if>
+                                        <c:if test="${pages>1}">
+                                            <c:if test="${pages<=5}">
+                                                <c:forEach begin="1" end="${pages}"
+                                                           varStatus="index">
+                                                    <c:if test="${index.count==currentPage}">
+                                                        <li><a href="/manage/product"
+                                                               class="focusClass">${currentPage}</a>
+                                                        </li>
+                                                    </c:if>
+                                                    <c:if test="${index.count!=currentPage}">
+                                                        <li>
+                                                            <a onclick="pageChange(${index.count})">${index.count}</a>
+                                                        </li>
+                                                    </c:if>
+                                                </c:forEach>
+                                            </c:if>
+                                            <c:if test="${pages>5}">
+                                                <c:if test="${currentPage<=3}">
+                                                    <c:forEach begin="1" end="5" varStatus="index">
+                                                        <c:if test="${index.count==currentPage}">
+                                                            <li>
+                                                                <a class="focusClass">${currentPage}</a>
+                                                            </li>
+                                                        </c:if>
+                                                        <c:if test="${index.count!=currentPage}">
+                                                            <li>
+                                                                <a onclick="pageChange(${index.count})">${index.count}</a>
+                                                            </li>
+                                                        </c:if>
+                                                    </c:forEach>
+                                                </c:if>
+                                                <c:if test="${currentPage>3}">
+                                                    <c:if test="${pages-currentPage>=2}">
+                                                        <li>
+                                                            <a onclick="pageChange(${currentPage-2})">${currentPage-2}</a>
+                                                        </li>
+                                                        <li>
+                                                            <a onclick="pageChange(${currentPage-1})">${currentPage-1}</a>
+                                                        </li>
+                                                        <li><a
+                                                                class="focusClass">${currentPage}</a>
+                                                        </li>
+                                                        <li>
+                                                            <a onclick="pageChange(${currentPage+1})">${currentPage+1}</a>
+                                                        </li>
+                                                        <li>
+                                                            <a onclick="pageChange(${currentPage+2})">${currentPage+2}</a>
+                                                        </li>
+                                                    </c:if>
+                                                    <c:if test="${pages-currentPage<2}">
+                                                        <c:forEach begin="${pages-5}" end="${pages}"
+                                                                   varStatus="index">
+                                                            <c:if test="${index.current==currentPage}">
+                                                                <li><a
+                                                                        class="focusClass">${currentPage}</a>
+                                                                </li>
+                                                            </c:if>
+                                                            <c:if test="${index.current!=currentPage}">
+                                                                <li>
+                                                                    <a onclick="pageChange(${index.current})">${index.current}</a>
+                                                                </li>
+                                                            </c:if>
+                                                        </c:forEach>
+                                                    </c:if>
+                                                </c:if>
+                                            </c:if>
+                                        </c:if>
+                                        <c:if test="${pages>currentPage}">
+                                            <li><a onclick="pageChange(${currentPage+1})"
+                                                   aria-label="Next"><span
+                                                    aria-hidden="true">»</span></a></li>
+                                        </c:if>
+                                    </ul>
+                                </nav>
+
                             </div>
                         </div>
                     </div>
@@ -224,10 +309,14 @@
                            } else {
                                alert(data.msg);
                            }
-
                        }
                    });
         }
+    }
+
+    function pageChange(page) {
+        location.href =
+        "/weixin/reply/list?page=" + page;
     }
 
 
