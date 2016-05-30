@@ -132,10 +132,7 @@ public class MenuService {
           new StringEntity(new String(buttonString.getBytes("utf8"), "iso8859-1"));
 
       //获取token
-      //  String token = WeixinPayUtil.getAccessToken(39L).getAccessToken();
-      String
-          token =
-          "OhOO8HwthjesyDmW4wDrD0HKIecrFWii6loAHtACmIyIzOLJ6LeWXCMQphRcN1J4aUGLabYYlA8oYdf6tLqbSyqm_GBZJAvCYjgXBNnyNG1_71xfCRF4jg4qe4EUV0DaKUCjAJARBJ";
+      String token = WeixinPayUtil.getAccessToken(39L).getAccessToken();
       String
           getUrl =
           "https://api.weixin.qq.com//cgi-bin/menu/create?access_token=" + token;
