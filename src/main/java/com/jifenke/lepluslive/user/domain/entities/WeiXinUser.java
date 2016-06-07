@@ -25,6 +25,10 @@ public class WeiXinUser {
 
   private String openId;
 
+  private String appOpenId;  //app登录的openId
+
+  private String unionId;
+
   private String nickname;
   private Long sex;
   private String language;
@@ -175,5 +179,21 @@ public class WeiXinUser {
 
   public void setRefreshToken(String refreshToken) {
     this.refreshToken = refreshToken;
+  }
+
+  public String getAppOpenId() {
+    return appOpenId;
+  }
+
+  public void setAppOpenId(String appOpenId) {
+    this.appOpenId = appOpenId;
+  }
+
+  public String getUnionId() {
+    return unionId;
+  }
+
+  public void setUnionId(String unionId) {
+    this.unionId = unionId;
   }
 }

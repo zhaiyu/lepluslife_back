@@ -112,6 +112,7 @@
                     <tr>
                         <th class="text-center">商品分类</th>
                         <th class="text-center">商品序号</th>
+                        <th class="text-center">商品ID</th>
                         <th class="text-center">商品名称</th>
                         <th class="text-center">商品图片</th>
                         <th class="text-center">正常单价(元）</th>
@@ -125,6 +126,7 @@
                         <tr class="active">
                             <td class="text-center">${product.productType.type}</td>
                             <td class="text-center">${product.sid}</td>
+                            <td class="text-center">${product.id}</td>
                             <td class="text-center">${product.name}</td>
                             <td class="text-center"><img src="${product.thumb}" alt="..."></td>
                             <td class="text-center">${product.price/100}</td>
@@ -315,11 +317,13 @@
     <div class="modal-dialog">
         <div class="modal-content">
             <div class="modal-header">
-                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                <button type="button" class="close" data-dismiss="modal"><span
+                        aria-hidden="true">×</span><span class="sr-only">Close</span></button>
                 <h4 class="modal-title">二维码</h4>
             </div>
             <div class="modal-body">
                 <h5 id="productUrl"></h5>
+
                 <div class="center-block">
                     <img id="qrCode" src="" class="center-block" alt="">
                 </div>
@@ -398,15 +402,15 @@
         + "&state=${productCriteria.state}" + "&page=" + page;
     }
 
-    function qrCodeManage(id){
+    function qrCodeManage(id) {
         $.ajax({
                    type: "get",
-                    data: {id:id},
+                   data: {id: id},
                    url: "/manage/product/qrCode/",
                    success: function (data) {
-                       var url =  "${productUrl}"+id;
+                       var url = "${productUrl}" + id;
                        $("#productUrl").text(url);
-                       $("#qrCode").attr("src",data.msg);
+                       $("#qrCode").attr("src", data.msg);
                        $("#qrWarn").modal("show");
                    }
                });

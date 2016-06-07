@@ -21,9 +21,11 @@
         .main .thumbnail {
             padding: 50px 0;
         }
+
         a:hover {
             text-decoration: none;
         }
+
         .button {
             min-width: 250px;
             max-width: 350px;
@@ -98,6 +100,7 @@
         .button--text-medium {
             font-weight: 500;
         }
+
         .thumbnail {
             display: block;
             padding: 4px;
@@ -125,21 +128,39 @@
     <div class="m-right">
         <div class="main">
             <div class="container">
-                <div class="row" style="margin-top: 100px">
+                <div class="row">
                     <div class="col-xs-6 col-sm-3"></div>
                     <div class="col-xs-6 col-sm-3">
                         <div class="thumbnail">
                             <div class="caption">
-                                <a href='/weixin/menu/list'><button class="button button--antiman button--round-l button--text-medium">
-                                    <span>自定义菜单</span></button></a>
+                                <a href='/weixin/menu/list'>
+                                    <button class="button button--antiman button--round-l button--text-medium">
+                                        <span>自定义菜单</span></button>
+                                </a>
                             </div>
                         </div>
                     </div>
                     <div class="col-xs-6 col-sm-3">
                         <div class="thumbnail">
                             <div class="caption">
-                                <a href='/weixin/reply/list'><button class="button button--antiman button--round-l button--text-medium">
-                                    <span>微信回复规则</span></button></a>
+                                <a href='/weixin/reply/list'>
+                                    <button class="button button--antiman button--round-l button--text-medium">
+                                        <span>微信回复规则</span></button>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-xs-6 col-sm-3"></div>
+                </div>
+                <div class="row">
+                    <div class="col-xs-6 col-sm-3"></div>
+                    <div class="col-xs-6 col-sm-3">
+                        <div class="thumbnail">
+                            <div class="caption">
+                                <a href='/manage/productRec'>
+                                    <button class="button button--antiman button--round-l button--text-medium">
+                                        <span>APP首页推荐</span></button>
+                                </a>
                             </div>
                         </div>
                     </div>
