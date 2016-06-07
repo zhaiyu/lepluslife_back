@@ -8,6 +8,8 @@ import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantUser;
 import com.jifenke.lepluslive.merchant.service.CityService;
 import com.jifenke.lepluslive.merchant.service.MerchantService;
+import com.jifenke.lepluslive.partner.domain.entities.Partner;
+import com.jifenke.lepluslive.partner.service.PartnerService;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
@@ -34,7 +36,7 @@ public class MerchantController {
   private MerchantService merchantService;
 
   @Inject
-  private CityService cityService;
+  private PartnerService partnerService;
 
   @RequestMapping(value = "/merchant", method = RequestMethod.GET)
   public ModelAndView goShowMerchantPage(Model model) {
@@ -57,14 +59,16 @@ public class MerchantController {
   @RequestMapping(value = "/merchant/edit", method = RequestMethod.GET)
   public ModelAndView goCreateMerchantPage(Model model) {
     model.addAttribute("merchantTypes", merchantService.findAllMerchantTypes());
-    return MvUtil.go("/merchant/merchantEdit");
+    model.addAttribute("partners",partnerService.findAllParter());
+    return MvUtil.go("/merchant/merchantCreate");
   }
 
   @RequestMapping(value = "/merchant/edit/{id}", method = RequestMethod.GET)
   public ModelAndView goEditMerchantPage(@PathVariable Long id, Model model) {
     model.addAttribute("merchant", merchantService.findMerchantById(id));
     model.addAttribute("merchantTypes", merchantService.findAllMerchantTypes());
-    return MvUtil.go("/merchant/merchantEdit");
+    model.addAttribute("partners",partnerService.findAllParter());
+    return MvUtil.go("/merchant/merchantCreate");
   }
 
   @RequestMapping(value = "/merchant", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -97,6 +101,24 @@ public class MerchantController {
     model.addAttribute("merchant", merchantService.findMerchantById(id));
     model.addAttribute("merchantUsers", merchantService.findMerchantUsersByMerchant(merchant));
     return MvUtil.go("/merchant/merchantUser");
+  }
+
+  @RequestMapping(value = "/merchant/editContent/{id}", method = RequestMethod.GET)
+   public
+   @ResponseBody
+   ModelAndView goMerchantContentPage(@PathVariable Long id, Model model) {
+    Merchant merchant = merchantService.findMerchantById(id);
+    model.addAttribute("merchant", merchant);
+    return MvUtil.go("/merchant/merchantContent");
+  }
+
+  @RequestMapping(value = "/merchant/openStore/{id}", method = RequestMethod.GET)
+  public
+  @ResponseBody
+  ModelAndView goOpenShopPage(@PathVariable Long id, Model model) {
+    Merchant merchant = merchantService.findMerchantById(id);
+    model.addAttribute("merchant", merchant);
+    return MvUtil.go("/merchant/openStore");
   }
 
   @RequestMapping(value = "/merchant/user/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)

@@ -286,7 +286,7 @@
                            contentStr += '<td>' + content[i].wxCommission / 100 + '</td>'
                            contentStr += '<td>' + content[i].rebate / 100 + '</td>';
                            var share = 0;
-                           if(content[i].rebateWay==0){
+                           if(content[i].rebateWay!=1){
                                share = 0;
                            }else{
                                share = (content[i].ljCommission-content[i].wxCommission-content[i].rebate)/100;

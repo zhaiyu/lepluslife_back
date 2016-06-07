@@ -137,16 +137,17 @@
                         <table class="table table-bordered table-hover">
                             <thead>
                             <tr class="active">
-                                <th>商品序号</th>
-                                <th>商品名称</th>
-                                <th>商品图片</th>
-                                <th>商户地址</th>
-                                <th>商户分类</th>
-                                <th>佣金点</th>
-                                <th>所属类型</th>
-                                <th>所属区域</th>
-                                <th>待转账金额</th>
-                                <th>累计转账金额</th>
+                                <th>商户序号</th>
+                                <th>商户所在城市</th>
+                                <th>分类</th>
+                                <th>商户名称</th>
+                                <th>所属合伙人</th>
+                                <th>锁定会员</th>
+                                <th>合约分类</th>
+                                <th>佣金比(手续费)</th>
+                                <th>乐店状态</th>
+                                <th>收取红包权限</th>
+                                <th>创建时间</th>
                                 <th>操作</th>
                             </tr>
                             </thead>
@@ -271,11 +272,15 @@
                        }
                        for (i = 0; i < content.length; i++) {
                            var contentStr = '<tr><td>' + content[i].merchantSid + '</td>';
-                           contentStr += '<td>' + content[i].name + '</td>'
+                           contentStr += '<td>' + content[i].city.name + '</td>'
                            contentStr +=
-                           '<td><img src="' + content[i].picture + '"></td>'
+                           '<td>' + content[i].merchantType.name + '</td>'
                            contentStr +=
-                           '<td>' + content[i].location + '</td>';
+                           '<td>' + content[i].name + '</td>';
+                           contentStr +=
+                           '<td>' + content[i].partner.name + '</td>';
+                           contentStr +=
+                           '<td>0/' + content[i].userLimit + '</td>';
                            if (content[i].partnership == 0) {
                                contentStr +=
                                '<td>普通商户</td>'
@@ -285,10 +290,24 @@
                            }
                            contentStr +=
                            '<td>' + content[i].ljCommission + '%</td>'
-                           contentStr += '<td>' + content[i].merchantType.name + '</td>'
-                           contentStr += '<td>' + content[i].area.name + '</td>'
-                           contentStr += '<td>￥00</td>'
-                           contentStr += '<td>￥00</td>'
+                           if (content[i].state == 0) {
+                               contentStr +=
+                               '<td>未开启</td>'
+                           } else {
+                               contentStr +=
+                               '<td>已开启</td>'
+                           }
+                           if (content[i].receiptAuth == 0) {
+                               contentStr +=
+                               '<td>未开通</td>'
+                           } else {
+                               contentStr +=
+                               '<td>已开通</td>'
+                           }
+                           contentStr +=
+                           '<td><span>'
+                           + new Date(content[i].createDate).format('yyyy-MM-dd HH:mm:ss')
+                           + '</span></td>';
                            contentStr +=
                            '<td><input type="hidden" class="name-hidden" value="' + content[i].name
                            + '"><input type="hidden" class="id-hidden" value="' + content[i].id
@@ -298,7 +317,15 @@
                            contentStr +=
                            '<button type="button" class="btn btn-default editMerchant">编辑</button>';
                            contentStr +=
-                           '<button type="button" class="btn btn-default disableMerchant">停用</button></td></tr>';
+                           '<button type="button" class="btn btn-default editMerchantContent">内容管理</button>';
+                           if(content[i].state == 0){
+                               contentStr +=
+                               '<button type="button" class="btn btn-default disableMerchant">开启乐店</button></td></tr>';
+                           }else{
+                               contentStr +=
+                               '<button type="button" class="btn btn-default disableMerchant">乐店编辑</button></td></tr>';
+                           }
+
                            merchantContent.innerHTML += contentStr;
 
                        }
@@ -331,20 +358,7 @@
                                                                                                               var dataUrl = canvas.toDataURL();
                                                                                                               $("#myShowImage").attr("src", dataUrl).css({'display': 'block'});
                                                                                                               $(".main").css({'display': 'none'});
-//                                                                                                              ctx.webkitImageSmoothingEnabled = false;
-//                                                                                                              ctx.mozImageSmoothingEnabled = false;
-//                                                                                                              ctx.imageSmoothingEnabled = false;
-//                                                                                                              ctx.drawImage(canvas, 0, 0, 345, 480);
-//                                                                                                              var image = canvas.toDataURL();
-////                                                                                                              $("#myShowImage").attr("src", dataUrl).css({'display': 'block'});
-////                                                                                                              $(".main").css({'display': 'none'});
-//                                                                                                              var save_link = document.createElement('a');
-//                                                                                                              save_link.href = image;
-//                                                                                                              save_link.download = "1.png";
 //
-//                                                                                                              var event = document.createEvent('MouseEvents');
-//                                                                                                              event.initMouseEvent('click', true, false, null, 0, 0, 0, 0, 0, false, false, false, false, 0, null);
-//                                                                                                              save_link.dispatchEvent(event);
                                                                                                           }
                                                                                                       });
                                                                                                   },
@@ -359,24 +373,16 @@
                                location.href = "/manage/merchant/edit/" + id;
                            });
                        });
+                       $(".editMerchantContent").each(function (i) {
+                           $(".editMerchantContent").eq(i).bind("click", function () {
+                               var id = $(this).parent().find(".id-hidden").val();
+                               location.href = "/manage/merchant/editContent/" + id;
+                           });
+                       });
                        $(".disableMerchant").each(function (i) {
                            $(".disableMerchant").eq(i).bind("click", function () {
-                               merchantWarn.innerHTML = ""
                                var id = $(this).parent().find(".id-hidden").val();
-                               var name = $(this).parent().find(".name-hidden").val();
-                               merchantWarn.innerHTML = "确认停用商户" + name + "吗";
-                               $("#disable-confirm").bind("click", function () {
-                                   $.ajax({
-                                              type: "get",
-                                              url: "/manage/merchant/disable/" + id,
-                                              contentType: "application/json",
-                                              success: function (data) {
-                                                  alert(data.msg);
-                                                  getMerchantByAjax(merchantCriteria);
-                                              }
-                                          });
-                               });
-                               $("#deleteWarn").modal("show");
+                               location.href = "/manage/merchant/openStore/" + id;
                            });
                        });
                        initPage(merchantCriteria.offset, totalPage);
@@ -417,7 +423,44 @@
         }
         getMerchantByAjax(merchantCriteria);
     }
-
+    Date.prototype.format = function (fmt) {
+        var o = {
+            "M+": this.getMonth() + 1, //月份
+            "d+": this.getDate(), //日
+            "h+": this.getHours() % 12 == 0 ? 12 : this.getHours() % 12, //小时
+            "H+": this.getHours(), //小时
+            "m+": this.getMinutes(), //分
+            "s+": this.getSeconds(), //秒
+            "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+            "S": this.getMilliseconds() //毫秒
+        };
+        var week = {
+            "0": "\u65e5",
+            "1": "\u4e00",
+            "2": "\u4e8c",
+            "3": "\u4e09",
+            "4": "\u56db",
+            "5": "\u4e94",
+            "6": "\u516d"
+        };
+        if (/(y+)/.test(fmt)) {
+            fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+        }
+        if (/(E+)/.test(fmt)) {
+            fmt =
+            fmt.replace(RegExp.$1,
+                        ((RegExp.$1.length > 1) ? (RegExp.$1.length > 2 ? "\u661f\u671f" : "\u5468")
+                                : "") + week[this.getDay() + ""]);
+        }
+        for (var k in o) {
+            if (new RegExp("(" + k + ")").test(fmt)) {
+                fmt =
+                fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr((""
+                                                                                                 + o[k]).length)));
+            }
+        }
+        return fmt;
+    }
 </script>
 </body>
 </html>

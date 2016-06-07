@@ -7,6 +7,9 @@ import com.google.zxing.WriterException;
 import com.google.zxing.common.BitMatrix;
 
 import com.jifenke.lepluslive.barcode.BarcodeConfig;
+import com.sun.image.codec.jpeg.JPEGCodec;
+import com.sun.image.codec.jpeg.JPEGEncodeParam;
+import com.sun.image.codec.jpeg.JPEGImageEncoder;
 
 import net.glxn.qrgen.javase.QRCode;
 
@@ -19,12 +22,14 @@ import java.awt.*;
 import java.awt.image.BufferedImage;
 import java.io.ByteArrayInputStream;
 import java.io.ByteArrayOutputStream;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.nio.charset.StandardCharsets;
 import java.util.Base64;
 import java.util.Hashtable;
 
 import javax.imageio.ImageIO;
+import javax.swing.*;
 
 @Service
 public class BarcodeService {
@@ -77,11 +82,11 @@ public class BarcodeService {
     Hashtable<EncodeHintType, Object> hints = new Hashtable<EncodeHintType, Object>();
 
     hints.put(EncodeHintType.CHARACTER_SET, "utf-8");
-    hints.put(EncodeHintType.MARGIN, 1);
+    hints.put(EncodeHintType.MARGIN, 0);
     try {
 
       BitMatrix byteMatrix = new MultiFormatWriter().encode(code,
-                                                            BarcodeFormat.QR_CODE, 300, 300, hints);
+                                                            BarcodeFormat.QR_CODE, 850, 850, hints);
 
       // Make the BufferedImage that are to hold the QRCode
       int matrixWidth = byteMatrix.getWidth();
@@ -136,4 +141,7 @@ public class BarcodeService {
     ImageIO.write(bufferedImage, "png", Base64.getEncoder().wrap(os));
     return os.toString(StandardCharsets.UTF_8.name());
   }
+
+
+
 }

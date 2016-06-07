@@ -11,6 +11,7 @@ import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantType;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantUser;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantWallet;
+import com.jifenke.lepluslive.merchant.repository.MerchantProtocolRepository;
 import com.jifenke.lepluslive.merchant.repository.MerchantRepository;
 import com.jifenke.lepluslive.merchant.repository.MerchantTypeRepository;
 import com.jifenke.lepluslive.merchant.repository.MerchantUserRepository;
@@ -34,6 +35,7 @@ import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 
 import javax.inject.Inject;
 import javax.inject.Inject;
@@ -69,6 +71,9 @@ public class MerchantService {
 
   @Inject
   private MerchantWalletRepository merchantWalletRepository;
+
+  @Inject
+  private MerchantProtocolRepository merchantProtocolRepository;
 
   @Value("${bucket.ossBarCodeReadRoot}")
   private String barCodeRootUrl;
@@ -120,6 +125,11 @@ public class MerchantService {
     registerOrigin.setMerchant(merchant);
     MerchantWallet merchantWallet = new MerchantWallet();
     merchantWallet.setMerchant(merchant);
+    merchant.getMerchantProtocols().stream().map(merchantProtocol -> {
+      merchantProtocol.setMerchant(merchant);
+      merchantProtocolRepository.save(merchantProtocol);
+      return merchantProtocol;
+    }).collect(Collectors.toList());
     merchantWalletRepository.save(merchantWallet);
     registerOriginRepository.save(registerOrigin);
   }
@@ -127,6 +137,11 @@ public class MerchantService {
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public void editMerchant(Merchant merchant) {
     Merchant origin = merchantRepository.findOne(merchant.getId());
+    origin.getMerchantProtocols().stream().map(merchantProtocol -> {
+      merchantProtocolRepository.delete(merchantProtocol);
+      return null;
+    }).collect(Collectors.toList());
+//    origin.
     String sid = origin.getMerchantSid();
     if (origin == null) {
       throw new RuntimeException("不存在的商户");
@@ -141,6 +156,11 @@ public class MerchantService {
     long l = merchant.getId();
     origin.setSid((int) l);
     origin.setMerchantSid(sid);
+    origin.getMerchantProtocols().stream().map(merchantProtocol -> {
+      merchantProtocol.setMerchant(origin);
+      merchantProtocolRepository.save(merchantProtocol);
+      return null;
+    }).collect(Collectors.toList());
     merchantRepository.save(origin);
   }
 
