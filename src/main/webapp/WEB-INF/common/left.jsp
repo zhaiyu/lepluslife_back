@@ -42,7 +42,7 @@
         <li><h4 class="M7"><span></span>线下订单</h4></li>
         <li><h4 class="M8"><span></span>财务结算</h4></li>
 
-        <li><h4 class="M9"><span></span>公众号配置</h4></li>
+        <li><h4 class="M9"><span></span>公众号及推荐</h4></li>
         <%--<li>--%>
             <%--<h4 class="M9"><span></span>公众号配置</h4>--%>
             <%--<div class="list-item none">--%>
