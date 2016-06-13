@@ -142,7 +142,7 @@
 
                         <div class="col-sm-4">
                             <input type="text" class="form-control" id="merchantPhone"
-                                   value="${merchant.phoneNumber}">
+                                   value="${merchant.merchantPhone}">
                         </div>
                     </div>
                     <div class="form-group">
@@ -355,7 +355,7 @@
         merchant.lat = $("#lat").val();
         merchant.discount = $("#discount").val();
         merchant.picture = $("#merchantPicture").attr("src");
-        merchant.phoneNumber = $("#merchantPhone").val()
+        merchant.merchantPhone = $("#merchantPhone").val()
         if (merchant.id == null || merchant.id == "") {
             $.ajax({
                        type: "post",

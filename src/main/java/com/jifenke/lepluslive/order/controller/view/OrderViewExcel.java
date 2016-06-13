@@ -90,7 +90,7 @@ public class OrderViewExcel extends AbstractExcelView {
           .setCellValue(order.getTransferMoney()/100.0);
       excelRow.createCell(10).setCellValue(order.getWxCommission() / 100.0);
       excelRow.createCell(11).setCellValue(order.getRebate() / 100.0);
-      if(order.getRebateWay()==0){
+      if(order.getRebateWay()!=1){
         excelRow.createCell(12).setCellValue(0);
       }else {
         excelRow.createCell(12).setCellValue(

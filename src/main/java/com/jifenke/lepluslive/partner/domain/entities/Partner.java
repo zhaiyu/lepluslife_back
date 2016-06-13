@@ -25,6 +25,12 @@ public class Partner {
 
   private String name;
 
+  public Partner(Long id) {
+    this.id = id;
+  }
+
+  public Partner() {
+  }
 
   public Long getId() {
     return id;

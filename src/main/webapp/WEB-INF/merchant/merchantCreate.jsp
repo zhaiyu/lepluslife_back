@@ -41,7 +41,7 @@
     </div>
     <div class="m-right">
         <p>
-            <button onclick="javascript:history(-1);">返回商户管理</button>
+            <button onclick="goMerchantPage()">返回商户管理</button>
             新建商户
         </p>
         <div>
@@ -87,7 +87,7 @@
         </div>
         <div>
             <label for="phone">绑定手机号</label>
-            <input type="text" id="phone" class="check" value="${merchant.phoneNumber}"/>
+            <input type="text" id="phone" class="check" value="${merchant.merchantPhone}"/>
         </div>
         <div>
             <label>合约类型&nbsp</label>
@@ -96,6 +96,7 @@
             <input type="radio" class="radio" id="partner" name="type" value="1"/><span>联盟商户</span>
             <input type="text" class="money lm" disabled="disabled" placeholder="输入佣金比"/>%
             <input type="text" class="money lm" disabled="disabled" placeholder="输入红包比"/>%
+            <input type="text" class="money lm" disabled="disabled" placeholder="输入手续费"/>%
         </div>
         <div>
             <label for="lock">锁定上限&nbsp</label>
@@ -121,7 +122,7 @@
             <div class="zfbpay dis">
                 <div>
                     <label for="card">支付宝账号</label>
-                    <input type="text" id="zfb" class="money"/>
+                    <input type="text" id="zfb" />
                 </div>
                 <div>
                     <label for="payee">收款人</label>
@@ -197,31 +198,64 @@
 </body>
 <%--<script src="js/jquery-2.0.3.min.js"></script>--%>
 <script type="text/javascript" language="javascript">
-    $.ajax({
-               type: 'GET',
-               url: '/manage/city/ajax',
-               async: false,
-               dataType: 'json',
-               success: function (data) {
-                   console.log(data[0]);
-                   var dataStr1 = '',
-                           dataStr2 = '';
-                   $.each(data, function (i) {
-                       dataStr1 +=
-                       '<option value="' + data[i].id + '">' + data[i].name + '</option>';
-                   });
-                   $.each(data[0].areas, function (j) {
-                       dataStr2 +=
-                       '<option value="' + data[0].areas[j].id + '">' + data[0].areas[j].name
-                       + '</option>';
-                   });
-                   $('#locationCity').empty().append(dataStr1);
-                   $('#locationArea').empty().append(dataStr2);
-               },
-               error: function (jqXHR) {
-                   alert('发生错误：' + jqXHR.status);
-               }
-           });
+    if (${merchant!=null}) {
+        $.ajax({
+                   type: 'GET',
+                   url: '/manage/city/ajax',
+                   async: false,
+                   dataType: 'json',
+                   success: function (data) {
+                       console.log(data[0]);
+                       var dataStr1 = '',
+                               dataStr2 = '';
+                       $.each(data, function (i) {
+                           dataStr1 +=
+                           '<option value="' + data[i].id + '">' + data[i].name + '</option>';
+                           if(data[i].id=='${merchant.city.id}'){
+                               $.each(data[i].areas, function (j) {
+                                   dataStr2 +=
+                                   '<option value="' + data[i].areas[j].id + '">' + data[i].areas[j].name
+                                   + '</option>';
+                               });
+                           }
+                       });
+                       $('#locationCity').empty().append(dataStr1);
+                       $('#locationArea').empty().append(dataStr2);
+                   },
+                   error: function (jqXHR) {
+                       alert('发生错误：' + jqXHR.status);
+                   }
+               });
+        $("#locationCity option[value=${merchant.city.id}]").attr("selected", true);
+        $("#locationArea option[value=${merchant.area.id}]").attr("selected", true);
+    }else{
+        $.ajax({
+                   type: 'GET',
+                   url: '/manage/city/ajax',
+                   async: false,
+                   dataType: 'json',
+                   success: function (data) {
+                       console.log(data[0]);
+                       var dataStr1 = '',
+                               dataStr2 = '';
+                       $.each(data, function (i) {
+                           dataStr1 +=
+                           '<option value="' + data[i].id + '">' + data[i].name + '</option>';
+                       });
+                       $.each(data[0].areas, function (j) {
+                           dataStr2 +=
+                           '<option value="' + data[0].areas[j].id + '">' + data[0].areas[j].name
+                           + '</option>';
+                       });
+                       $('#locationCity').empty().append(dataStr1);
+                       $('#locationArea').empty().append(dataStr2);
+                   },
+                   error: function (jqXHR) {
+                       alert('发生错误：' + jqXHR.status);
+                   }
+               });
+    }
+    $("#merchantType option[value=${merchant.merchantType.id}]").attr("selected", true);
     $('#locationCity').change(function () {
         var val = $(this).val();
         $.ajax({
@@ -247,6 +281,9 @@
                    }
                });
     })
+
+
+
     var fnMyFunc1;
     $(function () {
         $("#partners").find("option[value='${merchant.partner.id}']").attr("selected", true);
@@ -257,6 +294,7 @@
 //            $(".changeDisplay").css("display", 'block');
             $(".lm").eq(0).val(${merchant.ljCommission});
             $(".lm").eq(1).val(${merchant.scoreARebate});
+            $(".lm").eq(2).val(${merchant.ljBrokerage});
         }
         if (${merchant.partnership==0}) {
             $('#normal').prop("checked", true);
@@ -281,13 +319,13 @@
         if (${merchant.merchantBank!=null}) {
             if (${merchant.merchantBank.bankName=="支付宝"}) {
                 $('#alipay').prop("checked", true);
-                $("#zfb").val(${merchant.merchantBank.bankNumber});
+                $("#zfb").val('${merchant.merchantBank.bankNumber}');
                 $("#skr").val("${merchant.payee}");
                 $("#zfbzhouqi").find("option[value='${merchant.cycle}']").attr("selected", true);
             } else {
                 $('#bankPay').prop("checked", true);
                 $("#payee").val("${merchant.payee}");
-                $("#card").val(${merchant.merchantBank.bankNumber});
+                $("#card").val('${merchant.merchantBank.bankNumber}');
                 $("#bank").val("${merchant.merchantBank.bankName}");
                 $("#cardzhouqi").find("option[value='${merchant.cycle}']").attr("selected", true);
             }
@@ -499,7 +537,7 @@
         merchant.location = $("#address").val()
         merchant.name = $("#shopname").val();
         merchant.contact = $("#contact").val();
-        merchant.phoneNumber = $("#phone").val();
+        merchant.merchantPhone = $("#phone").val();
         var value = $("input[name='type']:checked").val();
         if(value==""||value==null){
             alert("请选择合约类型");
@@ -516,15 +554,20 @@
         } if (value == 1) {
             merchant.partnership = 1;
             if ($(".lm").eq(0).val() > 100||$(".lm").eq(0).val()==null||$(".lm").eq(0).val()=="") {
-                alert("请输入正确的手续费")
+                alert("请输入正确的佣金")
                 return;
             }
             if ($(".lm").eq(1).val() > 100||$(".lm").eq(1).val()==null||$(".lm").eq(1).val()=="") {
                 alert("请输入正确的红包率")
                 return;
             }
+            if ($(".lm").eq(2).val() > 100||$(".lm").eq(2).val()==null||$(".lm").eq(2).val()=="") {
+                alert("请输入正确的手续费")
+                return;
+            }
             merchant.ljCommission = $(".lm").eq(0).val();
             merchant.scoreARebate = $(".lm").eq(1).val();
+            merchant.ljBrokerage = $(".lm").eq(2).val();
         }
         if($("#fl").val()==""||$("#fl").val()==null){
             alert("请选择积分返利比");
@@ -612,6 +655,9 @@
             // this.value = this.value.replace(/^\d+(?=\.{0,1}\d+$|$)/ , '').replace(/(\d{4})(?=\d)/g, "$1 ");
         })
     });
+    function goMerchantPage() {
+        location.href = "/manage/merchant";
+    }
 </script>
 </html>
 

@@ -36,11 +36,15 @@ public class MerchantController {
   private MerchantService merchantService;
 
   @Inject
+  private CityService cityService;
+
+  @Inject
   private PartnerService partnerService;
 
   @RequestMapping(value = "/merchant", method = RequestMethod.GET)
   public ModelAndView goShowMerchantPage(Model model) {
     model.addAttribute("merchantTypes", merchantService.findAllMerchantTypes());
+    model.addAttribute("cities", cityService.findAllCity());
     return MvUtil.go("/merchant/merchantList");
   }
 
@@ -94,28 +98,29 @@ public class MerchantController {
 
 
   @RequestMapping(value = "/merchant/user/{id}", method = RequestMethod.GET)
-  public
-  @ResponseBody
-  ModelAndView goMerchantUserPage(@PathVariable Long id, Model model) {
+  public ModelAndView goMerchantUserPage(@PathVariable Long id, Model model) {
     Merchant merchant = merchantService.findMerchantById(id);
     model.addAttribute("merchant", merchantService.findMerchantById(id));
     model.addAttribute("merchantUsers", merchantService.findMerchantUsersByMerchant(merchant));
     return MvUtil.go("/merchant/merchantUser");
   }
 
-  @RequestMapping(value = "/merchant/editContent/{id}", method = RequestMethod.GET)
-   public
-   @ResponseBody
-   ModelAndView goMerchantContentPage(@PathVariable Long id, Model model) {
-    Merchant merchant = merchantService.findMerchantById(id);
-    model.addAttribute("merchant", merchant);
-    return MvUtil.go("/merchant/merchantContent");
+  @RequestMapping(value = "/merchant/openStore", method = RequestMethod.POST)
+  public LejiaResult openStore(@RequestBody Merchant merchant) {
+    merchantService.openStore(merchant);
+//    model.addAttribute("merchant", merchant);
+    return LejiaResult.build(200,"开启成功");
+  }
+
+  @RequestMapping(value = "/merchant/closeStore/{id}", method = RequestMethod.GET)
+  public LejiaResult closeStore(@PathVariable Long id) {
+    merchantService.closeStore(id);
+//    model.addAttribute("merchant", merchant);
+    return LejiaResult.build(200,"成功关闭乐店");
   }
 
   @RequestMapping(value = "/merchant/openStore/{id}", method = RequestMethod.GET)
-  public
-  @ResponseBody
-  ModelAndView goOpenShopPage(@PathVariable Long id, Model model) {
+  public ModelAndView goOpenShopPage(@PathVariable Long id, Model model) {
     Merchant merchant = merchantService.findMerchantById(id);
     model.addAttribute("merchant", merchant);
     return MvUtil.go("/merchant/openStore");

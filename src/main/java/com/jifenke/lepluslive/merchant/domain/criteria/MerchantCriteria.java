@@ -13,6 +13,57 @@ public class MerchantCriteria {
 
   private Long merchantType;
 
+  private Long city; //所属城镇
+
+  private Integer storeState; //乐店状态
+
+  private Integer receiptAuth;
+
+  private String startDate;
+
+  private String endDate;
+
+
+  public Long getCity() {
+    return city;
+  }
+
+  public void setCity(Long city) {
+    this.city = city;
+  }
+
+  public Integer getStoreState() {
+    return storeState;
+  }
+
+  public void setStoreState(Integer storeState) {
+    this.storeState = storeState;
+  }
+
+  public Integer getReceiptAuth() {
+    return receiptAuth;
+  }
+
+  public void setReceiptAuth(Integer receiptAuth) {
+    this.receiptAuth = receiptAuth;
+  }
+
+  public String getStartDate() {
+    return startDate;
+  }
+
+  public void setStartDate(String startDate) {
+    this.startDate = startDate;
+  }
+
+  public String getEndDate() {
+    return endDate;
+  }
+
+  public void setEndDate(String endDate) {
+    this.endDate = endDate;
+  }
+
   public Long getMerchantType() {
     return merchantType;
   }

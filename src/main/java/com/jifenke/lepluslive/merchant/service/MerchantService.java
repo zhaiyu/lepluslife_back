@@ -7,6 +7,7 @@ import com.jifenke.lepluslive.global.config.Constants;
 import com.jifenke.lepluslive.global.util.MD5Util;
 import com.jifenke.lepluslive.global.util.MvUtil;
 import com.jifenke.lepluslive.merchant.domain.criteria.MerchantCriteria;
+import com.jifenke.lepluslive.merchant.domain.entities.City;
 import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantType;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantUser;
@@ -33,6 +34,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.lang.reflect.InvocationTargetException;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
@@ -199,14 +201,40 @@ public class MerchantService {
         if (merchantCriteria.getMerchant() != null && merchantCriteria.getMerchant() != "") {
           if (merchantCriteria.getMerchant().matches("^\\d{1,6}$")) {
             predicate.getExpressions().add(
-                cb.like(r.<Merchant>get("merchant").get("merchantSid"),
+                cb.like(r.get("merchantSid"),
                         "%" + merchantCriteria.getMerchant() + "%"));
           } else {
             predicate.getExpressions().add(
-                cb.like(r.<Merchant>get("merchant").get("name"),
+                cb.like(r.get("name"),
                         "%" + merchantCriteria.getMerchant() + "%"));
           }
         }
+
+        if(merchantCriteria.getReceiptAuth()!=null){
+          predicate.getExpressions().add(
+              cb.equal(r.get("receiptAuth"),
+                       merchantCriteria.getReceiptAuth()));
+        }
+
+        if(merchantCriteria.getStoreState()!=null){
+          predicate.getExpressions().add(
+              cb.equal(r.get("state"),
+                       merchantCriteria.getStoreState()));
+        }
+
+
+        if (merchantCriteria.getStartDate() != null && merchantCriteria.getStartDate() != "") {
+          predicate.getExpressions().add(
+              cb.between(r.get("createDate"), new Date(merchantCriteria.getStartDate()),
+                         new Date(merchantCriteria.getEndDate())));
+        }
+
+        if(merchantCriteria.getCity()!=null){
+          predicate.getExpressions().add(
+              cb.equal(r.get("city"),
+                       new City(merchantCriteria.getCity())));
+        }
+
         return predicate;
       }
     };
@@ -263,5 +291,31 @@ public class MerchantService {
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public List<MerchantUser> findMerchantUserByMerchant(Merchant merchant) {
     return merchantUserRepository.findAllByMerchant(merchant);
+  }
+
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  public void openStore(Merchant merchant) {
+    Merchant origin = merchantRepository.findOne(merchant.getId());
+
+    origin.setState(1);
+
+    origin.setLat(merchant.getLat());
+
+    origin.setLng(merchant.getLng());
+
+    origin.setOfficeHour(merchant.getOfficeHour());
+
+    origin.setMerchantPhone(merchant.getMerchantPhone());
+
+    merchantRepository.save(origin);
+  }
+
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  public void closeStore(Long merchantId) {
+    Merchant origin = merchantRepository.findOne(merchantId);
+
+    origin.setState(0);
+
+    merchantRepository.save(origin);
   }
 }

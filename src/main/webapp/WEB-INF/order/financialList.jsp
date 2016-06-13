@@ -219,7 +219,7 @@
                            totalPage = 1;
                        }
                        headContent.innerHTML =
-                       '<th>结算单号</th><th>结算日期</th><th>商户信息</th><th>绑定银行卡</th><th>开户行</th><th>收款人</th>';
+                       '<th>结算单号</th><th>结算日期</th><th>商户信息</th><th>结算方式</th><th>结算账户信息</th><th>结算周期</th><th>收款人</th>';
                        if (financialCriteria.state == 0) {
                            headContent.innerHTML += "<th>待转账金额</th><th>操作</th>"
                            dateContent.innerHTML = "结算日期";
@@ -238,10 +238,19 @@
                            contentStr +=
                            '<td><span>' + content[i].merchant.name + '</span><br><span>('
                            + content[i].merchant.merchantSid + ')</span></td>'
-                           contentStr +=
-                           '<td>' + content[i].merchant.merchantBank.bankNumber + '</td>'
-                           contentStr +=
+                           if(content[i].merchant.merchantBank.bankName=="支付宝"){
+                               contentStr +=
+                               '<td>支付宝</td>'+'<td>' + content[i].merchant.merchantBank.bankNumber + '</td>'
+                           }else{
+                               contentStr +=
+                               '<td>银行卡</td>'+'<td>' + content[i].merchant.merchantBank.bankName + '  '+content[i].merchant.merchantBank.bankNumber+'</td>'
+                           }
                            '<td>' + content[i].merchant.merchantBank.bankName + '</td>'
+                           if( content[i].merchant.cycle==1){
+                               contentStr += '<td>T+1</td>'
+                           }else{
+                               contentStr += '<td>T+2</td>'
+                           }
                            contentStr += '<td>' + content[i].merchant.payee + '</td>'
                            contentStr += '<td>' + content[i].transferPrice / 100 + '</td>'
                            if (content[i].state == 0) {
@@ -258,6 +267,7 @@
                            $(".changeFinancialToTransfer").eq(i).bind("click", function () {
                                var id = $(this).parent().find(".id-hidden").val();
                                $("#transfer-confirm").bind("click", function () {
+                                   $("#transfer-confirm").unbind("click");
                                    $.ajax({
                                               type: "get",
                                               url: "/manage/financial/" + id,

@@ -57,13 +57,13 @@ public class Merchant {
 
   private String picture;
 
-  private String phoneNumber; //商户电话
+  private String phoneNumber; //服务电话
 
   private Integer partnership; //合作关系
 
-  private Double lng;
+  private Double lng=0.0;
 
-  private Double lat;
+  private Double lat=0.0;
 
   private String payee; //收款人
 
@@ -77,6 +77,8 @@ public class Merchant {
 
   private BigDecimal ljCommission; //乐加佣金 单位百分比
 
+  private BigDecimal ljBrokerage = new BigDecimal(0); //只有联盟商户才不为空 , 代表非乐加会员消费时,收取的手续费
+
   private BigDecimal scoreARebate; //返a积分比 单位百分比
 
   private BigDecimal scoreBRebate;
@@ -85,14 +87,38 @@ public class Merchant {
 
   private Date createDate = new Date();
 
+  public BigDecimal getLjBrokerage() {
+    return ljBrokerage;
+  }
+
+  public void setLjBrokerage(BigDecimal ljBrokerage) {
+    this.ljBrokerage = ljBrokerage;
+  }
+
   @OneToMany(mappedBy = "merchant",fetch = FetchType.LAZY)
   private List<MerchantProtocol> merchantProtocols;
 
   private Integer cycle;  //结算周期  1 一个工作日 2 2个工作日
 
-  private String serviceCall; //服务电话
+  private String merchantPhone; //绑定电话
 
   private String officeHour; //营业时间
+
+  public String getMerchantPhone() {
+    return merchantPhone;
+  }
+
+  public void setMerchantPhone(String merchantPhone) {
+    this.merchantPhone = merchantPhone;
+  }
+
+  public String getOfficeHour() {
+    return officeHour;
+  }
+
+  public void setOfficeHour(String officeHour) {
+    this.officeHour = officeHour;
+  }
 
   public Integer getCycle() {
     return cycle;

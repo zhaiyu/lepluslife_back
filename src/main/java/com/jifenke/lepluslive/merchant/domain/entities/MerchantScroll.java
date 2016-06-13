@@ -21,8 +21,18 @@ public class MerchantScroll {
 
   private String picture;
 
+  private Long sid;
+
   @ManyToOne
   private Merchant merchant;
+
+  public Long getSid() {
+    return sid;
+  }
+
+  public void setSid(Long sid) {
+    this.sid = sid;
+  }
 
   public Long getId() {
     return id;

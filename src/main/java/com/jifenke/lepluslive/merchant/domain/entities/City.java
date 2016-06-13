@@ -30,6 +30,15 @@ public class City {
 
   private String name;
 
+  public City() {
+  }
+
+  public City(Long id) {
+    this.id = id;
+  }
+
+
+
   @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "city")
   private List<Area> areas;
 

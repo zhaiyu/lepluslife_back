@@ -7,6 +7,7 @@
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
+<c:set var="merchantUrl" value="http://www.lepluslife.com/lepay/merchant/"></c:set>
 <%@include file="../commen.jsp" %>
 <!DOCTYPE>
 <html>
@@ -17,8 +18,9 @@
     <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
     <title>乐+生活 后台模板管理系统</title>
     <link href="${resourceUrl}/css/bootstrap.min.css" rel="stylesheet">
-    <link type="text/css" rel="stylesheet" href="${resourceUrl}/css/commonCss.css"/>
     <link rel="stylesheet" href="${resourceUrl}/css/jqpagination.css"/>
+    <link rel="stylesheet" href="${resourceUrl}/css/daterangepicker-bs3.css">
+    <link type="text/css" rel="stylesheet" href="${resourceUrl}/css/commonCss.css"/>
     <style>
         thead th, tbody td {
             text-align: center;
@@ -85,6 +87,10 @@
     <script type="text/javascript" src="${resourceUrl}/js/jquery-2.0.3.min.js"></script>
     <script type="text/javascript" src="${resourceUrl}/js/jquery.jqpagination.min.js"></script>
     <script type="text/javascript" src="${resourceUrl}/js/html2canvas.js"></script>
+    <script src="${resourceUrl}/js/bootstrap.min.js"></script>
+    <script src="${resourceUrl}/js/daterangepicker.js"></script>
+    <%--<script src="${resourceUrl}/js/bootstrap-datetimepicker.zh-CN.js"></script>--%>
+    <script src="${resourceUrl}/js/moment.min.js"></script>
 </head>
 
 <body>
@@ -114,11 +120,42 @@
                                 <option value="${merchantType.id}">${merchantType.name}</option>
                             </c:forEach>
                         </select></div>
+                    <div class="form-group col-md-2">
+                        <label for="merchantType">所在城市</label>
+                        <select class="form-control" id="city">
+                            <option value="0">全部分类</option>
+                            <c:forEach items="${cities}" var="city">
+                                <option value="${city.id}">${city.name}</option>
+                            </c:forEach>
+                        </select></div>
+                    <div class="form-group col-md-2">
+                        <label for="merchantType">乐店状态</label>
+                        <select class="form-control" id="state">
+                            <option value="-1">全部分类</option>
+                                <option value="0">未开启</option>
+                                <option value="1">已开启</option>
+                        </select></div>
+                    <div class="form-group col-md-2">
+                        <label for="merchantType">红包权限</label>
+                        <select class="form-control" id="receiptAuth">
+                            <option value="-1">全部分类</option>
+                            <option value="0">未开启</option>
+                            <option value="1">已开启</option>
+                        </select></div>
                     <div class="form-group col-md-3">
                         <label for="merchant-name">商户名称</label>
                         <input type="text" id="merchant-name" class="form-control"
                                placeholder="请输入商户名称或ID"/>
                     </div>
+                    <div class="form-group col-md-5">
+                        <label for="merchant-name">创建时间</label>
+                        <div id="date-end" class="form-control">
+                            <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
+                            <span id="searchDateRange"></span>
+                            <b class="caret"></b>
+                        </div>
+                    </div>
+
                     <div class="form-group col-md-3">
                         <button class="btn btn-primary" style="margin-top: 24px"
                                 onclick="searchMerchantByCriteria()">筛选
@@ -160,8 +197,8 @@
                     <a href="#" class="first" data-action="first">&laquo;</a>
                     <a href="#" class="previous" data-action="previous">&laquo;</a>
                     <input id="page" type="text" readonly="readonly" data-max-page="1"/>
-                    <a href="#" class="next" data-action="next">&laquo;</a>
-                    <a href="#" class="last" data-action="last">&laquo;</a>
+                    <a href="#" class="next" data-action="next">&rsaquo;</a>
+                    <a href="#" class="last" data-action="last">&raquo;</a>
                 </div>
             </div>
         </div>
@@ -202,6 +239,7 @@
                 <h4 class="modal-title">二维码</h4>
             </div>
             <div class="modal-body">
+                <h5 id="merchantUrl"></h5>
                 <div class="main">
                     <img class="rvCode" id="qrCode" src="" alt=""/>
                     <p class="shopName"></p>
@@ -222,6 +260,56 @@
     var merchantContent = document.getElementById("merchantContent");
     var merchantWarn = document.getElementById("merchantWarn");
     $(function () {
+
+        $(document).ready(function () {
+            $('#date-end span').html(moment().subtract('hours', 1).format('YYYY/MM/DD HH:mm:ss')
+                                     + ' - ' +
+                                     moment().format('YYYY/MM/DD HH:mm:ss'));
+            $('#date-end').daterangepicker({
+                                               maxDate: moment(), //最大时间
+                                               dateLimit: {
+                                                   days: 30
+                                               }, //起止时间的最大间隔
+                                               showDropdowns: true,
+                                               showWeekNumbers: false, //是否显示第几周
+                                               timePicker: true, //是否显示小时和分钟
+                                               timePickerIncrement: 60, //时间的增量，单位为分钟
+                                               timePicker12Hour: false, //是否使用12小时制来显示时间
+                                               ranges: {
+                                                   '最近1小时': [moment().subtract('hours', 1),
+                                                             moment()],
+                                                   '今日': [moment().startOf('day'), moment()],
+                                                   '昨日': [moment().subtract('days',
+                                                                            1).startOf('day'),
+                                                          moment().subtract('days',
+                                                                            1).endOf('day')],
+                                                   '最近7日': [moment().subtract('days', 6), moment()],
+                                                   '最近30日': [moment().subtract('days', 29),
+                                                             moment()]
+                                               },
+                                               opens: 'right', //日期选择框的弹出位置
+                                               buttonClasses: ['btn btn-default'],
+                                               applyClass: 'btn-small btn-primary blue',
+                                               cancelClass: 'btn-small',
+                                               format: 'YYYY-MM-DD HH:mm:ss', //控件中from和to 显示的日期格式
+                                               separator: ' to ',
+                                               locale: {
+                                                   applyLabel: '确定',
+                                                   cancelLabel: '取消',
+                                                   fromLabel: '起始时间',
+                                                   toLabel: '结束时间',
+                                                   customRangeLabel: '自定义',
+                                                   daysOfWeek: ['日', '一', '二', '三', '四', '五', '六'],
+                                                   monthNames: ['一月', '二月', '三月', '四月', '五月', '六月',
+                                                                '七月', '八月', '九月', '十月', '十一月',
+                                                                '十二月'],
+                                                   firstDay: 1
+                                               }
+                                           }, function (start, end, label) {//格式化日期显示框
+                $('#date-end span').html(start.format('YYYY/MM/DD HH:mm:ss') + ' - '
+                                         + end.format('YYYY/MM/DD HH:mm:ss'));
+            });
+        })
 //        tab切换
         $('#myTab li:eq(0) a').tab('show');
 //        提示框
@@ -348,6 +436,8 @@
                                               $(".shopName").html(merchant.name);
                                               $("#qrCode").attr("src", merchant.qrCodePicture);
                                               $("#qrWarn").modal("show");
+                                              var url = "${merchantUrl}" + merchant.merchantSid;
+                                              $("#merchantUrl").html(url);
                                               document.querySelector(".savePic").addEventListener("click",
                                                                                                   function () {
                                                                                                       html2canvas($(".modal-body .main"), {
@@ -405,6 +495,11 @@
                                       });
     }
     function searchMerchantByCriteria() {
+        var dateStr = $('#date-end span').text().split("-");
+        var startDate =dateStr[0].replace(/-/g, "/");
+        var endDate = dateStr[1].replace(/-/g, "/");
+        merchantCriteria.startDate = startDate;
+        merchantCriteria.endDate = endDate;
         if ($("#merchant-name").val() != "" && $("#merchant-name").val() != null) {
             merchantCriteria.merchant = $("#merchant-name").val();
         } else {
@@ -414,6 +509,24 @@
             merchantCriteria.partnership = $("#partnership").val();
         } else {
             merchantCriteria.partnership = null;
+        }
+
+        if ($("#city").val() != 0) {
+            merchantCriteria.city = $("#city").val();
+        } else {
+            merchantCriteria.city = null;
+        }
+
+        if ($("#receiptAuth").val() != -1) {
+            merchantCriteria.receiptAuth = $("#receiptAuth").val();
+        } else {
+            merchantCriteria.receiptAuth = null;
+        }
+
+        if ($("#state").val() != -1) {
+            merchantCriteria.storeState = $("#state").val();
+        } else {
+            merchantCriteria.storeState = null;
         }
 
         if ($("#merchantType").val() != 0) {
