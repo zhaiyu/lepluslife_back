@@ -21,6 +21,7 @@ import org.springframework.stereotype.Component;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
+import java.util.HashMap;
 import java.util.Map;
 
 /**
@@ -34,8 +35,13 @@ public class WeixinRefreshJob implements Job {
   @Override
   public void execute(JobExecutionContext context) throws JobExecutionException {
 
-    String appId = "wxe2190d22ce025e4f";
-    String appSecret = "4a3f22e2ac05822b8b284e5a7c93b280";
+    HashMap<String, String[]> apps = new HashMap<>();
+//    String[] app1 = {"wxec4f3a2fb6ee8f06", "437e62266d3ff047ea0803b234ad0801", "7", "8"};
+//    String[] app2 = {"wxec4f3a2fb6ee8f06", "437e62266d3ff047ea0803b234ad0801", "9", "10"};
+    String[] app1 = {"wxe2190d22ce025e4f", "4a3f22e2ac05822b8b284e5a7c93b280", "7", "8"};
+    String[] app2 = {"wx16edfa0dda02edd5", "2ff98b94441224bf584181e844a8af66", "9", "10"};
+    apps.put("乐加生活", app1);
+    apps.put("乐加支付", app2);
 
     ApplicationContext
         applicationContext = null;
@@ -49,52 +55,60 @@ public class WeixinRefreshJob implements Job {
     DictionaryService dictionaryService =
         (DictionaryService) applicationContext.getBean("dictionaryService");
 
-    //获取并保存access_token
-    String
-        getUrl =
-        "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + appId
-        + "&secret=" + appSecret;
-    CloseableHttpClient httpClient = HttpClients.createDefault();
-    HttpGet httpGet = new HttpGet(getUrl);
-    httpGet.addHeader("Content-Type", "application/json;charset=utf8mb4");
-    CloseableHttpResponse response = null;
-    try {
-      response = httpClient.execute(httpGet);
-      HttpEntity entity = response.getEntity();
-      ObjectMapper mapper = new ObjectMapper();
-      Map<String, Object>
-          map =
-          mapper.readValue(new BufferedReader(new InputStreamReader(entity.getContent(), "utf-8")),
-                           Map.class);
-      EntityUtils.consume(entity);
-      response.close();
-      //  System.out.println(map.toString());
-      if (map.get("errcode") == null) {
-        dictionaryService.updateAccessToken((String) map.get("access_token"));
-        //更新并保存jsApiTicket
-        getUrl =
-            "https://api.weixin.qq.com/cgi-bin/ticket/getticket?type=jsapi&access_token="
-            + map.get("access_token");
-        HttpGet httpGet2 = new HttpGet(getUrl);
-        httpGet.addHeader("Content-Type", "application/json;charset=utf8mb4");
-        CloseableHttpResponse response2 = httpClient.execute(httpGet2);
-        HttpEntity entity2 = response2.getEntity();
-        ObjectMapper mapper2 = new ObjectMapper();
+    for (Map.Entry<String, String[]> entry : apps.entrySet()) {
+      //获取并保存access_token
+      String
+          getUrl =
+          "https://api.weixin.qq.com/cgi-bin/token?grant_type=client_credential&appid=" + entry
+              .getValue()[0]
+          + "&secret=" + entry.getValue()[1];
+      CloseableHttpClient httpClient = HttpClients.createDefault();
+      HttpGet httpGet = new HttpGet(getUrl);
+      httpGet.addHeader("Content-Type", "application/json;charset=utf8mb4");
+      CloseableHttpResponse response = null;
+      try {
+        response = httpClient.execute(httpGet);
+        HttpEntity entity = response.getEntity();
+        ObjectMapper mapper = new ObjectMapper();
         Map<String, Object>
-            map2 =
-            mapper2
-                .readValue(new BufferedReader(new InputStreamReader(entity2.getContent(), "utf-8")),
+            map =
+            mapper
+                .readValue(new BufferedReader(new InputStreamReader(entity.getContent(), "utf-8")),
                            Map.class);
-        EntityUtils.consume(entity2);
-        response2.close();
-        httpClient.close();
+        EntityUtils.consume(entity);
+        response.close();
+        //  System.out.println(map.toString());
+        if (map.get("errcode") == null) {
+          dictionaryService.updateAccessToken((String) map.get("access_token"),
+                                              Long.valueOf(entry.getValue()[2]));
+          //更新并保存jsApiTicket
+          getUrl =
+              "https://api.weixin.qq.com/cgi-bin/ticket/getticket?type=jsapi&access_token="
+              + map.get("access_token");
+          HttpGet httpGet2 = new HttpGet(getUrl);
+          httpGet.addHeader("Content-Type", "application/json;charset=utf8mb4");
+          CloseableHttpResponse response2 = httpClient.execute(httpGet2);
+          HttpEntity entity2 = response2.getEntity();
+          ObjectMapper mapper2 = new ObjectMapper();
+          Map<String, Object>
+              map2 =
+              mapper2
+                  .readValue(
+                      new BufferedReader(new InputStreamReader(entity2.getContent(), "utf-8")),
+                      Map.class);
+          EntityUtils.consume(entity2);
+          response2.close();
+          httpClient.close();
 
-        if (map2.get("errcode") == null || (Integer) map2.get("errcode") == 0) {
-          dictionaryService.updateJsApiTicket((String) map2.get("ticket"));
+          if (map2.get("errcode") == null || (Integer) map2.get("errcode") == 0) {
+            dictionaryService
+                .updateJsApiTicket((String) map2.get("ticket"), Long.valueOf(entry.getValue()[3]));
+          }
         }
+      } catch (IOException e) {
+        e.printStackTrace();
       }
-    } catch (IOException e) {
-      e.printStackTrace();
     }
+
   }
 }
