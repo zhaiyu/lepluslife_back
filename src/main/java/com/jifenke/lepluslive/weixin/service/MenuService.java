@@ -42,6 +42,9 @@ public class MenuService {
   @Inject
   private MenuRepository menuRepository;
 
+  @Inject
+  private DictionaryService dictionaryService;
+
   @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
   public List<Menu> findAllMenu() {
     return menuRepository.findAllByIsDisabledOrderByParentMenuAscDisplayOrderAsc(0);
@@ -132,7 +135,7 @@ public class MenuService {
           new StringEntity(new String(buttonString.getBytes("utf8"), "iso8859-1"));
 
       //获取token
-      String token = WeixinPayUtil.getAccessToken(39L).getAccessToken();
+      String token = dictionaryService.findDictionaryById(7L).getValue();
       String
           getUrl =
           "https://api.weixin.qq.com//cgi-bin/menu/create?access_token=" + token;
@@ -168,7 +171,7 @@ public class MenuService {
 
     try {
 
-      String token = WeixinPayUtil.getAccessToken(39L).getAccessToken();
+      String token = dictionaryService.findDictionaryById(7L).getValue();
       String
           getUrl =
           "https://api.weixin.qq.com//cgi-bin/menu/delete?access_token=" + token;

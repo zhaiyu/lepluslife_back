@@ -30,7 +30,7 @@ public class DictionaryService {
   /**
    * 更新推荐商品时间戳
    */
-  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public void updateProductRecommend(Date date) {
 
     Dictionary dictionary = dictionaryRepository.findOne(5L);
@@ -41,11 +41,33 @@ public class DictionaryService {
   /**
    * 更新推荐商家时间戳
    */
-  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public void updateMerchantRecommend(Date date) {
 
     Dictionary dictionary = dictionaryRepository.findOne(6L);
     dictionary.setValue(String.valueOf(date.getTime()));
+    dictionaryRepository.save(dictionary);
+  }
+
+  /**
+   * 更新jsApiTicket
+   */
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  public void updateJsApiTicket(String jsApiTicket) {
+
+    Dictionary dictionary = dictionaryRepository.findOne(8L);
+    dictionary.setValue(jsApiTicket);
+    dictionaryRepository.save(dictionary);
+  }
+
+  /**
+   * 更新access_token
+   */
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  public void updateAccessToken(String access_token) {
+
+    Dictionary dictionary = dictionaryRepository.findOne(7L);
+    dictionary.setValue(access_token);
     dictionaryRepository.save(dictionary);
   }
 
