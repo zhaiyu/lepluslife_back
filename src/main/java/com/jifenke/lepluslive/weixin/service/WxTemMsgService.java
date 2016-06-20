@@ -40,6 +40,9 @@ public class WxTemMsgService {
   @Inject
   private WxTemMsgRepository wxTemMsgRepository;
 
+  @Inject
+  private DictionaryService dictionaryService;
+
   /**
    * 根据temId不同，发送不同的消息 keys  封装参数
    */
@@ -129,7 +132,7 @@ public class WxTemMsgService {
           new StringEntity(new String(param.toString().getBytes("utf8"), "iso8859-1"));
 
       //获取token
-      String token = WeixinPayUtil.getAccessToken(wxId).getAccessToken();
+      String token = dictionaryService.findDictionaryById(7L).getValue();
 
       String
           getUrl =
