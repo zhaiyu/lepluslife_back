@@ -53,9 +53,9 @@ public class DictionaryService {
    * 更新jsApiTicket
    */
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-  public void updateJsApiTicket(String jsApiTicket) {
+  public void updateJsApiTicket(String jsApiTicket, Long id) {
 
-    Dictionary dictionary = dictionaryRepository.findOne(8L);
+    Dictionary dictionary = dictionaryRepository.findOne(id);
     dictionary.setValue(jsApiTicket);
     dictionaryRepository.save(dictionary);
   }
@@ -64,9 +64,9 @@ public class DictionaryService {
    * 更新access_token
    */
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-  public void updateAccessToken(String access_token) {
+  public void updateAccessToken(String access_token, Long id) {
 
-    Dictionary dictionary = dictionaryRepository.findOne(7L);
+    Dictionary dictionary = dictionaryRepository.findOne(id);
     dictionary.setValue(access_token);
     dictionaryRepository.save(dictionary);
   }
