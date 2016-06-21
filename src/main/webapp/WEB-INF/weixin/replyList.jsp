@@ -276,19 +276,19 @@
                                                 });
 
         $('#addTextRule').on('click', function () {
-            location.href = "/weixin/reply/textEdit/0";
+            location.href = "/manage/weixin/reply/textEdit/0";
         });
         $('#addImageRule').on('click', function () {
-            location.href = "/weixin/reply/imageEdit/0";
+            location.href = "/manage/weixin/reply/imageEdit/0";
         });
 
     });
 
     function editTextRule(id) {
-        location.href = "/weixin/reply/textEdit/" + id;
+        location.href = "/manage/weixin/reply/textEdit/" + id;
     }
     function editImageRule(id) {
-        location.href = "/weixin/reply/imageEdit/" + id;
+        location.href = "/manage/weixin/reply/imageEdit/" + id;
     }
 
     function deleteAutoRule(ruleId) {
@@ -299,7 +299,7 @@
         if (ruleId) {
             $.ajax({
                        type: "delete",
-                       url: "/weixin/reply/deleteAutoReply/" + ruleId,
+                       url: "/manage/weixin/reply/deleteAutoReply/" + ruleId,
                        success: function (data) {
                            if (data.status == 200) {
                                alert(data.msg);
@@ -316,7 +316,7 @@
 
     function pageChange(page) {
         location.href =
-        "/weixin/reply/list?page=" + page;
+        "/manage/weixin/reply/list?page=" + page;
     }
 
 

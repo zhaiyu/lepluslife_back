@@ -206,13 +206,13 @@
 
         $.ajax({
                    type: "put",
-                   url: "/weixin/reply/saveImage",
+                   url: "/manage/weixin/reply/saveImage",
                    contentType: "application/json",
                    data: JSON.stringify(autoReplyRule),
                    success: function (data) {
                        if (data.status == 200) {
                            alert(data.msg);
-                           window.location.href = "/weixin/reply/list";
+                           window.location.href = "/manage/weixin/reply/list";
                        } else {
                            alert(data.msg);
                        }
@@ -221,7 +221,7 @@
     });
 
     function goReplyPage() {
-        location.href = "/weixin/reply/list";
+        location.href = "/manage/weixin/reply/list";
     }
 
 </script>

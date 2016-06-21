@@ -29,7 +29,7 @@ import javax.inject.Inject;
  * Created by zhangwen on 2016/5/25.
  */
 @RestController
-@RequestMapping("/weixin")
+@RequestMapping("/manage/weixin")
 public class MenuController {
 
   @Inject

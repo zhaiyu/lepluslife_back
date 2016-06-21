@@ -56,7 +56,7 @@
 <script>
     $(function () {
 //        数组
-        var htmlArr=['/manage/index','/manage/product','/manage/product','picManger.html','/manage/merchant','/manage/order','/manage/topic','/manage/user','/manage/offLineOrder','/manage/financial','/weixin/index'];
+        var htmlArr=['/manage/index','/manage/product','/manage/product','picManger.html','/manage/merchant','/manage/order','/manage/topic','/manage/user','/manage/offLineOrder','/manage/financial','/manage/weixin/index'];
         $('.M1').click(function () {
             window.location.href=htmlArr[0];
         });

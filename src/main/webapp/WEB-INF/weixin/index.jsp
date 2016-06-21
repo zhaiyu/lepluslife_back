@@ -133,7 +133,7 @@
                     <div class="col-xs-6 col-sm-3">
                         <div class="thumbnail">
                             <div class="caption">
-                                <a href='/weixin/menu/list'>
+                                <a href='/manage/weixin/menu/list'>
                                     <button class="button button--antiman button--round-l button--text-medium">
                                         <span>自定义菜单</span></button>
                                 </a>
@@ -143,7 +143,7 @@
                     <div class="col-xs-6 col-sm-3">
                         <div class="thumbnail">
                             <div class="caption">
-                                <a href='/weixin/reply/list'>
+                                <a href='/manage/weixin/reply/list'>
                                     <button class="button button--antiman button--round-l button--text-medium">
                                         <span>微信回复规则</span></button>
                                 </a>

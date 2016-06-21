@@ -132,7 +132,7 @@ public class WxTemMsgService {
           new StringEntity(new String(param.toString().getBytes("utf8"), "iso8859-1"));
 
       //获取token
-      String token = dictionaryService.findDictionaryById(7L).getValue();
+      String token = dictionaryService.findDictionaryById(9L).getValue();
 
       String
           getUrl =

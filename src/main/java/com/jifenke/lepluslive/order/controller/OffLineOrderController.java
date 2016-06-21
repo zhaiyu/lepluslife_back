@@ -2,6 +2,8 @@ package com.jifenke.lepluslive.order.controller;
 
 import com.jifenke.lepluslive.global.util.LejiaResult;
 import com.jifenke.lepluslive.global.util.MvUtil;
+import com.jifenke.lepluslive.merchant.domain.entities.MerchantUser;
+import com.jifenke.lepluslive.merchant.domain.entities.MerchantWeiXinUser;
 import com.jifenke.lepluslive.merchant.service.MerchantService;
 import com.jifenke.lepluslive.merchant.service.MerchantWeiXinUserService;
 import com.jifenke.lepluslive.order.controller.view.FinancialViewExcel;
@@ -23,6 +25,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 import java.util.stream.Collectors;
 
@@ -134,18 +137,31 @@ public class OffLineOrderController {
     mapRemark.put("color", "#173177");
     HashMap<String, Object> map2 = new HashMap<>();
     map2.put("remark", mapRemark);
-    merchantService.findMerchantUserByMerchant(financialStatistic
-                                                   .getMerchant()).stream().map(merchantUser -> {
-      merchantWeiXinUserService.findMerchantWeiXinUserByMerchantUser(merchantUser).stream()
-          .map(merchantWeiXinUser -> {
-            wxTemMsgService.sendTemMessage(merchantWeiXinUser.getOpenId(), 4L, keys,
-                                           financialStatistic.getStatisticId(), 41L, map2);
-            return null;
-          })
-          .collect(Collectors.toList());
-      return null;
-    }).collect(
-        Collectors.toList());
+    List<MerchantUser>
+        merchantUsers =
+        merchantService.findMerchantUserByMerchant(financialStatistic
+                                                       .getMerchant());
+    for(MerchantUser merchantUser:merchantUsers){
+      List<MerchantWeiXinUser>
+          merchantWeiXinUsers =
+          merchantWeiXinUserService.findMerchantWeiXinUserByMerchantUser(merchantUser);
+      for(MerchantWeiXinUser merchantWeiXinUser:merchantWeiXinUsers){
+        wxTemMsgService.sendTemMessage(merchantWeiXinUser.getOpenId(), 4L, keys,
+                                       financialStatistic.getStatisticId(), 41L, map2);
+      }
+    }
+//    merchantService.findMerchantUserByMerchant(financialStatistic
+//                                                   .getMerchant()).stream().map(merchantUser -> {
+//      merchantWeiXinUserService.findMerchantWeiXinUserByMerchantUser(merchantUser).stream()
+//          .map(merchantWeiXinUser -> {
+//            wxTemMsgService.sendTemMessage(merchantWeiXinUser.getOpenId(), 4L, keys,
+//                                           financialStatistic.getStatisticId(), 41L, map2);
+//            return null;
+//          })
+//          .collect(Collectors.toList());
+//      return null;
+//    }).collect(
+//        Collectors.toList());
 
     return LejiaResult.ok();
   }

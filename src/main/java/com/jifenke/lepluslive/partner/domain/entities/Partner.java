@@ -25,6 +25,18 @@ public class Partner {
 
   private String name;
 
+
+  private Long userLimit;
+
+
+  public Long getUserLimit() {
+    return userLimit;
+  }
+
+  public void setUserLimit(Long userLimit) {
+    this.userLimit = userLimit;
+  }
+
   public Partner(Long id) {
     this.id = id;
   }
