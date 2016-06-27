@@ -148,13 +148,34 @@ public class MerchantService {
     if (origin == null) {
       throw new RuntimeException("不存在的商户");
     }
-    try {
-      BeanUtils.copyProperties(origin, merchant);
-    } catch (IllegalAccessException e) {
-      e.printStackTrace();
-    } catch (InvocationTargetException e) {
-      e.printStackTrace();
-    }
+    origin.setLjBrokerage(merchant.getLjBrokerage());
+    origin.setLjCommission(merchant.getLjCommission());
+    origin.setName(merchant.getName());
+    origin.setLocation(merchant.getLocation());
+    origin.setState(merchant.getState());
+    origin.setPartner(merchant.getPartner());
+    origin.setArea(merchant.getArea());
+    origin.setUserLimit(merchant.getUserLimit());
+    origin.setCity(merchant.getCity());
+    origin.setContact(merchant.getContact());
+    origin.setPayee(merchant.getPayee());
+    origin.setCycle(merchant.getCycle());
+    origin.setMerchantBank(merchant.getMerchantBank());
+    origin.setMerchantPhone(merchant.getMerchantPhone());
+    origin.setMerchantProtocols(merchant.getMerchantProtocols());
+    origin.setScoreARebate(merchant.getScoreARebate());
+    origin.setScoreBRebate(merchant.getScoreBRebate());
+    origin.setMerchantType(merchant.getMerchantType());
+    origin.setPicture(merchant.getPicture());
+    origin.setReceiptAuth(merchant.getReceiptAuth());
+    origin.setPartnership(merchant.getPartnership());
+//    try {
+//      BeanUtils.copyProperties(origin, merchant);
+//    } catch (IllegalAccessException e) {
+//      e.printStackTrace();
+//    } catch (InvocationTargetException e) {
+//      e.printStackTrace();
+//    }
     long l = merchant.getId();
     origin.setSid((int) l);
     origin.setMerchantSid(sid);
@@ -305,7 +326,7 @@ public class MerchantService {
 
     origin.setOfficeHour(merchant.getOfficeHour());
 
-    origin.setMerchantPhone(merchant.getMerchantPhone());
+    origin.setPhoneNumber(merchant.getPhoneNumber());
 
     merchantRepository.save(origin);
   }

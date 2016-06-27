@@ -65,7 +65,8 @@
                             </div>
                             <div class="form-group col-md-3">
                                 <label for="merchant-info">商户信息</label>
-                                <input id="merchant-name" type="text" id="merchant-info" class="form-control"
+                                <input id="merchant-name" type="text" id="merchant-info"
+                                       class="form-control"
                                        placeholder="请输入商户名称或ID"/>
                             </div>
                             <div class="form-group col-md-1">
@@ -91,7 +92,12 @@
                         <a href="#" class="next" data-action="next">&rsaquo;</a>
                         <a href="#" class="last" data-action="last">&raquo;</a>
                     </div>
-                    <button class="btn btn-primary pull-right" style="margin-top: 5px" onclick="exportExcel()">导出表格</button>
+                    <button class="btn btn-primary pull-right" style="margin-top: 5px"
+                            onclick="exportExcel()">导出表格
+                    </button>
+                    <button class="btn btn-primary pull-right" style="margin-top: 5px"
+                            onclick="batchTransfer()">批量确认转账
+                    </button>
                 </div>
             </div>
         </div>
@@ -238,17 +244,19 @@
                            contentStr +=
                            '<td><span>' + content[i].merchant.name + '</span><br><span>('
                            + content[i].merchant.merchantSid + ')</span></td>'
-                           if(content[i].merchant.merchantBank.bankName=="支付宝"){
+                           if (content[i].merchant.merchantBank.bankName == "支付宝") {
                                contentStr +=
-                               '<td>支付宝</td>'+'<td>' + content[i].merchant.merchantBank.bankNumber + '</td>'
-                           }else{
+                               '<td>支付宝</td>' + '<td>' + content[i].merchant.merchantBank.bankNumber
+                               + '</td>'
+                           } else {
                                contentStr +=
-                               '<td>银行卡</td>'+'<td>' + content[i].merchant.merchantBank.bankName + '  '+content[i].merchant.merchantBank.bankNumber+'</td>'
+                               '<td>银行卡</td>' + '<td>' + content[i].merchant.merchantBank.bankName
+                               + '  ' + content[i].merchant.merchantBank.bankNumber + '</td>'
                            }
                            '<td>' + content[i].merchant.merchantBank.bankName + '</td>'
-                           if( content[i].merchant.cycle==1){
+                           if (content[i].merchant.cycle == 1) {
                                contentStr += '<td>T+1</td>'
-                           }else{
+                           } else {
                                contentStr += '<td>T+2</td>'
                            }
                            contentStr += '<td>' + content[i].merchant.payee + '</td>'
@@ -257,8 +265,11 @@
                                contentStr +=
                                '<td><input type="hidden" class="id-hidden" value="' + content[i].id
                                + '"><button class="btn btn-primary btn-sm changeFinancialToTransfer">确认转账</button></td>';
-                           }else{
-                               contentStr += '<td>' +  new Date(content[i].transferDate).format('yyyy-MM-dd HH:mm:ss') + '</td>'
+                           } else {
+                               contentStr +=
+                               '<td>'
+                               + new Date(content[i].transferDate).format('yyyy-MM-dd HH:mm:ss')
+                               + '</td>'
                            }
                            financialContent.innerHTML += contentStr;
 
@@ -390,6 +401,23 @@
             financialCriteria.merchant = null;
         }
         post("/manage/financial/export", financialCriteria);
+    }
+
+    function batchTransfer() {
+        var ids = [];
+        $(".id-hidden").each(function () {
+            ids.push(this.value)
+        });
+        $.ajax({
+                   type: "post",
+                   url: "/manage/financial/batchTransfer",
+                   data: JSON.stringify(ids),
+                   contentType: "application/json",
+                   success: function (data) {
+                       alert(data.msg);
+                       location.href ="/manage/financial";
+                   }
+               });
     }
 </script>
 </body>

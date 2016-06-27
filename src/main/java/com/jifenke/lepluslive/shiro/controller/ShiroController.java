@@ -48,6 +48,7 @@ public class ShiroController {
         token =
         new UsernamePasswordToken(username, MD5Util.MD5Encode(user.getPassword(), "UTF-8"));
     //获取当前的Subject
+    System.out.println(token.getPassword());
     Subject currentUser = SecurityUtils.getSubject();
     try {
       //在调用了login方法后,SecurityManager会收到AuthenticationToken,并将其发送给已配置的Realm执行必须的认证检查

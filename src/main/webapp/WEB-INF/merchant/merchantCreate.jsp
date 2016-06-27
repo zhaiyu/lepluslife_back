@@ -519,7 +519,7 @@
 
         var merchant = {};
         var partner = {};
-        partner.id = $("#partner").val();
+        partner.id = $("#partners").val();
         merchant.partner = partner;
         var city = {};
         city.id = $("#locationCity").val();

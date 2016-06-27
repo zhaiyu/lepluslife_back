@@ -193,14 +193,6 @@ public class Merchant {
   }
 
 
-  public Long getLimit() {
-    return userLimit;
-  }
-
-  public void setLimit(Long userLimit) {
-    this.userLimit = userLimit;
-  }
-
   @ManyToOne
   private Area area;
 

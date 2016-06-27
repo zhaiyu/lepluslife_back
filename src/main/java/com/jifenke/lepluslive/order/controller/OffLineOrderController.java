@@ -117,6 +117,31 @@ public class OffLineOrderController {
   @ResponseBody
   LejiaResult changeFinancialStateToTransfer(@PathVariable Long id) {
     //改变统计单状态并发送模版消息
+    changefinancialTransfer(id);
+    return LejiaResult.ok();
+  }
+
+  @RequestMapping(value = "/financial/export", method = RequestMethod.POST)
+  public ModelAndView exporeExcel(FinancialCriteria financialCriteria) {
+    if (financialCriteria.getOffset() == null) {
+      financialCriteria.setOffset(1);
+    }
+    Page page = offLineOrderService.findFinancialByCirterial(financialCriteria, 10000);
+    Map map = new HashMap();
+    map.put("financialList", page.getContent());
+    return new ModelAndView(financialViewExcel, map);
+  }
+
+  @RequestMapping(value = "/financial/batchTransfer", method = RequestMethod.POST)
+  public LejiaResult batchTransfer(@RequestBody List<String> ids) {
+    for (String id : ids) {
+      changefinancialTransfer(Long.parseLong(id));
+    }
+    return LejiaResult.ok();
+  }
+
+
+  private void changefinancialTransfer(Long id) {
     FinancialStatistic financialStatistic = offLineOrderService.changeFinancialStateToTransfer(id);
     String s = financialStatistic.getMerchant().getMerchantBank().getBankNumber();
     String[] keys = new String[4];
@@ -141,40 +166,15 @@ public class OffLineOrderController {
         merchantUsers =
         merchantService.findMerchantUserByMerchant(financialStatistic
                                                        .getMerchant());
-    for(MerchantUser merchantUser:merchantUsers){
+    for (MerchantUser merchantUser : merchantUsers) {
       List<MerchantWeiXinUser>
           merchantWeiXinUsers =
           merchantWeiXinUserService.findMerchantWeiXinUserByMerchantUser(merchantUser);
-      for(MerchantWeiXinUser merchantWeiXinUser:merchantWeiXinUsers){
+      for (MerchantWeiXinUser merchantWeiXinUser : merchantWeiXinUsers) {
         wxTemMsgService.sendTemMessage(merchantWeiXinUser.getOpenId(), 4L, keys,
                                        financialStatistic.getStatisticId(), 41L, map2);
       }
     }
-//    merchantService.findMerchantUserByMerchant(financialStatistic
-//                                                   .getMerchant()).stream().map(merchantUser -> {
-//      merchantWeiXinUserService.findMerchantWeiXinUserByMerchantUser(merchantUser).stream()
-//          .map(merchantWeiXinUser -> {
-//            wxTemMsgService.sendTemMessage(merchantWeiXinUser.getOpenId(), 4L, keys,
-//                                           financialStatistic.getStatisticId(), 41L, map2);
-//            return null;
-//          })
-//          .collect(Collectors.toList());
-//      return null;
-//    }).collect(
-//        Collectors.toList());
-
-    return LejiaResult.ok();
-  }
-
-  @RequestMapping(value = "/financial/export", method = RequestMethod.POST)
-  public ModelAndView exporeExcel(FinancialCriteria financialCriteria) {
-    if (financialCriteria.getOffset() == null) {
-      financialCriteria.setOffset(1);
-    }
-    Page page = offLineOrderService.findFinancialByCirterial(financialCriteria, 10000);
-    Map map = new HashMap();
-    map.put("financialList", page.getContent());
-    return new ModelAndView(financialViewExcel, map);
   }
 
 }
