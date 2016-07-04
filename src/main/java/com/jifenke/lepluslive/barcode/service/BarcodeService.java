@@ -77,7 +77,7 @@ public class BarcodeService {
     Hashtable<EncodeHintType, Object> hints = new Hashtable<EncodeHintType, Object>();
 
     hints.put(EncodeHintType.CHARACTER_SET, "utf-8");
-    hints.put(EncodeHintType.MARGIN, 0);
+    hints.put(EncodeHintType.MARGIN, 1);
     try {
 
       BitMatrix byteMatrix = new MultiFormatWriter().encode(code,

@@ -1,7 +1,8 @@
 # ===================================================================
 # Spring Boot configuration.
 #
-# This configuration is used for unit/integration tests.
+# This configuration will be overriden by the Spring profile you use,
+# for example application-dev.yml if you use the "dev" profile.
 # ===================================================================
 
 # ===================================================================
@@ -11,44 +12,34 @@
 # ===================================================================
 
 spring:
-    datasource:
-        driver-class-name: org.h2.jdbcx.JdbcDataSource
-        url: jdbc:h2:mem:lepluslive;DB_CLOSE_DELAY=-1
-        name:
-        username:
-        password:
     jpa:
-        database-platform: com.jifenke.lepluslive.domain.util.FixedH2Dialect
-        database: H2
         open-in-view: false
-        show_sql: true
         hibernate:
             ddl-auto: none
             naming-strategy: org.springframework.boot.orm.jpa.hibernate.SpringNamingStrategy
-        properties:
-            hibernate.cache.use_second_level_cache: false
-            hibernate.cache.use_query_cache: false
-            hibernate.generate_statistics: true
-            hibernate.hbm2ddl.auto: validate
-    mail:
-        host: localhost
+    messages:
+        basename: classpath:/i18n/messages
     mvc:
         favicon:
             enabled: false
     thymeleaf:
         mode: XHTML
 
-liquibase:
-    contexts: test
-
 security:
     basic:
         enabled: false
-
-server:
-    port: 10344
-    address: localhost
-
+bucket:
+    image: lepluslive-image
+    file: lepluslive-file
+    endpoint: "http://oss-cn-beijing.aliyuncs.com"
+    ossAccessId: sUKKLHUWR4Ayjrks
+    ossAccessSecret: IuZif8RNp3DeG0CN0hkzvcCtszQ0Jl
+    barcode: lepluslive-barcode
+    ossBarCodeReadRoot: http://lepluslive-barcode.oss-cn-beijing.aliyuncs.com
+weixin:
+     appId: wxec4f3a2fb6ee8f06
+express:
+    appkey: e5ebeb3f01670d2b
 # ===================================================================
 # JHipster specific properties
 # ===================================================================
@@ -58,12 +49,19 @@ jhipster:
         corePoolSize: 2
         maxPoolSize: 50
         queueCapacity: 10000
+    #cors: #By default CORS are not enabled. Uncomment to enable.
+        #allowed-origins: "*"
+        #allowed-methods: GET, PUT, POST, DELETE, OPTIONS
+        #allowed-headers: "*"
+        #exposed-headers:
+        #allow-credentials: true
+        #max-age: 1800
+    mail:
+        from: lepluslive@localhost
     security:
         rememberme:
             # security key (this key should be unique for your application, and kept secret)
             key: 5664edfbba8af651c2fec94c50b03dc583bfa7a9
-    metrics: # DropWizard Metrics configuration, used by MetricsConfiguration
-        jmx.enabled: true
     swagger:
         title: lepluslive API
         description: lepluslive API documentation
