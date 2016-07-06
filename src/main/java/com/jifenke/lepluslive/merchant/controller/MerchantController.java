@@ -23,6 +23,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import javax.inject.Inject;
 
 /**
@@ -56,14 +59,20 @@ public class MerchantController {
       merchantCriteria.setOffset(1);
     }
     Page page = merchantService.findMerchantsByPage(merchantCriteria, 10);
-    return LejiaResult.ok(page);
+    //获取每个合伙人的锁定会员数
+    List<Merchant> merchants = page.getContent();
+    List<Integer> binds = merchantService.findBindLeJiaUsers(merchants);
+    List<Object> list = new ArrayList<>();
+    list.add(page);
+    list.add(binds);
+    return LejiaResult.ok(list);
   }
 
 
   @RequestMapping(value = "/merchant/edit", method = RequestMethod.GET)
   public ModelAndView goCreateMerchantPage(Model model) {
     model.addAttribute("merchantTypes", merchantService.findAllMerchantTypes());
-    model.addAttribute("partners",partnerService.findAllParter());
+    model.addAttribute("partners", partnerService.findAllParter());
     return MvUtil.go("/merchant/merchantCreate");
   }
 
@@ -71,7 +80,7 @@ public class MerchantController {
   public ModelAndView goEditMerchantPage(@PathVariable Long id, Model model) {
     model.addAttribute("merchant", merchantService.findMerchantById(id));
     model.addAttribute("merchantTypes", merchantService.findAllMerchantTypes());
-    model.addAttribute("partners",partnerService.findAllParter());
+    model.addAttribute("partners", partnerService.findAllParter());
     return MvUtil.go("/merchant/merchantCreate");
   }
 
@@ -109,14 +118,14 @@ public class MerchantController {
   public LejiaResult openStore(@RequestBody Merchant merchant) {
     merchantService.openStore(merchant);
 //    model.addAttribute("merchant", merchant);
-    return LejiaResult.build(200,"开启成功");
+    return LejiaResult.build(200, "开启成功");
   }
 
   @RequestMapping(value = "/merchant/closeStore/{id}", method = RequestMethod.GET)
   public LejiaResult closeStore(@PathVariable Long id) {
     merchantService.closeStore(id);
 //    model.addAttribute("merchant", merchant);
-    return LejiaResult.build(200,"成功关闭乐店");
+    return LejiaResult.build(200, "成功关闭乐店");
   }
 
   @RequestMapping(value = "/merchant/openStore/{id}", method = RequestMethod.GET)

@@ -17,15 +17,13 @@ import com.jifenke.lepluslive.merchant.repository.MerchantRepository;
 import com.jifenke.lepluslive.merchant.repository.MerchantTypeRepository;
 import com.jifenke.lepluslive.merchant.repository.MerchantUserRepository;
 import com.jifenke.lepluslive.merchant.repository.MerchantWalletRepository;
-import com.jifenke.lepluslive.order.domain.criteria.OLOrderCriteria;
 import com.jifenke.lepluslive.user.domain.entities.RegisterOrigin;
+import com.jifenke.lepluslive.user.repository.LeJiaUserRepository;
 import com.jifenke.lepluslive.user.repository.RegisterOriginRepository;
 
-import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
@@ -33,13 +31,11 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
-import java.lang.reflect.InvocationTargetException;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 import java.util.stream.Collectors;
 
-import javax.inject.Inject;
 import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -76,6 +72,9 @@ public class MerchantService {
 
   @Inject
   private MerchantProtocolRepository merchantProtocolRepository;
+
+  @Inject
+  private LeJiaUserRepository leJiaUserRepository;
 
   @Value("${bucket.ossBarCodeReadRoot}")
   private String barCodeRootUrl;
@@ -231,18 +230,17 @@ public class MerchantService {
           }
         }
 
-        if(merchantCriteria.getReceiptAuth()!=null){
+        if (merchantCriteria.getReceiptAuth() != null) {
           predicate.getExpressions().add(
               cb.equal(r.get("receiptAuth"),
                        merchantCriteria.getReceiptAuth()));
         }
 
-        if(merchantCriteria.getStoreState()!=null){
+        if (merchantCriteria.getStoreState() != null) {
           predicate.getExpressions().add(
               cb.equal(r.get("state"),
                        merchantCriteria.getStoreState()));
         }
-
 
         if (merchantCriteria.getStartDate() != null && merchantCriteria.getStartDate() != "") {
           predicate.getExpressions().add(
@@ -250,7 +248,7 @@ public class MerchantService {
                          new Date(merchantCriteria.getEndDate())));
         }
 
-        if(merchantCriteria.getCity()!=null){
+        if (merchantCriteria.getCity() != null) {
           predicate.getExpressions().add(
               cb.equal(r.get("city"),
                        new City(merchantCriteria.getCity())));
@@ -338,5 +336,18 @@ public class MerchantService {
     origin.setState(0);
 
     merchantRepository.save(origin);
+  }
+
+  //获取每个合伙人的锁定会员数
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+  public List<Integer> findBindLeJiaUsers(List<Merchant> merchants) {
+
+    List<Integer> binds = new ArrayList<>();
+    int count = 0;
+    for (Merchant merchant : merchants) {
+      count = leJiaUserRepository.countByBindMerchant(merchant.getId());
+      binds.add(count);
+    }
+    return binds;
   }
 }

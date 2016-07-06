@@ -1,7 +1,8 @@
 package com.jifenke.lepluslive.user.domain.entities;
 
 import com.jifenke.lepluslive.global.util.MvUtil;
-import com.jifenke.lepluslive.user.domain.entities.WeiXinUser;
+import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
+import com.jifenke.lepluslive.partner.domain.entities.Partner;
 
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
@@ -45,6 +46,27 @@ public class LeJiaUser {
   @ManyToOne
   private RegisterOrigin registerOrigin;
 
+  @ManyToOne
+  private Merchant bindMerchant;
+
+  @ManyToOne
+  private Partner bindPartner;
+
+  public Merchant getBindMerchant() {
+    return bindMerchant;
+  }
+
+  public void setBindMerchant(Merchant bindMerchant) {
+    this.bindMerchant = bindMerchant;
+  }
+
+  public Partner getBindPartner() {
+    return bindPartner;
+  }
+
+  public void setBindPartner(Partner bindPartner) {
+    this.bindPartner = bindPartner;
+  }
 
   public RegisterOrigin getRegisterOrigin() {
     return registerOrigin;
