@@ -94,6 +94,7 @@ public class WeixinMessageService {
       mpnews.put("media_id", mediaId);
       param.put("touser", openIds);
       param.put("mpnews", mpnews);
+      param.put("msgtype", "mpnews");
       StringEntity
           se =
           new StringEntity(new String(param.toString().getBytes("utf8"), "iso8859-1"));
