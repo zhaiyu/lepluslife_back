@@ -96,7 +96,7 @@
                             onclick="exportExcel()">导出表格
                     </button>
                     <button class="btn btn-primary pull-right" style="margin-top: 5px"
-                            onclick="batchTransfer()">批量确认转账
+                            id="batchTransfer">批量确认转账
                     </button>
                 </div>
             </div>
@@ -403,7 +403,12 @@
         post("/manage/financial/export", financialCriteria);
     }
 
-    function batchTransfer() {
+    $("#batchTransfer").bind("click", function () {
+        $("#batchTransfer").unbind("click");
+        $(".changeFinancialToTransfer").each(function (i) {
+            $(".changeFinancialToTransfer").eq(i).unbind("click");
+        });
+
         var ids = [];
         $(".id-hidden").each(function () {
             ids.push(this.value)
@@ -415,10 +420,10 @@
                    contentType: "application/json",
                    success: function (data) {
                        alert(data.msg);
-                       location.href ="/manage/financial";
+                       location.href = "/manage/financial";
                    }
                });
-    }
+    })
 </script>
 </body>
 </html>
