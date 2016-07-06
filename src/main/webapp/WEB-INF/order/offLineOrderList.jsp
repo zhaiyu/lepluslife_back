@@ -167,6 +167,7 @@
 <script src="${resourceUrl}/js/moment.min.js"></script>
 <script>
     var olOrderCriteria = {};
+    var flag = true;
     var orderContent = document.getElementById("orderContent");
     $(function () {
         // tab切换
@@ -181,14 +182,14 @@
 
         // 时间选择器
         $(document).ready(function () {
-            $('#date-end span').html(moment().subtract('hours', 1).format('YYYY/MM/DD HH:mm:ss')
-                                     + ' - ' +
-                                     moment().format('YYYY/MM/DD HH:mm:ss'));
+//            $('#date-end span').html(moment().subtract('hours', 1).format('YYYY/MM/DD HH:mm:ss')
+//                                     + ' - ' +
+//                                     moment().format('YYYY/MM/DD HH:mm:ss'));
             $('#date-end').daterangepicker({
                                                maxDate: moment(), //最大时间
-                                               dateLimit: {
-                                                   days: 30
-                                               }, //起止时间的最大间隔
+//                                               dateLimit: {
+//                                                   days: 30
+//                                               }, //起止时间的最大间隔
                                                showDropdowns: true,
                                                showWeekNumbers: false, //是否显示第几周
                                                timePicker: true, //是否显示小时和分钟
@@ -324,7 +325,10 @@
                                $("#deleteWarn").modal("show");
                            });
                        });
-                       initPage(olOrderCriteria.offset, totalPage);
+                       if(flag){
+                           initPage(olOrderCriteria.offset, totalPage);
+                           flag = false;
+                       }
                    }
                });
     }
@@ -332,7 +336,7 @@
         $('.pagination').jqPagination({
                                           current_page: page, //设置当前页 默认为1
                                           max_page: totalPage, //设置最大页 默认为1
-                                          page_string: '当前第'+page+'页,共'+totalPage+'页',
+                                          page_string: '当前第{current_page}页,共{max_page}页',
                                           paged: function (page) {
                                               olOrderCriteria.offset = page;
                                               getOffLineOrderByAjax(olOrderCriteria);
@@ -379,11 +383,14 @@
     }
 
     function searchOrderByCriteria() {
+        olOrderCriteria.offset = 1;
         var dateStr = $('#date-end span').text().split("-");
-        var startDate =dateStr[0].replace(/-/g, "/");
-        var endDate = dateStr[1].replace(/-/g, "/");
-        olOrderCriteria.startDate = startDate;
-        olOrderCriteria.endDate = endDate;
+        if (dateStr != null && dateStr != '') {
+            var startDate =dateStr[0].replace(/-/g, "/");
+            var endDate = dateStr[1].replace(/-/g, "/");
+            olOrderCriteria.startDate = startDate;
+            olOrderCriteria.endDate = endDate;
+        }
         if ($("#pay-style").val() != 0) {
             olOrderCriteria.payWay = $("#pay-style").val();
         } else {
@@ -404,6 +411,7 @@
         } else {
             olOrderCriteria.merchant = null;
         }
+        flag = true;
         getOffLineOrderByAjax(olOrderCriteria);
     }
 
@@ -414,6 +422,7 @@
         } else {
             olOrderCriteria.state = null;
         }
+        flag = true;
         getOffLineOrderByAjax(olOrderCriteria);
     }
     function post(URL, PARAMS) {

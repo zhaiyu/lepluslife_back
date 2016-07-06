@@ -1,13 +1,8 @@
 package com.jifenke.lepluslive.user.controller.dto;
 
-import com.jifenke.lepluslive.global.util.MvUtil;
 import com.jifenke.lepluslive.user.domain.entities.RegisterOrigin;
-import com.jifenke.lepluslive.user.domain.entities.WeiXinUser;
 
 import java.util.Date;
-
-import javax.persistence.FetchType;
-import javax.persistence.OneToOne;
 
 /**
  * Created by wcg on 16/4/22.
@@ -16,9 +11,23 @@ public class LeJiaUserDto {
 
   private Long id;
 
+  private Integer state;   //会员类型及是否关注公众号
+
+  private String city;      //城市
+
+  private Integer massRemain = 4;  //本月群发余数
+
+  private String merchantName;   //绑定商户名称
+
+  private Date bindMerchantDate;   //绑定商户时间
+
+  private Date bindPartnerDate;   //绑定合伙人时间
+
+  private String partnerName;   //绑定合伙人名称
+
   private String oneBarCodeUrl;
 
-  private String userSid = MvUtil.getBarCodeStr();
+  private String userSid;
 
   private Date createDate;
 
@@ -35,7 +44,6 @@ public class LeJiaUserDto {
   private Long totalScoreA;
 
   private Long totalScoreB;
-
 
   private Long onLineCount;
 
@@ -154,5 +162,61 @@ public class LeJiaUserDto {
 
   public void setOnLineCount(Long onLineCount) {
     this.onLineCount = onLineCount;
+  }
+
+  public Integer getState() {
+    return state;
+  }
+
+  public void setState(Integer state) {
+    this.state = state;
+  }
+
+  public String getCity() {
+    return city;
+  }
+
+  public void setCity(String city) {
+    this.city = city;
+  }
+
+  public Integer getMassRemain() {
+    return massRemain;
+  }
+
+  public void setMassRemain(Integer massRemain) {
+    this.massRemain = massRemain;
+  }
+
+  public String getMerchantName() {
+    return merchantName;
+  }
+
+  public void setMerchantName(String merchantName) {
+    this.merchantName = merchantName;
+  }
+
+  public String getPartnerName() {
+    return partnerName;
+  }
+
+  public Date getBindMerchantDate() {
+    return bindMerchantDate;
+  }
+
+  public void setBindMerchantDate(Date bindMerchantDate) {
+    this.bindMerchantDate = bindMerchantDate;
+  }
+
+  public Date getBindPartnerDate() {
+    return bindPartnerDate;
+  }
+
+  public void setBindPartnerDate(Date bindPartnerDate) {
+    this.bindPartnerDate = bindPartnerDate;
+  }
+
+  public void setPartnerName(String partnerName) {
+    this.partnerName = partnerName;
   }
 }

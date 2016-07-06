@@ -39,7 +39,7 @@
             line-height: 60px;
         }
 
-        .modal-body .main{
+        .modal-body .main {
             width: 345px;
             height: 480px;
             margin: 0 auto;
@@ -47,7 +47,8 @@
             background-size: 100% 100%;
             position: relative;
         }
-        .modal-body #myShowImage{
+
+        .modal-body #myShowImage {
             width: 345px;
             height: 480px;
             position: absolute;
@@ -57,16 +58,18 @@
             margin: auto;
             display: none;
         }
-        .modal-body .main .rvCode{
+
+        .modal-body .main .rvCode {
             width: 230px;
             height: 230px;
             position: absolute;
             top: 120px;
             left: 0;
             right: 0;
-            margin:auto;
+            margin: auto;
         }
-        .modal-body .main .shopName{
+
+        .modal-body .main .shopName {
             text-align: center;
             font-size: 24px;
             color: #fff;
@@ -132,8 +135,8 @@
                         <label for="merchantType">乐店状态</label>
                         <select class="form-control" id="state">
                             <option value="-1">全部分类</option>
-                                <option value="0">未开启</option>
-                                <option value="1">已开启</option>
+                            <option value="0">未开启</option>
+                            <option value="1">已开启</option>
                         </select></div>
                     <div class="form-group col-md-2">
                         <label for="merchantType">红包权限</label>
@@ -149,6 +152,7 @@
                     </div>
                     <div class="form-group col-md-5">
                         <label for="merchant-name">创建时间</label>
+
                         <div id="date-end" class="form-control">
                             <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
                             <span id="searchDateRange"></span>
@@ -240,11 +244,13 @@
             </div>
             <div class="modal-body">
                 <h5 id="merchantUrl"></h5>
+
                 <div class="main">
                     <img class="rvCode" id="qrCode" src="" alt=""/>
+
                     <p class="shopName"></p>
                 </div>
-                <img id="myShowImage" style="margin: 0 auto" src="" />
+                <img id="myShowImage" style="margin: 0 auto" src=""/>
                 <h4 class="text-center text-danger">点击“生成图片”按钮，再右键将图片存到本地</h4>
             </div>
             <div class="modal-footer">
@@ -257,19 +263,20 @@
 <script src="${resourceUrl}/js/bootstrap.min.js"></script>
 <script>
     var merchantCriteria = {};
+    var flag = true;
     var merchantContent = document.getElementById("merchantContent");
     var merchantWarn = document.getElementById("merchantWarn");
     $(function () {
 
         $(document).ready(function () {
-            $('#date-end span').html(moment().subtract('hours', 1).format('YYYY/MM/DD HH:mm:ss')
-                                     + ' - ' +
-                                     moment().format('YYYY/MM/DD HH:mm:ss'));
+//            $('#date-end span').html(moment().subtract('hours', 1).format('YYYY/MM/DD HH:mm:ss')
+//                                     + ' - ' +
+//                                     moment().format('YYYY/MM/DD HH:mm:ss'));
             $('#date-end').daterangepicker({
                                                maxDate: moment(), //最大时间
-                                               dateLimit: {
-                                                   days: 30
-                                               }, //起止时间的最大间隔
+//                                               dateLimit: {
+//                                                   days: 30
+//                                               }, //起止时间的最大间隔
                                                showDropdowns: true,
                                                showWeekNumbers: false, //是否显示第几周
                                                timePicker: true, //是否显示小时和分钟
@@ -352,7 +359,9 @@
                    data: JSON.stringify(merchantCriteria),
                    contentType: "application/json",
                    success: function (data) {
-                       var page = data.data;
+                       var list = data.data;
+                       var page = list[0];
+                       var binds = list[1];
                        var content = page.content;
                        var totalPage = page.totalPages;
                        if (totalPage == 0) {
@@ -368,7 +377,7 @@
                            contentStr +=
                            '<td>' + content[i].partner.name + '</td>';
                            contentStr +=
-                           '<td>0/' + content[i].userLimit + '</td>';
+                           '<td>' + binds[i] + '/' + content[i].userLimit + '</td>';
                            if (content[i].partnership == 0) {
                                contentStr +=
                                '<td>普通商户</td>'
@@ -406,10 +415,10 @@
                            '<button type="button" class="btn btn-default editMerchant">编辑</button>';
                            contentStr +=
                            '<button type="button" class="btn btn-default editMerchantContent">内容管理</button>';
-                           if(content[i].state == 0){
+                           if (content[i].state == 0) {
                                contentStr +=
                                '<button type="button" class="btn btn-default disableMerchant">开启乐店</button></td></tr>';
-                           }else{
+                           } else {
                                contentStr +=
                                '<button type="button" class="btn btn-default disableMerchant">乐店编辑</button></td></tr>';
                            }
@@ -440,17 +449,20 @@
                                               $("#merchantUrl").html(url);
                                               document.querySelector(".savePic").addEventListener("click",
                                                                                                   function () {
-                                                                                                      html2canvas($(".modal-body .main"), {
-                                                                                                          allowTaint: true,
-                                                                                                          taintTest: false,
-                                                                                                          onrendered: function (canvas) {
-                                                                                                              canvas.id = "mycanvas";
-                                                                                                              var dataUrl = canvas.toDataURL();
-                                                                                                              $("#myShowImage").attr("src", dataUrl).css({'display': 'block'});
-                                                                                                              $(".main").css({'display': 'none'});
+                                                                                                      html2canvas($(".modal-body .main"),
+                                                                                                                  {
+                                                                                                                      allowTaint: true,
+                                                                                                                      taintTest: false,
+                                                                                                                      onrendered: function (canvas) {
+                                                                                                                          canvas.id =
+                                                                                                                          "mycanvas";
+                                                                                                                          var dataUrl = canvas.toDataURL();
+                                                                                                                          $("#myShowImage").attr("src",
+                                                                                                                                                 dataUrl).css({'display': 'block'});
+                                                                                                                          $(".main").css({'display': 'none'});
 //
-                                                                                                          }
-                                                                                                      });
+                                                                                                                      }
+                                                                                                                  });
                                                                                                   },
                                                                                                   false);
                                           }
@@ -475,7 +487,10 @@
                                location.href = "/manage/merchant/openStore/" + id;
                            });
                        });
-                       initPage(merchantCriteria.offset, totalPage);
+                       if (flag) {
+                           initPage(merchantCriteria.offset, totalPage);
+                           flag = false;
+                       }
                    }
                });
     }
@@ -487,7 +502,7 @@
         $('.pagination').jqPagination({
                                           current_page: page, //设置当前页 默认为1
                                           max_page: totalPage, //设置最大页 默认为1
-                                          page_string: '当前第' + page + '页,共' + totalPage + '页',
+                                          page_string: '当前第{current_page}页,共{max_page}页',
                                           paged: function (page) {
                                               merchantCriteria.offset = page;
                                               getMerchantByAjax(merchantCriteria);
@@ -495,11 +510,14 @@
                                       });
     }
     function searchMerchantByCriteria() {
+        merchantCriteria.offset = 1;
         var dateStr = $('#date-end span').text().split("-");
-        var startDate =dateStr[0].replace(/-/g, "/");
-        var endDate = dateStr[1].replace(/-/g, "/");
-        merchantCriteria.startDate = startDate;
-        merchantCriteria.endDate = endDate;
+        if (dateStr != null && dateStr != '') {
+            var startDate = dateStr[0].replace(/-/g, "/");
+            var endDate = dateStr[1].replace(/-/g, "/");
+            merchantCriteria.startDate = startDate;
+            merchantCriteria.endDate = endDate;
+        }
         if ($("#merchant-name").val() != "" && $("#merchant-name").val() != null) {
             merchantCriteria.merchant = $("#merchant-name").val();
         } else {
@@ -534,6 +552,7 @@
         } else {
             merchantCriteria.merchantType = null;
         }
+        flag = true;
         getMerchantByAjax(merchantCriteria);
     }
     Date.prototype.format = function (fmt) {
