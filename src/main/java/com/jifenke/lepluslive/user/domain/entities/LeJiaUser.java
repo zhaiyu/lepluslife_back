@@ -52,6 +52,10 @@ public class LeJiaUser {
   @ManyToOne
   private Partner bindPartner;
 
+  private Date bindMerchantDate;
+
+  private Date bindPartnerDate;
+
   public Merchant getBindMerchant() {
     return bindMerchant;
   }
@@ -130,5 +134,21 @@ public class LeJiaUser {
 
   public void setUserSid(String userSid) {
     this.userSid = userSid;
+  }
+
+  public Date getBindMerchantDate() {
+    return bindMerchantDate;
+  }
+
+  public void setBindMerchantDate(Date bindMerchantDate) {
+    this.bindMerchantDate = bindMerchantDate;
+  }
+
+  public Date getBindPartnerDate() {
+    return bindPartnerDate;
+  }
+
+  public void setBindPartnerDate(Date bindPartnerDate) {
+    this.bindPartnerDate = bindPartnerDate;
   }
 }

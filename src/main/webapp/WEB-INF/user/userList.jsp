@@ -82,12 +82,19 @@
                             <option value="0">普通消费者</option>
                         </select></div>
                     <div class="form-group col-md-2">
+                        <label for="province">所在省份</label>
+                        <select class="form-control" id="province">
+                            <option value="0">全部分类</option>
+                            <option value="2">北京</option>
+                            <option value="1">辽宁</option>
+                        </select></div>
+                    <div class="form-group col-md-2">
                         <label for="city">所在城市</label>
                         <select class="form-control" id="city">
                             <option value="0">全部分类</option>
-                            <%--<c:forEach items="${cities}" var="city">--%>
-                            <%--<option value="${city.id}">${city.name}</option>--%>
-                            <%--</c:forEach>--%>
+                            <c:forEach items="${cities}" var="city">
+                                <option value="${city.id}">${city.name}</option>
+                            </c:forEach>
                         </select></div>
                     <div class="form-group col-md-2">
                         <label for="subState">关注状态</label>
@@ -123,9 +130,24 @@
                         <button class="btn btn-primary" style="margin-top: 24px"
                                 onclick="searchUserByCriteria(0)">筛选
                         </button>
-                        <button class="btn btn-primary" style="margin-left:20px;margin-top: 24px"
-                                onclick="searchUserByCriteria(1)">群发消息
-                        </button>
+                        <c:if test="${status == 1}">
+                            <button class="btn btn-primary"
+                                    style="margin-left:20px;margin-top: 24px"
+                                    onclick="searchUserByCriteria(1)">按条件群发消息
+                            </button>
+                            <button class="btn btn-primary"
+                                    style="margin-left:20px;margin-top: 24px"
+                                    onclick="sendMassToAll()">所有人群发消息
+                            </button>
+                        </c:if>
+                        <c:if test="${status == 0}">
+                            <button class="btn btn-primary"
+                                    style="margin-left:20px;margin-top: 24px" disabled>按条件群发消息
+                            </button>
+                            <button class="btn btn-primary"
+                                    style="margin-left:20px;margin-top: 24px" disabled>所有人群发消息
+                            </button>
+                        </c:if>
                     </div>
 
                     <div class="form-group col-md-3"></div>
@@ -448,8 +470,24 @@
             userCriteria.massRemain = null;
         }
 
+        if ($("#city").val() != 0) {
+            userCriteria.city = $("#city").val();
+        } else {
+            userCriteria.city = null;
+        }
+
+        if ($("#province").val() != 0) {
+            userCriteria.province = $("#province").val();
+        } else {
+            userCriteria.province = null;
+        }
+
         getUserByAjax(userCriteria);
 
+    }
+
+    function sendMassToAll() {
+        location.href = "/manage/weixin/news/allList";
     }
 
 </script>

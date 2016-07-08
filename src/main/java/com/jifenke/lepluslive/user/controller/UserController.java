@@ -3,6 +3,7 @@ package com.jifenke.lepluslive.user.controller;
 import com.jifenke.lepluslive.global.util.LejiaResult;
 import com.jifenke.lepluslive.global.util.MvUtil;
 import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
+import com.jifenke.lepluslive.merchant.service.CityService;
 import com.jifenke.lepluslive.order.service.OrderService;
 import com.jifenke.lepluslive.partner.domain.entities.Partner;
 import com.jifenke.lepluslive.score.domain.entities.ScoreA;
@@ -14,6 +15,7 @@ import com.jifenke.lepluslive.user.domain.criteria.LeJiaUserCriteria;
 import com.jifenke.lepluslive.user.domain.entities.LeJiaUser;
 import com.jifenke.lepluslive.user.domain.entities.WeiXinUser;
 import com.jifenke.lepluslive.user.service.UserService;
+import com.jifenke.lepluslive.weixin.service.DictionaryService;
 
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.data.domain.Page;
@@ -52,9 +54,19 @@ public class UserController {
   @Inject
   private OrderService orderService;
 
+  @Inject
+  private CityService cityService;
+
+  @Inject
+  private DictionaryService dictionaryService;
+
 
   @RequestMapping(value = "/user", method = RequestMethod.GET)
-  public ModelAndView goUserManagePage() {
+  public ModelAndView goUserManagePage(Model model) {
+    //判断今日是否可以发送消息
+    boolean boo = dictionaryService.checkSendMassStatus();
+    model.addAttribute("status", boo ? 1 : 0);
+    model.addAttribute("cities", cityService.findAllCity());
     return MvUtil.go("/user/userList");
   }
 

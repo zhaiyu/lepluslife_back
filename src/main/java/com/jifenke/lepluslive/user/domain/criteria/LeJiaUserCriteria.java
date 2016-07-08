@@ -14,6 +14,10 @@ public class LeJiaUserCriteria {
 
   private String userSid;
 
+  private Long province;
+
+  private Long city;
+
   private String merchant;  //商户名称
 
   private String partner;  //合伙人名称
@@ -104,5 +108,21 @@ public class LeJiaUserCriteria {
 
   public void setOffset(Integer offset) {
     this.offset = offset;
+  }
+
+  public Long getProvince() {
+    return province;
+  }
+
+  public void setProvince(Long province) {
+    this.province = province;
+  }
+
+  public Long getCity() {
+    return city;
+  }
+
+  public void setCity(Long city) {
+    this.city = city;
   }
 }

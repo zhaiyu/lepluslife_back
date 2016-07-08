@@ -56,6 +56,8 @@ public class WeiXinUser {
 
   private Integer massRemain = 4;  //本月群发余数
 
+  private Date sendMassDate;   //最近一次发送时间
+
   public Integer getHongBaoState() {
     return hongBaoState;
   }
@@ -215,5 +217,13 @@ public class WeiXinUser {
 
   public void setMassRemain(Integer massRemain) {
     this.massRemain = massRemain;
+  }
+
+  public Date getSendMassDate() {
+    return sendMassDate;
+  }
+
+  public void setSendMassDate(Date sendMassDate) {
+    this.sendMassDate = sendMassDate;
   }
 }
