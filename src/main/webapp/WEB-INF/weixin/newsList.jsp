@@ -43,6 +43,7 @@
     <link href="${resourceUrl}/css/bootstrap.min.css" rel="stylesheet">
     <link type="text/css" rel="stylesheet" href="${resourceUrl}/css/commonCss.css"/>
     <script type="text/javascript" src="${resourceUrl}/js/jquery-2.0.3.min.js"></script>
+    <link rel="stylesheet" href="${resourceUrl}/css/jqpagination.css"/>
 </head>
 
 <body>
@@ -99,102 +100,18 @@
                                         <th class="text-center">图文media_id</th>
                                     </tr>
                                     </thead>
-                                    <tbody>
-                                    <c:forEach items="${news.item}" var="item">
-                                        <tr class="active">
-                                            <td class="text-center">测试</td>
-                                            <td class="text-center">
-                                                    ${item.content.news_item[0].title}
-                                            </td>
-                                            <td class="text-center">
-                                                    ${item.media_id}
-                                            </td>
-                                        </tr>
-                                    </c:forEach>
+                                    <tbody id="newsContent">
                                     </tbody>
                                 </table>
 
-                                <nav class="pull-right">
-                                    <ul class="pagination pagination-lg">
-                                        <c:if test="${currentPage>1}">
-                                            <li><a aria-label="Previous"
-                                                   onclick="pageChange(${currentPage-1})"><span
-                                                    aria-hidden="true">«</span></a></li>
-                                        </c:if>
-                                        <c:if test="${pages>1}">
-                                            <c:if test="${pages<=5}">
-                                                <c:forEach begin="1" end="${pages}"
-                                                           varStatus="index">
-                                                    <c:if test="${index.count==currentPage}">
-                                                        <li><a href="/manage/product"
-                                                               class="focusClass">${currentPage}</a>
-                                                        </li>
-                                                    </c:if>
-                                                    <c:if test="${index.count!=currentPage}">
-                                                        <li>
-                                                            <a onclick="pageChange(${index.count})">${index.count}</a>
-                                                        </li>
-                                                    </c:if>
-                                                </c:forEach>
-                                            </c:if>
-                                            <c:if test="${pages>5}">
-                                                <c:if test="${currentPage<=3}">
-                                                    <c:forEach begin="1" end="5" varStatus="index">
-                                                        <c:if test="${index.count==currentPage}">
-                                                            <li>
-                                                                <a class="focusClass">${currentPage}</a>
-                                                            </li>
-                                                        </c:if>
-                                                        <c:if test="${index.count!=currentPage}">
-                                                            <li>
-                                                                <a onclick="pageChange(${index.count})">${index.count}</a>
-                                                            </li>
-                                                        </c:if>
-                                                    </c:forEach>
-                                                </c:if>
-                                                <c:if test="${currentPage>3}">
-                                                    <c:if test="${pages-currentPage>=2}">
-                                                        <li>
-                                                            <a onclick="pageChange(${currentPage-2})">${currentPage-2}</a>
-                                                        </li>
-                                                        <li>
-                                                            <a onclick="pageChange(${currentPage-1})">${currentPage-1}</a>
-                                                        </li>
-                                                        <li><a
-                                                                class="focusClass">${currentPage}</a>
-                                                        </li>
-                                                        <li>
-                                                            <a onclick="pageChange(${currentPage+1})">${currentPage+1}</a>
-                                                        </li>
-                                                        <li>
-                                                            <a onclick="pageChange(${currentPage+2})">${currentPage+2}</a>
-                                                        </li>
-                                                    </c:if>
-                                                    <c:if test="${pages-currentPage<2}">
-                                                        <c:forEach begin="${pages-5}" end="${pages}"
-                                                                   varStatus="index">
-                                                            <c:if test="${index.current==currentPage}">
-                                                                <li><a
-                                                                        class="focusClass">${currentPage}</a>
-                                                                </li>
-                                                            </c:if>
-                                                            <c:if test="${index.current!=currentPage}">
-                                                                <li>
-                                                                    <a onclick="pageChange(${index.current})">${index.current}</a>
-                                                                </li>
-                                                            </c:if>
-                                                        </c:forEach>
-                                                    </c:if>
-                                                </c:if>
-                                            </c:if>
-                                        </c:if>
-                                        <c:if test="${pages>currentPage}">
-                                            <li><a onclick="pageChange(${currentPage+1})"
-                                                   aria-label="Next"><span
-                                                    aria-hidden="true">»</span></a></li>
-                                        </c:if>
-                                    </ul>
-                                </nav>
+                                <div class="pagination">
+                                    <a href="#" class="first" data-action="first">&laquo;</a>
+                                    <a href="#" class="previous" data-action="previous">&lsaquo;</a>
+                                    <input type="text" readonly="readonly" data-max-page="40"/>
+                                    <a href="#" class="next" data-action="next">&rsaquo;</a>
+                                    <a href="#" class="last" data-action="last">&raquo;</a>
+                                    共有 <span id="totalElements"></span> 个
+                                </div>
 
                             </div>
                         </div>
@@ -218,9 +135,11 @@
 <script src="${resourceUrl}/js/bootstrap.min.js"></script>
 <script src="${resourceUrl}/js/global/plugins/bootstrap-touchspin/bootstrap.touchspin.js"
         type="text/javascript"></script>
+<script src="${resourceUrl}/js/moment.min.js"></script>
 <script>
-
-    var ajaxParams = {};
+    var newsContent = document.getElementById("newsContent");
+    var flag = true;
+    var total_count = 0;
     jQuery(document).ready(function () {
         window.menuList = null;
         $('input[name=displayOrder]').TouchSpin({
@@ -231,11 +150,50 @@
                                                     prefix: '序号'
                                                 });
 
+        pageChange(1);
+
     });
 
-    //    function editTextRule(id) {
-    //        location.href = "/manage/weixin/reply/textEdit/" + id;
-    //    }
+    function pageChange(offset) {
+        if (flag) {
+            newsContent.innerHTML = "";
+            $.ajax({
+                       type: "post",
+                       url: "/manage/weixin/news/newsList",
+                       async: false,
+                       data: {offset: offset},
+                       success: function (data) {
+                           var content = data.data;
+                           var items = content.item;
+                           $("#totalElements").html(content.total_count);
+                           total_count = Math.ceil(content.total_count / 20);
+                           for (i = 0; i < items.length; i++) {
+                               var contentStr = '<tr><td><label class="radio-inline"><input type="radio" name="inlineRadioOptions" value="'
+                                                + items[i].media_id + '"></label></td>';
+                               contentStr += '<td>' + items[i].content.news_item[0].title + '</td>';
+                               contentStr += '<td>' + items[i].media_id + '</td></tr>';
+
+                               newsContent.innerHTML += contentStr;
+                           }
+
+                           initPage(offset, total_count);
+
+                       }
+                   });
+        }
+    }
+
+    function initPage(currPage, totalPage) {
+        $('.pagination').jqPagination({
+                                          current_page: currPage, //设置当前页 默认为1
+                                          max_page: totalPage, //设置最大页 默认为1
+                                          page_string: '当前第{current_page}页,共{max_page}页',
+                                          paged: function () {
+                                              flag = false;
+                                              pageChange(currPage);
+                                          }
+                                      });
+    }
 
     function sendNews() {
 
@@ -243,23 +201,50 @@
             return false;
         }
 
-        $.ajax({
-                   type: "post",
-                   async: false,
-                   url: "/manage/weixin/news/sendNews?mediaId="
-                        + "V9tGnEZo9vEqxnbQQltE9NJzRHDuuY1vCe6q_yPlR24 ",
-                   contentType: "application/json",
-                   data: JSON.stringify(JSON.parse('${leJiaUserCriteria}')),
-                   success: function (data) {
-                       alert(data.status);
-                   }
-               });
+        var mediaId = $("input[name='inlineRadioOptions']:checked").val();
+        if (mediaId == null || mediaId == '') {
+            alert("请先选择要发送的图文消息");
+            return false;
+        }
+
+        var type = '${type}';
+        if (type == 1) {
+            $.ajax({
+                       type: "post",
+                       async: false,
+                       url: "/manage/weixin/news/sendNews?mediaId=" + mediaId,
+                       contentType: "application/json",
+                       data: JSON.stringify(JSON.parse('${leJiaUserCriteria}')),
+                       success: function (data) {
+                           if (data.status == 200) {
+                               alert("发送成功");
+                           } else {
+                               alert("发送异常: " + data.status);
+                           }
+                       }
+                   });
+        } else if (type == 2) {
+            $.ajax({
+                       type: "post",
+                       async: false,
+                       url: "/manage/weixin/news/sendNewsToAll?mediaId=" + mediaId,
+                       contentType: "application/json",
+                       success: function (data) {
+                           if (data.status == 200) {
+                               alert("发送成功");
+                           } else {
+                               alert("发送异常: " + data.status);
+                           }
+                       }
+                   });
+        }
 
     }
 
     function goUserPage() {
         location.href = "/manage/user";
     }
+
 
 </script>
 </body>

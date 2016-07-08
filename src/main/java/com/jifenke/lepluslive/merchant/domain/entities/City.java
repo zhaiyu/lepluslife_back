@@ -30,6 +30,12 @@ public class City {
 
   private String name;
 
+  private String enName;
+
+  private String province;
+
+  private String enProvince;
+
   public City() {
   }
 
@@ -38,8 +44,7 @@ public class City {
   }
 
 
-
-  @OneToMany(fetch = FetchType.EAGER,cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "city")
+  @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "city")
   private List<Area> areas;
 
   public List<Area> getAreas() {
@@ -72,5 +77,29 @@ public class City {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public String getEnName() {
+    return enName;
+  }
+
+  public void setEnName(String enName) {
+    this.enName = enName;
+  }
+
+  public String getProvince() {
+    return province;
+  }
+
+  public void setProvince(String province) {
+    this.province = province;
+  }
+
+  public String getEnProvince() {
+    return enProvince;
+  }
+
+  public void setEnProvince(String enProvince) {
+    this.enProvince = enProvince;
   }
 }

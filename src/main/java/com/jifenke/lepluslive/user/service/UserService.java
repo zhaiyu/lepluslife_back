@@ -1,9 +1,8 @@
 package com.jifenke.lepluslive.user.service;
 
+import com.jifenke.lepluslive.merchant.domain.entities.City;
 import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
-import com.jifenke.lepluslive.order.domain.criteria.OLOrderCriteria;
-import com.jifenke.lepluslive.order.domain.entities.OffLineOrder;
-import com.jifenke.lepluslive.order.domain.entities.PayWay;
+import com.jifenke.lepluslive.merchant.service.CityService;
 import com.jifenke.lepluslive.partner.domain.entities.Partner;
 import com.jifenke.lepluslive.user.domain.criteria.LeJiaUserCriteria;
 import com.jifenke.lepluslive.user.domain.entities.LeJiaUser;
@@ -35,6 +34,9 @@ public class UserService {
   @Inject
   private LeJiaUserRepository leJiaUserRepository;
 
+  @Inject
+  private CityService cityService;
+
 
   public Page findUserByPage(Integer offset) {
     if (offset == null) {
@@ -57,7 +59,8 @@ public class UserService {
         .findAll(getWhereClause(leJiaUserCriteria), new PageRequest(0, 15000));
   }
 
-  public static Specification<LeJiaUser> getWhereClause(LeJiaUserCriteria userCriteria) {
+  public Specification<LeJiaUser> getWhereClause(LeJiaUserCriteria userCriteria) {
+
     return new Specification<LeJiaUser>() {
       @Override
       public Predicate toPredicate(Root<LeJiaUser> r, CriteriaQuery<?> q,
@@ -68,6 +71,7 @@ public class UserService {
           predicate.getExpressions().add(
               cb.like(r.get("userSid"),
                       "%" + userCriteria.getUserSid() + "%"));
+
         }
         if (userCriteria.getPhoneNumber() != null && (!""
             .equals(userCriteria.getPhoneNumber()))) { //会员手机号
@@ -115,7 +119,29 @@ public class UserService {
           }
         }
 
-        //所在城市待定
+        //所在城市
+        if (userCriteria.getCity() != null) {
+          City city = cityService.findCityById(userCriteria.getCity());
+          if (city != null) {
+            predicate.getExpressions()
+                .add(cb.or(cb.equal(r.<WeiXinUser>get("weiXinUser").get("city"),
+                                    city.getEnName()),
+                           cb.equal(r.<WeiXinUser>get("weiXinUser").get("city"),
+                                    city.getName())));
+          }
+        }
+
+        //所在省份
+        if (userCriteria.getProvince() != null) {
+          City city = cityService.findCityById(userCriteria.getProvince());
+          if (city != null) {
+            predicate.getExpressions()
+                .add(cb.or(cb.equal(r.<WeiXinUser>get("weiXinUser").get("province"),
+                                    city.getEnProvince()),
+                           cb.equal(r.<WeiXinUser>get("weiXinUser").get("province"),
+                                    city.getProvince())));
+          }
+        }
 
         if (userCriteria.getSubState() != null) {  //关注状态
           if (userCriteria.getSubState() == 1) {

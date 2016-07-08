@@ -2,6 +2,7 @@ package com.jifenke.lepluslive.weixin.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jifenke.lepluslive.weixin.domain.entities.WeixinMessage;
+import com.jifenke.lepluslive.weixin.repository.WeixinMessageRepository;
 
 import net.sf.json.JSONObject;
 
@@ -13,6 +14,7 @@ import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.BufferedReader;
@@ -34,6 +36,9 @@ public class WeixinMessageService {
   @Inject
   private DictionaryService dictionaryService;
 
+  @Inject
+  private WeixinMessageRepository weixinMessageRepository;
+
   /**
    * 获取素材消息列表
    *
@@ -49,7 +54,7 @@ public class WeixinMessageService {
       // 先封装一个 JSON 对象
       JSONObject param = new JSONObject();
       param.put("type", type);
-      param.put("offset", offset);
+      param.put("offset", offset - 1);
       param.put("count", count);
       StringEntity
           se =
@@ -129,15 +134,63 @@ public class WeixinMessageService {
     }
   }
 
+  public Map sendNewsToAll(String mediaId) {
+    try {
+      // 绑定到请求 Entry
+      // 先封装一个 JSON 对象
+      JSONObject param = new JSONObject();
+      HashMap<String, Object> mpnews = new HashMap<>();
+      HashMap<String, Object> filter = new HashMap<>();
+      mpnews.put("media_id", mediaId);
+      filter.put("is_to_all", "true");
+      param.put("filter", filter);
+      param.put("mpnews", mpnews);
+      param.put("msgtype", "mpnews");
+      StringEntity
+          se =
+          new StringEntity(new String(param.toString().getBytes("utf8"), "iso8859-1"));
+
+      //获取token
+      String token = dictionaryService.findDictionaryById(7L).getValue();
+
+      String
+          getUrl =
+          "https://api.weixin.qq.com/cgi-bin/message/mass/send?access_token=" + token;
+      CloseableHttpClient httpclient = HttpClients.createDefault();
+      HttpPost httpPost = new HttpPost(getUrl);
+      httpPost.addHeader("Content-Type", "application/json");
+      httpPost.setEntity(se);
+      CloseableHttpResponse response = null;
+
+      response = httpclient.execute(httpPost);
+      HttpEntity entity = response.getEntity();
+      ObjectMapper mapper = new ObjectMapper();
+      Map<String, Object>
+          map =
+          mapper.readValue(
+              new BufferedReader(new InputStreamReader(entity.getContent(), "utf-8")),
+              Map.class);
+      EntityUtils.consume(entity);
+      response.close();
+      System.out.println(map.toString());
+      return map;
+    } catch (IOException e) {
+      e.printStackTrace();
+      return null;
+    }
+  }
+
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public void saveNews(Map map) throws Exception {
 
     try {
       WeixinMessage weixinMessage = new WeixinMessage();
       weixinMessage.setType("news");
-      weixinMessage.setMsgID((String)map.get("msg_id"));
-      weixinMessage.setMsgDataId((String)map.get("msg_data_id"));
+      weixinMessage.setMsgID(String.valueOf(map.get("msg_id")));
+      weixinMessage.setMsgDataId(String.valueOf(map.get("msg_data_id")));
+      weixinMessageRepository.save(weixinMessage);
     } catch (Exception e) {
-      throw new RuntimeException();
+      e.printStackTrace();
     }
   }
 
