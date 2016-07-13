@@ -1,6 +1,7 @@
 package com.jifenke.lepluslive.order.service;
 
 import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
+import com.jifenke.lepluslive.merchant.service.MerchantService;
 import com.jifenke.lepluslive.order.domain.criteria.FinancialCriteria;
 import com.jifenke.lepluslive.order.domain.criteria.OLOrderCriteria;
 import com.jifenke.lepluslive.order.domain.entities.FinancialStatistic;
@@ -36,6 +37,9 @@ public class OffLineOrderService {
 
   @Inject
   private OffLineOrderRepository offLineOrderRepository;
+
+  @Inject
+  private MerchantService merchantService;
 
   @Inject
   private FinancialStatisticRepository financialStatisticRepository;
@@ -164,6 +168,7 @@ public class OffLineOrderService {
     financialStatistic.setState(1);
     financialStatistic.setTransferDate(new Date());
     financialStatisticRepository.save(financialStatistic);
+    merchantService.changeMerchantWalletTotalTransferMoney(financialStatistic);
     return financialStatistic;
   }
 }

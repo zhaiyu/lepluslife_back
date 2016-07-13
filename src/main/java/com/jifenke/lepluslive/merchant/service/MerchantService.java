@@ -17,6 +17,7 @@ import com.jifenke.lepluslive.merchant.repository.MerchantRepository;
 import com.jifenke.lepluslive.merchant.repository.MerchantTypeRepository;
 import com.jifenke.lepluslive.merchant.repository.MerchantUserRepository;
 import com.jifenke.lepluslive.merchant.repository.MerchantWalletRepository;
+import com.jifenke.lepluslive.order.domain.entities.FinancialStatistic;
 import com.jifenke.lepluslive.user.domain.entities.RegisterOrigin;
 import com.jifenke.lepluslive.user.repository.LeJiaUserRepository;
 import com.jifenke.lepluslive.user.repository.RegisterOriginRepository;
@@ -349,5 +350,18 @@ public class MerchantService {
       binds.add(count);
     }
     return binds;
+  }
+
+
+  public MerchantWallet findMerchantWalletByMerchant(Merchant merchant) {
+    return merchantWalletRepository.findByMerchant(merchant);
+  }
+
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  public void changeMerchantWalletTotalTransferMoney(FinancialStatistic financialStatistic) {
+    MerchantWallet merchantWallet = findMerchantWalletByMerchant(financialStatistic.getMerchant());
+    merchantWallet.setTotalTransferMoney(
+        merchantWallet.getTotalTransferMoney() + financialStatistic.getTransferPrice());
+    merchantWalletRepository.save(merchantWallet);
   }
 }
