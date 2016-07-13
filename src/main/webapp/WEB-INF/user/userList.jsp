@@ -29,7 +29,58 @@
         table tr td img {
             width: 60px;
         }
+
+        .tcdPageCode {
+            padding: 15px 20px;
+            text-align: left;
+            color: #ccc;
+        }
+
+        .tcdPageCode a {
+            display: inline-block;
+            color: #428bca;
+            display: inline-block;
+            height: 25px;
+            line-height: 25px;
+            padding: 0 10px;
+            border: 1px solid #ddd;
+            margin: 0 2px;
+            border-radius: 4px;
+            vertical-align: middle;
+        }
+
+        .tcdPageCode a:hover {
+            text-decoration: none;
+            border: 1px solid #428bca;
+        }
+
+        .tcdPageCode span.current {
+            display: inline-block;
+            height: 25px;
+            line-height: 25px;
+            padding: 0 10px;
+            margin: 0 2px;
+            color: #fff;
+            background-color: #428bca;
+            border: 1px solid #428bca;
+            border-radius: 4px;
+            vertical-align: middle;
+        }
+
+        .tcdPageCode span.disabled {
+            display: inline-block;
+            height: 25px;
+            line-height: 25px;
+            padding: 0 10px;
+            margin: 0 2px;
+            color: #bfbfbf;
+            background: #f2f2f2;
+            border: 1px solid #bfbfbf;
+            border-radius: 4px;
+            vertical-align: middle;
+        }
     </style>
+
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -175,16 +226,9 @@
                         </thead>
                         <tbody id="userContent">
                         </tbody>
-
                     </table>
 
-                    <div class="pagination">
-                        <a href="#" class="first" data-action="first">&laquo;</a>
-                        <a href="#" class="previous" data-action="previous">&lsaquo;</a>
-                        <input type="text" readonly="readonly" data-max-page="40"/>
-                        <a href="#" class="next" data-action="next">&rsaquo;</a>
-                        <a href="#" class="last" data-action="last">&raquo;</a>
-                        共有 <span id="totalElements"></span> 个
+                    <div class="tcdPageCode">
                     </div>
                 </div>
             </div>
@@ -197,13 +241,15 @@
 <script src="${resourceUrl}/js/bootstrap.min.js"></script>
 <script src="${resourceUrl}/js/daterangepicker.js"></script>
 <script src="${resourceUrl}/js/moment.min.js"></script>
+
+<script src="http://www.lanrenzhijia.com/ajaxjs/jquery.page.js"></script>
 <script>
     var userCriteria = {};
     var flag = true;
     var search = 0;
+    var init1 = 0;
     var userContent = document.getElementById("userContent");
     $(function () {
-
         // 时间选择器
         $(document).ready(function () {
             $(document).ready(function () {
@@ -294,6 +340,19 @@
                            if (totalPage == 0) {
                                totalPage = 1;
                            }
+
+                           alert(flag + "   " + init1);
+
+                           if (flag) {
+                               //    alert('flag : ' + flag);
+                               initPage(userCriteria.offset, totalPage);
+                           }
+
+                           if (init1) {
+                               //       alert('init : ' + init);
+                               initPage(1, totalPage);
+                           }
+
                            var userContent = document.getElementById("userContent");
                            for (i = 0; i < content.length; i++) {
                                var contentStr = '<tr><td>' + content[i].userSid + '</td>';
@@ -338,52 +397,35 @@
                                contentStr +=
                                '<td><span>' + content[i].massRemain + '</span></td>';
                                contentStr +=
-                               '<td><input type="hidden" class="id-hidden" value="' + content[i].id
+                               '<td><input type="hidden" class="id-hidden" value="'
+                               + content[i].id
                                + '"><button class="btn btn-primary changeOrderToPaid">交易记录</button>'
                                +
                                '<button class="btn btn-primary changeOrderToPaid">账户明细</button></td></tr>';
 
                                userContent.innerHTML += contentStr;
+                           }
 
-                           }
-//                       $(".changeOrderToPaid").each(function (i) {
-//                           $(".changeOrderToPaid").eq(i).bind("click", function () {
-//                               var id = $(this).parent().find(".id-hidden").val();
-//                               $("#paid-confirm").bind("click", function () {
-//                                   $.ajax({
-//                                              type: "get",
-//                                              url: "/manage/offLineOrder/" + id,
-//                                              contentType: "application/json",
-//                                              success: function (data) {
-//                                                  alert(data.msg);
-//                                                  getOffLineOrderByAjax(olOrderCriteria);
-//                                              }
-//                                          });
-//                               });
-//                               $("#deleteWarn").modal("show");
-//                           });
-//                       });
-                           if (flag) {
-                               initPage(userCriteria.offset, totalPage);
-                           }
                        }
                    });
         }
-
     }
     function initPage(currPage, totalPage) {
-
-        $('.pagination').jqPagination({
-                                          current_page: currPage, //设置当前页 默认为1
-                                          max_page: totalPage, //设置最大页 默认为1
-                                          page_string: '当前第{current_page}页,共{max_page}页',
-                                          paged: function () {
-                                              flag = false;
-                                              userCriteria.offset = currPage;
-                                              getUserByAjax(userCriteria);
-                                          }
-                                      });
+        $(".tcdPageCode").createPage({
+                                         pageCount: totalPage,
+                                         current: currPage,
+                                         backFn: function (p) {
+                                             //单击回调方法，p是当前页码
+                                             flag = false;
+                                             init1 = 0;
+//                                             alert(flag + "   " + init1);
+//                                             alert('current : ' + p);
+                                             userCriteria.offset = p;
+                                             getUserByAjax(userCriteria);
+                                         }
+                                     });
     }
+
     Date.prototype.format = function (fmt) {
         var o = {
             "M+": this.getMonth() + 1, //月份
@@ -425,8 +467,8 @@
 
     function searchUserByCriteria(i) {
         userCriteria.offset = 1;
-        flag = true;
         search = i;
+        init1 = 1;
         var dateStr = $('#date-end span').text().split("-");
         if (dateStr != null && dateStr != '') {
             var startDate = dateStr[0].replace(/-/g, "/");
