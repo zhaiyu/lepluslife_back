@@ -169,6 +169,7 @@ public class MerchantService {
     origin.setPicture(merchant.getPicture());
     origin.setReceiptAuth(merchant.getReceiptAuth());
     origin.setPartnership(merchant.getPartnership());
+    origin.setMemberCommission(merchant.getMemberCommission());
 //    try {
 //      BeanUtils.copyProperties(origin, merchant);
 //    } catch (IllegalAccessException e) {

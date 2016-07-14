@@ -10,6 +10,19 @@
 <%@include file="../commen.jsp" %>
 <!DOCTYPE>
 <html>
+<style>
+    .lianmeng {
+        margin-top: 10px;
+        margin-left: 10%;
+    }
+    .lianmeng > div {
+        margin: 5px 0;
+    }
+    .lianmeng  input {
+        width: 30%;
+        margin: 0 5px;
+    }
+</style>
 <head>
     <meta charset="utf-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -94,9 +107,21 @@
             <input type="radio" class="radio" id="normal" name="type" value="0"/><span>普通商户</span>
             <input type="text" class="money pt" disabled="disabled" placeholder="输入手续费"/>%
             <input type="radio" class="radio" id="partner" name="type" value="1"/><span>联盟商户</span>
-            <input type="text" class="money lm" disabled="disabled" placeholder="输入佣金比"/>%
-            <input type="text" class="money lm" disabled="disabled" placeholder="输入红包比"/>%
-            <input type="text" class="money lm" disabled="disabled" placeholder="输入手续费"/>%
+            <%--<input type="text" class="money lm" disabled="disabled" placeholder="输入佣金比"/>%--%>
+            <%--<input type="text" class="money lm" disabled="disabled" placeholder="输入红包比"/>%--%>
+            <%--<input type="text" class="money lm" disabled="disabled" placeholder="输入手续费"/>%--%>
+            <div class="lianmeng">
+                <div>
+                    <span>导流订单参数</span><input type="text" class="money lm" placeholder="输入佣金比">%<input type="text" class="money lm"  placeholder="输入红包比">%
+                </div>
+                <div>
+                    <span>普通订单参数</span><input type="text" class="money lm" placeholder="输入手续费">%
+                </div>
+                <div>
+                    <span>会员订单参数</span><input type="text" class="money lm" placeholder="输入佣金比">%
+                    <p style="font-size: 12px">会员订单佣金扣除微信手续费后全部以红包形式发放</p>
+                </div>
+            </div>
         </div>
         <div>
             <label for="lock">锁定上限&nbsp</label>
@@ -198,6 +223,7 @@
 </body>
 <%--<script src="js/jquery-2.0.3.min.js"></script>--%>
 <script type="text/javascript" language="javascript">
+    $(".lianmeng").hide();
     if (${merchant!=null}) {
         $.ajax({
                    type: 'GET',
@@ -295,6 +321,7 @@
             $(".lm").eq(0).val(${merchant.ljCommission});
             $(".lm").eq(1).val(${merchant.scoreARebate});
             $(".lm").eq(2).val(${merchant.ljBrokerage});
+            $(".lm").eq(3).val(${merchant.memberCommission});
         }
         if (${merchant.partnership==0}) {
             $('#normal').prop("checked", true);
@@ -305,10 +332,12 @@
         if (val == 0) {
             $(".pt").removeAttr("disabled");
             $(".lm").attr("disabled", "disabled");
+            $(".lianmeng").hide();
         }
         if (val == 1) {
             $(".pt").attr("disabled", "disabled");
             $(".lm").removeAttr("disabled");
+            $(".lianmeng").show();
         }
 
         if (${merchant.receiptAuth==1}) {
@@ -347,10 +376,12 @@
             if (val == 0) {
                 $(".pt").removeAttr("disabled");
                 $(".lm").attr("disabled", "disabled");
+                $(".lianmeng").hide();
             }
             if (val == 1) {
                 $(".pt").attr("disabled", "disabled");
                 $(".lm").removeAttr("disabled");
+                $(".lianmeng").show();
             }
         });
     });
@@ -568,6 +599,7 @@
             merchant.ljCommission = $(".lm").eq(0).val();
             merchant.scoreARebate = $(".lm").eq(1).val();
             merchant.ljBrokerage = $(".lm").eq(2).val();
+            merchant.memberCommission = $(".lm").eq(3).val();
         }
         if($("#fl").val()==""||$("#fl").val()==null){
             alert("请选择积分返利比");
