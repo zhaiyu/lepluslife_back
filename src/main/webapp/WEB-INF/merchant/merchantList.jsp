@@ -18,9 +18,9 @@
     <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
     <title>乐+生活 后台模板管理系统</title>
     <link href="${resourceUrl}/css/bootstrap.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="${resourceUrl}/css/jqpagination.css"/>
     <link rel="stylesheet" href="${resourceUrl}/css/daterangepicker-bs3.css">
     <link type="text/css" rel="stylesheet" href="${resourceUrl}/css/commonCss.css"/>
-    <link type="text/css" rel="stylesheet" href="${resourceUrl}/css/jquery.page.css"/>
     <style>
         thead th, tbody td {
             text-align: center;
@@ -88,13 +88,12 @@
     <script src="js/respond.min.js"></script>
     <![endif]-->
     <script type="text/javascript" src="${resourceUrl}/js/jquery-2.0.3.min.js"></script>
-    <script src="${resourceUrl}/js/jquery.page.js"></script>
+    <script type="text/javascript" src="${resourceUrl}/js/jquery.jqpagination.min.js"></script>
     <script type="text/javascript" src="${resourceUrl}/js/html2canvas.js"></script>
     <script src="${resourceUrl}/js/bootstrap.min.js"></script>
     <script src="${resourceUrl}/js/daterangepicker.js"></script>
     <%--<script src="${resourceUrl}/js/bootstrap-datetimepicker.zh-CN.js"></script>--%>
     <script src="${resourceUrl}/js/moment.min.js"></script>
-
 </head>
 
 <body>
@@ -198,9 +197,13 @@
                         </table>
                     </div>
                 </div>
-                <div class="tcdPageCode" style="display: inline;">
+                <div class="pagination">
+                    <a href="#" class="first" data-action="first">&laquo;</a>
+                    <a href="#" class="previous" data-action="previous">&laquo;</a>
+                    <input id="page" type="text" readonly="readonly" data-max-page="1"/>
+                    <a href="#" class="next" data-action="next">&rsaquo;</a>
+                    <a href="#" class="last" data-action="last">&raquo;</a>
                 </div>
-                <div style="display: inline;"> 共有 <span id="totalElements"></span> 个</div>
             </div>
         </div>
     </div>
@@ -261,7 +264,6 @@
 <script>
     var merchantCriteria = {};
     var flag = true;
-    var init1 = 0;
     var merchantContent = document.getElementById("merchantContent");
     var merchantWarn = document.getElementById("merchantWarn");
     $(function () {
@@ -362,16 +364,8 @@
                        var binds = list[1];
                        var content = page.content;
                        var totalPage = page.totalPages;
-                       $("#totalElements").html(page.totalElements);
                        if (totalPage == 0) {
                            totalPage = 1;
-                       }
-                       if (flag) {
-                           initPage(merchantCriteria.offset, totalPage);
-                           flag = false;
-                       }
-                       if (init1) {
-                           initPage(1, totalPage);
                        }
                        for (i = 0; i < content.length; i++) {
                            var contentStr = '<tr><td>' + content[i].merchantSid + '</td>';
@@ -493,7 +487,10 @@
                                location.href = "/manage/merchant/openStore/" + id;
                            });
                        });
-
+                       if (flag) {
+                           initPage(merchantCriteria.offset, totalPage);
+                           flag = false;
+                       }
                    }
                });
     }
@@ -502,20 +499,18 @@
         location.href = "/manage/merchant/edit";
     }
     function initPage(page, totalPage) {
-        $('.tcdPageCode').unbind();
-        $(".tcdPageCode").createPage({
-                                         pageCount: totalPage,
-                                         current: page,
-                                         backFn: function (p) {
-                                             init1 = 0;
-                                             merchantCriteria.offset = p;
-                                             getMerchantByAjax(merchantCriteria);
-                                         }
-                                     });
+        $('.pagination').jqPagination({
+                                          current_page: page, //设置当前页 默认为1
+                                          max_page: totalPage, //设置最大页 默认为1
+                                          page_string: '当前第{current_page}页,共{max_page}页',
+                                          paged: function (page) {
+                                              merchantCriteria.offset = page;
+                                              getMerchantByAjax(merchantCriteria);
+                                          }
+                                      });
     }
     function searchMerchantByCriteria() {
         merchantCriteria.offset = 1;
-        init1 = 1;
         var dateStr = $('#date-end span').text().split("-");
         if (dateStr != null && dateStr != '') {
             var startDate = dateStr[0].replace(/-/g, "/");
@@ -557,6 +552,7 @@
         } else {
             merchantCriteria.merchantType = null;
         }
+        flag = true;
         getMerchantByAjax(merchantCriteria);
     }
     Date.prototype.format = function (fmt) {
