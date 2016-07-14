@@ -74,8 +74,6 @@ public class UserController {
   public
   @ResponseBody
   LejiaResult getOffLineOrder(@RequestBody LeJiaUserCriteria leJiaUserCriteria) {
-
-
     if (leJiaUserCriteria.getOffset() == null) {
       leJiaUserCriteria.setOffset(1);
     }
