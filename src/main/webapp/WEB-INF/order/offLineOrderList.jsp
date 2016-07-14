@@ -18,9 +18,9 @@
     <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
     <title>乐+生活 后台模板管理系统</title>
     <link href="${resourceUrl}/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="${resourceUrl}/css/jqpagination.css"/>
     <link rel="stylesheet" href="${resourceUrl}/css/daterangepicker-bs3.css">
     <link type="text/css" rel="stylesheet" href="${resourceUrl}/css/commonCss.css"/>
+    <link type="text/css" rel="stylesheet" href="${resourceUrl}/css/jquery.page.css"/>
     <style>
         thead th, tbody td {
             text-align: center;
@@ -31,8 +31,7 @@
         }
     </style>
     <script type="text/javascript" src="${resourceUrl}/js/jquery-2.0.3.min.js"></script>
-    <script type="text/javascript" src="${resourceUrl}/js/jquery.jqpagination.min.js"></script>
-    <%--<script type="text/javascript" src="${resourceUrl}/js/jquery.jqpagination.js"></script>--%>
+    <%--<script type="text/javascript" src="${resourceUrl}/js/jquery.jqpagination.min.js"></script>--%>
 </head>
 
 <body>
@@ -122,13 +121,9 @@
                             </tbody>
                         </table>
                     </div>
-                    <div class="pagination">
-                        <a href="#" class="first" data-action="first">&laquo;</a>
-                        <a href="#" class="previous" data-action="previous">&lsaquo;</a>
-                        <input id="page" type="text" readonly="readonly" data-max-page="1"/>
-                        <a href="#" class="next" data-action="next">&rsaquo;</a>
-                        <a href="#" class="last" data-action="last">&raquo;</a>
+                    <div class="tcdPageCode" style="display: inline;">
                     </div>
+                    <div style="display: inline;"> 共有 <span id="totalElements"></span> 个</div>
                     <button class="btn btn-primary pull-right" style="margin-top: 5px"
                             onclick="exportExcel()">导出excel
                     </button>
@@ -165,9 +160,11 @@
 <script src="${resourceUrl}/js/daterangepicker.js"></script>
 <%--<script src="${resourceUrl}/js/bootstrap-datetimepicker.zh-CN.js"></script>--%>
 <script src="${resourceUrl}/js/moment.min.js"></script>
+<script src="${resourceUrl}/js/jquery.page.js"></script>
 <script>
     var olOrderCriteria = {};
     var flag = true;
+    var init1 = 0;
     var orderContent = document.getElementById("orderContent");
     $(function () {
         // tab切换
@@ -247,16 +244,25 @@
                        var page = data.data;
                        var content = page.content;
                        var totalPage = page.totalPages;
+                       $("#totalElements").html(page.totalElements);
                        if (totalPage == 0) {
                            totalPage = 1;
+                       }
+                       alert(flag + "   " + init1);
+                       if (flag) {
+                           flag = false;
+                           initPage(olOrderCriteria.offset, totalPage);
+                       }
+                       if (init1) {
+                           initPage(1, totalPage);
                        }
                        var orderContent = document.getElementById("orderContent");
                        for (i = 0; i < content.length; i++) {
                            var contentStr = '<tr><td>' + content[i].orderSid + '</td>';
-                           if(content[i].completeDate==null){
+                           if (content[i].completeDate == null) {
                                contentStr +=
                                '<td><span>未完成的订单</span></td>';
-                           }else{
+                           } else {
                                contentStr +=
                                '<td><span>'
                                + new Date(content[i].completeDate).format('yyyy-MM-dd HH:mm:ss')
@@ -281,16 +287,18 @@
                            contentStr += '<td>' + content[i].payWay.payWay + '</td>'
                            contentStr += '<td>' + content[i].truePay / 100 + '</td>'
                            contentStr += '<td>' + content[i].ljCommission / 100 + '</td>'
-                           var payToMerchant = content[i].transferMoney/100;
+                           var payToMerchant = content[i].transferMoney / 100;
                            contentStr +=
                            '<td>' + payToMerchant + '</td>'
                            contentStr += '<td>' + content[i].wxCommission / 100 + '</td>'
                            contentStr += '<td>' + content[i].rebate / 100 + '</td>';
                            var share = 0;
-                           if(content[i].rebateWay!=1){
+                           if (content[i].rebateWay != 1) {
                                share = 0;
-                           }else{
-                               share = (content[i].ljCommission-content[i].wxCommission-content[i].rebate)/100;
+                           } else {
+                               share =
+                               (content[i].ljCommission - content[i].wxCommission
+                                - content[i].rebate) / 100;
                            }
 
                            contentStr +=
@@ -325,23 +333,20 @@
                                $("#deleteWarn").modal("show");
                            });
                        });
-                       if(flag){
-                           initPage(olOrderCriteria.offset, totalPage);
-                           flag = false;
-                       }
                    }
                });
     }
     function initPage(page, totalPage) {
-        $('.pagination').jqPagination({
-                                          current_page: page, //设置当前页 默认为1
-                                          max_page: totalPage, //设置最大页 默认为1
-                                          page_string: '当前第{current_page}页,共{max_page}页',
-                                          paged: function (page) {
-                                              olOrderCriteria.offset = page;
-                                              getOffLineOrderByAjax(olOrderCriteria);
-                                          }
-                                      });
+        $('.tcdPageCode').unbind();
+        $(".tcdPageCode").createPage({
+                                         pageCount: totalPage,
+                                         current: page,
+                                         backFn: function (p) {
+                                             olOrderCriteria.offset = p;
+                                             init1 = 0;
+                                             getOffLineOrderByAjax(olOrderCriteria);
+                                         }
+                                     });
     }
     Date.prototype.format = function (fmt) {
         var o = {
@@ -384,9 +389,10 @@
 
     function searchOrderByCriteria() {
         olOrderCriteria.offset = 1;
+        init1 = 1;
         var dateStr = $('#date-end span').text().split("-");
         if (dateStr != null && dateStr != '') {
-            var startDate =dateStr[0].replace(/-/g, "/");
+            var startDate = dateStr[0].replace(/-/g, "/");
             var endDate = dateStr[1].replace(/-/g, "/");
             olOrderCriteria.startDate = startDate;
             olOrderCriteria.endDate = endDate;
@@ -411,7 +417,6 @@
         } else {
             olOrderCriteria.merchant = null;
         }
-        flag = true;
         getOffLineOrderByAjax(olOrderCriteria);
     }
 
