@@ -18,9 +18,10 @@
     <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
     <title>乐+生活 后台模板管理系统</title>
     <link href="${resourceUrl}/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="${resourceUrl}/css/jqpagination.css"/>
+    <%--<link rel="stylesheet" href="${resourceUrl}/css/jqpagination.css"/>--%>
     <link rel="stylesheet" href="${resourceUrl}/css/daterangepicker-bs3.css">
     <link type="text/css" rel="stylesheet" href="${resourceUrl}/css/commonCss.css"/>
+    <link type="text/css" rel="stylesheet" href="${resourceUrl}/css/jquery.page.css"/>
     <style>
         .pagination > li > a.focusClass {
             background-color: #ddd;
@@ -30,55 +31,6 @@
             width: 60px;
         }
 
-        .tcdPageCode {
-            padding: 15px 20px;
-            text-align: left;
-            color: #ccc;
-        }
-
-        .tcdPageCode a {
-            display: inline-block;
-            color: #428bca;
-            display: inline-block;
-            height: 25px;
-            line-height: 25px;
-            padding: 0 10px;
-            border: 1px solid #ddd;
-            margin: 0 2px;
-            border-radius: 4px;
-            vertical-align: middle;
-        }
-
-        .tcdPageCode a:hover {
-            text-decoration: none;
-            border: 1px solid #428bca;
-        }
-
-        .tcdPageCode span.current {
-            display: inline-block;
-            height: 25px;
-            line-height: 25px;
-            padding: 0 10px;
-            margin: 0 2px;
-            color: #fff;
-            background-color: #428bca;
-            border: 1px solid #428bca;
-            border-radius: 4px;
-            vertical-align: middle;
-        }
-
-        .tcdPageCode span.disabled {
-            display: inline-block;
-            height: 25px;
-            line-height: 25px;
-            padding: 0 10px;
-            margin: 0 2px;
-            color: #bfbfbf;
-            background: #f2f2f2;
-            border: 1px solid #bfbfbf;
-            border-radius: 4px;
-            vertical-align: middle;
-        }
     </style>
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -88,7 +40,6 @@
     <script src="js/respond.min.js"></script>
     <![endif]-->
     <script type="text/javascript" src="${resourceUrl}/js/jquery-2.0.3.min.js"></script>
-    <script type="text/javascript" src="${resourceUrl}/js/jquery.jqpagination.min.js"></script>
 </head>
 
 <body>
@@ -228,8 +179,10 @@
                         </tbody>
                     </table>
 
-                    <div class="tcdPageCode">
+                    <div class="tcdPageCode" style="display: inline;">
                     </div>
+                    <div style="display: inline;"> 共有 <span id="totalElements"></span> 个</div>
+
                 </div>
             </div>
         </div>
@@ -242,7 +195,7 @@
 <script src="${resourceUrl}/js/daterangepicker.js"></script>
 <script src="${resourceUrl}/js/moment.min.js"></script>
 
-<script src="http://www.lanrenzhijia.com/ajaxjs/jquery.page.js"></script>
+<script src="${resourceUrl}/js/jquery.page.js"></script>
 <script>
     var userCriteria = {};
     var flag = true;
@@ -299,8 +252,14 @@
                 });
             });
         });
-        userCriteria.offset = 1;
+        <%--var ttt = '${leJiaUserCriteria}';--%>
 
+        <%--if (ttt == null || ttt == '') {--%>
+        <%--userCriteria.offset = 1;--%>
+        <%--} else {--%>
+        <%--userCriteria = JSON.parse('${leJiaUserCriteria}');--%>
+        <%--}--%>
+        userCriteria.offset = 1;
         getUserByAjax(userCriteria);
     });
 
@@ -340,12 +299,11 @@
                            if (totalPage == 0) {
                                totalPage = 1;
                            }
-
-                           alert(flag + "   " + init1);
-
+                           //   alert(flag + "   " + init1);
                            if (flag) {
                                //    alert('flag : ' + flag);
                                initPage(userCriteria.offset, totalPage);
+                               flag = false;
                            }
 
                            if (init1) {
@@ -411,16 +369,17 @@
         }
     }
     function initPage(currPage, totalPage) {
+        $('.tcdPageCode').unbind();
         $(".tcdPageCode").createPage({
                                          pageCount: totalPage,
                                          current: currPage,
                                          backFn: function (p) {
                                              //单击回调方法，p是当前页码
-                                             flag = false;
                                              init1 = 0;
 //                                             alert(flag + "   " + init1);
 //                                             alert('current : ' + p);
                                              userCriteria.offset = p;
+
                                              getUserByAjax(userCriteria);
                                          }
                                      });
@@ -525,7 +484,12 @@
         }
 
         getUserByAjax(userCriteria);
-
+//        if (search == 1) {
+//            getUserByAjax(userCriteria);
+//        } else {
+//            location.href =
+//            "/manage//user?leJiaUserCriteria=" + JSON.stringify(userCriteria);
+//        }
     }
 
     function sendMassToAll() {
