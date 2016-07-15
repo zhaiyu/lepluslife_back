@@ -73,7 +73,7 @@ public class UserController {
   @RequestMapping(value = "/userList", method = RequestMethod.POST)
   public
   @ResponseBody
-  LejiaResult getOffLineOrder(@RequestBody LeJiaUserCriteria leJiaUserCriteria) {
+  LejiaResult userList(@RequestBody LeJiaUserCriteria leJiaUserCriteria) {
     if (leJiaUserCriteria.getOffset() == null) {
       leJiaUserCriteria.setOffset(1);
     }

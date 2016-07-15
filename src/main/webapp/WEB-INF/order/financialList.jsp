@@ -19,8 +19,8 @@
     <title>乐+生活 后台模板管理系统</title>
     <link href="${resourceUrl}/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="${resourceUrl}/css/daterangepicker-bs3.css">
-    <link rel="stylesheet" href="${resourceUrl}/css/jqpagination.css"/>
     <link type="text/css" rel="stylesheet" href="${resourceUrl}/css/commonCss.css"/>
+    <link type="text/css" rel="stylesheet" href="${resourceUrl}/css/jquery.page.css"/>
     <style>
         thead th, tbody td {
             text-align: center;
@@ -31,7 +31,7 @@
         }
     </style>
     <script type="text/javascript" src="${resourceUrl}/js/jquery-2.0.3.min.js"></script>
-    <script type="text/javascript" src="${resourceUrl}/js/jquery.jqpagination.min.js"></script>
+    <script src="${resourceUrl}/js/jquery.page.js"></script>
 </head>
 
 <body>
@@ -85,13 +85,9 @@
                         </table>
                     </div>
 
-                    <div class="pagination">
-                        <a href="#" class="first" data-action="first">&laquo;</a>
-                        <a href="#" class="previous" data-action="previous">&lsaquo;</a>
-                        <input id="page" type="text" readonly="readonly" data-max-page="1"/>
-                        <a href="#" class="next" data-action="next">&rsaquo;</a>
-                        <a href="#" class="last" data-action="last">&raquo;</a>
+                    <div class="tcdPageCode" style="display: inline;">
                     </div>
+                    <div style="display: inline;"> 共有 <span id="totalElements"></span> 个</div>
                     <button class="btn btn-primary pull-right" style="margin-top: 5px"
                             onclick="exportExcel()">导出表格
                     </button>
@@ -132,6 +128,7 @@
 <script src="${resourceUrl}/js/moment.min.js"></script>
 <script>
     var financialCriteria = {};
+    var flag = true;
     var financialContent = document.getElementById("financialContent");
     var headContent = document.getElementById("head-content");
     var dateContent = document.getElementById("date-content");
@@ -148,13 +145,8 @@
     })
     //    时间选择器
     $(document).ready(function () {
-        $('#date-end span').html(moment().subtract('hours', 1).format('YYYY/MM/DD HH:mm:ss') + ' - '
-                                 + moment().format('YYYY/MM/DD HH:mm:ss'));
         $('#date-end').daterangepicker({
                                            maxDate: moment(), //最大时间
-                                           dateLimit: {
-                                               days: 30
-                                           }, //起止时间的最大间隔
                                            showDropdowns: true,
                                            showWeekNumbers: false, //是否显示第几周
                                            timePicker: true, //是否显示小时和分钟
@@ -196,15 +188,15 @@
     })
 
     function initPage(page, totalPage) {
-        $('.pagination').jqPagination({
-                                          current_page: page, //设置当前页 默认为1
-                                          max_page: totalPage, //设置最大页 默认为1
-                                          page_string: '当前第' + page + '页,共' + totalPage + '页',
-                                          paged: function (page) {
-                                              financialCriteria.offset = page;
-                                              getFinancialByAjax(financialCriteria);
-                                          }
-                                      });
+        $('.tcdPageCode').unbind();
+        $(".tcdPageCode").createPage({
+                                         pageCount: totalPage,
+                                         current: page,
+                                         backFn: function (p) {
+                                             financialCriteria.offset = p;
+                                             getFinancialByAjax(financialCriteria);
+                                         }
+                                     });
     }
 
     function getFinancialByAjax(financialCriteria) {
@@ -221,8 +213,14 @@
                        var page = data.data;
                        var content = page.content;
                        var totalPage = page.totalPages;
+                       $("#totalElements").html(page.totalElements);
                        if (totalPage == 0) {
                            totalPage = 1;
+                       }
+
+                       if (flag) {
+                           flag = false;
+                           initPage(financialCriteria.offset, totalPage);
                        }
                        headContent.innerHTML =
                        '<th>结算单号</th><th>结算日期</th><th>商户信息</th><th>结算方式</th><th>结算账户信息</th><th>结算周期</th><th>收款人</th>';
@@ -292,7 +290,7 @@
                                $("#deleteWarn").modal("show");
                            });
                        });
-                       initPage(financialCriteria.offset, totalPage);
+
                    }
                });
     }
@@ -336,6 +334,7 @@
     }
 
     function searchFinancialByCriteria() {
+        financialCriteria.offset = 1;
         var dateStr = $('#date-end span').text().split("-");
         var startDate = dateStr[0].replace(/-/g, "/");
         var endDate = dateStr[1].replace(/-/g, "/");
@@ -354,6 +353,7 @@
         } else {
             financialCriteria.merchant = null;
         }
+        flag = true;
         getFinancialByAjax(financialCriteria);
     }
 
@@ -364,6 +364,7 @@
         } else {
             financialCriteria.state = null;
         }
+        flag = true;
         getFinancialByAjax(financialCriteria);
     }
     function post(URL, PARAMS) {

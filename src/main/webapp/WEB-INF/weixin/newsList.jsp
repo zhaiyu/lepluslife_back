@@ -43,7 +43,7 @@
     <link href="${resourceUrl}/css/bootstrap.min.css" rel="stylesheet">
     <link type="text/css" rel="stylesheet" href="${resourceUrl}/css/commonCss.css"/>
     <script type="text/javascript" src="${resourceUrl}/js/jquery-2.0.3.min.js"></script>
-    <link rel="stylesheet" href="${resourceUrl}/css/jqpagination.css"/>
+    <link type="text/css" rel="stylesheet" href="${resourceUrl}/css/jquery.page.css"/>
 </head>
 
 <body>
@@ -59,13 +59,15 @@
     <div class="m-right" style="margin-top: 10px">
         <div class="main">
 
-
             <h2 style="margin:20px;display: inline"> 发送图文消息</h2>
             <button type="button" class="btn btn-primary btn-return" style="margin:10px;"
                     onclick="goUserPage()">
                 返回会员列表
             </button>
-
+            <button type="button" class="btn btn-primary btn-return" style="margin:10px;"
+                    onclick="goMessagePage()">
+                群发历史列表
+            </button>
 
             <div class="row">
                 <div class="col-md-12">
@@ -104,13 +106,9 @@
                                     </tbody>
                                 </table>
 
-                                <div class="pagination">
-                                    <a href="#" class="first" data-action="first">&laquo;</a>
-                                    <a href="#" class="previous" data-action="previous">&lsaquo;</a>
-                                    <input type="text" readonly="readonly" data-max-page="40"/>
-                                    <a href="#" class="next" data-action="next">&rsaquo;</a>
-                                    <a href="#" class="last" data-action="last">&raquo;</a>
-                                    共有 <span id="totalElements"></span> 个
+                                <div class="tcdPageCode" style="display: inline;">
+                                </div>
+                                <div style="display: inline;"> 共有 <span id="totalElements"></span> 个
                                 </div>
 
                             </div>
@@ -136,6 +134,7 @@
 <script src="${resourceUrl}/js/global/plugins/bootstrap-touchspin/bootstrap.touchspin.js"
         type="text/javascript"></script>
 <script src="${resourceUrl}/js/moment.min.js"></script>
+<script src="${resourceUrl}/js/jquery.page.js"></script>
 <script>
     var newsContent = document.getElementById("newsContent");
     var flag = true;
@@ -155,53 +154,55 @@
     });
 
     function pageChange(offset) {
-        if (flag) {
-            newsContent.innerHTML = "";
-            $.ajax({
-                       type: "post",
-                       url: "/manage/weixin/news/newsList",
-                       async: false,
-                       data: {offset: offset},
-                       success: function (data) {
-                           var content = data.data;
-                           var items = content.item;
-                           $("#totalElements").html(content.total_count);
-                           total_count = Math.ceil(content.total_count / 20);
-                           for (i = 0; i < items.length; i++) {
-                               var contentStr = '<tr><td><label class="radio-inline"><input type="radio" name="inlineRadioOptions" value="'
-                                                + items[i].media_id + '"></label></td>';
-                               contentStr += '<td>' + items[i].content.news_item[0].title + '</td>';
-                               contentStr += '<td>' + items[i].media_id + '</td></tr>';
 
-                               newsContent.innerHTML += contentStr;
-                           }
-
+        newsContent.innerHTML = "";
+        $.ajax({
+                   type: "post",
+                   url: "/manage/weixin/news/newsList",
+                   async: false,
+                   data: {offset: offset},
+                   success: function (data) {
+                       var content = data.data;
+                       var items = content.item;
+                       $("#totalElements").html(content.total_count);
+                       total_count = Math.ceil(content.total_count / 20);
+                       if (flag) {
+                           flag = false;
                            initPage(offset, total_count);
-
                        }
-                   });
-        }
+                       for (i = 0; i < items.length; i++) {
+                           var contentStr = '<tr><td><label class="radio-inline"><input type="radio" name="inlineRadioOptions" value="'
+                                            + items[i].media_id + '"></label></td>';
+                           contentStr += '<td>' + items[i].content.news_item[0].title + '</td>';
+                           contentStr += '<td>' + items[i].media_id + '</td></tr>';
+
+                           newsContent.innerHTML += contentStr;
+                       }
+                   }
+               });
     }
 
     function initPage(currPage, totalPage) {
-        $('.pagination').jqPagination({
-                                          current_page: currPage, //设置当前页 默认为1
-                                          max_page: totalPage, //设置最大页 默认为1
-                                          page_string: '当前第{current_page}页,共{max_page}页',
-                                          paged: function () {
-                                              flag = false;
-                                              pageChange(currPage);
-                                          }
-                                      });
+        $('.tcdPageCode').unbind();
+        $(".tcdPageCode").createPage({
+                                         pageCount: totalPage,
+                                         current: currPage,
+                                         backFn: function (p) {
+                                             pageChange(currPage);
+                                         }
+                                     });
     }
 
     function sendNews() {
 
-        if (!confirm('确定发送“' + "测试图文消息" + '”图文消息给 ' + '${totalElements}' + ' 个用户？')) {
+        var option = $("input[name='inlineRadioOptions']:checked");
+        var title = option.parents('td').next('td').html();
+        if (!confirm('确定发送“' + title + '”图文消息给 ' + '${totalElements}' + ' 个用户？')) {
             return false;
         }
 
-        var mediaId = $("input[name='inlineRadioOptions']:checked").val();
+        var mediaId = option.val();
+
         if (mediaId == null || mediaId == '') {
             alert("请先选择要发送的图文消息");
             return false;
@@ -212,7 +213,7 @@
             $.ajax({
                        type: "post",
                        async: false,
-                       url: "/manage/weixin/news/sendNews?mediaId=" + mediaId,
+                       url: "/manage/weixin/news/sendNews?mediaId=" + mediaId + "&title=" + title,
                        contentType: "application/json",
                        data: JSON.stringify(JSON.parse('${leJiaUserCriteria}')),
                        success: function (data) {
@@ -227,7 +228,8 @@
             $.ajax({
                        type: "post",
                        async: false,
-                       url: "/manage/weixin/news/sendNewsToAll?mediaId=" + mediaId,
+                       url: "/manage/weixin/news/sendNewsToAll?mediaId=" + mediaId + "&title="
+                            + title,
                        contentType: "application/json",
                        success: function (data) {
                            if (data.status == 200) {
@@ -238,13 +240,15 @@
                        }
                    });
         }
-
     }
 
     function goUserPage() {
         location.href = "/manage/user";
     }
 
+    function goMessagePage() {
+        location.href = "/manage/weixin/imageText";
+    }
 
 </script>
 </body>

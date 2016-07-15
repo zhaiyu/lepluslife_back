@@ -10,6 +10,8 @@ public class LeJiaUserCriteria {
 
   private String endDate;
 
+  private String nickname;
+
   private String phoneNumber;
 
   private String userSid;
@@ -124,5 +126,13 @@ public class LeJiaUserCriteria {
 
   public void setCity(Long city) {
     this.city = city;
+  }
+
+  public String getNickname() {
+    return nickname;
+  }
+
+  public void setNickname(String nickname) {
+    this.nickname = nickname;
   }
 }

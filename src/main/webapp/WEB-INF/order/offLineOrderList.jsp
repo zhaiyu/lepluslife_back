@@ -31,7 +31,6 @@
         }
     </style>
     <script type="text/javascript" src="${resourceUrl}/js/jquery-2.0.3.min.js"></script>
-    <%--<script type="text/javascript" src="${resourceUrl}/js/jquery.jqpagination.min.js"></script>--%>
 </head>
 
 <body>
@@ -248,7 +247,6 @@
                        if (totalPage == 0) {
                            totalPage = 1;
                        }
-                       alert(flag + "   " + init1);
                        if (flag) {
                            flag = false;
                            initPage(olOrderCriteria.offset, totalPage);

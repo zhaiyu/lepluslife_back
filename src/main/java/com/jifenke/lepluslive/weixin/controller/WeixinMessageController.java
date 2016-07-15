@@ -7,6 +7,7 @@ import com.jifenke.lepluslive.user.domain.entities.LeJiaUser;
 import com.jifenke.lepluslive.user.domain.entities.WeiXinUser;
 import com.jifenke.lepluslive.user.service.UserService;
 import com.jifenke.lepluslive.user.service.WeiXinUserService;
+import com.jifenke.lepluslive.weixin.domain.criteria.MessageCriteria;
 import com.jifenke.lepluslive.weixin.service.DictionaryService;
 import com.jifenke.lepluslive.weixin.service.WeixinMessageService;
 import com.sun.org.apache.xerces.internal.util.SynchronizedSymbolTable;
@@ -91,7 +92,8 @@ public class WeixinMessageController {
    */
   @RequestMapping(value = "/news/sendNews", method = RequestMethod.POST)
   public LejiaResult sendNews(
-      @RequestBody LeJiaUserCriteria leJiaUserCriteria, @RequestParam String mediaId) {
+      @RequestBody LeJiaUserCriteria leJiaUserCriteria, @RequestParam String mediaId,
+      @RequestParam String title) {
 
     Page page = userService.findAllLeJiaUserByCriteria(leJiaUserCriteria);
     List<LeJiaUser> users = page.getContent();
@@ -113,7 +115,7 @@ public class WeixinMessageController {
     //成功的话将发送的图文消息保存，用于接收事件补全数据并展示
     if ((Integer) map.get("errcode") == 0) {
       try {
-        weixinMessageService.saveNews(map);
+        weixinMessageService.saveNews(map, title);
 
         new Thread(() -> {//对每个发送消息会员的当月数量减 1   异步处理
           weiXinUserService.editMassRemain(weiXinUserList);
@@ -133,14 +135,14 @@ public class WeixinMessageController {
    * 群发图文消息给所有人 is_to_all=true
    */
   @RequestMapping(value = "/news/sendNewsToAll", method = RequestMethod.POST)
-  public LejiaResult sendNewsToAll(@RequestParam String mediaId) {
+  public LejiaResult sendNewsToAll(@RequestParam String mediaId, @RequestParam String title) {
 
     Map map = weixinMessageService.sendNewsToAll(mediaId);
 
     //成功的话将发送的图文消息保存，用于接收事件补全数据并展示
     if ((Integer) map.get("errcode") == 0) {
       try {
-        weixinMessageService.saveNews(map);
+        weixinMessageService.saveNews(map, title);
         //将is_to_all=true群发时间和剩余次数更新到dictionary
         dictionaryService.updateMassTime(16L, 17L);
 
@@ -156,5 +158,22 @@ public class WeixinMessageController {
       return LejiaResult.build((Integer) map.get("errcode"), "发送失败");
     }
   }
+
+  @RequestMapping(value = "/imageText", method = RequestMethod.GET)
+  public ModelAndView goImageTextPage() {
+    return MvUtil.go("/weixin/imageTextList");
+  }
+
+  @RequestMapping(value = "/imageTextList", method = RequestMethod.POST)
+  public
+  @ResponseBody
+  LejiaResult getOffLineOrder(@RequestBody MessageCriteria messageCriteria) {
+    if (messageCriteria.getOffset() == null) {
+      messageCriteria.setOffset(1);
+    }
+    Page page = weixinMessageService.findImageTextByPage(messageCriteria, 10);
+    return LejiaResult.ok(page);
+  }
+
 
 }
