@@ -164,8 +164,19 @@
                             </div>
                         </div>
                     </div>
+                    <div class="col-xs-6 col-sm-3">
+                        <div class="thumbnail">
+                            <div class="caption">
+                                <a href='/manage/weixin/imageText'>
+                                    <button class="button button--antiman button--round-l button--text-medium">
+                                        <span>群发消息列表</span></button>
+                                </a>
+                            </div>
+                        </div>
+                    </div>
                     <div class="col-xs-6 col-sm-3"></div>
                 </div>
+
             </div>
         </div>
     </div>
