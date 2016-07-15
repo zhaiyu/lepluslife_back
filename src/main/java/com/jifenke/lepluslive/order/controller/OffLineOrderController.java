@@ -38,7 +38,7 @@ import javax.inject.Inject;
 @RequestMapping("/manage")
 public class OffLineOrderController {
 
-
+//梁双顺已经疯了
   @Inject
   private OrderViewExcel orderViewExcel;
 
@@ -105,6 +105,11 @@ public class OffLineOrderController {
   @ResponseBody
   LejiaResult searchFinancialBycriterial(@RequestBody FinancialCriteria financialCriteria) {
     if (financialCriteria.getOffset() == null) {
+
+
+
+
+        
       financialCriteria.setOffset(1);
     }
     Page page = offLineOrderService.findFinancialByCirterial(financialCriteria, 10);
