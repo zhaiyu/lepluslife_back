@@ -147,7 +147,7 @@ public class OffLineOrderController {
     if (olOrderCriteria.getOffset() == null) {
       olOrderCriteria.setOffset(1);
     }
-    Page page = offLineOrderService.findOrderByPage(olOrderCriteria, 10000);
+    Page page = offLineOrderService.findOrderByPage(olOrderCriteria, 10);
     Map map = new HashMap();
     map.put("orderList", page.getContent());
     return new ModelAndView(orderViewExcel, map);
