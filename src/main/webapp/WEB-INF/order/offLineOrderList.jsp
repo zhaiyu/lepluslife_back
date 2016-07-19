@@ -81,6 +81,11 @@
                                placeholder="请输入商户名称或ID"/>
                     </div>
                     <div class="form-group col-md-3">
+                        <label for="customer-amount">订单金额大于等于</label>
+                        <input type="text" id="customer-amount" class="form-control"
+                               placeholder="请输入金额"/>
+                    </div>
+                    <div class="form-group col-md-3">
                         <button class="btn btn-primary" style="margin-top: 24px"
                                 onclick="searchOrderByCriteria()">查询
                         </button>
@@ -390,6 +395,8 @@
     function searchOrderByCriteria() {
         olOrderCriteria.offset = 1;
         init1 = 1;
+        //lss 2016/07/19 订单金额大于等于
+        olOrderCriteria.amount=$('#customer-amount').val()*100;
         var dateStr = $('#date-end span').text().split("-");
         if (dateStr != null && dateStr != '') {
             var startDate = dateStr[0].replace(/-/g, "/");

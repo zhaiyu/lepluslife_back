@@ -129,7 +129,6 @@ public class OffLineOrderController {
         olOrderCriteria.setMerchant(merchant);
         Page page = offLineOrderService.findOrderByPage(olOrderCriteria, 10000);
         List<OffLineOrder> list=page.getContent();
-        System.out.println("++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++"+list);
         Map detailsMap = new HashMap();
         detailsMap.put("orderList", page.getContent());
         return new ModelAndView(orderViewExcel,detailsMap);
@@ -147,7 +146,7 @@ public class OffLineOrderController {
     if (olOrderCriteria.getOffset() == null) {
       olOrderCriteria.setOffset(1);
     }
-    Page page = offLineOrderService.findOrderByPage(olOrderCriteria, 10);
+    Page page = offLineOrderService.findOrderByPage(olOrderCriteria, 10000);
     Map map = new HashMap();
     map.put("orderList", page.getContent());
     return new ModelAndView(orderViewExcel, map);
