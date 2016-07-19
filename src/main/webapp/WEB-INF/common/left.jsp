@@ -27,6 +27,7 @@
         .M7 span{background:url(${resourceUrl}/images/ioc.png) -72px -70px;}
         .M8 span{background:url(${resourceUrl}/images/ioc.png) -72px -70px;}
         .M9 span{background:url(${resourceUrl}/images/ioc.png) -72px -70px;}
+        .M10 span{background:url(${resourceUrl}/images/ioc.png) -72px -70px;}
     </style>
     <script type="text/javascript" src="${resourceUrl}/js/menu.js"></script>
 <div class="left_menu">
@@ -41,6 +42,7 @@
         <li><h4 class="M6"><span></span>会员管理</h4></li>
         <li><h4 class="M7"><span></span>线下订单</h4></li>
         <li><h4 class="M8"><span></span>财务结算</h4></li>
+        <li><h4 class="M10"><span></span>分润单</h4></li>
 
         <li><h4 class="M9"><span></span>公众号及推荐</h4></li>
         <%--<li>--%>
@@ -56,7 +58,7 @@
 <script>
     $(function () {
 //        数组
-        var htmlArr=['/manage/index','/manage/product','/manage/product','picManger.html','/manage/merchant','/manage/order','/manage/topic','/manage/user','/manage/offLineOrder','/manage/financial','/manage/weixin/index'];
+        var htmlArr=['/manage/index','/manage/product','/manage/product','picManger.html','/manage/merchant','/manage/order','/manage/topic','/manage/user','/manage/offLineOrder','/manage/financial','/manage/weixin/index','/manage/offLineOrder/share'];
         $('.M1').click(function () {
             window.location.href=htmlArr[0];
         });
@@ -90,6 +92,9 @@
 
         $('.M9').click(function () {
             window.location.href=htmlArr[10];
+        });
+        $('.M10').click(function () {
+            window.location.href=htmlArr[11];
         });
     })
 </script>

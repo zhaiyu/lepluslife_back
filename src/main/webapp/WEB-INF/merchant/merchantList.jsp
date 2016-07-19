@@ -190,6 +190,7 @@
                                 <th>乐店状态</th>
                                 <th>收取红包权限</th>
                                 <th>创建时间</th>
+                                <th>商户随即号</th>
                                 <th>操作</th>
                             </tr>
                             </thead>
@@ -410,6 +411,10 @@
                            contentStr +=
                            '<td><span>'
                            + new Date(content[i].createDate).format('yyyy-MM-dd HH:mm:ss')
+                           + '</span></td>';
+                           contentStr +=
+                           '<td><span>'
+                           + content[i].merchantSid
                            + '</span></td>';
                            contentStr +=
                            '<td><input type="hidden" class="name-hidden" value="' + content[i].name
