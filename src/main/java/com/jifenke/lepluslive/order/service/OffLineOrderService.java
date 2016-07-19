@@ -62,6 +62,13 @@ public class OffLineOrderService {
               cb.equal(r.get("state"),
                        orderCriteria.getState()));
         }
+          //lss 2016/07/19
+          if (orderCriteria.getAmount() != null) {
+              predicate.getExpressions().add(
+                      cb.greaterThanOrEqualTo(r.get("totalPrice"),  orderCriteria.getAmount()));
+          }
+
+
         if (orderCriteria.getPhoneNumber() != null && orderCriteria.getPhoneNumber() != "") {
           predicate.getExpressions().add(
               cb.like(r.<LeJiaUser>get("leJiaUser").get("phoneNumber"),
