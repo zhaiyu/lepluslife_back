@@ -52,15 +52,29 @@ public class OrderService {
   private static String jobGroupName = "ORDER_CONFIRM_JOBGROUP_NAME";
   private static String triggerGroupName = "ORDER_CONFIRM_TRIGGERGROUP_NAME";
 
-  public Map<String, Long> accountTurnover() {
-    Long count = orderRepository.countOrder();
-    Long turnover = orderRepository.countAllTurnover();
+    public Map<String, Long> accountTurnover() {
+        Long count = orderRepository.countOrder();
+        Long turnover = orderRepository.countAllTurnover();
 
-    HashMap<String, Long> map = new HashMap<>();
-    map.put("orderCount", count);
-    map.put("turnover", turnover);
-    return map;
-  }
+        //lss 2016/07/21
+        Long orderScoreb=orderRepository.sumAllScoreb();
+        Long activityScoreb=orderRepository.sumAllactivityScoreb();
+        Long scoreb=orderScoreb+activityScoreb;
+        Long orderRebate=orderRepository.sumAllRebate();
+        Long activityRebate=orderRepository.sumAllactivityRebate();
+        Long rebate=orderRebate+activityRebate;
+        Long lejiaUserScoreb=orderRepository.sumAllLejiaUserScoreb();
+        Long lejiaUserRebate=orderRepository.sumAllLejiaUserRebate();
+        HashMap<String, Long> map = new HashMap<>();
+        map.put("scoreb",scoreb);
+        map.put("rebate",rebate);
+        map.put("lejiaUserScoreb",lejiaUserScoreb);
+        map.put("lejiaUserRebate",lejiaUserRebate);
+        map.put("orderCount", count);
+        map.put("turnover", turnover);
+
+        return map;
+    }
 
   public Page findOrderByPage(Integer offset, OrderCriteria orderCriteria) {
     Sort sort = new Sort(Sort.Direction.DESC, "createDate");
