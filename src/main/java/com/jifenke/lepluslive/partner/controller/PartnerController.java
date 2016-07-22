@@ -46,4 +46,15 @@ public class PartnerController {
     return MvUtil.go("/partner/createPartner");
   }
 
+  @RequestMapping(value = "/partner",method = RequestMethod.POST)
+  public LejiaResult createPartner(@RequestBody Partner partner) {
+    partnerService.createPartner(partner);
+    return LejiaResult.ok();
+  }
+  @RequestMapping(value = "/partner",method = RequestMethod.PUT)
+  public LejiaResult editPartner(@RequestBody Partner partner) {
+    partnerService.editPartner(partner);
+    return LejiaResult.ok();
+  }
+
 }

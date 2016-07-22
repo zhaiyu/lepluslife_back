@@ -2,9 +2,11 @@ package com.jifenke.lepluslive.partner.service;
 
 import com.jifenke.lepluslive.global.util.MD5Util;
 import com.jifenke.lepluslive.partner.domain.entities.Partner;
+import com.jifenke.lepluslive.partner.domain.entities.PartnerWallet;
 import com.jifenke.lepluslive.partner.repository.PartnerManagerRepository;
 import com.jifenke.lepluslive.partner.repository.PartnerManagerWalletRepository;
 import com.jifenke.lepluslive.partner.repository.PartnerRepository;
+import com.jifenke.lepluslive.partner.repository.PartnerWalletRepository;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -35,6 +37,9 @@ public class PartnerService {
   @Inject
   private PartnerManagerRepository partnerManagerRepository;
 
+  @Inject
+  private PartnerWalletRepository partnerWalletRepository;
+
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public List<Partner> findAllParter() {
@@ -57,14 +62,14 @@ public class PartnerService {
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
   public List findAllPartnerManagerByWallet() {
-   return partnerManagerWalletRepository.findAll();
+    return partnerManagerWalletRepository.findAll();
   }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public void editPartnerPassword(Partner partner) {
     Partner origin = partnerRepository.findOne(partner.getId());
     origin.setName(partner.getName());
-    origin.setPassword(MD5Util.MD5Encode(partner.getPassword(),"utf-8"));
+    origin.setPassword(MD5Util.MD5Encode(partner.getPassword(), "utf-8"));
     partnerRepository.save(origin);
 
   }
@@ -77,5 +82,30 @@ public class PartnerService {
   @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
   public List findAllPartnerManager() {
     return partnerManagerRepository.findAll();
+  }
+
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  public void createPartner(Partner partner) {
+    partnerRepository.save(partner);
+    PartnerWallet partnerWallet = new PartnerWallet();
+    partnerWallet.setPartner(partner);
+    partnerWalletRepository.save(partnerWallet);
+
+  }
+
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  public void editPartner(Partner partner) {
+    Partner origin = partnerRepository.findOne(partner.getId());
+    origin.setName(partner.getName());
+    origin.setBankName(partner.getBankName());
+    origin.setBankNumber(partner.getBankNumber());
+    origin.setMerchantLimit(partner.getMerchantLimit());
+    origin.setUserLimit(partner.getUserLimit());
+    origin.setPartnerManager(partner.getPartnerManager());
+    origin.setPayee(partner.getPayee());
+    origin.setPhoneNumber(partner.getPhoneNumber());
+    origin.setPartnerName(partner.getPartnerName());
+    partnerRepository.save(origin);
+
   }
 }

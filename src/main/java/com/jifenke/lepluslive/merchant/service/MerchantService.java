@@ -384,4 +384,31 @@ public class MerchantService {
         merchantWallet.getTotalTransferMoney() + financialStatistic.getTransferPrice());
     merchantWalletRepository.save(merchantWallet);
   }
+
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  public Merchant pureQrCodeManage(Long id) {
+    Merchant merchant = merchantRepository.findOne(id);
+
+    if (merchant.getPureQrCode() == null) {
+      byte[]
+          bytes =
+          new byte[0];
+      try {
+        bytes = barcodeService.qrCode(Constants.MERCHANT_URL + merchant.getMerchantSid()+"?pure=access",
+                                      BarcodeConfig.QRCode.defaultConfig());
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+      String filePath = MvUtil.getFilePath(Constants.BAR_CODE_EXT);
+      fileImageService.SaveBarCode(bytes, filePath);
+
+      merchant.setPureQrCode(barCodeRootUrl + "/" + filePath);
+
+      merchantRepository.save(merchant);
+    }
+
+    return merchant;
+  }
 }

@@ -73,6 +73,8 @@ public class Merchant {
 
   private String qrCodePicture; //商户收款码
 
+  private String pureQrCode; //纯支付码
+
   private Long userLimit; //会员绑定上线
 
   private BigDecimal ljCommission; //乐加佣金 单位百分比
@@ -88,6 +90,15 @@ public class Merchant {
   private String contact; //联系人
 
   private Date createDate = new Date();
+
+
+  public String getPureQrCode() {
+    return pureQrCode;
+  }
+
+  public void setPureQrCode(String pureQrCode) {
+    this.pureQrCode = pureQrCode;
+  }
 
   @OneToOne(cascade = CascadeType.ALL)
   private MerchantInfo merchantInfo;   //商家详情介绍
