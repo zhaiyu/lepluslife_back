@@ -9,9 +9,11 @@ import com.jifenke.lepluslive.global.util.MvUtil;
 import com.jifenke.lepluslive.merchant.domain.criteria.MerchantCriteria;
 import com.jifenke.lepluslive.merchant.domain.entities.City;
 import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
+import com.jifenke.lepluslive.merchant.domain.entities.MerchantInfo;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantType;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantUser;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantWallet;
+import com.jifenke.lepluslive.merchant.repository.MerchantInfoRepository;
 import com.jifenke.lepluslive.merchant.repository.MerchantProtocolRepository;
 import com.jifenke.lepluslive.merchant.repository.MerchantRepository;
 import com.jifenke.lepluslive.merchant.repository.MerchantTypeRepository;
@@ -77,6 +79,9 @@ public class MerchantService {
   @Inject
   private LeJiaUserRepository leJiaUserRepository;
 
+  @Inject
+  private MerchantInfoRepository merchantInfoRepository;
+
   @Value("${bucket.ossBarCodeReadRoot}")
   private String barCodeRootUrl;
 
@@ -121,6 +126,10 @@ public class MerchantService {
     new Thread(() -> {
       fileImageService.SaveBarCode(finalBytes, filePath);
     }).start();
+
+    MerchantInfo merchantInfo = new MerchantInfo();
+    merchantInfoRepository.save(merchantInfo);
+    merchant.setMerchantInfo(merchantInfo);
     merchantRepository.save(merchant);
     RegisterOrigin registerOrigin = new RegisterOrigin();
     registerOrigin.setOriginType(3);
@@ -317,6 +326,16 @@ public class MerchantService {
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public void openStore(Merchant merchant) {
     Merchant origin = merchantRepository.findOne(merchant.getId());
+    MerchantInfo merchantInfo = origin.getMerchantInfo();
+    if (merchantInfo != null) {
+      MerchantInfo info = merchant.getMerchantInfo();
+      merchantInfo.setCard(info.getCard());
+      merchantInfo.setPark(info.getPark());
+      merchantInfo.setPerSale(info.getPerSale());
+      merchantInfo.setStar(info.getStar());
+      merchantInfo.setWifi(info.getWifi());
+      merchantInfoRepository.save(merchantInfo);
+    }
 
     origin.setState(1);
 
