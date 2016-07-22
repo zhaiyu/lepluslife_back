@@ -73,7 +73,6 @@ public class SchedulerConfigration {
     bean.setDataSource(dataSource);
     bean.setTriggers(cronTriggerBean().getObject(), wxCronTriggerBean().getObject());
     bean.setSchedulerName("orderConfrim");
-//    bean.setTriggers (orderTrigger);
     return bean;
   }
 }

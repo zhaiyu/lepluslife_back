@@ -36,10 +36,10 @@ public class WeixinRefreshJob implements Job {
   public void execute(JobExecutionContext context) throws JobExecutionException {
 
     HashMap<String, String[]> apps = new HashMap<>();
-    String[] app1 = {"wxec4f3a2fb6ee8f06", "437e62266d3ff047ea0803b234ad0801", "7", "8"};
-    String[] app2 = {"wxec4f3a2fb6ee8f06", "437e62266d3ff047ea0803b234ad0801", "9", "10"};
-//    String[] app1 = {"wxe2190d22ce025e4f", "4a3f22e2ac05822b8b284e5a7c93b280", "7", "8"};
-//    String[] app2 = {"wx16edfa0dda02edd5", "2ff98b94441224bf584181e844a8af66", "9", "10"};
+//    String[] app1 = {"wxec4f3a2fb6ee8f06", "437e62266d3ff047ea0803b234ad0801", "7", "8"};
+//    String[] app2 = {"wxec4f3a2fb6ee8f06", "437e62266d3ff047ea0803b234ad0801", "9", "10"};
+    String[] app1 = {"wxe2190d22ce025e4f", "4a3f22e2ac05822b8b284e5a7c93b280", "7", "8"};
+    String[] app2 = {"wx16edfa0dda02edd5", "2ff98b94441224bf584181e844a8af66", "9", "10"};
     apps.put("乐加生活", app1);
     apps.put("乐加支付", app2);
 
