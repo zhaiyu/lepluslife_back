@@ -339,6 +339,8 @@ public class MerchantService {
 
     origin.setState(1);
 
+    origin.setPicture(merchant.getPicture());
+
     origin.setLat(merchant.getLat());
 
     origin.setLng(merchant.getLng());
