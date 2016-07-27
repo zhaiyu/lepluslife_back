@@ -38,6 +38,52 @@
             <div class="container">
                 <div class="row" style="margin-top: 100px">
                     <div class="col-xs-6 col-sm-3"></div>
+
+                    <div class="col-xs-6 col-sm-3">
+                        <div class="thumbnail">
+                            <div class="caption">
+                                <h4 class="text-center">导流订单数量</h4>
+                                <p class="text-center h3">￥ ${data['shareOrderCount']}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-6 col-sm-3">
+                        <div class="thumbnail">
+                            <div class="caption">
+                                <h4 class="text-center">导流总金额</h4>
+                                <p class="text-center h3">￥ ${data['shareOrderTotal_price']/100}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-6 col-sm-3">
+                        <div class="thumbnail">
+                            <div class="caption">
+                                <h4 class="text-center">分润总金额</h4>
+                                <p class="text-center h3">￥ ${data['share']/100}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-6 col-sm-3">
+                        <div class="thumbnail">
+                            <div class="caption">
+                                <h4 class="text-center">会员数量</h4>
+                                <p class="text-center h3">￥ ${data['membersCount']}</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="col-xs-6 col-sm-3">
+                        <div class="thumbnail">
+                            <div class="caption">
+                                <h4 class="text-center">联盟商户数量</h4>
+                                <p class="text-center h3">￥ ${data['unionMerchantCount']}</p>
+                            </div>
+                        </div>
+                    </div>
+
                     <div class="col-xs-6 col-sm-3">
                         <div class="thumbnail">
                             <div class="caption">
@@ -46,6 +92,7 @@
                             </div>
                         </div>
                     </div>
+
                     <div class="col-xs-6 col-sm-3">
                         <div class="thumbnail">
                             <div class="caption">

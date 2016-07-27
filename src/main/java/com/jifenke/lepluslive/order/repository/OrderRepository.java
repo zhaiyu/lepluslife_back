@@ -46,5 +46,32 @@ public interface OrderRepository extends JpaRepository<OnLineOrder,Long>{
     @Query(value ="SELECT SUM(number) FROM scorea_detail WHERE operate like '%送红包'",nativeQuery = true)
     Long  sumAllactivityRebate();
 
+
+    @Query(value ="SELECT SUM(total_price) FROM off_line_order WHERE rebate_Way=1 AND  state=1 AND complete_date>'2016-7-15'",nativeQuery = true)
+    Long  SumShareOrderTotal_price();
+
+
+    @Query(value ="SELECT COUNT(*) FROM off_line_order WHERE rebate_Way=1 AND  state=1 AND complete_date>'2016-7-15'",nativeQuery = true)
+    Long    shareOrderCount();
+
+
+    @Query(value ="SELECT COUNT(*) FROM merchant WHERE partnership=1",nativeQuery = true)
+    Long    unionMerchantCount();
+
+
+    @Query(value ="SELECT COUNT(*) FROM wei_xin_user WHERE state=1 ",nativeQuery = true)
+    Long    membersCount();
+
+
+    @Query(value ="SELECT SUM(lj_commission) FROM off_line_order WHERE rebate_Way=1 AND  state=1 AND complete_date>'2016-7-15'",nativeQuery = true)
+    Long    lj_commission();
+
+
+    @Query(value ="SELECT SUM(wx_commission) FROM off_line_order WHERE rebate_Way=1 AND  state=1 AND complete_date>'2016-7-15'",nativeQuery = true)
+    Long    wx_commission();
+
+
+    @Query(value ="SELECT SUM(rebate) FROM off_line_order WHERE rebate_Way=1 AND  state=1 AND complete_date>'2016-7-15'",nativeQuery = true)
+    Long    shareRebate();
     Page findAll(Specification<OnLineOrder> whereClause, Pageable pageRequest);
 }
