@@ -220,17 +220,20 @@ public class MerchantService {
                        new MerchantType(merchantCriteria.getMerchantType())));
         }
 
-        if (merchantCriteria.getMerchant() != null && merchantCriteria.getMerchant() != "") {
-          if (merchantCriteria.getMerchant().matches("^\\d{1,6}$")) {
-            predicate.getExpressions().add(
-                cb.like(r.get("merchantSid"),
-                        "%" + merchantCriteria.getMerchant() + "%"));
-          } else {
-            predicate.getExpressions().add(
-                cb.like(r.get("name"),
-                        "%" + merchantCriteria.getMerchant() + "%"));
+          if (merchantCriteria.getMerchantName() != null && merchantCriteria.getMerchantName() != "") {
+
+              predicate.getExpressions().add(
+                      cb.like(r.get("name"),
+                              "%" + merchantCriteria.getMerchantName() + "%"));
+
           }
-        }
+          if (merchantCriteria.getMerchantSid() != null && merchantCriteria.getMerchantSid() != "") {
+
+              predicate.getExpressions().add(
+                      cb.like(r.get("merchantSid"),
+                              "%" + merchantCriteria.getMerchantSid() + "%"));
+
+          }
 
         if (merchantCriteria.getReceiptAuth() != null) {
           predicate.getExpressions().add(

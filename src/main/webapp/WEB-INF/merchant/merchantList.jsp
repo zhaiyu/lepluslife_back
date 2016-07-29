@@ -149,7 +149,10 @@
                     <div class="form-group col-md-3">
                         <label for="merchant-name">商户名称</label>
                         <input type="text" id="merchant-name" class="form-control"
-                               placeholder="请输入商户名称或ID"/>
+                               placeholder="请输入商户名称"/>
+                        <label for="merchant-name">商户ID</label>
+                        <input type="text" id="merchant-id" class="form-control"
+                               placeholder="请输入商户ID"/>
                     </div>
                     <div class="form-group col-md-5">
                         <label for="merchant-name">创建时间</label>
@@ -524,9 +527,15 @@
             merchantCriteria.endDate = endDate;
         }
         if ($("#merchant-name").val() != "" && $("#merchant-name").val() != null) {
-            merchantCriteria.merchant = $("#merchant-name").val();
+            merchantCriteria.merchantName = $("#merchant-name").val();
         } else {
-            merchantCriteria.merchant = null;
+            merchantCriteria.merchantName = null;
+        }
+        if ($("#merchant-id").val() != "" && $("#merchant-id").val() != null) {
+
+            merchantCriteria.merchantSid = $("#merchant-id").val();
+        } else {
+            merchantCriteria.merchantSid = null;
         }
         if ($("#partnership").val() != -1) {
             merchantCriteria.partnership = $("#partnership").val();
