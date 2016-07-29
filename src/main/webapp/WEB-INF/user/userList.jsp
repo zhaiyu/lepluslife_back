@@ -317,12 +317,12 @@
                                } else {
                                    contentStr += '<td><span>乐+会员</span></td>';
                                }
-                               if (content[i].state == -1) {
-                                   contentStr += '<td><span>未知</span></td>';
-                               } else if (content[i].state == 1) {
+                               if (content[i].subState == 1) {
                                    contentStr += '<td><span>已关注</span></td>';
-                               } else {
+                               } else if (content[i].subState == 0 || content[i].subState == 2) {
                                    contentStr += '<td><span>未关注</span></td>';
+                               } else {
+                                   contentStr += '<td><span>未知</span></td>';
                                }
                                contentStr +=
                                '<td><img src="' + content[i].headImageUrl + '" alt="...">'
