@@ -158,10 +158,10 @@ public class UserService {
         if (userCriteria.getSubState() != null) {  //关注状态
           if (userCriteria.getSubState() == 1) {
             predicate.getExpressions().add(
-                cb.equal(r.<WeiXinUser>get("weiXinUser").get("state"), 1));
+                cb.equal(r.<WeiXinUser>get("weiXinUser").get("subState"), 1));
           } else if (userCriteria.getSubState() == 0) {
             predicate.getExpressions().add(
-                cb.notEqual(r.<WeiXinUser>get("weiXinUser").get("state"), 1));
+                cb.notEqual(r.<WeiXinUser>get("weiXinUser").get("subState"), 1));
           }
         }
 

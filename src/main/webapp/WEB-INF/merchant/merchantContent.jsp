@@ -265,7 +265,7 @@
     $("#delete-confirm").bind("click", function () {
       $.ajax({
                type: "delete",
-               url: "/manage/scrollPicture/" + id,
+               url: "/manage/merchant/scrollPicture/" + id,
                contentType: "application/json",
                success: function (data) {
                  alert(data.msg);

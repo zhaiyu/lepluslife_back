@@ -2,6 +2,7 @@ package com.jifenke.lepluslive.user.controller.dto;
 
 import com.jifenke.lepluslive.user.domain.entities.RegisterOrigin;
 
+import java.awt.print.PrinterGraphics;
 import java.util.Date;
 
 /**
@@ -11,7 +12,9 @@ public class LeJiaUserDto {
 
   private Long id;
 
-  private Integer state;   //会员类型及是否关注公众号
+  private Integer state;   //会员类型
+
+  private Integer subState;  //是否关注公众号
 
   private String city;      //城市
 
@@ -107,6 +110,13 @@ public class LeJiaUserDto {
     this.phoneBindDate = phoneBindDate;
   }
 
+  public Integer getSubState() {
+    return subState;
+  }
+
+  public void setSubState(Integer subState) {
+    this.subState = subState;
+  }
 
   public String getPhoneNumber() {
     return phoneNumber;

@@ -161,7 +161,7 @@ public class MerchantService {
     origin.setLjCommission(merchant.getLjCommission());
     origin.setName(merchant.getName());
     origin.setLocation(merchant.getLocation());
-    origin.setState(merchant.getState());
+   // origin.setState(merchant.getState());
     origin.setPartner(merchant.getPartner());
     origin.setArea(merchant.getArea());
     origin.setUserLimit(merchant.getUserLimit());
@@ -175,7 +175,7 @@ public class MerchantService {
     origin.setScoreARebate(merchant.getScoreARebate());
     origin.setScoreBRebate(merchant.getScoreBRebate());
     origin.setMerchantType(merchant.getMerchantType());
-    origin.setPicture(merchant.getPicture());
+   // origin.setPicture(merchant.getPicture());
     origin.setReceiptAuth(merchant.getReceiptAuth());
     origin.setPartnership(merchant.getPartnership());
     origin.setMemberCommission(merchant.getMemberCommission());

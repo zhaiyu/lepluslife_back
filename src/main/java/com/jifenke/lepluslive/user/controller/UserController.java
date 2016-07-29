@@ -96,6 +96,7 @@ public class UserController {
 
         leJiaUserDto.setCity(weiXinUser != null ? weiXinUser.getCity() : null);
         leJiaUserDto.setState(weiXinUser != null ? weiXinUser.getState() : -1);
+        leJiaUserDto.setSubState(weiXinUser != null ? weiXinUser.getSubState() : -1);
         leJiaUserDto.setMassRemain(
             weiXinUser != null ? weiXinUser.getMassRemain() == null ? 4 : weiXinUser.getMassRemain()
                                : -1);
