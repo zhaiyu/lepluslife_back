@@ -23,6 +23,9 @@ public class MerchantCriteria {
 
   private String endDate;
 
+  private String merchantName;
+
+  private String merchantSid;
 
   public Long getCity() {
     return city;
@@ -91,6 +94,14 @@ public class MerchantCriteria {
   public Integer getOffset() {
     return offset;
   }
+
+  public String getMerchantSid() {return merchantSid;}
+
+  public void setMerchantSid(String merchantSid) {this.merchantSid = merchantSid;}
+
+  public String getMerchantName() {return merchantName;}
+
+  public void setMerchantName(String merchantName) {this.merchantName = merchantName;}
 
   public void setOffset(Integer offset) {
     this.offset = offset;
