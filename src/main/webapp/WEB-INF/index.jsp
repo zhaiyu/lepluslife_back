@@ -43,7 +43,7 @@
                         <div class="thumbnail">
                             <div class="caption">
                                 <h4 class="text-center">导流订单数量</h4>
-                                <p class="text-center h3">￥ ${data['shareOrderCount']}</p>
+                                <p class="text-center h3"> ${data['shareOrderCount']}</p>
                             </div>
                         </div>
                     </div>
@@ -70,7 +70,7 @@
                         <div class="thumbnail">
                             <div class="caption">
                                 <h4 class="text-center">会员数量</h4>
-                                <p class="text-center h3">￥ ${data['membersCount']}</p>
+                                <p class="text-center h3"> ${data['membersCount']}</p>
                             </div>
                         </div>
                     </div>
@@ -79,7 +79,7 @@
                         <div class="thumbnail">
                             <div class="caption">
                                 <h4 class="text-center">联盟商户数量</h4>
-                                <p class="text-center h3">￥ ${data['unionMerchantCount']}</p>
+                                <p class="text-center h3"> ${data['unionMerchantCount']}</p>
                             </div>
                         </div>
                     </div>
@@ -115,7 +115,7 @@
                         <div class="thumbnail">
                             <div class="caption">
                                 <h4 class="text-center">发放红包数</h4>
-                                <p class="text-center h3">${data['rebate']/100}</p>
+                                <p class="text-center h3">￥${data['rebate']/100}</p>
                             </div>
                         </div>
                     </div>
@@ -124,7 +124,7 @@
                         <div class="thumbnail">
                             <div class="caption">
                                 <h4 class="text-center">用户持有红包数</h4>
-                                <p class="text-center h3">${data['lejiaUserRebate']/100}</p>
+                                <p class="text-center h3">￥${data['lejiaUserRebate']/100}</p>
                             </div>
                         </div>
                     </div>
