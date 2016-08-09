@@ -19,19 +19,18 @@
     <title>乐+生活 后台模板管理系统</title>
     <link href="${resourceUrl}/css/bootstrap.min.css" rel="stylesheet">
     <link rel="stylesheet" href="${resourceUrl}/css/daterangepicker-bs3.css">
+    <link rel="stylesheet" href="${resourceUrl}/css/jqpagination.css"/>
     <link type="text/css" rel="stylesheet" href="${resourceUrl}/css/commonCss.css"/>
-    <link type="text/css" rel="stylesheet" href="${resourceUrl}/css/jquery.page.css"/>
     <style>
         thead th, tbody td {
             text-align: center;
         }
-
         #myTab {
             margin-bottom: 10px;
         }
     </style>
     <script type="text/javascript" src="${resourceUrl}/js/jquery-2.0.3.min.js"></script>
-    <script src="${resourceUrl}/js/jquery.page.js"></script>
+    <script type="text/javascript" src="${resourceUrl}/js/jquery.jqpagination.min.js"></script>
 </head>
 
 <body>
@@ -85,9 +84,13 @@
                         </table>
                     </div>
 
-                    <div class="tcdPageCode" style="display: inline;">
+                    <div class="pagination">
+                        <a href="#" class="first" data-action="first">&laquo;</a>
+                        <a href="#" class="previous" data-action="previous">&lsaquo;</a>
+                        <input id="page" type="text" readonly="readonly" data-max-page="1"/>
+                        <a href="#" class="next" data-action="next">&rsaquo;</a>
+                        <a href="#" class="last" data-action="last">&raquo;</a>
                     </div>
-                    <div style="display: inline;"> 共有 <span id="totalElements"></span> 个</div>
                     <button class="btn btn-primary pull-right" style="margin-top: 5px"
                             onclick="exportExcel()">导出表格
                     </button>
@@ -128,7 +131,6 @@
 <script src="${resourceUrl}/js/moment.min.js"></script>
 <script>
     var financialCriteria = {};
-    var flag = true;
     var financialContent = document.getElementById("financialContent");
     var headContent = document.getElementById("head-content");
     var dateContent = document.getElementById("date-content");
@@ -145,8 +147,13 @@
     })
     //    时间选择器
     $(document).ready(function () {
+        $('#date-end span').html(moment().subtract('hours', 1).format('YYYY/MM/DD HH:mm:ss') + ' - '
+                                 + moment().format('YYYY/MM/DD HH:mm:ss'));
         $('#date-end').daterangepicker({
                                            maxDate: moment(), //最大时间
+                                           dateLimit: {
+                                               days: 30
+                                           }, //起止时间的最大间隔
                                            showDropdowns: true,
                                            showWeekNumbers: false, //是否显示第几周
                                            timePicker: true, //是否显示小时和分钟
@@ -183,22 +190,19 @@
         });
         financialCriteria.offset = 1;
         financialCriteria.state = 0;
-
         getFinancialByAjax(financialCriteria);
     })
-
     function initPage(page, totalPage) {
-        $('.tcdPageCode').unbind();
-        $(".tcdPageCode").createPage({
-                                         pageCount: totalPage,
-                                         current: page,
-                                         backFn: function (p) {
-                                             financialCriteria.offset = p;
-                                             getFinancialByAjax(financialCriteria);
-                                         }
-                                     });
+        $('.pagination').jqPagination({
+                                          current_page: page, //设置当前页 默认为1
+                                          max_page: totalPage, //设置最大页 默认为1
+                                          page_string: '当前第' + page + '页,共' + totalPage + '页',
+                                          paged: function (page) {
+                                              financialCriteria.offset = page;
+                                              getFinancialByAjax(financialCriteria);
+                                          }
+                                      });
     }
-
     function getFinancialByAjax(financialCriteria) {
         financialContent.innerHTML = "";
         headContent.innerHTML = "";
@@ -213,14 +217,8 @@
                        var page = data.data;
                        var content = page.content;
                        var totalPage = page.totalPages;
-                       $("#totalElements").html(page.totalElements);
                        if (totalPage == 0) {
                            totalPage = 1;
-                       }
-
-                       if (flag) {
-                           flag = false;
-                           initPage(financialCriteria.offset, totalPage);
                        }
                        headContent.innerHTML =
                        '<th>结算单号</th><th>结算日期</th><th>商户信息</th><th>结算方式</th><th>结算账户信息</th><th>结算周期</th><th>收款人</th>';
@@ -229,10 +227,9 @@
                            dateContent.innerHTML = "结算日期";
                        }
                        if (financialCriteria.state == 1) {
-                           headContent.innerHTML += "<th>转账金额</th><th>转账日期</th>";
+                           headContent.innerHTML += "<th>转账金额</th><th>转账日期</th><th>操作</th>";
                            dateContent.innerHTML = "转账日期";
                        }
-
                        for (i = 0; i < content.length; i++) {
                            var contentStr = '<tr><td>' + content[i].statisticId + '</td>';
                            contentStr +=
@@ -262,15 +259,17 @@
                            if (content[i].state == 0) {
                                contentStr +=
                                '<td><input type="hidden" class="id-hidden" value="' + content[i].id
-                               + '"><button class="btn btn-primary btn-sm changeFinancialToTransfer">确认转账</button></td>';
+                               + '"><button class="btn btn-primary btn-sm changeFinancialToTransfer">确认转账</button><button  class="btn btn-primary btn-sm serchDetails">查看详情</button></td>';
                            } else {
                                contentStr +=
                                '<td>'
                                + new Date(content[i].transferDate).format('yyyy-MM-dd HH:mm:ss')
                                + '</td>'
+                               +   '<td>'
+                               +'</button><button  class="btn btn-primary btn-sm serchDetails">查看详情</button>'
+                               +'</td>'
                            }
                            financialContent.innerHTML += contentStr;
-
                        }
                        $(".changeFinancialToTransfer").each(function (i) {
                            $(".changeFinancialToTransfer").eq(i).bind("click", function () {
@@ -290,7 +289,17 @@
                                $("#deleteWarn").modal("show");
                            });
                        });
-
+//查看详情
+                       $(".serchDetails").each(function (i) {
+                           $(".serchDetails").eq(i).bind("click", function () {
+                               var date=new Date(content[i].balanceDate).format('yyyy-MM-dd');
+                            var name=content[i].merchant.name
+                               var str=date+"@"+name;
+                               location.href =
+                                       "/manage/offLineOrder/messageDetailsPage?messageDetailsStr="+str;
+                           });
+                       });
+                       initPage(financialCriteria.offset, totalPage);
                    }
                });
     }
@@ -332,9 +341,7 @@
         }
         return fmt;
     }
-
     function searchFinancialByCriteria() {
-        financialCriteria.offset = 1;
         var dateStr = $('#date-end span').text().split("-");
         var startDate = dateStr[0].replace(/-/g, "/");
         var endDate = dateStr[1].replace(/-/g, "/");
@@ -342,21 +349,17 @@
             financialCriteria.startDate = startDate;
             financialCriteria.endDate = endDate;
         }
-
         if (financialCriteria.state == 1) {
             financialCriteria.transferStartDate = startDate;
             financialCriteria.transferEndDate = endDate;
         }
-
         if ($("#merchant-name").val() != "" && $("#merchant-name").val() != null) {
             financialCriteria.merchant = $("#merchant-name").val();
         } else {
             financialCriteria.merchant = null;
         }
-        flag = true;
         getFinancialByAjax(financialCriteria);
     }
-
     function searchFinancialByState(state) {
         financialCriteria.offset = 1;
         if (state != null) {
@@ -364,7 +367,6 @@
         } else {
             financialCriteria.state = null;
         }
-        flag = true;
         getFinancialByAjax(financialCriteria);
     }
     function post(URL, PARAMS) {
@@ -390,26 +392,22 @@
         if (financialCriteria.endDate == null) {
             financialCriteria.endDate = null;
         }
-
         if (financialCriteria.transferStartDate == null) {
             financialCriteria.transferStartDate = null;
         }
         if (financialCriteria.transferEndDate == null) {
             financialCriteria.transferEndDate = null;
         }
-
         if (financialCriteria.merchant == null) {
             financialCriteria.merchant = null;
         }
         post("/manage/financial/export", financialCriteria);
     }
-
     $("#batchTransfer").bind("click", function () {
         $("#batchTransfer").unbind("click");
         $(".changeFinancialToTransfer").each(function (i) {
             $(".changeFinancialToTransfer").eq(i).unbind("click");
         });
-
         var ids = [];
         $(".id-hidden").each(function () {
             ids.push(this.value)
@@ -425,7 +423,9 @@
                    }
                });
     })
+    function serchDetails(str){
+        alert(str);
+    }
 </script>
 </body>
 </html>
-
