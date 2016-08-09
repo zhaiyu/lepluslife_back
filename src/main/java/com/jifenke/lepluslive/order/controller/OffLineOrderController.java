@@ -72,9 +72,9 @@ public class OffLineOrderController {
     //查询详情跳页
     @RequestMapping(value = "/offLineOrder/messageDetailsPage", method = RequestMethod.GET)
     public ModelAndView goDetailsPage(@RequestParam String messageDetailsStr,Model model) {
-        Map<String,String> messageDetailsMap=new HashMap<String,String>();
-        messageDetailsMap.put("messageDetailsMap",messageDetailsStr);
-        model.addAttribute("messageDetailsMap",messageDetailsMap);
+
+
+        model.addAttribute("messageDetailsStr",messageDetailsStr);
         return MvUtil.go("/order/offLineMessageDetails");
     }
     @RequestMapping(value = "/offLineOrder/transferRecordDetailsPage", method = RequestMethod.GET)
@@ -92,15 +92,14 @@ public class OffLineOrderController {
         sb = new StringBuffer("");
         sb.append(messageDetailsStr);
         String[] stringArray=sb.toString().split("@");
-        String startDate1=stringArray[1]+" "+"00:00:00";
-        String endDate1=stringArray[1]+" "+" 23:59:59";
+        String startDate1=stringArray[0]+" "+"00:00:00";
+        String endDate1=stringArray[0]+" "+" 23:59:59";
         String endDate=endDate1.replace("-","/");
         String startDate= startDate1.replace("-", "/");
-        olOrderCriteria.setMerchant(stringArray[2]);
+        olOrderCriteria.setMerchant(stringArray[1]);
         olOrderCriteria.setState(1);
         olOrderCriteria.setStartDate(startDate);
         olOrderCriteria.setEndDate(endDate);
-        System.out.println(stringArray[2]);
         Page page = offLineOrderService.findOrderByPage(olOrderCriteria, 10);
 
         if (olOrderCriteria.getOffset() == null) {
@@ -118,11 +117,11 @@ public class OffLineOrderController {
         sb = new StringBuffer("");
         sb.append(messageDetails);
         String[] stringArray=sb.toString().split("@");
-        String startDate1=stringArray[1]+" "+"00:00:00";
-        String endDate1=stringArray[1]+" "+" 23:59:59";
+        String startDate1=stringArray[0]+" "+"00:00:00";
+        String endDate1=stringArray[0]+" "+" 23:59:59";
         String endDate=endDate1.replace("-","/");
         String startDate= startDate1.replace("-", "/");
-        String merchant=stringArray[2];
+        String merchant=stringArray[1];
         olOrderCriteria.setStartDate(startDate);
         olOrderCriteria.setEndDate(endDate);
         olOrderCriteria.setMerchant(stringArray[0]);

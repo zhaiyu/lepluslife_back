@@ -231,7 +231,7 @@
                            dateContent.innerHTML = "结算日期";
                        }
                        if (financialCriteria.state == 1) {
-                           headContent.innerHTML += "<th>转账金额</th><th>转账日期</th>";
+                           headContent.innerHTML += "<th>转账金额</th><th>转账日期</th><th>操作</th>";
                            dateContent.innerHTML = "转账日期";
                        }
 
@@ -264,12 +264,15 @@
                            if (content[i].state == 0) {
                                contentStr +=
                                '<td><input type="hidden" class="id-hidden" value="' + content[i].id
-                               + '"><button class="btn btn-primary btn-sm changeFinancialToTransfer">确认转账</button></td>';
+                               + '"><button class="btn btn-primary btn-sm changeFinancialToTransfer">确认转账</button><button  class="btn btn-primary btn-sm serchDetails">查看详情</button></td>';
                            } else {
                                contentStr +=
                                '<td>'
                                + new Date(content[i].transferDate).format('yyyy-MM-dd HH:mm:ss')
                                + '</td>'
+                               +   '<td>'
+                               +'</button><button  class="btn btn-primary btn-sm serchDetails">查看详情</button>'
+                               +'</td>'
                            }
                            financialContent.innerHTML += contentStr;
 
@@ -290,6 +293,18 @@
                                           });
                                });
                                $("#deleteWarn").modal("show");
+                           });
+                       });
+//查看详情
+                       $(".serchDetails").each(function (i) {
+                           $(".serchDetails").eq(i).bind("click", function () {
+                               var date=new Date(content[i].balanceDate).format('yyyy-MM-dd');
+                            var name=content[i].merchant.name
+                               var str=date+"@"+name;
+                               location.href =
+                                       "/manage/offLineOrder/messageDetailsPage?messageDetailsStr="+str;
+
+
                            });
                        });
                        initPage(financialCriteria.offset, totalPage);
@@ -424,6 +439,10 @@
                    }
                });
     })
+
+    function serchDetails(str){
+        alert(str);
+    }
 </script>
 </body>
 </html>

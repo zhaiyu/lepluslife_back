@@ -36,7 +36,7 @@
 </head>
 
 <body>
-<input type="hidden" id="detailsID" value="${messageDetailsMap.messageDetailsMap}"> </input>
+
 <div id="topIframe">
     <%@include file="../common/top.jsp" %>
 </div>
@@ -51,6 +51,7 @@
                     </div>
                 </div>
                     <div class="form-group col-md-3">
+                        <input type="hidden" id="detailsID" value="${messageDetailsStr}">
                         <button class="btn btn-primary" style="margin-top: 24px"
                                 onclick="goFinancialSettlementPage()">返回财务结算
                         </button>
@@ -120,6 +121,7 @@
         </div>
     </div>
 </div>
+</body>
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="${resourceUrl}/js/bootstrap.min.js"></script>
 <script src="${resourceUrl}/js/daterangepicker.js"></script>
