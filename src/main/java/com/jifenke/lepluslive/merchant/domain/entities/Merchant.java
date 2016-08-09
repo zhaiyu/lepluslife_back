@@ -61,9 +61,9 @@ public class Merchant {
 
   private Integer partnership; //合作关系
 
-  private Double lng=0.0;
+  private Double lng = 0.0;
 
-  private Double lat=0.0;
+  private Double lat = 0.0;
 
   private String payee; //收款人
 
@@ -72,6 +72,8 @@ public class Merchant {
   private Integer receiptAuth; //收款权限为1 代表可以使用乐加红包支付,0代表不能使用乐加红包
 
   private String qrCodePicture; //商户收款码
+
+  private String pureQrCode; //纯支付码
 
   private Long userLimit; //会员绑定上线
 
@@ -89,6 +91,18 @@ public class Merchant {
 
   private Date createDate = new Date();
 
+
+  public String getPureQrCode() {
+    return pureQrCode;
+  }
+
+  public void setPureQrCode(String pureQrCode) {
+    this.pureQrCode = pureQrCode;
+  }
+
+  @OneToOne(cascade = CascadeType.ALL)
+  private MerchantInfo merchantInfo;   //商家详情介绍
+
   public BigDecimal getMemberCommission() {
     return memberCommission;
   }
@@ -105,7 +119,7 @@ public class Merchant {
     this.ljBrokerage = ljBrokerage;
   }
 
-  @OneToMany(mappedBy = "merchant",fetch = FetchType.LAZY)
+  @OneToMany(mappedBy = "merchant", fetch = FetchType.LAZY)
   private List<MerchantProtocol> merchantProtocols;
 
   private Integer cycle;  //结算周期  1 一个工作日 2 2个工作日
@@ -361,4 +375,11 @@ public class Merchant {
     this.picture = picture;
   }
 
+  public MerchantInfo getMerchantInfo() {
+    return merchantInfo;
+  }
+
+  public void setMerchantInfo(MerchantInfo merchantInfo) {
+    this.merchantInfo = merchantInfo;
+  }
 }

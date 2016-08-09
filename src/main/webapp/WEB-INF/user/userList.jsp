@@ -61,6 +61,11 @@
                                placeholder="请输入会员ID"/>
                     </div>
                     <div class="form-group col-md-2">
+                        <label for="nickname">会员昵称</label>
+                        <input type="text" id="nickname" class="form-control"
+                               placeholder="请输入会员昵称"/>
+                    </div>
+                    <div class="form-group col-md-2">
                         <label for="phoneNumber">会员手机号</label>
                         <input type="text" id="phoneNumber" class="form-control"
                                placeholder="会员手机号"/>
@@ -252,13 +257,6 @@
                 });
             });
         });
-        <%--var ttt = '${leJiaUserCriteria}';--%>
-
-        <%--if (ttt == null || ttt == '') {--%>
-        <%--userCriteria.offset = 1;--%>
-        <%--} else {--%>
-        <%--userCriteria = JSON.parse('${leJiaUserCriteria}');--%>
-        <%--}--%>
         userCriteria.offset = 1;
         getUserByAjax(userCriteria);
     });
@@ -301,13 +299,11 @@
                            }
                            //   alert(flag + "   " + init1);
                            if (flag) {
-                               //    alert('flag : ' + flag);
                                initPage(userCriteria.offset, totalPage);
                                flag = false;
                            }
 
                            if (init1) {
-                               //       alert('init : ' + init);
                                initPage(1, totalPage);
                            }
 
@@ -321,12 +317,12 @@
                                } else {
                                    contentStr += '<td><span>乐+会员</span></td>';
                                }
-                               if (content[i].state == -1) {
-                                   contentStr += '<td><span>未知</span></td>';
-                               } else if (content[i].state == 1) {
+                               if (content[i].subState == 1) {
                                    contentStr += '<td><span>已关注</span></td>';
-                               } else {
+                               } else if (content[i].subState == 0 || content[i].subState == 2) {
                                    contentStr += '<td><span>未关注</span></td>';
+                               } else {
+                                   contentStr += '<td><span>未知</span></td>';
                                }
                                contentStr +=
                                '<td><img src="' + content[i].headImageUrl + '" alt="...">'
@@ -359,10 +355,17 @@
                                + content[i].id
                                + '"><button class="btn btn-primary changeOrderToPaid">交易记录</button>'
                                +
-                               '<button class="btn btn-primary changeOrderToPaid">账户明细</button></td></tr>';
+                               '<button class="btn btn-primary scoreDetail">账户明细</button></td></tr>';
 
                                userContent.innerHTML += contentStr;
                            }
+
+                           $(".scoreDetail").each(function (i) {
+                               $(".scoreDetail").eq(i).bind("click", function () {
+                                   var id = $(this).parent().find(".id-hidden").val();
+                                   location.href = "/manage/score/list/" + id;
+                               });
+                           });
 
                        }
                    });
@@ -376,8 +379,6 @@
                                          backFn: function (p) {
                                              //单击回调方法，p是当前页码
                                              init1 = 0;
-//                                             alert(flag + "   " + init1);
-//                                             alert('current : ' + p);
                                              userCriteria.offset = p;
 
                                              getUserByAjax(userCriteria);
@@ -440,6 +441,11 @@
         } else {
             userCriteria.userSid = null;
         }
+        if ($("#nickname").val() != "" && $("#nickname").val() != null) {
+            userCriteria.nickname = $("#nickname").val();
+        } else {
+            userCriteria.userSid = null;
+        }
         if ($("#phoneNumber").val() != "" && $("#phoneNumber").val() != null) {
             userCriteria.phoneNumber = $("#phoneNumber").val();
         } else {
@@ -484,12 +490,6 @@
         }
 
         getUserByAjax(userCriteria);
-//        if (search == 1) {
-//            getUserByAjax(userCriteria);
-//        } else {
-//            location.href =
-//            "/manage//user?leJiaUserCriteria=" + JSON.stringify(userCriteria);
-//        }
     }
 
     function sendMassToAll() {

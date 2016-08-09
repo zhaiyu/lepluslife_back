@@ -9,9 +9,11 @@ import com.jifenke.lepluslive.global.util.MvUtil;
 import com.jifenke.lepluslive.merchant.domain.criteria.MerchantCriteria;
 import com.jifenke.lepluslive.merchant.domain.entities.City;
 import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
+import com.jifenke.lepluslive.merchant.domain.entities.MerchantInfo;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantType;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantUser;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantWallet;
+import com.jifenke.lepluslive.merchant.repository.MerchantInfoRepository;
 import com.jifenke.lepluslive.merchant.repository.MerchantProtocolRepository;
 import com.jifenke.lepluslive.merchant.repository.MerchantRepository;
 import com.jifenke.lepluslive.merchant.repository.MerchantTypeRepository;
@@ -77,6 +79,9 @@ public class MerchantService {
   @Inject
   private LeJiaUserRepository leJiaUserRepository;
 
+  @Inject
+  private MerchantInfoRepository merchantInfoRepository;
+
   @Value("${bucket.ossBarCodeReadRoot}")
   private String barCodeRootUrl;
 
@@ -121,6 +126,10 @@ public class MerchantService {
     new Thread(() -> {
       fileImageService.SaveBarCode(finalBytes, filePath);
     }).start();
+
+    MerchantInfo merchantInfo = new MerchantInfo();
+    merchantInfoRepository.save(merchantInfo);
+    merchant.setMerchantInfo(merchantInfo);
     merchantRepository.save(merchant);
     RegisterOrigin registerOrigin = new RegisterOrigin();
     registerOrigin.setOriginType(3);
@@ -152,7 +161,7 @@ public class MerchantService {
     origin.setLjCommission(merchant.getLjCommission());
     origin.setName(merchant.getName());
     origin.setLocation(merchant.getLocation());
-    origin.setState(merchant.getState());
+   // origin.setState(merchant.getState());
     origin.setPartner(merchant.getPartner());
     origin.setArea(merchant.getArea());
     origin.setUserLimit(merchant.getUserLimit());
@@ -166,7 +175,7 @@ public class MerchantService {
     origin.setScoreARebate(merchant.getScoreARebate());
     origin.setScoreBRebate(merchant.getScoreBRebate());
     origin.setMerchantType(merchant.getMerchantType());
-    origin.setPicture(merchant.getPicture());
+   // origin.setPicture(merchant.getPicture());
     origin.setReceiptAuth(merchant.getReceiptAuth());
     origin.setPartnership(merchant.getPartnership());
     origin.setMemberCommission(merchant.getMemberCommission());
@@ -320,8 +329,20 @@ public class MerchantService {
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public void openStore(Merchant merchant) {
     Merchant origin = merchantRepository.findOne(merchant.getId());
+    MerchantInfo merchantInfo = origin.getMerchantInfo();
+    if (merchantInfo != null) {
+      MerchantInfo info = merchant.getMerchantInfo();
+      merchantInfo.setCard(info.getCard());
+      merchantInfo.setPark(info.getPark());
+      merchantInfo.setPerSale(info.getPerSale());
+      merchantInfo.setStar(info.getStar());
+      merchantInfo.setWifi(info.getWifi());
+      merchantInfoRepository.save(merchantInfo);
+    }
 
     origin.setState(1);
+
+    origin.setPicture(merchant.getPicture());
 
     origin.setLat(merchant.getLat());
 
@@ -367,5 +388,32 @@ public class MerchantService {
     merchantWallet.setTotalTransferMoney(
         merchantWallet.getTotalTransferMoney() + financialStatistic.getTransferPrice());
     merchantWalletRepository.save(merchantWallet);
+  }
+
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  public Merchant pureQrCodeManage(Long id) {
+    Merchant merchant = merchantRepository.findOne(id);
+
+    if (merchant.getPureQrCode() == null) {
+      byte[]
+          bytes =
+          new byte[0];
+      try {
+        bytes = barcodeService.qrCode(Constants.MERCHANT_URL + merchant.getMerchantSid()+"?pure=access",
+                                      BarcodeConfig.QRCode.defaultConfig());
+      } catch (InterruptedException e) {
+        e.printStackTrace();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+      String filePath = MvUtil.getFilePath(Constants.BAR_CODE_EXT);
+      fileImageService.SaveBarCode(bytes, filePath);
+
+      merchant.setPureQrCode(barCodeRootUrl + "/" + filePath);
+
+      merchantRepository.save(merchant);
+    }
+
+    return merchant;
   }
 }

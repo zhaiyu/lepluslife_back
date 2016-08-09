@@ -15,7 +15,7 @@
         .left_menu ul li a.selected:hover { color:#fff; }
         .left_menu ul li h4 { cursor:pointer; background:url(${resourceUrl}/images/bg1.png) no-repeat 90% 18px; padding-left:10px; text-decoration:none; font-size:14px; color:#f5f5f5; display:block;  line-height:48px; font-weight:normal; }
         .left_menu ul li.noline { border-bottom:none; }
-        .left_menu ul li.selected h4 { background-position:270px -45px;background-color:#337AB7;}
+        .left_menu ul li.selected h4 { background-position:270px -45px;}
         .left_menu li .list-item { padding:5px 0; position:relative; zoom:1 ;background:#387FC1;overflow:hidden;}
         .left_menu h4 span{display: block;float: left;width: 35px;height: 26px;margin-right: 10px;padding-right: 10px;background-repeat: no-repeat;margin-top: 12px;}
         .M1 span{background:url(${resourceUrl}/images/ioc.png) 0 -6px;}
@@ -27,6 +27,8 @@
         .M7 span{background:url(${resourceUrl}/images/ioc.png) -72px -70px;}
         .M8 span{background:url(${resourceUrl}/images/ioc.png) -72px -70px;}
         .M9 span{background:url(${resourceUrl}/images/ioc.png) -72px -70px;}
+        .M10 span{background:url(${resourceUrl}/images/ioc.png) -72px -70px;}
+        .M11 span{background:url(${resourceUrl}/images/ioc.png) -72px -70px;}
     </style>
     <script type="text/javascript" src="${resourceUrl}/js/menu.js"></script>
 <div class="left_menu">
@@ -36,13 +38,22 @@
         </li>
         <li><h4 class="M2"><span></span>商品管理</h4></li>
         <li><h4 class="M3"><span></span>周边商户</h4></li>
-        <li><h4 class="M4"><span></span>订单管理</h4></li>
+        <li><h4 class="M4"><span></span>订单管理</h4>
+            <div class="list-item none none1">
+                <a href='/manage/order'>线上订单</a>
+                <a href='/manage/offLineOrder'>线下订单</a>
+                <a href='/manage/financial'>财务结算</a>
+                <a href='/manage/offLineOrder/share'>分润单</a>
+            </div>
+        </li>
         <li><h4 class="M5"><span></span>专题模块</h4></li>
         <li><h4 class="M6"><span></span>会员管理</h4></li>
-        <li><h4 class="M7"><span></span>线下订单</h4></li>
-        <li><h4 class="M8"><span></span>财务结算</h4></li>
+        <%--<li><h4 class="M7"><span></span>线下订单</h4></li>--%>
+        <%--<li><h4 class="M8"><span></span>财务结算</h4></li>--%>
+        <%--<li><h4 class="M10"><span></span>分润单</h4></li>--%>
 
         <li><h4 class="M9"><span></span>公众号及推荐</h4></li>
+        <li><h4 class="M11"><span></span>合伙人管理</h4></li>
         <%--<li>--%>
             <%--<h4 class="M9"><span></span>公众号配置</h4>--%>
             <%--<div class="list-item none">--%>
@@ -55,8 +66,13 @@
 <script>navList(12);</script>
 <script>
     $(function () {
+        var url = window.location.href;
+        if(url.indexOf("order")!=-1||url.indexOf("offLineOrder")!=-1||url.indexOf("financial")!=-1){
+            $(".none1").parent('li').addClass('selected');
+            $(".none1").slideDown(300);
+        }
 //        数组
-        var htmlArr=['/manage/index','/manage/product','/manage/product','picManger.html','/manage/merchant','/manage/order','/manage/topic','/manage/user','/manage/offLineOrder','/manage/financial','/manage/weixin/index'];
+        var htmlArr=['/manage/index','/manage/product','/manage/product','picManger.html','/manage/merchant','/manage/order','/manage/topic','/manage/user','/manage/offLineOrder','/manage/financial','/manage/weixin/index','/manage/offLineOrder/share','/manage/partner'];
         $('.M1').click(function () {
             window.location.href=htmlArr[0];
         });
@@ -66,9 +82,9 @@
         $('.M3').click(function () {
             window.location.href=htmlArr[4];
         });
-        $('.M4').click(function () {
-            window.location.href=htmlArr[5];
-        });
+//        $('.M4').click(function () {
+//            window.location.href=htmlArr[5];
+//        });
         $('.M5').click(function () {
             window.location.href=htmlArr[6];
         });
@@ -90,6 +106,12 @@
 
         $('.M9').click(function () {
             window.location.href=htmlArr[10];
+        });
+        $('.M10').click(function () {
+            window.location.href=htmlArr[11];
+        });
+        $('.M11').click(function () {
+            window.location.href=htmlArr[12];
         });
     })
 </script>

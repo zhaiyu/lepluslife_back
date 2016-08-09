@@ -28,7 +28,8 @@
     <script type="text/javascript" src="${resourceUrl}/js/menu.js"></script>
     <script type="text/javascript" src="${resourceUrl}/js/vendor/jquery.ui.widget.js"></script>
     <script type="text/javascript" src="${resourceUrl}/js/jquery.iframe-transport.js"></script>
-    <script type="text/javascript" src="${resourceUrl}/js/jquery.fileupload.js"></script></head>
+    <script type="text/javascript" src="${resourceUrl}/js/jquery.fileupload.js"></script>
+</head>
 
 <body>
 <div id="topIframe">
@@ -96,6 +97,15 @@
                    placeholder="结束（分）"/>
         </div>
         <div>
+            <div>星级</div>
+            <input type="text" value="${merchant.merchantInfo.star}" id="star" class="check"/>
+        </div>
+        <div>
+            <div>客单价</div>
+            <input type="text" value="${merchant.merchantInfo.perSale/100}" id="perSale"
+                   class="check"/>
+        </div>
+        <div>
             <div>经度</div>
             <input type="text" value="${merchant.lng}" id="lng" class="check"/>
         </div>
@@ -106,6 +116,24 @@
         <div>
             <div>纬度</div>
             <input type="text" value="${merchant.lat}" id="lat" class="check"/>
+        </div>
+
+        <div>
+            <div>服务信息</div>
+            <div>
+                <p><input type="checkbox" style="width: 5%" id="park"
+                          <c:if test="${merchant.merchantInfo.park == 1}">checked="true" </c:if>/>免费停车位
+                </p>
+
+                <p><input type="checkbox" id="wifi" style="width: 5%"
+                          <c:if test="${merchant.merchantInfo.wifi == 1}">checked="true" </c:if>/>免费WIFI
+                </p>
+
+                <p><input type="checkbox" id="card" style="width: 5%"
+                          <c:if test="${merchant.merchantInfo.card == 1}">checked="true" </c:if>/>可刷卡
+                </p>
+            </div>
+
         </div>
 
         <div>
@@ -123,7 +151,7 @@
 </body>
 </html>
 <script>
-    $(function(){
+    $(function () {
         $('#merchantPic').fileupload({
                                          dataType: 'json',
                                          maxFileSize: 5000000,
@@ -142,21 +170,33 @@
 
     if (${merchant.officeHour!=null}) {
         var time = '${merchant.officeHour}';
-        //var time  = '09:40-05:30';
+        //var time = '09:40-05:30';
         $("#startHour").val(time.split(":")[0]);
         $("#startMinute").val(time.split(":")[1].split("-")[0]);
         $("#endHour").val(time.split(":")[1].split("-")[1]);
         $("#endMinute").val(time.split(":")[2]);
     }
     $("#saveMerchant").bind("click", function () {
+
         var merchant = {};
-        merchant.lng = $("#lng"). val();
-        merchant.lat = $("#lat"). val();
+        var merchantInfo = {};
+        merchantInfo.park = 0;
+        merchantInfo.wifi = 0;
+        merchantInfo.card = 0;
+        $('input[type="checkbox"]:checked').each(function () {
+            var id = $(this).attr('id');
+            merchantInfo[id] = 1;
+        });
+        merchantInfo.star = $("#star").val();
+        merchantInfo.perSale = $("#perSale").val() * 100;
+        merchant.merchantInfo = merchantInfo;
+        merchant.lng = $("#lng").val();
+        merchant.lat = $("#lat").val();
         merchant.officeHour =
         $("#startHour").val() + ":" + $("#startMinute").val() + "-" + $("#endHour").val() + ":"
         + $("#endMinute").val();
-        merchant.id=${merchant.id};
-        merchant.sid=$("#sid").val();
+        merchant.id =${merchant.id};
+        merchant.sid = $("#sid").val();
         merchant.picture = $("#merchantPicture").attr("src");
         merchant.phoneNumber = $("#phone").val();
         $.ajax({
@@ -166,7 +206,7 @@
                    data: JSON.stringify(merchant),
                    success: function (data) {
                        alert(data.msg);
-                           location.href = "/manage/merchant";
+                       location.href = "/manage/merchant";
                    }
                });
     });

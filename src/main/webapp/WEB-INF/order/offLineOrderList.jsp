@@ -31,7 +31,6 @@
         }
     </style>
     <script type="text/javascript" src="${resourceUrl}/js/jquery-2.0.3.min.js"></script>
-    <%--<script type="text/javascript" src="${resourceUrl}/js/jquery.jqpagination.min.js"></script>--%>
 </head>
 
 <body>
@@ -105,6 +104,7 @@
                             <thead>
                             <tr class="active">
                                 <th>订单编号</th>
+                                <th>订单类型</th>
                                 <th>交易完成时间</th>
                                 <th>商户名称</th>
                                 <th>消费者信息</th>
@@ -253,7 +253,6 @@
                        if (totalPage == 0) {
                            totalPage = 1;
                        }
-                       alert(flag + "   " + init1);
                        if (flag) {
                            flag = false;
                            initPage(olOrderCriteria.offset, totalPage);
@@ -264,6 +263,16 @@
                        var orderContent = document.getElementById("orderContent");
                        for (i = 0; i < content.length; i++) {
                            var contentStr = '<tr><td>' + content[i].orderSid + '</td>';
+                           if(content[i].rebateWay==0||content[i].rebateWay==2){
+                               contentStr +=
+                               '<td><span>普通订单</span></td>';
+                           }else if(content[i].rebateWay==1){
+                               contentStr +=
+                               '<td><span>导流订单</span></td>';
+                           }else if(content[i].rebateWay==3){
+                               contentStr +=
+                               '<td><span>会员订单</span></td>';
+                           }
                            if (content[i].completeDate == null) {
                                contentStr +=
                                '<td><span>未完成的订单</span></td>';

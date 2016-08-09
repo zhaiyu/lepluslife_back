@@ -414,6 +414,10 @@
                            '<td><span>'
                            + new Date(content[i].createDate).format('yyyy-MM-dd HH:mm:ss')
                            + '</span></td>';
+//                           contentStr +=
+//                           '<td><span>'
+//                           + content[i].merchantSid
+//                           + '</span></td>';
                            contentStr +=
                            '<td><input type="hidden" class="name-hidden" value="' + content[i].name
                            + '"><input type="hidden" class="id-hidden" value="' + content[i].id
@@ -424,6 +428,10 @@
                            '<button type="button" class="btn btn-default editMerchant">编辑</button>';
                            contentStr +=
                            '<button type="button" class="btn btn-default editMerchantContent">内容管理</button>';
+                           if(content[i].partnership==1){
+                               contentStr +=
+                               '<button type="button" class="btn btn-default showPureQRCode">纯支付码</button>';
+                           }
                            if (content[i].state == 0) {
                                contentStr +=
                                '<button type="button" class="btn btn-default disableMerchant">开启乐店</button></td></tr>';
@@ -474,6 +482,23 @@
                                                                                                                   });
                                                                                                   },
                                                                                                   false);
+                                          }
+                                      });
+                           });
+                       });
+                       $(".showPureQRCode").each(function (i) {
+                           $(".showPureQRCode").eq(i).bind("click", function () {
+                               var id = $(this).parent().find(".id-hidden").val();
+                               $.ajax({
+                                          type: "get",
+                                          data: {id: id},
+                                          url: "/manage/merchant/pureQrCode",
+                                          success: function (data) {
+                                              var merchant = data.data;
+                                              var url = "${productUrl}" + id;
+                                              $(".shopName").html(merchant.name);
+                                              $("#qrCode").attr("src", merchant.pureQrCode);
+                                              $("#qrWarn").modal("show");
                                           }
                                       });
                            });

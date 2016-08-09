@@ -21,6 +21,7 @@ public class WeixinMessage {
 
   //主动记录的信息
   private String type;   //媒体文件类型，分别有图片（image）、语音（voice）、视频（video）和缩略图（thumb），次数为news，即图文消息
+  private String title;   //消息的标题
   private Date createDate = new Date();  //创建时间
 
   //被动接受的信息
@@ -35,7 +36,7 @@ public class WeixinMessage {
   private String msgDataId;       //消息的数据ID,该字段只有在群发图文消息时，才会出现。可以用于在图文分析数据接口中
 
   //以下是调用群发接口成功后推送的数据
-  private String status;              //群发的结构，为“send success”或“send fail”或“err(num)”
+  private String status;              //群发的结构，为“send success”或“send fail”或“err(num)”  未接收到返回为“wait”
   private Integer totalCount = 0;          //tag_id下粉丝数；或者openid_list中的粉丝数
   //过滤（过滤是指用户设置拒收的过滤，用户接收已超4条等的过滤）后，准备发送的粉丝数，原则上，FilterCount = SentCount + ErrorCount
   private Integer filterCount = 0;
@@ -160,5 +161,13 @@ public class WeixinMessage {
 
   public void setMsgDataId(String msgDataId) {
     this.msgDataId = msgDataId;
+  }
+
+  public String getTitle() {
+    return title;
+  }
+
+  public void setTitle(String title) {
+    this.title = title;
   }
 }

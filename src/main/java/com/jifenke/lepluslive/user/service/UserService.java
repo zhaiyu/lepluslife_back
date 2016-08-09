@@ -14,6 +14,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
@@ -36,6 +37,11 @@ public class UserService {
 
   @Inject
   private CityService cityService;
+
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+  public LeJiaUser findUserById(Long id) {
+    return leJiaUserRepository.findOne(id);
+  }
 
 
   public Page findUserByPage(Integer offset) {
@@ -72,6 +78,12 @@ public class UserService {
               cb.like(r.get("userSid"),
                       "%" + userCriteria.getUserSid() + "%"));
 
+        }
+        if (userCriteria.getNickname() != null && (!""
+            .equals(userCriteria.getNickname()))) {    //会员昵称
+          predicate.getExpressions().add(
+              cb.like(r.<WeiXinUser>get("weiXinUser").get("nickname"),
+                      "%" + userCriteria.getNickname() + "%"));
         }
         if (userCriteria.getPhoneNumber() != null && (!""
             .equals(userCriteria.getPhoneNumber()))) { //会员手机号
@@ -146,10 +158,10 @@ public class UserService {
         if (userCriteria.getSubState() != null) {  //关注状态
           if (userCriteria.getSubState() == 1) {
             predicate.getExpressions().add(
-                cb.equal(r.<WeiXinUser>get("weiXinUser").get("state"), 1));
+                cb.equal(r.<WeiXinUser>get("weiXinUser").get("subState"), 1));
           } else if (userCriteria.getSubState() == 0) {
             predicate.getExpressions().add(
-                cb.notEqual(r.<WeiXinUser>get("weiXinUser").get("state"), 1));
+                cb.notEqual(r.<WeiXinUser>get("weiXinUser").get("subState"), 1));
           }
         }
 

@@ -25,7 +25,6 @@
         thead th, tbody td {
             text-align: center;
         }
-
         #myTab {
             margin-bottom: 10px;
         }
@@ -191,10 +190,8 @@
         });
         financialCriteria.offset = 1;
         financialCriteria.state = 0;
-
         getFinancialByAjax(financialCriteria);
     })
-
     function initPage(page, totalPage) {
         $('.pagination').jqPagination({
                                           current_page: page, //设置当前页 默认为1
@@ -206,7 +203,6 @@
                                           }
                                       });
     }
-
     function getFinancialByAjax(financialCriteria) {
         financialContent.innerHTML = "";
         headContent.innerHTML = "";
@@ -234,7 +230,6 @@
                            headContent.innerHTML += "<th>转账金额</th><th>转账日期</th><th>操作</th>";
                            dateContent.innerHTML = "转账日期";
                        }
-
                        for (i = 0; i < content.length; i++) {
                            var contentStr = '<tr><td>' + content[i].statisticId + '</td>';
                            contentStr +=
@@ -275,7 +270,6 @@
                                +'</td>'
                            }
                            financialContent.innerHTML += contentStr;
-
                        }
                        $(".changeFinancialToTransfer").each(function (i) {
                            $(".changeFinancialToTransfer").eq(i).bind("click", function () {
@@ -303,8 +297,6 @@
                                var str=date+"@"+name;
                                location.href =
                                        "/manage/offLineOrder/messageDetailsPage?messageDetailsStr="+str;
-
-
                            });
                        });
                        initPage(financialCriteria.offset, totalPage);
@@ -349,7 +341,6 @@
         }
         return fmt;
     }
-
     function searchFinancialByCriteria() {
         var dateStr = $('#date-end span').text().split("-");
         var startDate = dateStr[0].replace(/-/g, "/");
@@ -358,12 +349,10 @@
             financialCriteria.startDate = startDate;
             financialCriteria.endDate = endDate;
         }
-
         if (financialCriteria.state == 1) {
             financialCriteria.transferStartDate = startDate;
             financialCriteria.transferEndDate = endDate;
         }
-
         if ($("#merchant-name").val() != "" && $("#merchant-name").val() != null) {
             financialCriteria.merchant = $("#merchant-name").val();
         } else {
@@ -371,7 +360,6 @@
         }
         getFinancialByAjax(financialCriteria);
     }
-
     function searchFinancialByState(state) {
         financialCriteria.offset = 1;
         if (state != null) {
@@ -404,26 +392,22 @@
         if (financialCriteria.endDate == null) {
             financialCriteria.endDate = null;
         }
-
         if (financialCriteria.transferStartDate == null) {
             financialCriteria.transferStartDate = null;
         }
         if (financialCriteria.transferEndDate == null) {
             financialCriteria.transferEndDate = null;
         }
-
         if (financialCriteria.merchant == null) {
             financialCriteria.merchant = null;
         }
         post("/manage/financial/export", financialCriteria);
     }
-
     $("#batchTransfer").bind("click", function () {
         $("#batchTransfer").unbind("click");
         $(".changeFinancialToTransfer").each(function (i) {
             $(".changeFinancialToTransfer").eq(i).unbind("click");
         });
-
         var ids = [];
         $(".id-hidden").each(function () {
             ids.push(this.value)
@@ -439,11 +423,9 @@
                    }
                });
     })
-
     function serchDetails(str){
         alert(str);
     }
 </script>
 </body>
 </html>
-

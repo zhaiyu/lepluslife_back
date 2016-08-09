@@ -174,8 +174,15 @@ public class MerchantController {
   @RequestMapping(value = "/merchant/qrCode", method = RequestMethod.GET)
   public
   @ResponseBody
-  LejiaResult productQrCode(@RequestParam Long id) {
+  LejiaResult merchantQrCode(@RequestParam Long id) {
     return LejiaResult.ok(merchantService.qrCodeManage(id));
+  }
+
+  @RequestMapping(value = "/merchant/pureQrCode", method = RequestMethod.GET)
+  public
+  @ResponseBody
+  LejiaResult pureQrCode(@RequestParam Long id) {
+    return LejiaResult.ok(merchantService.pureQrCodeManage(id));
   }
 
 

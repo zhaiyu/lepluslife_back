@@ -250,7 +250,7 @@
             }
             var url = '';
             if (weixinBody.button.length > 0) {
-                url = '/weixin/menu/createWeixinMenu';
+                url = '/manage/weixin/menu/createWeixinMenu';
                 postWeixinMenu(url, weixinBody);
             } else{
                 alert("没有父菜单");
@@ -264,7 +264,7 @@
             }
             $.ajax({
                        type: "post",
-                       url: "/weixin/menu/deleteWeixinMenu",
+                       url: "/manage/weixin/menu/deleteWeixinMenu",
                        contentType: "application/json",
                        success: function (data) {
                            alert(data.msg);
@@ -291,7 +291,7 @@
             menu.parentMenu = parentMenu;
             $.ajax({
                        type: "post",
-                       url: "/weixin/menu/save",
+                       url: "/manage/weixin/menu/save",
                        contentType: "application/json",
                        data: JSON.stringify(menu),
                        success: function (data) {
@@ -362,7 +362,7 @@
         if (menuId) {
             $.ajax({
                        type: "delete",
-                       url: "/weixin/menu/delete/" + menuId,
+                       url: "/manage/weixin/menu/delete/" + menuId,
                        success: function (data) {
                            alert(data.msg);
                            setTimeout(function () {

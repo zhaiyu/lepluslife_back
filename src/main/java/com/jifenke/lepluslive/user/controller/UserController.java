@@ -73,9 +73,7 @@ public class UserController {
   @RequestMapping(value = "/userList", method = RequestMethod.POST)
   public
   @ResponseBody
-  LejiaResult getOffLineOrder(@RequestBody LeJiaUserCriteria leJiaUserCriteria) {
-
-
+  LejiaResult userList(@RequestBody LeJiaUserCriteria leJiaUserCriteria) {
     if (leJiaUserCriteria.getOffset() == null) {
       leJiaUserCriteria.setOffset(1);
     }
@@ -98,6 +96,7 @@ public class UserController {
 
         leJiaUserDto.setCity(weiXinUser != null ? weiXinUser.getCity() : null);
         leJiaUserDto.setState(weiXinUser != null ? weiXinUser.getState() : -1);
+        leJiaUserDto.setSubState(weiXinUser != null ? weiXinUser.getSubState() : -1);
         leJiaUserDto.setMassRemain(
             weiXinUser != null ? weiXinUser.getMassRemain() == null ? 4 : weiXinUser.getMassRemain()
                                : -1);
