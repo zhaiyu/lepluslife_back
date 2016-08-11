@@ -59,15 +59,14 @@ public class OrderService {
         //lss 2016/07/21
         Long orderScoreb=orderRepository.sumAllScoreb();
         Long activityScoreb=orderRepository.sumAllactivityScoreb();
+        if (orderScoreb==null){orderScoreb=it;}
+        if (activityScoreb==null){activityScoreb=it;}
         Long scoreb=orderScoreb+activityScoreb;
         Long orderRebate=orderRepository.sumAllRebate();
         Long activityRebate=orderRepository.sumAllactivityRebate();
-        if (orderScoreb==null){orderScoreb=it;}
-        if (activityScoreb==null){activityScoreb=it;}
         if (scoreb==null){scoreb=it;}
         if (orderRebate==null){orderRebate=it;}
         if (activityRebate==null){activityRebate=it;}
-
         Long rebate=orderRebate+activityRebate;
         Long lejiaUserScoreb=orderRepository.sumAllLejiaUserScoreb();
         Long lejiaUserRebate=orderRepository.sumAllLejiaUserRebate();
@@ -105,8 +104,8 @@ public class OrderService {
 
     public Page findOrderByPage(Integer offset, OrderCriteria orderCriteria) {
         Sort sort = new Sort(Sort.Direction.DESC, "createDate");
-        return orderRepository
-                .findAll(getWhereClause(orderCriteria), new PageRequest(offset - 1, 10, sort));
+      return orderRepository
+          .findAll(getWhereClause(orderCriteria), new PageRequest(offset - 1, 10, sort));
     }
 
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
@@ -134,14 +133,14 @@ public class OrderService {
                     time =
                     sdf.parse(sdf.format(onLineOrder.getCreateDate().getTime() + Constants.ORDER_EXPIRED));
             JobDetail completedOrderJobDetail = JobBuilder.newJob(OrderConfirmJob.class)
-                    .withIdentity("OrderConfirmJob" + onLineOrder.getId(), jobGroupName)
-                    .usingJobData("orderId", onLineOrder.getId())
+                .withIdentity("OrderConfirmJob" + onLineOrder.getId(), jobGroupName)
+                .usingJobData("orderId", onLineOrder.getId())
                     .build();
             Trigger completedOrderJobTrigger = TriggerBuilder.newTrigger()
-                    .withIdentity(
-                            TriggerKey.triggerKey("autoOrderConfirmJobTrigger"
-                                    + onLineOrder.getId(), triggerGroupName))
-                    .startAt(time)
+                .withIdentity(
+                    TriggerKey.triggerKey("autoOrderConfirmJobTrigger"
+                                          + onLineOrder.getId(), triggerGroupName))
+                .startAt(time)
                     .build();
             scheduler.scheduleJob(completedOrderJobDetail, completedOrderJobTrigger);
             scheduler.start();
