@@ -264,7 +264,6 @@ s<%--
 <div id="bottomIframe">
     <%@include file="../common/bottom.jsp" %>
 </div>
-
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="${resourceUrl}/js/bootstrap.min.js"></script>
 <script>
