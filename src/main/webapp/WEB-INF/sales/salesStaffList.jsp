@@ -283,7 +283,6 @@ function updateSalesStaff(salesStaffId){
         backdrop:'static'
     });
 }
-
     function newSalesStaffName(){
        var newSalesStaffName=$("#newSalesStaffName").val();
        var salesStaffId=$("#salesStaffId").val();
