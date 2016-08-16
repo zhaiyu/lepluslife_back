@@ -3,6 +3,7 @@ package com.jifenke.lepluslive.merchant.domain.entities;
 import com.jifenke.lepluslive.global.util.MvUtil;
 import com.jifenke.lepluslive.partner.domain.entities.Partner;
 
+import com.jifenke.lepluslive.sales.domain.entities.SalesStaff;
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
@@ -90,7 +91,12 @@ public class Merchant {
   private String contact; //联系人
 
   private Date createDate = new Date();
+  @ManyToOne
+  private SalesStaff salesStaff;
 
+  public SalesStaff getSalesStaff() {return salesStaff;}
+
+  public void setSalesStaff(SalesStaff salesStaff) {this.salesStaff = salesStaff;}
 
   public String getPureQrCode() {
     return pureQrCode;

@@ -29,6 +29,7 @@
         .M9 span{background:url(${resourceUrl}/images/ioc.png) -72px -70px;}
         .M10 span{background:url(${resourceUrl}/images/ioc.png) -72px -70px;}
         .M11 span{background:url(${resourceUrl}/images/ioc.png) -72px -70px;}
+        .M12 span{background:url(${resourceUrl}/images/ioc.png) -72px -70px;}
     </style>
     <script type="text/javascript" src="${resourceUrl}/js/menu.js"></script>
 <div class="left_menu">
@@ -54,6 +55,7 @@
 
         <li><h4 class="M9"><span></span>公众号及推荐</h4></li>
         <li><h4 class="M11"><span></span>合伙人管理</h4></li>
+        <li><h4 class="M12"><span></span>销售人员管理</h4></li>
         <%--<li>--%>
             <%--<h4 class="M9"><span></span>公众号配置</h4>--%>
             <%--<div class="list-item none">--%>
@@ -72,7 +74,7 @@
             $(".none1").slideDown(300);
         }
 //        数组
-        var htmlArr=['/manage/index','/manage/product','/manage/product','picManger.html','/manage/merchant','/manage/order','/manage/topic','/manage/user','/manage/offLineOrder','/manage/financial','/manage/weixin/index','/manage/offLineOrder/share','/manage/partner'];
+        var htmlArr=['/manage/index','/manage/product','/manage/product','picManger.html','/manage/merchant','/manage/order','/manage/topic','/manage/user','/manage/offLineOrder','/manage/financial','/manage/weixin/index','/manage/offLineOrder/share','/manage/partner','/manage/sales'];
         $('.M1').click(function () {
             window.location.href=htmlArr[0];
         });
@@ -112,6 +114,9 @@
         });
         $('.M11').click(function () {
             window.location.href=htmlArr[12];
+        });
+        $('.M12').click(function () {
+            window.location.href=htmlArr[13];
         });
     })
 </script>
