@@ -11,6 +11,8 @@ import com.jifenke.lepluslive.merchant.service.MerchantService;
 import com.jifenke.lepluslive.partner.domain.entities.Partner;
 import com.jifenke.lepluslive.partner.service.PartnerService;
 
+import com.jifenke.lepluslive.sales.domain.entities.SalesStaff;
+import com.jifenke.lepluslive.sales.service.SalesService;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.ui.Model;
@@ -43,6 +45,10 @@ public class MerchantController {
 
   @Inject
   private PartnerService partnerService;
+
+  @Inject
+  private SalesService salesService;
+
 
   @RequestMapping(value = "/merchant", method = RequestMethod.GET)
   public ModelAndView goShowMerchantPage(Model model) {
@@ -81,6 +87,8 @@ public class MerchantController {
     model.addAttribute("merchant", merchantService.findMerchantById(id));
     model.addAttribute("merchantTypes", merchantService.findAllMerchantTypes());
     model.addAttribute("partners", partnerService.findAllParter());
+      List<SalesStaff> salesStaffList=salesService.findAllSaleStaff();
+      model.addAttribute("sales", salesStaffList);
     return MvUtil.go("/merchant/merchantCreate");
   }
 

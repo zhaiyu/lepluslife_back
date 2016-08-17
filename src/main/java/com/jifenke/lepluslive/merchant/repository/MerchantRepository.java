@@ -9,6 +9,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.List;
 import java.util.Optional;
 
 /**
@@ -19,6 +20,13 @@ public interface MerchantRepository extends JpaRepository<Merchant,Long>{
 
   @Query(value = "select count(*) from merchant group by ?1",nativeQuery = true)
   int getMerchantSid(String location);
+
+
+  @Query(value = "SELECT COUNT(*) FROM merchant WHERE sales_staff_id=?1",nativeQuery = true)
+  int findSalesMerchantCount(String id);
+
+  @Query(value = "SELECT * FROM merchant WHERE sales_staff_id=?1",nativeQuery = true)
+  List<Merchant> findMerchantBySaleId(String id);
 
   Page findAll(Specification<Merchant> whereClause, Pageable pageable);
 

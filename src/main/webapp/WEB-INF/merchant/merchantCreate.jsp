@@ -65,6 +65,20 @@
                 </c:forEach>
             </select>
         </div>
+
+
+        <div>
+            <label for="saleStaff">所属销售</label>
+            <select name="name" id="sales" class="check">
+                <option></option>
+                <c:forEach items="${sales}" var="saleStaff">
+                    <option value="${saleStaff.id}">${saleStaff.name}</option>
+                </c:forEach>
+            </select>
+        </div>
+
+
+
         <div>
             <label for="shopname">店铺名称&nbsp</label>
             <input value="${merchant.name}" type="text" id="shopname" class="check"
@@ -107,6 +121,7 @@
             <input type="radio" class="radio" id="normal" name="type" value="0"/><span>普通商户</span>
             <input type="text" class="money pt" disabled="disabled" placeholder="输入手续费"/>%
             <input type="radio" class="radio" id="partner" name="type" value="1"/><span>联盟商户</span>
+            <input type="radio" class="radio" id="saleStaff" name="type" value="1"/><span>联盟商户</span>
             <%--<input type="text" class="money lm" disabled="disabled" placeholder="输入佣金比"/>%--%>
             <%--<input type="text" class="money lm" disabled="disabled" placeholder="输入红包比"/>%--%>
             <%--<input type="text" class="money lm" disabled="disabled" placeholder="输入手续费"/>%--%>
@@ -313,6 +328,7 @@
     var fnMyFunc1;
     $(function () {
         $("#partners").find("option[value='${merchant.partner.id}']").attr("selected", true);
+        $("#sales").find("option[value='${merchant.salesStaff.id}']").attr("selected", true);
         initProtocol();
 
         if (${merchant.partnership==1}) {
@@ -550,6 +566,11 @@
 
         var merchant = {};
         var partner = {};
+        var salesStaff={};
+
+        salesStaff.id=$("#sales").val();
+
+        merchant.salesStaff=salesStaff;
         partner.id = $("#partners").val();
         merchant.partner = partner;
         var city = {};

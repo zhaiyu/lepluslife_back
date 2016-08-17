@@ -20,6 +20,7 @@ import com.jifenke.lepluslive.merchant.repository.MerchantTypeRepository;
 import com.jifenke.lepluslive.merchant.repository.MerchantUserRepository;
 import com.jifenke.lepluslive.merchant.repository.MerchantWalletRepository;
 import com.jifenke.lepluslive.order.domain.entities.FinancialStatistic;
+import com.jifenke.lepluslive.sales.domain.entities.SalesStaff;
 import com.jifenke.lepluslive.user.domain.entities.RegisterOrigin;
 import com.jifenke.lepluslive.user.repository.LeJiaUserRepository;
 import com.jifenke.lepluslive.user.repository.RegisterOriginRepository;
@@ -157,6 +158,13 @@ public class MerchantService {
     if (origin == null) {
       throw new RuntimeException("不存在的商户");
     }
+      if(merchant.getSalesStaff().getId()==null||merchant.getSalesStaff().getId().equals("")){
+          origin.setSalesStaff(null);
+      }
+
+      if(merchant.getSalesStaff().getId()!=null&&!merchant.getSalesStaff().getId().equals("")){
+      origin.setSalesStaff(merchant.getSalesStaff());
+      }
     origin.setLjBrokerage(merchant.getLjBrokerage());
     origin.setLjCommission(merchant.getLjCommission());
     origin.setName(merchant.getName());
@@ -267,6 +275,12 @@ public class MerchantService {
               cb.equal(r.get("city"),
                        new City(merchantCriteria.getCity())));
         }
+//根据销售筛选
+          if (merchantCriteria.getSalesStaff() != null) {
+              predicate.getExpressions().add(
+                      cb.equal(r.get("salesStaff"),
+                              new SalesStaff(merchantCriteria.getSalesStaff())));
+          }
 
         return predicate;
       }
@@ -325,6 +339,11 @@ public class MerchantService {
   public List<MerchantUser> findMerchantUserByMerchant(Merchant merchant) {
     return merchantUserRepository.findAllByMerchant(merchant);
   }
+
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+    public int findSalesMerchantCount(String id) {
+        return merchantRepository.findSalesMerchantCount(id);
+    }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public void openStore(Merchant merchant) {
@@ -416,4 +435,15 @@ public class MerchantService {
 
     return merchant;
   }
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+    public  List<Merchant> findMerchantBySalesStaffId(String id1) {
+       return merchantRepository.findMerchantBySaleId(id1);
+
+    }
+
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+    public  void saveMerchant(Merchant merchant) {
+        merchantRepository.saveAndFlush(merchant);
+
+    }
 }
