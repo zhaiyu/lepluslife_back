@@ -124,41 +124,47 @@
                     提交更改
                 </button>
             </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
 
 <div class="modal fade" id="myModalTwo" tabindex="-1" role="dialog"
      aria-labelledby="myModalLabel" aria-hidden="true">
-<div class="modal-dialog">
-    <div class="modal-content">
-        <div class="modal-header">
-            <button type="button" class="close" data-dismiss="modal"
-                    aria-hidden="true">×
-            </button>
-            <h4 class="modal-title" id="myModalLabelTwo">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-hidden="true">×
+                </button>
+                <h4 class="modal-title" id="myModalLabelTwo">
 
-            </h4>
+                </h4>
+            </div>
+            <div class="modal-body">
+                <select class="form-control" id="merchantTypeTwo">
+                    <option value="0"></option>
+                    <c:forEach items="${salesStaffList}" var="salesStaff">
+                        <option value="${salesStaff.id}">${salesStaff.name}</option>
+                    </c:forEach>
+                </select>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary"
+                        data-dismiss="modal">关闭
+                </button>
+                <button type="button" class="btn btn-primary" onclick="oneMerchantMove()">
+                    提交更改
+                </button>
+            </div>
         </div>
-        <div class="modal-body">
-            <select class="form-control" id="merchantTypeTwo">
-                <option value="0"></option>
-                <c:forEach items="${salesStaffList}" var="salesStaff">
-                    <option value="${salesStaff.id}">${salesStaff.name}</option>
-                </c:forEach>
-            </select>
-        </div>
-        <div class="modal-footer">
-            <button type="button" class="btn btn-primary"
-                    data-dismiss="modal">关闭
-            </button>
-            <button type="button" class="btn btn-primary" onclick="oneMerchantMove()">
-                提交更改
-            </button>
-        </div>
-    </div><!-- /.modal-content -->
-</div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
 <div id="topIframe">
     <%@include file="../common/top.jsp" %>
 </div>
@@ -171,9 +177,10 @@
             <div class="container-fluid" style="padding-top: 20px">
                 <div class="row" style="margin-bottom: 30px">
                     <div class="form-group col-md-3">
-                            <button class="btn btn-primary" style="margin-top: 24px"
-                                    onclick="goback()">返回人员管理
-                            </button><br><br>
+                        <button class="btn btn-primary" style="margin-top: 24px"
+                                onclick="goback()">返回人员管理
+                        </button>
+                        <br><br>
                         <label for="merchant-name"><span>${salesStaff.name}</span>的商户管理</label><br><br>
                         <label for="merchant-name">商户名称</label>
                         <input type="text" id="merchant-name" class="form-control"
@@ -187,17 +194,19 @@
                     <div class="form-group col-md-3"></div>
                 </div>
                 <ul id="myTab" class="nav nav-tabs">
-                    <li><a href="#lunbotu" data-toggle="tab"><span>${salesStaff.name}</span>拥有的商户</a></li>
+                    <li><a href="#lunbotu"
+                           data-toggle="tab"><span>${salesStaff.name}</span>拥有的商户</a></li>
                 </ul>
                 <div id="myTabContent" class="tab-content">
                     <div class="tab-pane fade in active" id="lunbotu">
 
                         <tr class="active">
                             <th></th>
-                            <th>  <button  class="btn btn-primary createLocation" onclick="show()" >
-                                批量转移
-                            </button>
-                               </th>
+                            <th>
+                                <button class="btn btn-primary createLocation" onclick="show()">
+                                    批量转移
+                                </button>
+                            </th>
                         </tr>
                         <table class="table table-bordered table-hover">
                             <thead>
@@ -237,48 +246,48 @@
 //                                     + ' - ' +
 //                                     moment().format('YYYY/MM/DD HH:mm:ss'));
             $('#date-end').daterangepicker({
-                maxDate: moment(), //最大时间
+                                               maxDate: moment(), //最大时间
 //                                               dateLimit: {
 //                                                   days: 30
 //                                               }, //起止时间的最大间隔
-                showDropdowns: true,
-                showWeekNumbers: false, //是否显示第几周
-                timePicker: true, //是否显示小时和分钟
-                timePickerIncrement: 60, //时间的增量，单位为分钟
-                timePicker12Hour: false, //是否使用12小时制来显示时间
-                ranges: {
-                    '最近1小时': [moment().subtract('hours', 1),
-                        moment()],
-                    '今日': [moment().startOf('day'), moment()],
-                    '昨日': [moment().subtract('days',
-                            1).startOf('day'),
-                        moment().subtract('days',
-                                1).endOf('day')],
-                    '最近7日': [moment().subtract('days', 6), moment()],
-                    '最近30日': [moment().subtract('days', 29),
-                        moment()]
-                },
-                opens: 'right', //日期选择框的弹出位置
-                buttonClasses: ['btn btn-default'],
-                applyClass: 'btn-small btn-primary blue',
-                cancelClass: 'btn-small',
-                format: 'YYYY-MM-DD HH:mm:ss', //控件中from和to 显示的日期格式
-                separator: ' to ',
-                locale: {
-                    applyLabel: '确定',
-                    cancelLabel: '取消',
-                    fromLabel: '起始时间',
-                    toLabel: '结束时间',
-                    customRangeLabel: '自定义',
-                    daysOfWeek: ['日', '一', '二', '三', '四', '五', '六'],
-                    monthNames: ['一月', '二月', '三月', '四月', '五月', '六月',
-                        '七月', '八月', '九月', '十月', '十一月',
-                        '十二月'],
-                    firstDay: 1
-                }
-            }, function (start, end, label) {//格式化日期显示框
+                                               showDropdowns: true,
+                                               showWeekNumbers: false, //是否显示第几周
+                                               timePicker: true, //是否显示小时和分钟
+                                               timePickerIncrement: 60, //时间的增量，单位为分钟
+                                               timePicker12Hour: false, //是否使用12小时制来显示时间
+                                               ranges: {
+                                                   '最近1小时': [moment().subtract('hours', 1),
+                                                             moment()],
+                                                   '今日': [moment().startOf('day'), moment()],
+                                                   '昨日': [moment().subtract('days',
+                                                                            1).startOf('day'),
+                                                          moment().subtract('days',
+                                                                            1).endOf('day')],
+                                                   '最近7日': [moment().subtract('days', 6), moment()],
+                                                   '最近30日': [moment().subtract('days', 29),
+                                                             moment()]
+                                               },
+                                               opens: 'right', //日期选择框的弹出位置
+                                               buttonClasses: ['btn btn-default'],
+                                               applyClass: 'btn-small btn-primary blue',
+                                               cancelClass: 'btn-small',
+                                               format: 'YYYY-MM-DD HH:mm:ss', //控件中from和to 显示的日期格式
+                                               separator: ' to ',
+                                               locale: {
+                                                   applyLabel: '确定',
+                                                   cancelLabel: '取消',
+                                                   fromLabel: '起始时间',
+                                                   toLabel: '结束时间',
+                                                   customRangeLabel: '自定义',
+                                                   daysOfWeek: ['日', '一', '二', '三', '四', '五', '六'],
+                                                   monthNames: ['一月', '二月', '三月', '四月', '五月', '六月',
+                                                                '七月', '八月', '九月', '十月', '十一月',
+                                                                '十二月'],
+                                                   firstDay: 1
+                                               }
+                                           }, function (start, end, label) {//格式化日期显示框
                 $('#date-end span').html(start.format('YYYY/MM/DD HH:mm:ss') + ' - '
-                + end.format('YYYY/MM/DD HH:mm:ss'));
+                                         + end.format('YYYY/MM/DD HH:mm:ss'));
             });
         })
 //        tab切换
@@ -315,144 +324,143 @@
     //        });
     //    })
     function getMerchantByAjax(merchantCriteria) {
-        merchantCriteria.salesStaff=${salesStaff.id};
+        merchantCriteria.salesStaff =${salesStaff.id};
         merchantContent.innerHTML = "";
         $.ajax({
-            type: "post",
-            url: "/manage/merchant/search",
-            async: false,
-            data: JSON.stringify(merchantCriteria),
-            contentType: "application/json",
-            success: function (data) {
-                var list = data.data;
-                var page = list[0];
-                var binds = list[1];
-                var content = page.content;
-                var totalPage = page.totalPages;
-                $("#totalElements").html(page.totalElements);
-                if (totalPage == 0) {
-                    totalPage = 1;
-                }
-                if (flag) {
-                    initPage(merchantCriteria.offset, totalPage);
-                    flag = false;
-                }
-                if (init1) {
-                    initPage(1, totalPage);
-                }
-                for (i = 0; i < content.length; i++) {
-                    var contentStr = '<tr><td>' + content[i].merchantSid + '</td>';
+                   type: "post",
+                   url: "/manage/merchant/search",
+                   async: false,
+                   data: JSON.stringify(merchantCriteria),
+                   contentType: "application/json",
+                   success: function (data) {
+                       var list = data.data;
+                       var page = list[0];
+                       var binds = list[1];
+                       var content = page.content;
+                       var totalPage = page.totalPages;
+                       $("#totalElements").html(page.totalElements);
+                       if (totalPage == 0) {
+                           totalPage = 1;
+                       }
+                       if (flag) {
+                           initPage(merchantCriteria.offset, totalPage);
+                           flag = false;
+                       }
+                       if (init1) {
+                           initPage(1, totalPage);
+                       }
+                       for (i = 0; i < content.length; i++) {
+                           var contentStr = '<tr><td>' + content[i].merchantSid + '</td>';
 
-                    contentStr +=
-                            '<td>' + content[i].name + '</td>';
+                           contentStr +=
+                           '<td>' + content[i].name + '</td>';
 //                           contentStr +=
 //                           '<td><span>'
 //                           + content[i].merchantSid
 //                           + '</span></td>';
-                    contentStr +=
-                            '<td><input type="hidden" class="name-hidden" value="' + content[i].name
-                            + '"><input type="hidden" class="id-hidden" value="' + content[i].id
-                            + '"><button type="button" class="btn btn-default merchantMobile">商户转移</button>';
+                           contentStr +=
+                           '<td><input type="hidden" class="name-hidden" value="' + content[i].name
+                           + '"><input type="hidden" class="id-hidden" value="' + content[i].id
+                           + '"><button type="button" class="btn btn-default merchantMobile">商户转移</button>';
 
-                    merchantContent.innerHTML += contentStr;
+                           merchantContent.innerHTML += contentStr;
 
-                }
-                $(".merchantMobile").each(function (i) {
-                    $(".merchantMobile").eq(i).bind("click", function () {
-                        var id=content[i].id;
-                        var name=content[i].name;
-                        showTwo(id,name);
-                    });
-                });
-                $(".showQRCode").each(function (i) {
-                    $(".showQRCode").eq(i).bind("click", function () {
-                        var id = $(this).parent().find(".id-hidden").val();
-                        $.ajax({
-                            type: "get",
-                            data: {id: id},
-                            url: "/manage/merchant/qrCode",
-                            success: function (data) {
-                                var merchant = data.data;
-                                var url = "${productUrl}" + id;
-                                $(".shopName").html(merchant.name);
-                                $("#qrCode").attr("src", merchant.qrCodePicture);
-                                $("#qrWarn").modal("show");
-                                var url = "${merchantUrl}" + merchant.merchantSid;
-                                $("#merchantUrl").html(url);
-                                document.querySelector(".savePic").addEventListener("click",
-                                        function () {
-                                            html2canvas($(".modal-body .main"),
-                                                    {
-                                                        allowTaint: true,
-                                                        taintTest: false,
-                                                        onrendered: function (canvas) {
-                                                            canvas.id =
-                                                                    "mycanvas";
-                                                            var dataUrl = canvas.toDataURL();
-                                                            $("#myShowImage").attr("src",
-                                                                    dataUrl).css({'display': 'block'});
-                                                            $(".main").css({'display': 'none'});
+                       }
+                       $(".merchantMobile").each(function (i) {
+                           $(".merchantMobile").eq(i).bind("click", function () {
+                               var id = content[i].id;
+                               var name = content[i].name;
+                               showTwo(id, name);
+                           });
+                       });
+                       $(".showQRCode").each(function (i) {
+                           $(".showQRCode").eq(i).bind("click", function () {
+                               var id = $(this).parent().find(".id-hidden").val();
+                               $.ajax({
+                                          type: "get",
+                                          data: {id: id},
+                                          url: "/manage/merchant/qrCode",
+                                          success: function (data) {
+                                              var merchant = data.data;
+                                              var url = "${productUrl}" + id;
+                                              $(".shopName").html(merchant.name);
+                                              $("#qrCode").attr("src", merchant.qrCodePicture);
+                                              $("#qrWarn").modal("show");
+                                              var url = "${merchantUrl}" + merchant.merchantSid;
+                                              $("#merchantUrl").html(url);
+                                              document.querySelector(".savePic").addEventListener("click",
+                                                                                                  function () {
+                                                                                                      html2canvas($(".modal-body .main"),
+                                                                                                                  {
+                                                                                                                      allowTaint: true,
+                                                                                                                      taintTest: false,
+                                                                                                                      onrendered: function (canvas) {
+                                                                                                                          canvas.id =
+                                                                                                                          "mycanvas";
+                                                                                                                          var dataUrl = canvas.toDataURL();
+                                                                                                                          $("#myShowImage").attr("src",
+                                                                                                                                                 dataUrl).css({'display': 'block'});
+                                                                                                                          $(".main").css({'display': 'none'});
 //
-                                                        }
-                                                    });
-                                        },
-                                        false);
-                            }
-                        });
-                    });
-                });
-                $(".showPureQRCode").each(function (i) {
-                    $(".showPureQRCode").eq(i).bind("click", function () {
-                        var id = $(this).parent().find(".id-hidden").val();
-                        $.ajax({
-                            type: "get",
-                            data: {id: id},
-                            url: "/manage/merchant/pureQrCode",
-                            success: function (data) {
-                                var merchant = data.data;
-                                var url = "${productUrl}" + id;
-                                $(".shopName").html(merchant.name);
-                                $("#qrCode").attr("src", merchant.pureQrCode);
-                                $("#qrWarn").modal("show");
-                            }
-                        });
-                    });
-                });
-                $(".editMerchant").each(function (i) {
-                    $(".editMerchant").eq(i).bind("click", function () {
-                        var id = $(this).parent().find(".id-hidden").val();
-                        location.href = "/manage/merchant/edit/" + id;
-                    });
-                });
-                $(".editMerchantContent").each(function (i) {
-                    $(".editMerchantContent").eq(i).bind("click", function () {
-                        var id = $(this).parent().find(".id-hidden").val();
-                        location.href = "/manage/merchant/editContent/" + id;
-                    });
-                });
-                $(".disableMerchant").each(function (i) {
-                    $(".disableMerchant").eq(i).bind("click", function () {
-                        var id = $(this).parent().find(".id-hidden").val();
-                        location.href = "/manage/merchant/openStore/" + id;
-                    });
-                });
+                                                                                                                      }
+                                                                                                                  });
+                                                                                                  },
+                                                                                                  false);
+                                          }
+                                      });
+                           });
+                       });
+                       $(".showPureQRCode").each(function (i) {
+                           $(".showPureQRCode").eq(i).bind("click", function () {
+                               var id = $(this).parent().find(".id-hidden").val();
+                               $.ajax({
+                                          type: "get",
+                                          data: {id: id},
+                                          url: "/manage/merchant/pureQrCode",
+                                          success: function (data) {
+                                              var merchant = data.data;
+                                              var url = "${productUrl}" + id;
+                                              $(".shopName").html(merchant.name);
+                                              $("#qrCode").attr("src", merchant.pureQrCode);
+                                              $("#qrWarn").modal("show");
+                                          }
+                                      });
+                           });
+                       });
+                       $(".editMerchant").each(function (i) {
+                           $(".editMerchant").eq(i).bind("click", function () {
+                               var id = $(this).parent().find(".id-hidden").val();
+                               location.href = "/manage/merchant/edit/" + id;
+                           });
+                       });
+                       $(".editMerchantContent").each(function (i) {
+                           $(".editMerchantContent").eq(i).bind("click", function () {
+                               var id = $(this).parent().find(".id-hidden").val();
+                               location.href = "/manage/merchant/editContent/" + id;
+                           });
+                       });
+                       $(".disableMerchant").each(function (i) {
+                           $(".disableMerchant").eq(i).bind("click", function () {
+                               var id = $(this).parent().find(".id-hidden").val();
+                               location.href = "/manage/merchant/openStore/" + id;
+                           });
+                       });
 
-            }
-        });
+                   }
+               });
     }
-
 
     function initPage(page, totalPage) {
         $('.tcdPageCode').unbind();
         $(".tcdPageCode").createPage({
-            pageCount: totalPage,
-            current: page,
-            backFn: function (p) {
-                init1 = 0;
-                merchantCriteria.offset = p;
-                getMerchantByAjax(merchantCriteria);
-            }
-        });
+                                         pageCount: totalPage,
+                                         current: page,
+                                         backFn: function (p) {
+                                             init1 = 0;
+                                             merchantCriteria.offset = p;
+                                             getMerchantByAjax(merchantCriteria);
+                                         }
+                                     });
     }
     function searchMerchantByCriteria() {
         merchantCriteria.offset = 1;
@@ -531,59 +539,62 @@
         }
         if (/(E+)/.test(fmt)) {
             fmt =
-                    fmt.replace(RegExp.$1,
-                            ((RegExp.$1.length > 1) ? (RegExp.$1.length > 2 ? "\u661f\u671f" : "\u5468")
-                                    : "") + week[this.getDay() + ""]);
+            fmt.replace(RegExp.$1,
+                        ((RegExp.$1.length > 1) ? (RegExp.$1.length > 2 ? "\u661f\u671f" : "\u5468")
+                                : "") + week[this.getDay() + ""]);
         }
         for (var k in o) {
             if (new RegExp("(" + k + ")").test(fmt)) {
                 fmt =
-                        fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr((""
-                        + o[k]).length)));
+                fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr((""
+                                                                                                 + o[k]).length)));
             }
         }
         return fmt;
     }
-    function goback(){
-        location.href="/manage/sales";
+    function goback() {
+        location.href = "/manage/sales";
     }
-    function merchantMove(){
-        var id1= ${salesStaff.id};
-       var id2=$('#merchantType option:selected').val();
+    function merchantMove() {
+        var id1 = ${salesStaff.id};
+        var id2 = $('#merchantType option:selected').val();
 
-       if(id2=="0"){
-           alert("请选择销售")
-       }else{
-           location.href="/manage/merchantMove?id1="+id1+"&&id2="+id2;
-       }
-    }
-
-
-    function oneMerchantMove(){
-        var merchantId= $("#oneMerchantID").val();
-        var salesStaffId1=${salesStaff.id};
-        var salesStaffId2=$('#merchantTypeTwo option:selected').val();
-
-        if(salesStaffId2=="0"){
+        if (id2 == "0") {
             alert("请选择销售")
-        }else{
-            location.href="/manage/oneMerchantMove?merchantId="+merchantId+"&&salesStaffId1="+salesStaffId1+"&&salesStaffId2="+salesStaffId2;
+        } else {
+            location.href = "/manage/merchantMove?id1=" + id1 + "&&id2=" + id2;
         }
     }
 
-    function show(){
-      $('#myModal').modal({
-          show:true,
-          backdrop:'static'
-        });
+    function oneMerchantMove() {
+        var merchantId = $("#oneMerchantID").val();
+        var salesStaffId1 =${salesStaff.id};
+        var salesStaffId2 = $('#merchantTypeTwo option:selected').val();
+
+        if (salesStaffId2 == "0") {
+            alert("请选择销售")
+        } else {
+            location.href =
+            "/manage/oneMerchantMove?merchantId=" + merchantId + "&&salesStaffId1=" + salesStaffId1
+            + "&&salesStaffId2=" + salesStaffId2;
+        }
     }
-    function showTwo(id,name){
+
+    function show() {
+        $('#myModal').modal({
+                                show: true,
+                                backdrop: 'static'
+                            });
+    }
+    function showTwo(id, name) {
         $("#myModalLabelTwo").empty();
-        $("#myModalLabelTwo").append("<input type=\"hidden\"  id=\""+"oneMerchantID"+"\" value=\""+id+"\">   将 <span>"+name+"</span>转移给销售");
+        $("#myModalLabelTwo").append("<input type=\"hidden\"  id=\"" + "oneMerchantID"
+                                     + "\" value=\"" + id + "\">   将 <span>" + name
+                                     + "</span>转移给销售");
         $('#myModalTwo').modal({
-            show:true,
-            backdrop:'static'
-        });
+                                   show: true,
+                                   backdrop: 'static'
+                               });
     }
 </script>
 </body>

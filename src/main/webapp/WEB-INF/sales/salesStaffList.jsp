@@ -80,6 +80,7 @@ s<%--
             margin: auto;
             font-family: Arial;
         }
+
         #Layer1 {
             height: 250px;
             width: 450px;
@@ -91,6 +92,7 @@ s<%--
             position: relative;
             background-color: #FFF;
         }
+
         #Layer1 #win_top {
             height: 30px;
             width: 450px;
@@ -103,18 +105,20 @@ s<%--
             font-weight: bold;
             text-indent: 1em;
         }
+
         #Layer1 #win_top a {
             float: right;
             margin-right: 5px;
         }
+
         #shade {
-            background-color:#000;
-            position:absolute;
-            z-index:49;
-            display:none;
-            width:100%;
-            height:100%;
-            opacity:0.6;
+            background-color: #000;
+            position: absolute;
+            z-index: 49;
+            display: none;
+            width: 100%;
+            height: 100%;
+            opacity: 0.6;
             filter: alpha(opacity=60);
             -moz-opacity: 0.6;
             margin: 0px;
@@ -123,6 +127,7 @@ s<%--
             right: 0px;
             bottom: 0px;
         }
+
         #Layer1 .content {
             margin-top: 5px;
             margin-right: 30px;
@@ -159,7 +164,7 @@ s<%--
                 </h4>
             </div>
             <div class="modal-body">
-               <input id="newSalesStaffName" >
+                <input id="newSalesStaffName">
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-primary"
@@ -169,9 +174,12 @@ s<%--
                     提交更改
                 </button>
             </div>
-        </div><!-- /.modal-content -->
-    </div><!-- /.modal-dialog -->
-</div><!-- /.modal -->
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
+<!-- /.modal -->
 
 <div id="topIframe">
     <%@include file="../common/top.jsp" %>
@@ -193,25 +201,38 @@ s<%--
                 <div id="myTabContent" class="tab-content">
                     <div class="tab-pane fade in active" id="lunbotu">
                         <div id="shade"></div>
-                        <button type="button" class="btn btn-primary" onClick="shade.style.display='block';Layer1.style.display='block'">新增销售人员</button>
+                        <button type="button" class="btn btn-primary"
+                                onClick="shade.style.display='block';Layer1.style.display='block'">
+                            新增销售人员
+                        </button>
                         <br/>
                     </div>
                 </div>
 
 
-
                 <div id="Layer1">
                     <div id="win_top">添加销售人员</div>
                     <br/>
+
                     <div class="content">
                         <table class="table table-bordered table-hover">
                             <table>
                                 <tr>
-                                    <td><input type="text" class="form-control" id="salesName" name="name"></td>
+                                    <td><input type="text" class="form-control" id="salesName"
+                                               name="name"></td>
 
-                                    <td> <button type="button" class="btn btn-primary" onclick="submitSales()">提交</button></td>
+                                    <td>
+                                        <button type="button" class="btn btn-primary"
+                                                onclick="submitSales()">提交
+                                        </button>
+                                    </td>
 
-                                    <td><button type="button" class="btn btn-primary" onClick="shade.style.display='none';Layer1.style.display='none'">关闭</button></td>
+                                    <td>
+                                        <button type="button" class="btn btn-primary"
+                                                onClick="shade.style.display='none';Layer1.style.display='none'">
+                                            关闭
+                                        </button>
+                                    </td>
                                 </tr>
                             </table>
                             <tbody id="saleStaffContent">
@@ -221,37 +242,30 @@ s<%--
                 </div>
 
 
+                <table class="table table-bordered table-hover">
+                    <thead>
+                    <tr class="active">
+                        <th>销售人员编号</th>
+                        <th>姓名</th>
+                        <th>负责商户数量</th>
+                        <th>操作</th>
+                    </tr>
+                    <c:forEach items="${salesStaffList}" var="salesStaff">
+                        <tr>
+                            <td><span>${salesStaff.id}</span>
+                            <td>${salesStaff.name}</td>
+                            <td>${salesStaff.merchant.size()}</td>
+                            <td><a onclick="salesStaffManage(${salesStaff.id})">商户管理</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a
+                                    onclick="updateSalesStaff(${salesStaff.id})">编辑</a></td>
 
+                            <input type="hidden" id>
 
-               <table class="table table-bordered table-hover">
-                   <thead>
-               <tr class="active">
-                   <th>销售人员编号</th>
-                   <th>姓名</th>
-                   <th>负责商户数量</th>
-                   <th>操作</th>
-               </tr>
-               <c:forEach items="${salesStaffList}" var="salesStaff">
-                   <tr>
-                       <td><span>${salesStaff.id}</span>
-                       <td>${salesStaff.name}</td>
-                       <td>${salesStaff.merchant.size()}</td>
-                       <td><a onclick="salesStaffManage(${salesStaff.id})">商户管理</a>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<a onclick="updateSalesStaff(${salesStaff.id})">编辑</a></td>
+                            </td>
+                        </tr>
+                    </c:forEach>
+                    </thead>
 
-                       <input type="hidden" id>
-
-                       </td>
-                   </tr>
-               </c:forEach>
-               </thead>
-
-               </table>
-
-
-
-
-
-
+                </table>
 
 
                 <div class="tcdPageCode" style="display: inline;">
@@ -267,27 +281,33 @@ s<%--
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="${resourceUrl}/js/bootstrap.min.js"></script>
 <script>
-    function submitSales(){
-        var name=$("#salesName").val();
-        location.href="/manage/addSales?name="+name;
+    function submitSales() {
+        var name = $("#salesName").val();
+        location.href = "/manage/addSales?name=" + name;
     }
-    function salesStaffManage(id){
-        location.href="/manage/salesStaffManageMerchant?id="+id;
+    function salesStaffManage(id) {
+        location.href = "/manage/salesStaffManageMerchant?id=" + id;
     }
-function updateSalesStaff(salesStaffId){
-    $("#myModalLabelThree").empty();
-    $("#myModalLabelThree").append("<input type=\"hidden\"  id=\""+"salesStaffId"+"\" value=\""+salesStaffId+"\">将编号为<span>"+salesStaffId+"</span>的名字改为");
-    $('#myModalThree').modal({
-        show:true,
-        backdrop:'static'
-    });
-}
-    function newSalesStaffName(){
-       var newSalesStaffName=$("#newSalesStaffName").val();
-       var salesStaffId=$("#salesStaffId").val();
-       if(newSalesStaffName!=null&&newSalesStaffName!=""&&newSalesStaffName.split(" ")!=null&&!(/^\s+$/gi.test(newSalesStaffName))){
-           location.href="/manage/newSalesStaffName?salesStaffId="+salesStaffId+"&&newSalesStaffName="+newSalesStaffName;
-       }
+    function updateSalesStaff(salesStaffId) {
+        $("#myModalLabelThree").empty();
+        $("#myModalLabelThree").append("<input type=\"hidden\"  id=\"" + "salesStaffId"
+                                       + "\" value=\"" + salesStaffId + "\">将编号为<span>"
+                                       + salesStaffId + "</span>的名字改为");
+        $('#myModalThree').modal({
+                                     show: true,
+                                     backdrop: 'static'
+                                 });
+    }
+    function newSalesStaffName() {
+        var newSalesStaffName = $("#newSalesStaffName").val();
+        var salesStaffId = $("#salesStaffId").val();
+        if (newSalesStaffName != null && newSalesStaffName != "" && newSalesStaffName.split(" ")
+                                                                    != null
+            && !(/^\s+$/gi.test(newSalesStaffName))) {
+            location.href =
+            "/manage/newSalesStaffName?salesStaffId=" + salesStaffId + "&&newSalesStaffName="
+            + newSalesStaffName;
+        }
 
     }
 

@@ -94,6 +94,7 @@ public class MerchantService {
                  new PageRequest(merchantCriteria.getOffset() - 1, limit, sort));
   }
 
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
   public Merchant findMerchantById(Long id) {
     return merchantRepository.findOne(id);
   }
@@ -158,18 +159,18 @@ public class MerchantService {
     if (origin == null) {
       throw new RuntimeException("不存在的商户");
     }
-      if(merchant.getSalesStaff().getId()==null||merchant.getSalesStaff().getId().equals("")){
-          origin.setSalesStaff(null);
-      }
+    if (merchant.getSalesStaff().getId() == null || merchant.getSalesStaff().getId().equals("")) {
+      origin.setSalesStaff(null);
+    }
 
-      if(merchant.getSalesStaff().getId()!=null&&!merchant.getSalesStaff().getId().equals("")){
+    if (merchant.getSalesStaff().getId() != null && !merchant.getSalesStaff().getId().equals("")) {
       origin.setSalesStaff(merchant.getSalesStaff());
-      }
+    }
     origin.setLjBrokerage(merchant.getLjBrokerage());
     origin.setLjCommission(merchant.getLjCommission());
     origin.setName(merchant.getName());
     origin.setLocation(merchant.getLocation());
-   // origin.setState(merchant.getState());
+    // origin.setState(merchant.getState());
     origin.setPartner(merchant.getPartner());
     origin.setArea(merchant.getArea());
     origin.setUserLimit(merchant.getUserLimit());
@@ -183,17 +184,9 @@ public class MerchantService {
     origin.setScoreARebate(merchant.getScoreARebate());
     origin.setScoreBRebate(merchant.getScoreBRebate());
     origin.setMerchantType(merchant.getMerchantType());
-   // origin.setPicture(merchant.getPicture());
     origin.setReceiptAuth(merchant.getReceiptAuth());
     origin.setPartnership(merchant.getPartnership());
     origin.setMemberCommission(merchant.getMemberCommission());
-//    try {
-//      BeanUtils.copyProperties(origin, merchant);
-//    } catch (IllegalAccessException e) {
-//      e.printStackTrace();
-//    } catch (InvocationTargetException e) {
-//      e.printStackTrace();
-//    }
     long l = merchant.getId();
     origin.setSid((int) l);
     origin.setMerchantSid(sid);
@@ -237,20 +230,21 @@ public class MerchantService {
                        new MerchantType(merchantCriteria.getMerchantType())));
         }
 
-          if (merchantCriteria.getMerchantName() != null && merchantCriteria.getMerchantName() != "") {
+        if (merchantCriteria.getMerchantName() != null
+            && merchantCriteria.getMerchantName() != "") {
 
-              predicate.getExpressions().add(
-                      cb.like(r.get("name"),
-                              "%" + merchantCriteria.getMerchantName() + "%"));
+          predicate.getExpressions().add(
+              cb.like(r.get("name"),
+                      "%" + merchantCriteria.getMerchantName() + "%"));
 
-          }
-          if (merchantCriteria.getMerchantSid() != null && merchantCriteria.getMerchantSid() != "") {
+        }
+        if (merchantCriteria.getMerchantSid() != null && merchantCriteria.getMerchantSid() != "") {
 
-              predicate.getExpressions().add(
-                      cb.like(r.get("merchantSid"),
-                              "%" + merchantCriteria.getMerchantSid() + "%"));
+          predicate.getExpressions().add(
+              cb.like(r.get("merchantSid"),
+                      "%" + merchantCriteria.getMerchantSid() + "%"));
 
-          }
+        }
 
         if (merchantCriteria.getReceiptAuth() != null) {
           predicate.getExpressions().add(
@@ -276,22 +270,23 @@ public class MerchantService {
                        new City(merchantCriteria.getCity())));
         }
 //根据销售筛选
-          if (merchantCriteria.getSalesStaff() != null) {
-              predicate.getExpressions().add(
-                      cb.equal(r.get("salesStaff"),
-                              new SalesStaff(merchantCriteria.getSalesStaff())));
-          }
+        if (merchantCriteria.getSalesStaff() != null) {
+          predicate.getExpressions().add(
+              cb.equal(r.get("salesStaff"),
+                       new SalesStaff(merchantCriteria.getSalesStaff())));
+        }
 
         return predicate;
       }
     };
   }
 
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
   public List<MerchantUser> findMerchantUsersByMerchant(Merchant merchant) {
     return merchantUserRepository.findAllByMerchant(merchant);
   }
 
-  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
   public void deleteMerchantUser(Long id) {
     merchantUserRepository.delete(id);
   }
@@ -304,6 +299,7 @@ public class MerchantService {
     merchantUserRepository.save(merchantUser);
   }
 
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
   public MerchantUser getMerchantUserById(Long id) {
     return merchantUserRepository.findOne(id);
   }
@@ -335,15 +331,15 @@ public class MerchantService {
     return merchant;
   }
 
-  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
   public List<MerchantUser> findMerchantUserByMerchant(Merchant merchant) {
     return merchantUserRepository.findAllByMerchant(merchant);
   }
 
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-    public int findSalesMerchantCount(String id) {
-        return merchantRepository.findSalesMerchantCount(id);
-    }
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+  public int findSalesMerchantCount(String id) {
+    return merchantRepository.findSalesMerchantCount(id);
+  }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public void openStore(Merchant merchant) {
@@ -396,7 +392,7 @@ public class MerchantService {
     return binds;
   }
 
-
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
   public MerchantWallet findMerchantWalletByMerchant(Merchant merchant) {
     return merchantWalletRepository.findByMerchant(merchant);
   }
@@ -418,8 +414,10 @@ public class MerchantService {
           bytes =
           new byte[0];
       try {
-        bytes = barcodeService.qrCode(Constants.MERCHANT_URL + merchant.getMerchantSid()+"?pure=access",
-                                      BarcodeConfig.QRCode.defaultConfig());
+        bytes =
+            barcodeService
+                .qrCode(Constants.MERCHANT_URL + merchant.getMerchantSid() + "?pure=access",
+                        BarcodeConfig.QRCode.defaultConfig());
       } catch (InterruptedException e) {
         e.printStackTrace();
       } catch (IOException e) {
@@ -435,15 +433,14 @@ public class MerchantService {
 
     return merchant;
   }
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-    public  List<Merchant> findMerchantBySalesStaffId(String id1) {
-       return merchantRepository.findMerchantBySaleId(id1);
 
-    }
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+  public List<Merchant> findMerchantBySalesStaffId(String id1) {
+    return merchantRepository.findMerchantBySaleId(id1);
+  }
 
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-    public  void saveMerchant(Merchant merchant) {
-        merchantRepository.saveAndFlush(merchant);
-
-    }
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  public void saveMerchant(Merchant merchant) {
+    merchantRepository.saveAndFlush(merchant);
+  }
 }

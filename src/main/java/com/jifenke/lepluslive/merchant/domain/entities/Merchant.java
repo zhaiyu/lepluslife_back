@@ -91,6 +91,7 @@ public class Merchant {
   private String contact; //联系人
 
   private Date createDate = new Date();
+
   @ManyToOne
   private SalesStaff salesStaff;
 
