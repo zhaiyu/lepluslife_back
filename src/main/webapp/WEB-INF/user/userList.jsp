@@ -262,7 +262,7 @@
     });
 
     function getUserByAjax(criteria) {
-
+        criteria.userSid = $("#userSid").val();
         if (search == 1) {
             search = 0;
             $.ajax({

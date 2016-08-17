@@ -88,7 +88,7 @@
             <table class="table table-bordered table-hover">
               <thead>
               <tr class="active">
-                <th>订单号</th><th>交易完成时间</th><th>消费者信息</th><th>分润金额</th><th>交易商户</th>
+                <th>订单号</th><th>交易完成时间</th><th>消费者信息</th><th>消费金额</th><th>分润金额</th><th>交易商户</th>
                 <th>交易商户所在合伙人分润</th><th>交易合伙人管理员分润</th><th>会员绑定商户分润</th>
                 <th>会员绑定合伙人分润</th><th>绑定合伙人管理员分润</th><th>积分客分润</th>
               </tr>
@@ -274,6 +274,7 @@
                    '<td><span>未绑定手机号</span><br><span>('
                    + content[i].offLineOrder.leJiaUser.userSid + ')</span></td>'
                  }
+                 contentStr += '<td>' + content[i].offLineOrder.totalPrice / 100 + '</td>'
                  contentStr += '<td>' + content[i].shareMoney / 100 + '</td>'
                  contentStr += '<td>' + content[i].offLineOrder.merchant.name+ '</td>'
                  contentStr +=
