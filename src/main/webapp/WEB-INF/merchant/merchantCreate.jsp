@@ -121,7 +121,6 @@
             <input type="radio" class="radio" id="normal" name="type" value="0"/><span>普通商户</span>
             <input type="text" class="money pt" disabled="disabled" placeholder="输入手续费"/>%
             <input type="radio" class="radio" id="partner" name="type" value="1"/><span>联盟商户</span>
-            <input type="radio" class="radio" id="saleStaff" name="type" value="1"/><span>联盟商户</span>
             <%--<input type="text" class="money lm" disabled="disabled" placeholder="输入佣金比"/>%--%>
             <%--<input type="text" class="money lm" disabled="disabled" placeholder="输入红包比"/>%--%>
             <%--<input type="text" class="money lm" disabled="disabled" placeholder="输入手续费"/>%--%>

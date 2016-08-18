@@ -79,6 +79,8 @@ public class MerchantController {
   public ModelAndView goCreateMerchantPage(Model model) {
     model.addAttribute("merchantTypes", merchantService.findAllMerchantTypes());
     model.addAttribute("partners", partnerService.findAllParter());
+    List<SalesStaff> salesStaffList=salesService.findAllSaleStaff();
+    model.addAttribute("sales", salesStaffList);
     return MvUtil.go("/merchant/merchantCreate");
   }
 
