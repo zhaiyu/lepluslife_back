@@ -3,6 +3,7 @@ package com.jifenke.lepluslive.merchant.controller;
 import com.jifenke.lepluslive.global.util.LejiaResult;
 import com.jifenke.lepluslive.global.util.MvUtil;
 import com.jifenke.lepluslive.global.util.PaginationUtil;
+import com.jifenke.lepluslive.merchant.controller.view.MerchantViewExcel;
 import com.jifenke.lepluslive.merchant.domain.criteria.MerchantCriteria;
 import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantUser;
@@ -26,7 +27,9 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -36,6 +39,8 @@ import javax.inject.Inject;
 @RestController
 @RequestMapping("/manage")
 public class MerchantController {
+  @Inject
+  private MerchantViewExcel merchantViewExcel;
 
   @Inject
   private MerchantService merchantService;
@@ -194,6 +199,16 @@ public class MerchantController {
   LejiaResult pureQrCode(@RequestParam Long id) {
     return LejiaResult.ok(merchantService.pureQrCodeManage(id));
   }
-
+  @RequestMapping(value = "/merchant/merchantExport", method = RequestMethod.GET)
+  public ModelAndView exporeExcel(MerchantCriteria merchantCriteria, String city) {
+    if (merchantCriteria.getOffset() == null) {
+      merchantCriteria.setOffset(1);
+    }
+    merchantCriteria.setCity(Long.parseLong(city));
+    Page page = merchantService.findMerchantsByPage(merchantCriteria, 10000);
+    Map map = new HashMap();
+    map.put("merchantList", page.getContent());
+    return new ModelAndView(merchantViewExcel, map);
+  }
 
 }
