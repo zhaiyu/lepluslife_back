@@ -204,6 +204,9 @@
                 <div class="tcdPageCode" style="display: inline;">
                 </div>
                 <div style="display: inline;"> 共有 <span id="totalElements"></span> 个</div>
+                <button class="btn btn-primary pull-right" style="margin-top: 5px"
+                        onclick="exportExcel(merchantCriteria)">导出excel
+                </button>
             </div>
         </div>
     </div>
@@ -630,6 +633,11 @@
             }
         }
         return fmt;
+    }
+    function exportExcel(merchantCriteria) {
+        var city = $("#city").val();
+        location.href =
+        "/manage/merchant/merchantExport?merchantCriteria=" + merchantCriteria + "&&city=" + city;
     }
 </script>
 </body>
