@@ -32,9 +32,19 @@ public class FinancialStatistic {
   @ManyToOne
   private Merchant merchant;
 
-  private Long transferPrice;
+  private Long transferPrice;//转账总金额 (红包+微信)
 
-  private Integer state = 0;
+  private Long transferFromTruePay; //微信支付所占金额
+
+  private Integer state = 0; //状态2 表示挂帐
+
+  public Long getTransferFromTruePay() {
+    return transferFromTruePay;
+  }
+
+  public void setTransferFromTruePay(Long transferFromTruePay) {
+    this.transferFromTruePay = transferFromTruePay;
+  }
 
   public Integer getState() {
     return state;

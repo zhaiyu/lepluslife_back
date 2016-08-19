@@ -62,12 +62,11 @@ public class OffLineOrderService {
               cb.equal(r.get("state"),
                        orderCriteria.getState()));
         }
-          //lss 2016/07/19
-          if (orderCriteria.getAmount() != null) {
-              predicate.getExpressions().add(
-                      cb.greaterThanOrEqualTo(r.get("totalPrice"),  orderCriteria.getAmount()));
-          }
-
+        //lss 2016/07/19
+        if (orderCriteria.getAmount() != null) {
+          predicate.getExpressions().add(
+              cb.greaterThanOrEqualTo(r.get("totalPrice"), orderCriteria.getAmount()));
+        }
 
         if (orderCriteria.getPhoneNumber() != null && orderCriteria.getPhoneNumber() != "") {
           predicate.getExpressions().add(
@@ -177,5 +176,16 @@ public class OffLineOrderService {
     financialStatisticRepository.save(financialStatistic);
     merchantService.changeMerchantWalletTotalTransferMoney(financialStatistic);
     return financialStatistic;
+  }
+
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  public void changeFinancialStateToHover(Long id) {
+    FinancialStatistic financialStatistic = financialStatisticRepository.findOne(id);
+    financialStatistic.setState(2);
+    financialStatisticRepository.save(financialStatistic);
+  }
+
+  public List<FinancialStatistic> findAllNonTransferFinancialStatistic() {
+    return financialStatisticRepository.findAllByState(0);
   }
 }

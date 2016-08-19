@@ -15,10 +15,10 @@ import java.util.List;
 /**
  * Created by wcg on 16/5/5.
  */
-public interface OffLineOrderRepository extends JpaRepository<OffLineOrder,Long> {
+public interface OffLineOrderRepository extends JpaRepository<OffLineOrder, Long> {
 
   Page findAll(Specification<OffLineOrder> whereClause, Pageable pageRequest);
 
-  @Query(value = "select merchant_id,sum(transfer_money) from off_line_order where state = 1 and complete_date between ?1 and ?2 group by `merchant_id`  ",nativeQuery = true)
+  @Query(value = "select merchant_id,sum(transfer_money),sum(transfer_money_from_true_pay) from off_line_order where state = 1 and complete_date between ?1 and ?2 group by `merchant_id`  ", nativeQuery = true)
   List<Object[]> countTransferMoney(Date start, Date end);
 }

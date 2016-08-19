@@ -15,13 +15,13 @@ import java.util.List;
  * Created by lss on 2016/8/10.
  */
 @Entity
-@Table(name = "SALESSTAFF")
-@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@Table(name = "SALES_STAFF")
 public class SalesStaff {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
+
   private String name;
 
   @OneToMany(mappedBy = "salesStaff", fetch = FetchType.LAZY)

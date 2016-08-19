@@ -34,6 +34,7 @@ public class FinanicalStatisticService {
       financialStatistic.setMerchant(merchant);
       financialStatistic.setBalanceDate(date);
       financialStatistic.setTransferPrice(Long.parseLong(object[1].toString()));
+      financialStatistic.setTransferFromTruePay(Long.parseLong(object[2].toString()));
       financialStatisticRepository.save(financialStatistic);
     }
   }

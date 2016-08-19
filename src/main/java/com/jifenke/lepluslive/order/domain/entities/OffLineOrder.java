@@ -57,8 +57,18 @@ public class OffLineOrder {
 
   private Long transferMoney;
 
+  private Long transferMoneyFromTruePay; //每笔订单中现金支付转给商户的金额
+
   private Integer rebateWay;
 
+
+  public Long getTransferMoneyFromTruePay() {
+    return transferMoneyFromTruePay;
+  }
+
+  public void setTransferMoneyFromTruePay(Long transferMoneyFromTruePay) {
+    this.transferMoneyFromTruePay = transferMoneyFromTruePay;
+  }
 
   public Integer getRebateWay() {
     return rebateWay;

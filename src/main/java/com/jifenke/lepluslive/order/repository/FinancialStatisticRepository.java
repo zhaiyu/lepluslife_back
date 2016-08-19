@@ -8,6 +8,8 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 
+import java.util.List;
+
 
 /**
  * Created by wcg on 16/5/9.
@@ -16,4 +18,6 @@ public interface FinancialStatisticRepository  extends JpaRepository<FinancialSt
 
 
   Page findAll(Specification<FinancialStatistic> financialClause, Pageable pageRequest);
+
+  List<FinancialStatistic> findAllByState(int i);
 }

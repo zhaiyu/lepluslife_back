@@ -25,6 +25,7 @@
         thead th, tbody td {
             text-align: center;
         }
+
         #myTab {
             margin-bottom: 10px;
         }
@@ -49,6 +50,8 @@
                            onclick="searchFinancialByState(0)">待转账</a></li>
                     <li class="active"><a href="#tab2" data-toggle="tab"
                                           onclick="searchFinancialByState(1)">转账记录</a></li>
+                    <li class="active"><a href="#tab2" data-toggle="tab"
+                                          onclick="searchFinancialByState(2)">挂账记录</a></li>
                 </ul>
                 <div id="myTabContent" class="tab-content">
                     <div class="tab-pane fade in active" id="tab1">
@@ -95,7 +98,7 @@
                             onclick="exportExcel()">导出表格
                     </button>
                     <button class="btn btn-primary pull-right" style="margin-top: 5px"
-                            id="batchTransfer">批量确认转账
+                            id="batchTransfer">全部确认转账
                     </button>
                 </div>
             </div>
@@ -120,6 +123,25 @@
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                 <button type="button" class="btn btn-primary" data-dismiss="modal"
                         id="transfer-confirm">确认
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<div class="modal" id="hover">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span
+                        aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+                <h4>设为挂账吗?</h4>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal"
+                        id="hover-confirm">确认
                 </button>
             </div>
         </div>
@@ -230,6 +252,10 @@
                            headContent.innerHTML += "<th>转账金额</th><th>转账日期</th><th>操作</th>";
                            dateContent.innerHTML = "转账日期";
                        }
+                       if (financialCriteria.state == 2) {
+                           headContent.innerHTML += "<th>待转账金额</th><th>操作</th>";
+                           dateContent.innerHTML = "结算日期";
+                       }
                        for (i = 0; i < content.length; i++) {
                            var contentStr = '<tr><td>' + content[i].statisticId + '</td>';
                            contentStr +=
@@ -254,20 +280,29 @@
                            } else {
                                contentStr += '<td>T+2</td>'
                            }
-                           contentStr += '<td>' + content[i].merchant.payee + '</td>'
-                           contentStr += '<td>' + content[i].transferPrice / 100 + '</td>'
+                           contentStr += '<td>' + content[i].merchant.payee + '</td>';
+                           contentStr +=
+                           '<td width="150px"><span>' + content[i].transferPrice / 100
+                           + '</span><br><span  width="150px">(¥'
+                           + content[i].transferFromTruePay / 100 + '微信 ¥'
+                           + (content[i].transferPrice - content[i].transferFromTruePay) / 100
+                           + '红包)</span></td>';
                            if (content[i].state == 0) {
                                contentStr +=
                                '<td><input type="hidden" class="id-hidden" value="' + content[i].id
-                               + '"><button class="btn btn-primary btn-sm changeFinancialToTransfer">确认转账</button><button  class="btn btn-primary btn-sm serchDetails">查看详情</button></td>';
-                           } else {
+                               + '"><button class="btn btn-primary btn-sm changeFinancialToTransfer">确认转账</button><button  class="btn btn-primary btn-sm serchDetails">查看详情</button><button  class="btn btn-primary btn-sm changeToHover">设为挂账</button></td>';
+                           } else if(content[i].state == 1){
                                contentStr +=
                                '<td>'
                                + new Date(content[i].transferDate).format('yyyy-MM-dd HH:mm:ss')
                                + '</td>'
-                               +   '<td>'
-                               +'</button><button  class="btn btn-primary btn-sm serchDetails">查看详情</button>'
-                               +'</td>'
+                               + '<td>'
+                               + '</button><button  class="btn btn-primary btn-sm serchDetails">查看详情</button>'
+                               + '</td>'
+                           }else{
+                               contentStr +=
+                               '<td><input type="hidden" class="id-hidden" value="' + content[i].id
+                               + '"><button class="btn btn-primary btn-sm changeFinancialToTransfer">确认转账</button><button  class="btn btn-primary btn-sm serchDetails">查看详情</button></td>';
                            }
                            financialContent.innerHTML += contentStr;
                        }
@@ -292,11 +327,29 @@
 //查看详情
                        $(".serchDetails").each(function (i) {
                            $(".serchDetails").eq(i).bind("click", function () {
-                               var date=new Date(content[i].balanceDate).format('yyyy-MM-dd');
-                            var name=content[i].merchant.name
-                               var str=date+"@"+name;
+                               var date = new Date(content[i].balanceDate).format('yyyy-MM-dd');
+                               var name = content[i].merchant.name
+                               var str = date + "@" + name;
                                location.href =
-                                       "/manage/offLineOrder/messageDetailsPage?messageDetailsStr="+str;
+                               "/manage/offLineOrder/messageDetailsPage?messageDetailsStr=" + str;
+                           });
+                       });
+                       $(".changeToHover").each(function (i) {
+                           $(".changeToHover").eq(i).bind("click", function () {
+                               var id = $(this).parent().find(".id-hidden").val();
+                               $("#hover-confirm").bind("click", function () {
+                                   $("#hover-confirm").unbind("click");
+                                   $.ajax({
+                                              type: "get",
+                                              url: "/manage/financial/hover/" + id,
+                                              contentType: "application/json",
+                                              success: function (data) {
+                                                  alert(data.msg);
+                                                  getFinancialByAjax(financialCriteria);
+                                              }
+                                          });
+                               });
+                               $("#hover").modal("show");
                            });
                        });
                        initPage(financialCriteria.offset, totalPage);
@@ -423,7 +476,7 @@
                    }
                });
     })
-    function serchDetails(str){
+    function serchDetails(str) {
         alert(str);
     }
 </script>

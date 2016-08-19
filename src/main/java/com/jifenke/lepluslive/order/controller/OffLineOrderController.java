@@ -179,6 +179,15 @@ public class OffLineOrderController {
     return LejiaResult.ok();
   }
 
+  @RequestMapping(value = "/financial/hover/{id}", method = RequestMethod.GET)
+  public
+  @ResponseBody
+  LejiaResult changeFinancialStateToHover(@PathVariable Long id) {
+    //改变统计单状态并发送模版消息
+    offLineOrderService.changeFinancialStateToHover(id);
+    return LejiaResult.ok();
+  }
+
   @RequestMapping(value = "/financial/export", method = RequestMethod.POST)
   public ModelAndView exporeExcel(FinancialCriteria financialCriteria) {
     if (financialCriteria.getOffset() == null) {
@@ -191,9 +200,12 @@ public class OffLineOrderController {
   }
 
   @RequestMapping(value = "/financial/batchTransfer", method = RequestMethod.POST)
-  public LejiaResult batchTransfer(@RequestBody List<String> ids) {
-    for (String id : ids) {
-      changefinancialTransfer(Long.parseLong(id));
+  public LejiaResult batchTransfer() {
+    List<FinancialStatistic>
+        statistics =
+        offLineOrderService.findAllNonTransferFinancialStatistic();
+    for(FinancialStatistic financialStatistic:statistics ){
+      changefinancialTransfer(financialStatistic.getId());
     }
     return LejiaResult.ok();
   }
