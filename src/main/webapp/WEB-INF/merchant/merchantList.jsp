@@ -428,10 +428,10 @@
                            contentStr +=
                            '<button type="button" class="btn btn-default showQRCode">二维码</button>';
                            contentStr +=
-                           '<button type="button" class="btn btn-default editMerchant">编辑</button>';
+                           '<shiro:hasPermission name="merchant:edit"><button type="button" class="btn btn-default editMerchant">编辑</button></shiro:hasPermission>';
                            contentStr +=
                            '<button type="button" class="btn btn-default editMerchantContent">内容管理</button>';
-                           if(content[i].partnership==1){
+                           if (content[i].partnership == 1) {
                                contentStr +=
                                '<button type="button" class="btn btn-default showPureQRCode">纯支付码</button>';
                            }

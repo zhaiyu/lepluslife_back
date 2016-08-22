@@ -21,7 +21,7 @@ import java.util.Map;
 @Lazy
 public class ShiroConfig {
 
-  @Bean
+  @Bean(name = "ehCacheManager")
   @Lazy
   public EhCacheManager getEhCacheManager() {
     EhCacheManager em = new EhCacheManager();
