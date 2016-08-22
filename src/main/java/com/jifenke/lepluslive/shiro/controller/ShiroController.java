@@ -1,6 +1,7 @@
 package com.jifenke.lepluslive.shiro.controller;
 
 import com.jifenke.lepluslive.global.util.MD5Util;
+import com.jifenke.lepluslive.management.service.UserRoleService;
 import com.jifenke.lepluslive.order.service.OrderService;
 import com.jifenke.lepluslive.user.domain.entities.ManageUser;
 
@@ -34,6 +35,9 @@ public class ShiroController {
 
   @Inject
   private OrderService orderService;
+
+  @Inject
+  private UserRoleService userRoleService;
 
   @RequestMapping(value = "/manage/login", method = RequestMethod.GET)
   public String loginForm() {
@@ -89,6 +93,7 @@ public class ShiroController {
     } catch (IOException e) {
       e.printStackTrace();
     }
+    userRoleService.clearCache();
     return null;
   }
 

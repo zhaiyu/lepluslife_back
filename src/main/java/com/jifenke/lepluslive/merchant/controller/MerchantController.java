@@ -14,6 +14,8 @@ import com.jifenke.lepluslive.partner.service.PartnerService;
 
 import com.jifenke.lepluslive.sales.domain.entities.SalesStaff;
 import com.jifenke.lepluslive.sales.service.SalesService;
+
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.ui.Model;
@@ -39,6 +41,7 @@ import javax.inject.Inject;
 @RestController
 @RequestMapping("/manage")
 public class MerchantController {
+
   @Inject
   private MerchantViewExcel merchantViewExcel;
 
@@ -84,18 +87,19 @@ public class MerchantController {
   public ModelAndView goCreateMerchantPage(Model model) {
     model.addAttribute("merchantTypes", merchantService.findAllMerchantTypes());
     model.addAttribute("partners", partnerService.findAllParter());
-    List<SalesStaff> salesStaffList=salesService.findAllSaleStaff();
+    List<SalesStaff> salesStaffList = salesService.findAllSaleStaff();
     model.addAttribute("sales", salesStaffList);
     return MvUtil.go("/merchant/merchantCreate");
   }
 
+  @RequiresPermissions("merchant:edit")
   @RequestMapping(value = "/merchant/edit/{id}", method = RequestMethod.GET)
   public ModelAndView goEditMerchantPage(@PathVariable Long id, Model model) {
     model.addAttribute("merchant", merchantService.findMerchantById(id));
     model.addAttribute("merchantTypes", merchantService.findAllMerchantTypes());
     model.addAttribute("partners", partnerService.findAllParter());
-      List<SalesStaff> salesStaffList=salesService.findAllSaleStaff();
-      model.addAttribute("sales", salesStaffList);
+    List<SalesStaff> salesStaffList = salesService.findAllSaleStaff();
+    model.addAttribute("sales", salesStaffList);
     return MvUtil.go("/merchant/merchantCreate");
   }
 
@@ -199,6 +203,7 @@ public class MerchantController {
   LejiaResult pureQrCode(@RequestParam Long id) {
     return LejiaResult.ok(merchantService.pureQrCodeManage(id));
   }
+
   @RequestMapping(value = "/merchant/merchantExport", method = RequestMethod.GET)
   public ModelAndView exporeExcel(MerchantCriteria merchantCriteria, String city) {
     if (merchantCriteria.getOffset() == null) {

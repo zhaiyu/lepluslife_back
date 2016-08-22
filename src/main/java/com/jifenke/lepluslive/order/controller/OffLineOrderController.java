@@ -14,12 +14,15 @@ import com.jifenke.lepluslive.order.domain.entities.FinancialStatistic;
 import com.jifenke.lepluslive.order.domain.entities.OffLineOrder;
 import com.jifenke.lepluslive.order.service.OffLineOrderService;
 import com.jifenke.lepluslive.weixin.service.WxTemMsgService;
+
+import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.data.domain.Page;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.inject.Inject;
+
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
@@ -51,7 +54,7 @@ public class OffLineOrderController {
   @Inject
   private MerchantWeiXinUserService merchantWeiXinUserService;
 
-  private StringBuffer sb= new StringBuffer();
+  private StringBuffer sb = new StringBuffer();
 
 
   @RequestMapping("/offLineOrder")
@@ -69,69 +72,75 @@ public class OffLineOrderController {
     }
     return LejiaResult.ok(page);
   }
-    //查询详情跳页
-    @RequestMapping(value = "/offLineOrder/messageDetailsPage", method = RequestMethod.GET)
-    public ModelAndView goDetailsPage(@RequestParam String messageDetailsStr,Model model) {
 
+  //查询详情跳页
+  @RequestMapping(value = "/offLineOrder/messageDetailsPage", method = RequestMethod.GET)
+  public ModelAndView goDetailsPage(@RequestParam String messageDetailsStr, Model model) {
 
-        model.addAttribute("messageDetailsStr",messageDetailsStr);
-        return MvUtil.go("/order/offLineMessageDetails");
-    }
-    @RequestMapping(value = "/offLineOrder/transferRecordDetailsPage", method = RequestMethod.GET)
-    public ModelAndView transferRecordDetailsPage(@RequestParam String messageDetailsStr,Model model) {
-        Map<String,String> messageDetailsMap=new HashMap<String,String>();
-        messageDetailsMap.put("messageDetailsMap",messageDetailsStr);
-        model.addAttribute("messageDetailsMap",messageDetailsMap);
-        return MvUtil.go("/order/transferRecordDetailsPage");
-    }
-    //查看详情
-    @RequestMapping(value = "/offLineOrder/messageDetails", method = RequestMethod.POST)
-    public
-    @ResponseBody
-    LejiaResult getOffLineOrderDetails(@RequestBody OLOrderCriteria olOrderCriteria,String messageDetailsStr) {
-        sb = new StringBuffer("");
-        sb.append(messageDetailsStr);
-        String[] stringArray=sb.toString().split("@");
-        String startDate1=stringArray[0]+" "+"00:00:00";
-        String endDate1=stringArray[0]+" "+" 23:59:59";
-        String endDate=endDate1.replace("-","/");
-        String startDate= startDate1.replace("-", "/");
-        olOrderCriteria.setMerchant(stringArray[1]);
-        olOrderCriteria.setState(1);
-        olOrderCriteria.setStartDate(startDate);
-        olOrderCriteria.setEndDate(endDate);
-        Page page = offLineOrderService.findOrderByPage(olOrderCriteria, 10);
+    model.addAttribute("messageDetailsStr", messageDetailsStr);
+    return MvUtil.go("/order/offLineMessageDetails");
+  }
 
-        if (olOrderCriteria.getOffset() == null) {
-            olOrderCriteria.setOffset(1);
-        }
-        return LejiaResult.ok(page);
+  @RequestMapping(value = "/offLineOrder/transferRecordDetailsPage", method = RequestMethod.GET)
+  public ModelAndView transferRecordDetailsPage(@RequestParam String messageDetailsStr,
+                                                Model model) {
+    Map<String, String> messageDetailsMap = new HashMap<String, String>();
+    messageDetailsMap.put("messageDetailsMap", messageDetailsStr);
+    model.addAttribute("messageDetailsMap", messageDetailsMap);
+    return MvUtil.go("/order/transferRecordDetailsPage");
+  }
+
+  //查看详情
+  @RequestMapping(value = "/offLineOrder/messageDetails", method = RequestMethod.POST)
+  public
+  @ResponseBody
+  LejiaResult getOffLineOrderDetails(@RequestBody OLOrderCriteria olOrderCriteria,
+                                     String messageDetailsStr) {
+    sb = new StringBuffer("");
+    sb.append(messageDetailsStr);
+    String[] stringArray = sb.toString().split("@");
+    String startDate1 = stringArray[0] + " " + "00:00:00";
+    String endDate1 = stringArray[0] + " " + " 23:59:59";
+    String endDate = endDate1.replace("-", "/");
+    String startDate = startDate1.replace("-", "/");
+    olOrderCriteria.setMerchant(stringArray[1]);
+    olOrderCriteria.setState(1);
+    olOrderCriteria.setStartDate(startDate);
+    olOrderCriteria.setEndDate(endDate);
+    Page page = offLineOrderService.findOrderByPage(olOrderCriteria, 10);
+
+    if (olOrderCriteria.getOffset() == null) {
+      olOrderCriteria.setOffset(1);
     }
-    //导出表格
-    @RequestMapping(value = "/offLineOrderDetails/exportDetails", method = RequestMethod.GET)
-    public ModelAndView exportDetails(String messageDetails,OLOrderCriteria olOrderCriteria) {
-        if (olOrderCriteria.getOffset() == null) {
-            olOrderCriteria.setOffset(1);
-        }
-        olOrderCriteria.setState(1);
-        sb = new StringBuffer("");
-        sb.append(messageDetails);
-        String[] stringArray=sb.toString().split("@");
-        String startDate1=stringArray[0]+" "+"00:00:00";
-        String endDate1=stringArray[0]+" "+" 23:59:59";
-        String endDate=endDate1.replace("-","/");
-        String startDate= startDate1.replace("-", "/");
-        String merchant=stringArray[1];
-        olOrderCriteria.setStartDate(startDate);
-        olOrderCriteria.setEndDate(endDate);
-        olOrderCriteria.setMerchant(stringArray[0]);
-        olOrderCriteria.setMerchant(merchant);
-        Page page = offLineOrderService.findOrderByPage(olOrderCriteria, 10000);
-        List<OffLineOrder> list=page.getContent();
-        Map detailsMap = new HashMap();
-        detailsMap.put("orderList", page.getContent());
-        return new ModelAndView(orderViewExcel,detailsMap);
+    return LejiaResult.ok(page);
+  }
+
+  //导出表格
+  @RequestMapping(value = "/offLineOrderDetails/exportDetails", method = RequestMethod.GET)
+  public ModelAndView exportDetails(String messageDetails, OLOrderCriteria olOrderCriteria) {
+    if (olOrderCriteria.getOffset() == null) {
+      olOrderCriteria.setOffset(1);
     }
+    olOrderCriteria.setState(1);
+    sb = new StringBuffer("");
+    sb.append(messageDetails);
+    String[] stringArray = sb.toString().split("@");
+    String startDate1 = stringArray[0] + " " + "00:00:00";
+    String endDate1 = stringArray[0] + " " + " 23:59:59";
+    String endDate = endDate1.replace("-", "/");
+    String startDate = startDate1.replace("-", "/");
+    String merchant = stringArray[1];
+    olOrderCriteria.setStartDate(startDate);
+    olOrderCriteria.setEndDate(endDate);
+    olOrderCriteria.setMerchant(stringArray[0]);
+    olOrderCriteria.setMerchant(merchant);
+    Page page = offLineOrderService.findOrderByPage(olOrderCriteria, 10000);
+    List<OffLineOrder> list = page.getContent();
+    Map detailsMap = new HashMap();
+    detailsMap.put("orderList", page.getContent());
+    return new ModelAndView(orderViewExcel, detailsMap);
+  }
+
   @RequestMapping(value = "/offLineOrder/{id}", method = RequestMethod.GET)
   public
   @ResponseBody
@@ -199,18 +208,19 @@ public class OffLineOrderController {
     return new ModelAndView(financialViewExcel, map);
   }
 
+  @RequiresPermissions("financial:transfer")
   @RequestMapping(value = "/financial/batchTransfer", method = RequestMethod.POST)
   public LejiaResult batchTransfer() {
     List<FinancialStatistic>
         statistics =
         offLineOrderService.findAllNonTransferFinancialStatistic();
-    for(FinancialStatistic financialStatistic:statistics ){
+    for (FinancialStatistic financialStatistic : statistics) {
       changefinancialTransfer(financialStatistic.getId());
     }
     return LejiaResult.ok();
   }
 
-
+  @RequiresPermissions("financial:transfer")
   private void changefinancialTransfer(Long id) {
     FinancialStatistic financialStatistic = offLineOrderService.changeFinancialStateToTransfer(id);
     String s = financialStatistic.getMerchant().getMerchantBank().getBankNumber();

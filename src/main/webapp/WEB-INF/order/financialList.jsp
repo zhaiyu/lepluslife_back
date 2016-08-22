@@ -97,9 +97,11 @@
                     <button class="btn btn-primary pull-right" style="margin-top: 5px"
                             onclick="exportExcel()">导出表格
                     </button>
-                    <button class="btn btn-primary pull-right" style="margin-top: 5px"
-                            id="batchTransfer">全部确认转账
-                    </button>
+                    <shiro:hasPermission name="financial:transfer">
+                        <button class="btn btn-primary pull-right" style="margin-top: 5px"
+                                id="batchTransfer">全部确认转账
+                        </button>
+                    </shiro:hasPermission>
                 </div>
             </div>
         </div>
@@ -290,8 +292,8 @@
                            if (content[i].state == 0) {
                                contentStr +=
                                '<td><input type="hidden" class="id-hidden" value="' + content[i].id
-                               + '"><button class="btn btn-primary btn-sm changeFinancialToTransfer">确认转账</button><button  class="btn btn-primary btn-sm serchDetails">查看详情</button><button  class="btn btn-primary btn-sm changeToHover">设为挂账</button></td>';
-                           } else if(content[i].state == 1){
+                               + '"><shiro:hasPermission name="financial:transfer"><button class="btn btn-primary btn-sm changeFinancialToTransfer">确认转账</button></shiro:hasPermission><button  class="btn btn-primary btn-sm serchDetails">查看详情</button><button  class="btn btn-primary btn-sm changeToHover">设为挂账</button></td>';
+                           } else if (content[i].state == 1) {
                                contentStr +=
                                '<td>'
                                + new Date(content[i].transferDate).format('yyyy-MM-dd HH:mm:ss')
@@ -299,7 +301,7 @@
                                + '<td>'
                                + '</button><button  class="btn btn-primary btn-sm serchDetails">查看详情</button>'
                                + '</td>'
-                           }else{
+                           } else {
                                contentStr +=
                                '<td><input type="hidden" class="id-hidden" value="' + content[i].id
                                + '"><button class="btn btn-primary btn-sm changeFinancialToTransfer">确认转账</button><button  class="btn btn-primary btn-sm serchDetails">查看详情</button></td>';
