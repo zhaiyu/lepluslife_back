@@ -15,10 +15,12 @@
         margin-top: 10px;
         margin-left: 10%;
     }
+
     .lianmeng > div {
         margin: 5px 0;
     }
-    .lianmeng  input {
+
+    .lianmeng input {
         width: 30%;
         margin: 0 5px;
     }
@@ -68,15 +70,13 @@
 
 
         <div>
-            <label for="saleStaff">所属销售</label>
+            <label for="sales">所属销售</label>
             <select name="name" id="sales" class="check">
-                <option></option>
                 <c:forEach items="${sales}" var="saleStaff">
                     <option value="${saleStaff.id}">${saleStaff.name}</option>
                 </c:forEach>
             </select>
         </div>
-
 
 
         <div>
@@ -126,7 +126,10 @@
             <%--<input type="text" class="money lm" disabled="disabled" placeholder="输入手续费"/>%--%>
             <div class="lianmeng">
                 <div>
-                    <span>导流订单参数</span><input type="text" class="money lm" placeholder="输入佣金比">%<input type="text" class="money lm"  placeholder="输入红包比">%
+                    <span>导流订单参数</span><input type="text" class="money lm"
+                                              placeholder="输入佣金比">%<input type="text"
+                                                                          class="money lm"
+                                                                          placeholder="输入红包比">%
                 </div>
                 <div>
                     <span>普通订单参数</span><input type="text" class="money lm" placeholder="输入手续费">%
@@ -161,7 +164,7 @@
             <div class="zfbpay dis">
                 <div>
                     <label for="card">支付宝账号</label>
-                    <input type="text" id="zfb" />
+                    <input type="text" id="zfb"/>
                 </div>
                 <div>
                     <label for="payee">收款人</label>
@@ -251,10 +254,11 @@
                        $.each(data, function (i) {
                            dataStr1 +=
                            '<option value="' + data[i].id + '">' + data[i].name + '</option>';
-                           if(data[i].id=='${merchant.city.id}'){
+                           if (data[i].id == '${merchant.city.id}') {
                                $.each(data[i].areas, function (j) {
                                    dataStr2 +=
-                                   '<option value="' + data[i].areas[j].id + '">' + data[i].areas[j].name
+                                   '<option value="' + data[i].areas[j].id + '">'
+                                   + data[i].areas[j].name
                                    + '</option>';
                                });
                            }
@@ -268,7 +272,7 @@
                });
         $("#locationCity option[value=${merchant.city.id}]").attr("selected", true);
         $("#locationArea option[value=${merchant.area.id}]").attr("selected", true);
-    }else{
+    } else {
         $.ajax({
                    type: 'GET',
                    url: '/manage/city/ajax',
@@ -321,8 +325,6 @@
                    }
                });
     })
-
-
 
     var fnMyFunc1;
     $(function () {
@@ -538,7 +540,7 @@
 </script>
 <script>
     $("#enter").click(function () {
-      submitMerchant();
+        submitMerchant();
     });
 
     function submitMerchant() {
@@ -565,11 +567,11 @@
 
         var merchant = {};
         var partner = {};
-        var salesStaff={};
+        var salesStaff = {};
 
-        salesStaff.id=$("#sales").val();
+        salesStaff.id = $("#sales").val();
 
-        merchant.salesStaff=salesStaff;
+        merchant.salesStaff = salesStaff;
         partner.id = $("#partners").val();
         merchant.partner = partner;
         var city = {};
@@ -590,29 +592,33 @@
         merchant.contact = $("#contact").val();
         merchant.merchantPhone = $("#phone").val();
         var value = $("input[name='type']:checked").val();
-        if(value==""||value==null){
+        if (value == "" || value == null) {
             alert("请选择合约类型");
             return;
         }
         if (value == 0) {
             merchant.partnership = 0;
-            if ($(".pt").val() > 100||$(".pt").val()==""||$(".pt").val()==null) {
+            if ($(".pt").val() > 100 || $(".pt").val() == "" || $(".pt").val() == null) {
                 alert("请输入正确的手续费")
                 return;
             }
             merchant.ljCommission = $(".pt").val();
             merchant.scoreARebate = 0;
-        } if (value == 1) {
+        }
+        if (value == 1) {
             merchant.partnership = 1;
-            if ($(".lm").eq(0).val() > 100||$(".lm").eq(0).val()==null||$(".lm").eq(0).val()=="") {
+            if ($(".lm").eq(0).val() > 100 || $(".lm").eq(0).val() == null || $(".lm").eq(0).val()
+                                                                              == "") {
                 alert("请输入正确的佣金")
                 return;
             }
-            if ($(".lm").eq(1).val() > 100||$(".lm").eq(1).val()==null||$(".lm").eq(1).val()=="") {
+            if ($(".lm").eq(1).val() > 100 || $(".lm").eq(1).val() == null || $(".lm").eq(1).val()
+                                                                              == "") {
                 alert("请输入正确的红包率")
                 return;
             }
-            if ($(".lm").eq(2).val() > 100||$(".lm").eq(2).val()==null||$(".lm").eq(2).val()=="") {
+            if ($(".lm").eq(2).val() > 100 || $(".lm").eq(2).val() == null || $(".lm").eq(2).val()
+                                                                              == "") {
                 alert("请输入正确的手续费")
                 return;
             }
@@ -621,7 +627,7 @@
             merchant.ljBrokerage = $(".lm").eq(2).val();
             merchant.memberCommission = $(".lm").eq(3).val();
         }
-        if($("#fl").val()==""||$("#fl").val()==null){
+        if ($("#fl").val() == "" || $("#fl").val() == null) {
             alert("请选择积分返利比");
             return;
         }
@@ -631,7 +637,7 @@
         var merchantBank = {};
         merchantBank.id = $("#merchantBankId").val();
         var payWay = $("input[name='pay']:checked").val();
-        if(payWay==""||payWay==null){
+        if (payWay == "" || payWay == null) {
             alert("请选择结算方式");
             return;
         }
@@ -640,18 +646,19 @@
             merchantBank.bankName = "支付宝";
             merchantBank.bankNumber = $("#zfb").val();
             merchant.cycle = $("#zfbzhouqi").val()
-        } if (payWay == 1) {
+        }
+        if (payWay == 1) {
             merchant.payee = $("#payee").val();
             merchantBank.bankName = $("#bank").val();
             merchantBank.bankNumber = $("#card").val();
             merchant.cycle = $("#cardzhouqi").val()
         }
         merchant.id = $("#merchantId").val();
-        if(merchantBank.bankName==""||merchantBank.bankNumber==null){
+        if (merchantBank.bankName == "" || merchantBank.bankNumber == null) {
             alert("请输入结算人");
             return;
         }
-        if(merchantBank.bankNumber==""||merchantBank.bankNumber==null){
+        if (merchantBank.bankNumber == "" || merchantBank.bankNumber == null) {
             alert("请输入结算卡号");
             return;
         }

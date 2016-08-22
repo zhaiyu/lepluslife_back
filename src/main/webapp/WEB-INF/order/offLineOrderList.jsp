@@ -263,15 +263,21 @@
                        var orderContent = document.getElementById("orderContent");
                        for (i = 0; i < content.length; i++) {
                            var contentStr = '<tr><td>' + content[i].orderSid + '</td>';
-                           if(content[i].rebateWay==0||content[i].rebateWay==2){
+                           if (content[i].rebateWay == 0 || content[i].rebateWay == 2) {
                                contentStr +=
                                '<td><span>普通订单</span></td>';
-                           }else if(content[i].rebateWay==1){
+                           } else if (content[i].rebateWay == 1) {
                                contentStr +=
                                '<td><span>导流订单</span></td>';
-                           }else if(content[i].rebateWay==3){
+                           } else if (content[i].rebateWay == 3) {
                                contentStr +=
                                '<td><span>会员订单</span></td>';
+                           } else if (content[i].rebateWay == 4) {
+                               contentStr +=
+                               '<td><span>普通订单(非会员纯支付码)</span></td>';
+                           } else {
+                               contentStr +=
+                               '<td><span>普通订单(会员纯支付码)</span></td>';
                            }
                            if (content[i].completeDate == null) {
                                contentStr +=
@@ -405,7 +411,7 @@
         olOrderCriteria.offset = 1;
         init1 = 1;
         //lss 2016/07/19 订单金额大于等于
-        olOrderCriteria.amount=$('#customer-amount').val()*100;
+        olOrderCriteria.amount = $('#customer-amount').val() * 100;
         var dateStr = $('#date-end span').text().split("-");
         if (dateStr != null && dateStr != '') {
             var startDate = dateStr[0].replace(/-/g, "/");
