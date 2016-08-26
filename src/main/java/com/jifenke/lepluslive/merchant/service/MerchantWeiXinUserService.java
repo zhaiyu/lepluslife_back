@@ -83,4 +83,15 @@ public class MerchantWeiXinUserService {
   }
 
 
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  public void unBindMerchantUser(MerchantUser merchantUser) {
+    List<MerchantWeiXinUser>
+        merchantWeiXinUsers =
+        merchantWeiXinUserRepository.findAllByMerchantUser(merchantUser);
+    for (MerchantWeiXinUser merchantWeiXinUser : merchantWeiXinUsers) {
+      merchantWeiXinUser.setMerchantUser(null);
+      merchantWeiXinUserRepository.save(merchantWeiXinUser);
+    }
+
+  }
 }

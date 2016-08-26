@@ -83,6 +83,9 @@ public class MerchantService {
   @Inject
   private MerchantInfoRepository merchantInfoRepository;
 
+  @Inject
+  private MerchantWeiXinUserService merchantWeiXinUserService;
+
   @Value("${bucket.ossBarCodeReadRoot}")
   private String barCodeRootUrl;
 
@@ -154,23 +157,17 @@ public class MerchantService {
       merchantProtocolRepository.delete(merchantProtocol);
       return null;
     }).collect(Collectors.toList());
-//    origin.
     String sid = origin.getMerchantSid();
     if (origin == null) {
       throw new RuntimeException("不存在的商户");
     }
-    if (merchant.getSalesStaff().getId() == null || merchant.getSalesStaff().getId().equals("")) {
-      origin.setSalesStaff(null);
-    }
-
-    if (merchant.getSalesStaff().getId() != null && !merchant.getSalesStaff().getId().equals("")) {
-      origin.setSalesStaff(merchant.getSalesStaff());
-    }
     origin.setLjBrokerage(merchant.getLjBrokerage());
     origin.setLjCommission(merchant.getLjCommission());
+    origin.setPicture(merchant.getPicture());
     origin.setName(merchant.getName());
     origin.setLocation(merchant.getLocation());
-    // origin.setState(merchant.getState());
+    origin.setLng(merchant.getLng());
+    origin.setLat(merchant.getLat());
     origin.setPartner(merchant.getPartner());
     origin.setArea(merchant.getArea());
     origin.setUserLimit(merchant.getUserLimit());
@@ -288,6 +285,8 @@ public class MerchantService {
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
   public void deleteMerchantUser(Long id) {
+
+    merchantWeiXinUserService.unBindMerchantUser(merchantUserRepository.findOne(id));
     merchantUserRepository.delete(id);
   }
 
@@ -345,14 +344,17 @@ public class MerchantService {
   public void openStore(Merchant merchant) {
     Merchant origin = merchantRepository.findOne(merchant.getId());
     MerchantInfo merchantInfo = origin.getMerchantInfo();
+    MerchantInfo info = merchant.getMerchantInfo();
     if (merchantInfo != null) {
-      MerchantInfo info = merchant.getMerchantInfo();
       merchantInfo.setCard(info.getCard());
       merchantInfo.setPark(info.getPark());
       merchantInfo.setPerSale(info.getPerSale());
       merchantInfo.setStar(info.getStar());
       merchantInfo.setWifi(info.getWifi());
       merchantInfoRepository.save(merchantInfo);
+    } else {
+      merchantInfoRepository.save(info);
+      origin.setMerchantInfo(info);
     }
 
     origin.setState(1);
