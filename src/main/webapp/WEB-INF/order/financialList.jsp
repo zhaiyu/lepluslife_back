@@ -463,14 +463,9 @@
         $(".changeFinancialToTransfer").each(function (i) {
             $(".changeFinancialToTransfer").eq(i).unbind("click");
         });
-        var ids = [];
-        $(".id-hidden").each(function () {
-            ids.push(this.value)
-        });
         $.ajax({
                    type: "post",
                    url: "/manage/financial/batchTransfer",
-                   data: JSON.stringify(ids),
                    contentType: "application/json",
                    success: function (data) {
                        alert(data.msg);

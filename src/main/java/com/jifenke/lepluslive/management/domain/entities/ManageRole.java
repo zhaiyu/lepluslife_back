@@ -11,8 +11,7 @@ import javax.persistence.Table;
  * Created by Administrator on 2016/7/26.
  */
 @Entity
-@Table(name = "MANAGEROLE")
-@org.hibernate.annotations.Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
+@Table(name = "MANAGE_ROLE")
 public class ManageRole {
 
   @Id
