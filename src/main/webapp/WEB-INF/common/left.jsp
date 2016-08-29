@@ -174,30 +174,51 @@
             </li>
         </shiro:hasPermission>
         <shiro:hasPermission name="product:query">
-            <li><h4 class="M2"><span></span>商品管理</h4></li>
+            <li><h4 class="M2"><span></span>臻品商城</h4>
+
+                <div class="list-item none none2">
+                    <shiro:hasPermission name="topic:query">
+                        <a href="/manage/topic">专题模块</a>
+                    </shiro:hasPermission>
+                    <shiro:hasPermission name="product:query">
+                        <a href="/manage/product">商品管理</a>
+                    </shiro:hasPermission>
+                    <shiro:hasPermission name="onLineOrder:query"> <a
+                            href='/manage/order'>订单管理</a> </shiro:hasPermission>
+                </div>
+            </li>
         </shiro:hasPermission>
         <shiro:hasPermission name="merchant:query">
-            <li><h4 class="M3"><span></span>周边商户</h4></li>
-        </shiro:hasPermission>
-        <shiro:hasPermission name="order:query">
-        <li><h4 class="M4"><span></span>订单管理</h4> </shiro:hasPermission>
-
-            <div class="list-item none none1">
-                <shiro:hasPermission name="onLineOrder:query"> <a
-                        href='/manage/order'>线上订单</a> </shiro:hasPermission>
-                <shiro:hasPermission name="offLineOrder:query"> <a
-                        href='/manage/offLineOrder'>线下订单</a> </shiro:hasPermission>
-                <shiro:hasPermission name="financial:query"> <a
-                        href='/manage/financial'>财务结算</a> </shiro:hasPermission>
-                <shiro:hasPermission name="share:query"> <a
-                        href='/manage/offLineOrder/share'>分润单</a> </shiro:hasPermission>
+        <li><h4 class="M2"><span></span>乐+商户</h4> </shiro:hasPermission>
+            <div class="list-item none none3">
+                <shiro:hasPermission name="merchant:query">
+                    <a href="/manage/merchant">商户管理</a>
+                </shiro:hasPermission>
             </div>
         </li>
-        <shiro:hasPermission name="topic:query">
-            <li><h4 class="M5"><span></span>专题模块</h4></li>
+        <shiro:hasPermission name="order:query">
+            <li><h4 class="M4"><span></span>交易结算</h4>
+                <div class="list-item none none1">
+                    <shiro:hasPermission name="offLineOrder:query"> <a
+                            href='/manage/offLineOrder'>扫码订单</a> </shiro:hasPermission>
+                    <shiro:hasPermission name="financial:query"> <a
+                            href='/manage/financial'>财务结算</a> </shiro:hasPermission>
+                    <shiro:hasPermission name="share:query"> <a
+                            href='/manage/offLineOrder/share'>佣金分润</a> </shiro:hasPermission>
+                </div>
+            </li>
         </shiro:hasPermission>
+
         <shiro:hasPermission name="lj_user:query">
-            <li><h4 class="M6"><span></span>会员管理</h4></li>
+            <li><h4 class="M6"><span></span>人员管理</h4>
+                <div class="list-item none none4">
+                    <shiro:hasPermission name="lj_user:query"> <a
+                            href='/manage/user'>会员管理</a> </shiro:hasPermission>
+                    <shiro:hasPermission name="partner:query"> <a
+                            href='/manage/partner'>合伙人</a> </shiro:hasPermission>
+                    <shiro:hasPermission name="SalesStaff:query"> <a
+                            href='/manage/sales'>销售人员</a> </shiro:hasPermission>
+                </div></li>
         </shiro:hasPermission>
         <%--<li><h4 class="M7"><span></span>线下订单</h4></li>--%>
         <%--<li><h4 class="M8"><span></span>财务结算</h4></li>--%>
@@ -205,12 +226,6 @@
 
         <shiro:hasPermission name="weixin:query">
             <li><h4 class="M9"><span></span>公众号及推荐</h4></li>
-        </shiro:hasPermission>
-        <shiro:hasPermission name="partner:query">
-            <li><h4 class="M11"><span></span>合伙人管理</h4></li>
-        </shiro:hasPermission>
-        <shiro:hasPermission name="SalesStaff:query">
-            <li><h4 class="M12"><span></span>销售人员管理</h4></li>
         </shiro:hasPermission>
         <shiro:hasPermission name="management:query">
             <li><h4 class="M13"><span></span>权限管理</h4></li>
@@ -228,11 +243,26 @@
 <script>
     $(function () {
         var url = window.location.href;
-        if (url.indexOf("order") != -1 || url.indexOf("offLineOrder") != -1
+        if (url.indexOf("offLineOrder") != -1
             || url.indexOf("financial") != -1) {
             $(".none1").parent('li').addClass('selected');
             $(".none1").slideDown(300);
         }
+        if (url.indexOf("product") != -1 || url.indexOf("order") != -1
+            || url.indexOf("topic") != -1) {
+            $(".none2").parent('li').addClass('selected');
+            $(".none2").slideDown(300);
+        }
+        if (url.indexOf("merchant") != -1) {
+            $(".none3").parent('li').addClass('selected');
+            $(".none3").slideDown(300);
+        }
+        if (url.indexOf("partner") != -1|| url.indexOf("user") != -1
+            || url.indexOf("sales") != -1) {
+            $(".none4").parent('li').addClass('selected');
+            $(".none4").slideDown(300);
+        }
+
 //        数组
         var htmlArr = ['/manage/index', '/manage/product', '/manage/product', 'picManger.html',
                        '/manage/merchant', '/manage/order', '/manage/topic', '/manage/user',
@@ -242,46 +272,46 @@
         $('.M1').click(function () {
             window.location.href = htmlArr[0];
         });
-        $('.M2').click(function () {
-            window.location.href = htmlArr[1];
-        });
-        $('.M3').click(function () {
-            window.location.href = htmlArr[4];
-        });
-//        $('.M4').click(function () {
-//            window.location.href=htmlArr[5];
+////        $('.M2').click(function () {
+////            window.location.href = htmlArr[1];
+////        });
+//        $('.M3').click(function () {
+//            window.location.href = htmlArr[4];
 //        });
-        $('.M5').click(function () {
-            window.location.href = htmlArr[6];
-        });
-        $('.M6').click(function () {
-            window.location.href = htmlArr[7];
-        });
-        $('.M7').click(function () {
-            window.location.href = htmlArr[8];
-        });
-        $('.M8').click(function () {
-            window.location.href = htmlArr[9];
-        });
-        $('.btn-create').click(function () {
-            window.location.href = htmlArr[2];
-        });
-        $('.picManger').click(function () {
-            window.location.href = htmlArr[3];
-        });
-
+////        $('.M4').click(function () {
+////            window.location.href=htmlArr[5];
+////        });
+//        $('.M5').click(function () {
+//            window.location.href = htmlArr[6];
+//        });
+//        $('.M6').click(function () {
+//            window.location.href = htmlArr[7];
+//        });
+//        $('.M7').click(function () {
+//            window.location.href = htmlArr[8];
+//        });
+//        $('.M8').click(function () {
+//            window.location.href = htmlArr[9];
+//        });
+//        $('.btn-create').click(function () {
+//            window.location.href = htmlArr[2];
+//        });
+//        $('.picManger').click(function () {
+//            window.location.href = htmlArr[3];
+//        });
+//
         $('.M9').click(function () {
             window.location.href = htmlArr[10];
         });
-        $('.M10').click(function () {
-            window.location.href = htmlArr[11];
-        });
-        $('.M11').click(function () {
-            window.location.href = htmlArr[12];
-        });
-        $('.M12').click(function () {
-            window.location.href = htmlArr[13];
-        });
+//        $('.M10').click(function () {
+//            window.location.href = htmlArr[11];
+//        });
+//        $('.M11').click(function () {
+//            window.location.href = htmlArr[12];
+//        });
+//        $('.M12').click(function () {
+//            window.location.href = htmlArr[13];
+//        });
         $('.M13').click(function () {
             window.location.href = htmlArr[14];
         });
