@@ -198,6 +198,7 @@
         </li>
         <shiro:hasPermission name="order:query">
             <li><h4 class="M4"><span></span>交易结算</h4>
+
                 <div class="list-item none none1">
                     <shiro:hasPermission name="offLineOrder:query"> <a
                             href='/manage/offLineOrder'>扫码订单</a> </shiro:hasPermission>
@@ -211,6 +212,7 @@
 
         <shiro:hasPermission name="lj_user:query">
             <li><h4 class="M6"><span></span>人员管理</h4>
+
                 <div class="list-item none none4">
                     <shiro:hasPermission name="lj_user:query"> <a
                             href='/manage/user'>会员管理</a> </shiro:hasPermission>
@@ -218,18 +220,52 @@
                             href='/manage/partner'>合伙人</a> </shiro:hasPermission>
                     <shiro:hasPermission name="SalesStaff:query"> <a
                             href='/manage/sales'>销售人员</a> </shiro:hasPermission>
-                </div></li>
+                </div>
+            </li>
+        </shiro:hasPermission>
+        <shiro:hasPermission name="app_manage:query">
+            <li><h4 class="M6"><span></span>APP管理</h4>
+
+                <div class="list-item none none5">
+                    <shiro:hasPermission name="app_manage:query"> <a
+                            href='/manage/productRec'>首页推荐</a> </shiro:hasPermission>
+                </div>
+            </li>
+        </shiro:hasPermission>
+        <shiro:hasPermission name="market_center:query">
+            <li><h4 class="M6"><span></span>营销中心</h4>
+
+                <div class="list-item none none6">
+                    <shiro:hasPermission name="market_center:query"> <a
+                            href='/manage/codeBurse'>送红包活动</a> </shiro:hasPermission>
+                </div>
+            </li>
+        </shiro:hasPermission>
+        <shiro:hasPermission name="system_config:query">
+            <li><h4 class="M6"><span></span>系统设置</h4>
+
+                <div class="list-item none none7">
+                    <shiro:hasPermission name="button_manage:query"> <a
+                            href='/manage/weixin/menu/list'>自定义菜单</a> </shiro:hasPermission>
+                    <shiro:hasPermission name="wx_reply:query"> <a
+                            href='/manage/weixin/reply/list'>微信回复规则</a> </shiro:hasPermission>
+                    <shiro:hasPermission name="multiple_message:query"> <a
+                            href='/manage/weixin/imageText'>群消息列表</a> </shiro:hasPermission>
+                    <shiro:hasPermission name="management:query"> <a
+                            href='/manage/managementUserList'>权限管理</a> </shiro:hasPermission>
+                </div>
+            </li>
         </shiro:hasPermission>
         <%--<li><h4 class="M7"><span></span>线下订单</h4></li>--%>
         <%--<li><h4 class="M8"><span></span>财务结算</h4></li>--%>
         <%--<li><h4 class="M10"><span></span>分润单</h4></li>--%>
 
-        <shiro:hasPermission name="weixin:query">
-            <li><h4 class="M9"><span></span>公众号及推荐</h4></li>
-        </shiro:hasPermission>
-        <shiro:hasPermission name="management:query">
-            <li><h4 class="M13"><span></span>权限管理</h4></li>
-        </shiro:hasPermission>
+        <%--<shiro:hasPermission name="weixin:query">--%>
+        <%--<li><h4 class="M9"><span></span>公众号及推荐</h4></li>--%>
+        <%--</shiro:hasPermission>--%>
+        <%--<shiro:hasPermission name="management:query">--%>
+        <%--<li><h4 class="M13"><span></span>权限管理</h4></li>--%>
+        <%--</shiro:hasPermission>--%>
         <%--<li>--%>
         <%--<h4 class="M9"><span></span>公众号配置</h4>--%>
         <%--<div class="list-item none">--%>
@@ -248,19 +284,32 @@
             $(".none1").parent('li').addClass('selected');
             $(".none1").slideDown(300);
         }
-        if (url.indexOf("product") != -1 || url.indexOf("order") != -1
-            || url.indexOf("topic") != -1) {
+        if ((url.indexOf("/manage/product") != -1 || url.indexOf("order") != -1
+             || url.indexOf("topic") != -1) && url.indexOf("productRec") == -1) {
             $(".none2").parent('li').addClass('selected');
             $(".none2").slideDown(300);
         }
-        if (url.indexOf("merchant") != -1) {
+        if (url.indexOf("merchant") != -1&& url.indexOf("merchantRec") == -1) {
             $(".none3").parent('li').addClass('selected');
             $(".none3").slideDown(300);
         }
-        if (url.indexOf("partner") != -1|| url.indexOf("user") != -1
+        if (url.indexOf("/manage/productRec") != -1||url.indexOf("/manage/merchantRec") != -1) {
+            $(".none5").parent('li').addClass('selected');
+            $(".none5").slideDown(300);
+        }
+        if (url.indexOf("partner") != -1 || url.indexOf("user") != -1
             || url.indexOf("sales") != -1) {
             $(".none4").parent('li').addClass('selected');
             $(".none4").slideDown(300);
+        }
+        if (url.indexOf("codeBurse") != -1) {
+            $(".none6").parent('li').addClass('selected');
+            $(".none6").slideDown(300);
+        }
+        if (url.indexOf("/weixin/menu/list") != -1 || url.indexOf("/weixin/reply/list") != -1
+            || url.indexOf("/weixin/imageText") != -1 || url.indexOf("managementUserList") != -1) {
+            $(".none7").parent('li').addClass('selected');
+            $(".none7").slideDown(300);
         }
 
 //        数组

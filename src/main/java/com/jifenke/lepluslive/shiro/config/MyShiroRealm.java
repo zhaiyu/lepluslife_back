@@ -62,6 +62,13 @@ public class MyShiroRealm extends AuthorizingRealm implements ApplicationContext
       permissions.add("partner:query");
       permissions.add("SalesStaff:query");
       permissions.add("management:query");
+      permissions.add("market_center:query");
+      permissions.add("app_manage:query");
+      permissions.add("system_config:query");
+      permissions.add("button_manage:query");
+      permissions.add("multiple_message:query");
+//      permissions.add("multiple_message:query");
+      permissions.add("wx_reply:query");
     } else {
       ManageUserRepository manageUserRepository =
           (ManageUserRepository) applicationContext.getBean("manageUserRepository");
