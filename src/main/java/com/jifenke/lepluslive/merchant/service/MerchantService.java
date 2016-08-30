@@ -10,10 +10,12 @@ import com.jifenke.lepluslive.merchant.domain.criteria.MerchantCriteria;
 import com.jifenke.lepluslive.merchant.domain.entities.City;
 import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantInfo;
+import com.jifenke.lepluslive.merchant.domain.entities.MerchantPos;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantType;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantUser;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantWallet;
 import com.jifenke.lepluslive.merchant.repository.MerchantInfoRepository;
+import com.jifenke.lepluslive.merchant.repository.MerchantPosRepository;
 import com.jifenke.lepluslive.merchant.repository.MerchantProtocolRepository;
 import com.jifenke.lepluslive.merchant.repository.MerchantRepository;
 import com.jifenke.lepluslive.merchant.repository.MerchantTypeRepository;
@@ -85,6 +87,9 @@ public class MerchantService {
 
   @Inject
   private MerchantWeiXinUserService merchantWeiXinUserService;
+
+  @Inject
+  private MerchantPosRepository merchantPosRepository;
 
   @Value("${bucket.ossBarCodeReadRoot}")
   private String barCodeRootUrl;
@@ -441,5 +446,9 @@ public class MerchantService {
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public void saveMerchant(Merchant merchant) {
     merchantRepository.saveAndFlush(merchant);
+  }
+
+  public List findAllPosByMerchant(Merchant merchant) {
+    return merchantPosRepository.findAllByMerchant(merchant);
   }
 }

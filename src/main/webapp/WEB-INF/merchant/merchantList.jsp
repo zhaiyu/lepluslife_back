@@ -428,6 +428,8 @@
                            contentStr +=
                            '<button type="button" class="btn btn-default showQRCode">二维码</button>';
                            contentStr +=
+                           '<button type="button" class="btn btn-default posManage">pos管理</button>';
+                           contentStr +=
                            '<shiro:hasPermission name="merchant:edit"><button type="button" class="btn btn-default editMerchant">编辑</button></shiro:hasPermission>';
                            contentStr +=
                            '<button type="button" class="btn btn-default editMerchantContent">内容管理</button>';
@@ -450,6 +452,12 @@
                            $(".createUser").eq(i).bind("click", function () {
                                var id = $(this).parent().find(".id-hidden").val();
                                location.href = "/manage/merchant/user/" + id;
+                           });
+                       });
+                       $(".posManage").each(function (i) {
+                           $(".posManage").eq(i).bind("click", function () {
+                               var id = $(this).parent().find(".id-hidden").val();
+                               location.href = "/manage/merchant/pos_manage/" + id;
                            });
                        });
                        $(".showQRCode").each(function (i) {

@@ -216,4 +216,10 @@ public class MerchantController {
     return new ModelAndView(merchantViewExcel, map);
   }
 
+  @RequestMapping(value = "/merchant/pos_manage/{id}", method = RequestMethod.GET)
+  public ModelAndView posManage(@PathVariable Long id, Model model) {
+    model.addAttribute(merchantService.findAllPosByMerchant(merchantService.findMerchantById(id)));
+    return MvUtil.go("/merchant/posManage");
+  }
+
 }
