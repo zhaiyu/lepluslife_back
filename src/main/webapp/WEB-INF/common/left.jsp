@@ -241,6 +241,13 @@
                 </div>
             </li>
         </shiro:hasPermission>
+
+        <li><h4 class="M6"><span></span>审核流程</h4>
+
+            <div class="list-item none none8">
+                <a href='/manage/withdrawBill'>提现审核</a>
+            </div>
+        </li>
         <shiro:hasPermission name="system_config:query">
             <li><h4 class="M6"><span></span>系统设置</h4>
 
@@ -279,6 +286,11 @@
 <script>
     $(function () {
         var url = window.location.href;
+        if (url.indexOf("withdrawBill") != -1
+           ) {
+            $(".none8").parent('li').addClass('selected');
+            $(".none8").slideDown(300);
+        }
         if (url.indexOf("offLineOrder") != -1
             || url.indexOf("financial") != -1) {
             $(".none1").parent('li').addClass('selected');
@@ -311,6 +323,8 @@
             $(".none7").parent('li').addClass('selected');
             $(".none7").slideDown(300);
         }
+
+
 
 //        数组
         var htmlArr = ['/manage/index', '/manage/product', '/manage/product', 'picManger.html',

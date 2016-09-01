@@ -451,4 +451,9 @@ public class MerchantService {
   public List findAllPosByMerchant(Merchant merchant) {
     return merchantPosRepository.findAllByMerchant(merchant);
   }
+
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  public void saveMerchantWallet(MerchantWallet merchantWallet) {
+    merchantWalletRepository.saveAndFlush(merchantWallet);
+  }
 }

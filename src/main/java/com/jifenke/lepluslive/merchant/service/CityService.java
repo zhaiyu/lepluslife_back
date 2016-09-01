@@ -30,7 +30,7 @@ public class CityService {
   public City findCityById(Long id) {
 
     City city = cityRepository.findOne(id);
-    if(city==null){
+    if (city == null) {
       throw new RuntimeException("不存在的城市");
     }
 
@@ -38,15 +38,15 @@ public class CityService {
   }
 
   public void createCity(City city) {
-    if(city.getId()!=null){
+    if (city.getId() != null) {
       throw new RuntimeException("新建城市ID不为null");
     }
     cityRepository.save(city);
   }
 
   public void editCity(City city) {
-   City cityOri =  cityRepository.findOne(city.getId());
-    if(cityOri==null){
+    City cityOri = cityRepository.findOne(city.getId());
+    if (cityOri == null) {
       throw new RuntimeException("不存在的商户");
     }
     cityOri.setName(city.getName());
@@ -55,7 +55,7 @@ public class CityService {
     cityRepository.save(cityOri);
   }
 
-  public void deleteCity(Long id){
+  public void deleteCity(Long id) {
     cityRepository.delete(id);
   }
 

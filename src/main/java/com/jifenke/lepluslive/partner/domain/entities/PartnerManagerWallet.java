@@ -23,12 +23,21 @@ public class PartnerManagerWallet {
 
   private Long totalMoney = 0L;
 
+  private Long totalWithdrawals = 0L;//已经提现总额
   @OneToOne
   private PartnerManager partnerManager;
 
 
   @Version
   private Long version = 0L;
+
+  public Long getTotalWithdrawals() {
+    return totalWithdrawals;
+  }
+
+  public void setTotalWithdrawals(Long totalWithdrawals) {
+    this.totalWithdrawals = totalWithdrawals;
+  }
 
   public PartnerManager getPartnerManager() {
     return partnerManager;

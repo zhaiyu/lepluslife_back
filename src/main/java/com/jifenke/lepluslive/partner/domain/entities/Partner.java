@@ -1,5 +1,7 @@
 package com.jifenke.lepluslive.partner.domain.entities;
 
+import com.jifenke.lepluslive.global.util.MvUtil;
+
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -19,6 +21,7 @@ public class Partner {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
+  private String partnerSid = MvUtil.getPartnerSid();
 
   private String name; //账户名
 
@@ -135,5 +138,13 @@ public class Partner {
 
   public void setName(String name) {
     this.name = name;
+  }
+
+  public String getPartnerSid() {
+    return partnerSid;
+  }
+
+  public void setPartnerSid(String partnerSid) {
+    this.partnerSid = partnerSid;
   }
 }
