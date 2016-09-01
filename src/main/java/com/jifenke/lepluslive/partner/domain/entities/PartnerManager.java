@@ -20,6 +20,7 @@ public class PartnerManager {
 
   private String name;
 
+  private String payee;
 
   private Long userLimit = 0L;
 
@@ -45,5 +46,13 @@ public class PartnerManager {
 
   public void setUserLimit(Long userLimit) {
     this.userLimit = userLimit;
+  }
+
+  public String getPayee() {
+    return payee;
+  }
+
+  public void setPayee(String payee) {
+    this.payee = payee;
   }
 }

@@ -47,8 +47,15 @@ public class MvUtil {
   public static String getMerchantSid() {
     return RandomStringUtils.random(7, "1234567890");
   }
-
-
+  //生成合伙人随机号
+  public static String getPartnerSid() {
+    return RandomStringUtils.random(7, "1234567890");
+  }
+  //生成提现单随机号
+  public static String getWithdrawBillSid() {
+    String randomStr = RandomStringUtils.random(5, "1234567890");
+    return new SimpleDateFormat("yyMMddHHmmss").format(new Date()) + randomStr;
+  }
   /**
    * 生成随机字符串
    */
