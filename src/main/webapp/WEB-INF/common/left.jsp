@@ -206,6 +206,8 @@
                             href='/manage/financial'>财务结算</a> </shiro:hasPermission>
                     <shiro:hasPermission name="share:query"> <a
                             href='/manage/offLineOrder/share'>佣金分润</a> </shiro:hasPermission>
+                    <a
+                            href='/manage/pos_order'>pos订单</a>
                 </div>
             </li>
         </shiro:hasPermission>
@@ -292,11 +294,11 @@
             $(".none8").slideDown(300);
         }
         if (url.indexOf("offLineOrder") != -1
-            || url.indexOf("financial") != -1) {
+            || url.indexOf("financial") != -1 || url.indexOf("/manage/pos_order") != -1) {
             $(".none1").parent('li').addClass('selected');
             $(".none1").slideDown(300);
         }
-        if ((url.indexOf("/manage/product") != -1 || url.indexOf("order") != -1
+        if ((url.indexOf("/manage/product") != -1 || url.indexOf("/manage/order") != -1
              || url.indexOf("topic") != -1) && url.indexOf("productRec") == -1) {
             $(".none2").parent('li').addClass('selected');
             $(".none2").slideDown(300);
