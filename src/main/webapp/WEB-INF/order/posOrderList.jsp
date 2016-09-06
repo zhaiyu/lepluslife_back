@@ -57,12 +57,12 @@
                     <div class="form-group col-md-2">
                         <label>商户所在城市</label>
                         <select class="form-control" id="locationCity">
-                            <option>所在城市（全部）</option>
+                            <option value="">所在城市（全部）</option>
                         </select>
                     </div>
                     <div class="form-group col-md-2">
                         <label>订单类型</label>
-                        <select class="form-control">
+                        <select class="form-control" id="orderType">
                             <option value="0">全部订单</option>
                             <option value="3">导流订单</option>
                             <option value="1">非会员普通订单</option>
@@ -71,7 +71,7 @@
                     </div>
                     <div class="form-group col-md-2">
                         <label>支付方式</label>
-                        <select class="form-control">
+                        <select class="form-control" id="tradeFlag">
                             <option value="">全部</option>
                             <option value="3">银行卡</option>
                             <option value="4">微信</option>
@@ -83,28 +83,32 @@
                 </div>
                 <div class="row" style="margin-bottom: 30px">
                     <div class="form-group col-md-2">
-                        <label>店铺名称</label>
-                        <input type="text" class="form-control" placeholder="请输入消费者ID">
+                        <label>消费者ID</label>
+                        <input type="text" class="form-control" id="userSid" placeholder="请输入消费者ID">
                     </div>
                     <div class="form-group col-md-3">
-                        <label for="merchant-name">消费者ID</label>
+                        <label for="merchant-name">店铺名称</label>
                         <input type="text" id="merchant-name" class="form-control"
                                placeholder="请输入商户名称或ID"/>
                     </div>
                     <div class="form-group col-md-3">
                         <label>消费者手机号</label>
-                        <input type="text" class="form-control" placeholder="请输入消费者手机号"/>
+                        <input type="text" id="userPhone" class="form-control"
+                               placeholder="请输入消费者手机号"/>
                     </div>
 
                     <div class="form-group col-md-3">
-                        <button class="btn btn-primary" style="margin-top: 24px">查询</button>
+                        <button class="btn btn-primary" style="margin-top: 24px" onclick="searchOrderByCriteria()">查询</button>
                     </div>
                     <div class="form-group col-md-3"></div>
                 </div>
                 <ul id="myTab" class="nav nav-tabs">
-                    <li><a href="#tab1" data-toggle="tab">全部订单</a></li>
-                    <li class="active"><a href="#tab2" data-toggle="tab">已支付</a></li>
-                    <li><a href="#tab3" data-toggle="tab">未支付</a></li>
+                    <li><a href="#tab1" data-toggle="tab" onclick="searchOrderByState()">全部订单</a>
+                    </li>
+                    <li class="active"><a href="#tab2" data-toggle="tab"
+                                          onclick="searchOrderByState(1)">已支付</a></li>
+                    <li><a href="#tab3" data-toggle="tab" onclick="searchOrderByState(0)">未支付</a>
+                    </li>
                 </ul>
                 <div id="myTabContent" class="tab-content">
                     <div class="tab-pane fade in active" id="tab1">
@@ -127,22 +131,22 @@
                             </tr>
                             </thead>
                             <tbody id="orderContent">
-                            <tr>
-                                <td>32423331</td>
-                                <td><span>2016.6.6</span><br><span>14:14:15</span></td>
-                                <td><span>棉花糖KTV</span><br><span>（231313123）</span></td>
-                                <td><span>18710089228</span><br><span>（231313123）</span></td>
-                                <td>已支付</td>
-                                <td>导流订单</td>
-                                <td>银行卡</td>
-                                <td><span>¥510</span><br><span>（¥480+¥30红包）</span></td>
-                                <td>¥48+¥3红包</td>
-                                <td>¥432+¥27红包</td>
-                                <td>¥25.5</td>
-                                <td>30</td>
-                                <td>¥21.52</td>
-                                <td></td>
-                            </tr>
+                            <%--<tr>--%>
+                            <%--<td>32423331</td>--%>
+                            <%--<td><span>2016.6.6</span><br><span>14:14:15</span></td>--%>
+                            <%--<td><span>棉花糖KTV</span><br><span>（231313123）</span></td>--%>
+                            <%--<td><span>18710089228</span><br><span>（231313123）</span></td>--%>
+                            <%--<td>已支付</td>--%>
+                            <%--<td>导流订单</td>--%>
+                            <%--<td>银行卡</td>--%>
+                            <%--<td><span>¥510</span><br><span>（¥480+¥30红包）</span></td>--%>
+                            <%--<td>¥48+¥3红包</td>--%>
+                            <%--<td>¥432+¥27红包</td>--%>
+                            <%--<td>¥25.5</td>--%>
+                            <%--<td>30</td>--%>
+                            <%--<td>¥21.52</td>--%>
+                            <%--<td></td>--%>
+                            <%--</tr>--%>
                             </tbody>
                         </table>
                     </div>
@@ -165,6 +169,7 @@
 <script src="${resourceUrl}/js/jquery.page.js"></script>
 <script>
     var posOrderCriteria = {};
+    posOrderCriteria.offset = 1;
     var orderContent = document.getElementById("orderContent");
     $(function () {
 //        tab切换
@@ -238,11 +243,49 @@
                                      + end.format('YYYY/MM/DD HH:mm:ss'));
         });
     })
+    Date.prototype.format = function (fmt) {
+        var o = {
+            "M+": this.getMonth() + 1, //月份
+            "d+": this.getDate(), //日
+            "h+": this.getHours() % 12 == 0 ? 12 : this.getHours() % 12, //小时
+            "H+": this.getHours(), //小时
+            "m+": this.getMinutes(), //分
+            "s+": this.getSeconds(), //秒
+            "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+            "S": this.getMilliseconds() //毫秒
+        };
+        var week = {
+            "0": "\u65e5",
+            "1": "\u4e00",
+            "2": "\u4e8c",
+            "3": "\u4e09",
+            "4": "\u56db",
+            "5": "\u4e94",
+            "6": "\u516d"
+        };
+        if (/(y+)/.test(fmt)) {
+            fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+        }
+        if (/(E+)/.test(fmt)) {
+            fmt =
+            fmt.replace(RegExp.$1,
+                        ((RegExp.$1.length > 1) ? (RegExp.$1.length > 2 ? "\u661f\u671f" : "\u5468")
+                                : "") + week[this.getDay() + ""]);
+        }
+        for (var k in o) {
+            if (new RegExp("(" + k + ")").test(fmt)) {
+                fmt =
+                fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr((""
+                                                                                                 + o[k]).length)));
+            }
+        }
+        return fmt;
+    }
     function getPosOrderByAjax(posOrderCriteria) {
         orderContent.innerHTML = "";
         $.ajax({
                    type: "post",
-                   url: "/manage/posOrder",
+                   url: "/manage/pos_order",
                    async: false,
                    data: JSON.stringify(posOrderCriteria),
                    contentType: "application/json",
@@ -254,31 +297,19 @@
                        if (totalPage == 0) {
                            totalPage = 1;
                        }
-                       if (flag) {
-                           flag = false;
-                           initPage(posOrderCriteria.offset, totalPage);
-                       }
-                       if (init1) {
-                           initPage(1, totalPage);
-                       }
+                       initPage(posOrderCriteria.offset, totalPage);
                        var orderContent = document.getElementById("orderContent");
                        for (i = 0; i < content.length; i++) {
                            var contentStr = '<tr><td>' + content[i].orderSid + '</td>';
-                           if (content[i].rebateWay == 0 || content[i].rebateWay == 2) {
+                           if (content[i].rebateWay == 1) {
                                contentStr +=
-                               '<td><span>普通订单</span></td>';
-                           } else if (content[i].rebateWay == 1) {
+                               '<td><span>非会员普通订单</span></td>';
+                           } else if (content[i].rebateWay == 2) {
                                contentStr +=
-                               '<td><span>导流订单</span></td>';
-                           } else if (content[i].rebateWay == 3) {
-                               contentStr +=
-                               '<td><span>会员订单</span></td>';
-                           } else if (content[i].rebateWay == 4) {
-                               contentStr +=
-                               '<td><span>普通订单(非会员纯支付码)</span></td>';
+                               '<td><span>会员普通订单</span></td>';
                            } else {
                                contentStr +=
-                               '<td><span>普通订单(会员纯支付码)</span></td>';
+                               '<td><span>导流订单</span></td>';
                            }
                            if (content[i].completeDate == null) {
                                contentStr +=
@@ -304,87 +335,138 @@
                                + content[i].leJiaUser.userSid + ')</span></td>'
                            }
                            if (content[i].state == 1) {
+                               if (content[i].tradeFlag == 0) {
+                                   contentStr +=
+                                   '<td>支付宝</td>'
+                               } else if (content[i].tradeFlag == 3) {
+                                   contentStr +=
+                                   '<td>pos刷卡</td>'
+                               } else if (content[i].tradeFlag == 4) {
+                                   contentStr +=
+                                   '<td>微信</td>'
+                               } else if (content[i].tradeFlag == 5) {
+                                   contentStr +=
+                                   '<td>纯积分</td>'
+                               }
+
+                           } else {
+                               contentStr +=
+                               '<td>--</td>'
+                           }
+                           if (content[i].state == 1) {
                                contentStr +=
                                '<td>¥' + content[i].totalPrice / 100 + '(¥' + content[i].truePay
                                                                               / 100
-                               + '+¥' + content[i].totalScore / 100 + '红包)</td>'
+                               + '+¥' + content[i].trueScore / 100 + '红包)</td>'
                            } else {
                                contentStr +=
                                '<td>¥' + content[i].totalPrice / 100
                                + '</td>'
                            }
-                           var bankCommission = content[i].truePay - content[i].transferByBank ;
-                           var scoreACommission = content[i].ljCommission - bankCommission;
-                           contentStr += '<td>¥'+bankCommission/100++'</td>';
-
-                           contentStr +=
-                           '<td>' + content[i].transferByBank / 100 + '+¥'
-                           + (content[i].transferMoney - content[i].transferByBank) / 100
-                           + '红包)</td>'
-                           contentStr += '<td>' + content[i].payWay.payWay + '</td>'
-                           contentStr += '<td>' + content[i].truePay / 100 + '</td>'
-                           contentStr += '<td>' + content[i].ljCommission / 100 + '</td>'
-                           var payToMerchant = content[i].transferMoney / 100;
-                           contentStr +=
-                           '<td>' + payToMerchant + '</td>'
-                           contentStr += '<td>' + content[i].wxCommission / 100 + '</td>'
-                           contentStr += '<td>' + content[i].rebate / 100 + '</td>';
-                           var share = 0;
-                           if (content[i].rebateWay != 1) {
-                               share = 0;
-                           } else {
-                               share =
-                               (content[i].ljCommission - content[i].wxCommission
-                                - content[i].rebate) / 100;
-                           }
-
-                           contentStr +=
-                           '<td>' + share + '</td>'
-                           contentStr += '<td>' + content[i].scoreB + '</td>'
-                           if (content[i].state == 0) {
-                               contentStr += '<td>未付款</td>';
-                               contentStr +=
-                               '<td><input type="hidden" class="id-hidden" value="' + content[i].id
-                               + '"><button class="btn btn-primary changeOrderToPaid")">设为已支付</button></td></tr>';
-                           }
                            if (content[i].state == 1) {
+                               var bankCommission = content[i].truePay - content[i].transferByBank;
+                               var scoreACommission = content[i].ljCommission - bankCommission;
+                               contentStr +=
+                               '<td>¥' + bankCommission / 100 + "+¥" + scoreACommission / 100
+                               + '红包</td>';
+                               contentStr +=
+                               '<td>' + content[i].transferByBank / 100 + '+¥'
+                               + (content[i].transferMoney - content[i].transferByBank) / 100
+                               + '红包)</td>'
+                               contentStr += '<td>¥' + content[i].rebate / 100 + '</td>'
+                               contentStr += '<td>' + content[i].scoreB + '</td>'
+                               contentStr +=
+                               '<td>' + (content[i].ljCommission - content[i].rebate
+                                         - content[i].wxCommission) / 100 + '</td>'
+
                                contentStr += '<td>已支付</td></tr>'
+                           } else {
+                               contentStr +=
+                               '<td>--</td>';
+                               contentStr +=
+                               '<td>--</td>'
+                               contentStr +=
+                               '<td>--</td>'
+                               contentStr +=
+                               '<td>--</td>'
+                               contentStr +=
+                               '<td>--</td>'
+                               contentStr += '<td>未付款</td>';
                            }
                            orderContent.innerHTML += contentStr;
 
                        }
-                       $(".changeOrderToPaid").each(function (i) {
-                           $(".changeOrderToPaid").eq(i).bind("click", function () {
-                               var id = $(this).parent().find(".id-hidden").val();
-                               $("#paid-confirm").bind("click", function () {
-                                   $.ajax({
-                                              type: "get",
-                                              url: "/manage/offLineOrder/" + id,
-                                              contentType: "application/json",
-                                              success: function (data) {
-                                                  alert(data.msg);
-                                                  getPosOrderByAjax(posOrderCriteria);
-                                              }
-                                          });
-                               });
-                               $("#deleteWarn").modal("show");
-                           });
-                       });
                    }
                });
     }
+    getPosOrderByAjax(posOrderCriteria);
     function initPage(page, totalPage) {
         $('.tcdPageCode').unbind();
         $(".tcdPageCode").createPage({
                                          pageCount: totalPage,
                                          current: page,
                                          backFn: function (p) {
-                                             olOrderCriteria.offset = p;
-                                             init1 = 0;
-                                             getPosOrderByAjax(olOrderCriteria);
+                                             posOrderCriteria.offset = p;
+                                             getPosOrderByAjax(posOrderCriteria);
                                          }
                                      });
     }
+
+    function searchOrderByState(state) {
+        posOrderCriteria.offset = 1;
+        if (state != null) {
+            posOrderCriteria.state = state;
+        } else {
+            posOrderCriteria.state = null;
+        }
+        getPosOrderByAjax(posOrderCriteria);
+    }
+
+    function searchOrderByCriteria() {
+        posOrderCriteria.offset = 1;
+        var dateStr = $('#date-end span').text().split("-");
+        if (dateStr != null && dateStr != '') {
+            var startDate = dateStr[0].replace(/-/g, "/");
+            var endDate = dateStr[1].replace(/-/g, "/");
+            posOrderCriteria.startDate = startDate;
+            posOrderCriteria.endDate = endDate;
+        }
+        if ($("#locationCity").val() != "" && $("#locationCity").val() != null) {
+            posOrderCriteria.merchantLocation = $("#locationCity").val();
+        } else {
+            posOrderCriteria.merchantLocation = null;
+        }
+        if ($("#orderType").val() != 0) {
+            posOrderCriteria.rebateWay = $("#orderType").val();
+        } else {
+            posOrderCriteria.rebateWay = null;
+        }
+        if ($("#tradeFlag").val() != "" && $("#tradeFlag").val() != null) {
+            posOrderCriteria.tradeFlag = $("#tradeFlag").val();
+        } else {
+            posOrderCriteria.tradeFlag = null;
+        }
+        if ($("#merchant-name").val() != "" && $("#merchant-name").val() != null) {
+            posOrderCriteria.merchant = $("#merchant-name").val();
+        } else {
+            posOrderCriteria.merchant = null;
+        }
+        if ($("#userSid").val() != "" && $("#userSid").val() != null) {
+            posOrderCriteria.userSid = $("#userSid").val();
+        } else {
+            posOrderCriteria.userSid = null;
+        }
+
+        if ($("#userPhone").val() != "" && $("#userPhone").val() != null) {
+            posOrderCriteria.userPhone = $("#userPhone").val();
+        } else {
+            posOrderCriteria.userPhone = null;
+        }
+
+        getPosOrderByAjax(posOrderCriteria);
+    }
+
+
 </script>
 
 

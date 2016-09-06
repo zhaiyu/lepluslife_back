@@ -194,6 +194,7 @@
                 <shiro:hasPermission name="merchant:query">
                     <a href="/manage/merchant">商户管理</a>
                 </shiro:hasPermission>
+                <a href="/manage/pos">pos管理</a>
             </div>
         </li>
         <shiro:hasPermission name="order:query">
@@ -334,51 +335,5 @@
                        '/manage/offLineOrder', '/manage/financial', '/manage/weixin/index',
                        '/manage/offLineOrder/share', '/manage/partner', '/manage/sales',
                        '/manage/managementUserList'];
-        $('.M1').click(function () {
-            window.location.href = htmlArr[0];
-        });
-////        $('.M2').click(function () {
-////            window.location.href = htmlArr[1];
-////        });
-//        $('.M3').click(function () {
-//            window.location.href = htmlArr[4];
-//        });
-////        $('.M4').click(function () {
-////            window.location.href=htmlArr[5];
-////        });
-//        $('.M5').click(function () {
-//            window.location.href = htmlArr[6];
-//        });
-//        $('.M6').click(function () {
-//            window.location.href = htmlArr[7];
-//        });
-//        $('.M7').click(function () {
-//            window.location.href = htmlArr[8];
-//        });
-//        $('.M8').click(function () {
-//            window.location.href = htmlArr[9];
-//        });
-//        $('.btn-create').click(function () {
-//            window.location.href = htmlArr[2];
-//        });
-//        $('.picManger').click(function () {
-//            window.location.href = htmlArr[3];
-//        });
-//
-        $('.M9').click(function () {
-            window.location.href = htmlArr[10];
-        });
-//        $('.M10').click(function () {
-//            window.location.href = htmlArr[11];
-//        });
-//        $('.M11').click(function () {
-//            window.location.href = htmlArr[12];
-//        });
-//        $('.M12').click(function () {
-//            window.location.href = htmlArr[13];
-//        });
-        $('.M13').click(function () {
-            window.location.href = htmlArr[14];
-        });
     })
 </script>

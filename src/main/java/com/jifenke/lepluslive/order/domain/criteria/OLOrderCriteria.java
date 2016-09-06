@@ -25,9 +25,13 @@ public class OLOrderCriteria {
 
   private Integer amount;
 
-  public Integer getAmount() {return amount;}
+  public Integer getAmount() {
+    return amount;
+  }
 
-  public void setAmount(Integer amount) {this.amount = amount;}
+  public void setAmount(Integer amount) {
+    this.amount = amount;
+  }
 
   public Integer getOffset() {
     return offset;
