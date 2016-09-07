@@ -16,11 +16,14 @@ import javax.persistence.Table;
 @Table(name = "PRODUCT_TYPE")
 @Cache(usage = CacheConcurrencyStrategy.NONSTRICT_READ_WRITE)
 public class ProductType {
+
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Integer id;
 
   private String type;
+
+  private String picture;  //app不同商品规格对应的图片链接
 
   public Integer getId() {
     return id;
@@ -43,6 +46,14 @@ public class ProductType {
   }
 
   public ProductType() {
+  }
+
+  public String getPicture() {
+    return picture;
+  }
+
+  public void setPicture(String picture) {
+    this.picture = picture;
   }
 
   @Override

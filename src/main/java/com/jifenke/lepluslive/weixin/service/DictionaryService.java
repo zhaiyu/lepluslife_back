@@ -29,6 +29,20 @@ public class DictionaryService {
   }
 
   /**
+   * 修改
+   */
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  public void update(Long id, String value) throws Exception {
+    try {
+      Dictionary dictionary = dictionaryRepository.findOne(id);
+      dictionary.setValue(value);
+      dictionaryRepository.save(dictionary);
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+  }
+
+  /**
    * 判断发送状态
    *
    * @return true=可发送   false=不可发送

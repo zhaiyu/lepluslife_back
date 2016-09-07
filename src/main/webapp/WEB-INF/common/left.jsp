@@ -230,7 +230,9 @@
 
                 <div class="list-item none none5">
                     <shiro:hasPermission name="app_manage:query"> <a
-                            href='/manage/productRec'>首页推荐</a> </shiro:hasPermission>
+                            href='/manage/banner?type=1'>APP推荐</a> </shiro:hasPermission>
+                    <shiro:hasPermission name="app_manage:query"> <a
+                            href='/manage/merchant/codePage'>商户邀请码</a> </shiro:hasPermission>
                 </div>
             </li>
         </shiro:hasPermission>
@@ -289,7 +291,7 @@
     $(function () {
         var url = window.location.href;
         if (url.indexOf("withdrawBill") != -1
-           ) {
+        ) {
             $(".none8").parent('li').addClass('selected');
             $(".none8").slideDown(300);
         }
@@ -303,11 +305,11 @@
             $(".none2").parent('li').addClass('selected');
             $(".none2").slideDown(300);
         }
-        if (url.indexOf("merchant") != -1&& url.indexOf("merchantRec") == -1) {
+        if (url.indexOf("merchant") != -1 && url.indexOf("merchantRec") == -1) {
             $(".none3").parent('li').addClass('selected');
             $(".none3").slideDown(300);
         }
-        if (url.indexOf("/manage/productRec") != -1||url.indexOf("/manage/merchantRec") != -1) {
+        if (url.indexOf("/manage/productRec") != -1 || url.indexOf("/manage/merchantRec") != -1) {
             $(".none5").parent('li').addClass('selected');
             $(".none5").slideDown(300);
         }
@@ -325,8 +327,6 @@
             $(".none7").parent('li').addClass('selected');
             $(".none7").slideDown(300);
         }
-
-
 
 //        数组
         var htmlArr = ['/manage/index', '/manage/product', '/manage/product', 'picManger.html',

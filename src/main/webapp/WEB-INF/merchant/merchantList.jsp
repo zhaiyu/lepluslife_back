@@ -523,7 +523,7 @@
                        $(".editMerchantContent").each(function (i) {
                            $(".editMerchantContent").eq(i).bind("click", function () {
                                var id = $(this).parent().find(".id-hidden").val();
-                               location.href = "/manage/merchant/editContent/" + id;
+                               location.href = "/manage/merchant/editContent?id=" + id + "&type=1";
                            });
                        });
                        $(".disableMerchant").each(function (i) {

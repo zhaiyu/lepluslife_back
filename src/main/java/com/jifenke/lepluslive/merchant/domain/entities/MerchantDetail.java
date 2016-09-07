@@ -11,7 +11,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
- * Created by wcg on 16/3/30.
+ * 商户详情图 Created by wcg on 16/3/30.
  */
 @Entity
 @Table(name = "MERCHANT_DETAIL")
@@ -24,6 +24,8 @@ public class MerchantDetail {
 
   @ManyToOne
   private Merchant merchant;
+
+  private Integer sid = 0;  //序号
 
   private String picture;
 
@@ -41,6 +43,14 @@ public class MerchantDetail {
 
   public void setMerchant(Merchant merchant) {
     this.merchant = merchant;
+  }
+
+  public Integer getSid() {
+    return sid;
+  }
+
+  public void setSid(Integer sid) {
+    this.sid = sid;
   }
 
   public String getPicture() {

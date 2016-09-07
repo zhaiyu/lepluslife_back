@@ -26,6 +26,7 @@ import com.jifenke.lepluslive.sales.domain.entities.SalesStaff;
 import com.jifenke.lepluslive.user.domain.entities.RegisterOrigin;
 import com.jifenke.lepluslive.user.repository.LeJiaUserRepository;
 import com.jifenke.lepluslive.user.repository.RegisterOriginRepository;
+import com.jifenke.lepluslive.weixin.service.WeiXinService;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -39,7 +40,10 @@ import org.springframework.transaction.annotation.Transactional;
 import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.inject.Inject;
@@ -91,6 +95,9 @@ public class MerchantService {
   @Inject
   private MerchantPosRepository merchantPosRepository;
 
+  @Inject
+  private WeiXinService weiXinService;
+
   @Value("${bucket.ossBarCodeReadRoot}")
   private String barCodeRootUrl;
 
@@ -100,6 +107,19 @@ public class MerchantService {
     return merchantRepository
         .findAll(getWhereClause(merchantCriteria),
                  new PageRequest(merchantCriteria.getOffset() - 1, limit, sort));
+  }
+
+  /**
+   * 邀请码页面  16/09/07
+   *
+   * @param merchantCriteria 筛选条件
+   */
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+  public Page findMerchantInfoByPage(MerchantCriteria merchantCriteria) {
+    Sort sort = new Sort(Sort.Direction.DESC, "merchantInfo.qrCode");
+    return merchantRepository
+        .findAll(getWhereClause(merchantCriteria),
+                 new PageRequest(merchantCriteria.getOffset() - 1, 10, sort));
   }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
@@ -396,6 +416,116 @@ public class MerchantService {
     return binds;
   }
 
+  /**
+   * 获取商户邀请码列表页面所需数据 16/09/06
+   *
+   * @param merchants 商家列表
+   * @return 数据
+   */
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+  public List<Map> findMerchantCodeData(List<Merchant> merchants) {
+    List<Map> mapList = new ArrayList<>();
+    List<Integer> binds = new ArrayList<>();
+    Integer count = null;
+    List<Object[]> scoreAs = null;
+    List<Object[]> list = null;
+    for (Merchant merchant : merchants) {
+      Map<String, Object> map = new HashMap<>();
+      String subSource = "4_0_" + merchant.getId();  //关注来源
+      //获取注册来源为该商家的用户总数
+      count = leJiaUserRepository.countBySubSource(subSource);
+      if (count == 0) {
+        map.put("inviteM", 0);//邀请会员数
+        map.put("inviteU", 0);//邀请粉丝数
+        map.put("commission", 0);//邀请会员的累计产生佣金
+        map.put("totalA", 0); //邀请会员的会员累计获得红包额
+        map.put("usedA", 0);  //邀请会员的会员累计使用红包额
+        //邀请会员的各种订单类型数量
+        map.put("order_1", 0);
+        map.put("order_3", 0);
+        map.put("order_5", 0);
+      } else {
+        //邀请会员数
+        count = leJiaUserRepository.countBySubSourceAndState(subSource);
+        map.put("inviteM", count);
+        //邀请粉丝数
+        count = leJiaUserRepository.countBySubSourceAndSubState(subSource);
+        map.put("inviteU", count);
+        //邀请会员的累计产生佣金
+        count = leJiaUserRepository.countLJCommissionByMerchant(subSource);
+        map.put("commission", count);
+        //邀请会员的会员累计红包额和使用红包额
+        scoreAs = leJiaUserRepository.countScoreAByMerchant(subSource);
+        map.put("totalA", scoreAs.get(0)[0]);
+        map.put("usedA", scoreAs.get(0)[1]);
+        //邀请会员的各种订单类型数量
+        list = leJiaUserRepository.countOrderByMerchant(subSource);
+        for (Object[] o : list) {
+          map.put("order_" + o[0], o[1]);
+        }
+        if (map.get("order_1") == null) {
+          map.put("order_1", 0);
+        }
+        if (map.get("order_3") == null) {
+          map.put("order_3", 0);
+        }
+        if (map.get("order_5") == null) {
+          map.put("order_5", 0);
+        }
+      }
+      //绑定会员数量
+      count = leJiaUserRepository.countByBindMerchant(merchant.getId());
+      map.put("bindM", count);
+
+      map.put("id", merchant.getId());
+      map.put("merchantSid", merchant.getMerchantSid());
+      map.put("name", merchant.getName());
+      map.put("userLimit", merchant.getUserLimit());
+      map.put("partnership", merchant.getPartnership());
+      map.put("qrCode", merchant.getMerchantInfo().getQrCode());
+      map.put("ticket", merchant.getMerchantInfo().getTicket());
+      mapList.add(map);
+    }
+    return mapList;
+  }
+
+  /**
+   * 创建商户邀请码(永久二维码)  16/09/06
+   *
+   * @param merchantId 商户ID
+   * @return 状态
+   */
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  public int createQrCode(Long merchantId) throws Exception {
+    Merchant merchant = findMerchantById(merchantId);
+    MerchantInfo info = merchant.getMerchantInfo();
+    try {
+      if (info != null) {
+        if (info.getQrCode() == null || info.getQrCode() == 0) {
+          //创建一个对应的永久二维码  以“M”开头
+          String parameter = "M" + MvUtil.getRandomStr();  //商户永久二维码开头为“M”
+          Map map = weiXinService.createForeverQrCode(parameter);
+          if (map.get("errcode") == null || Integer.valueOf(map.get("errcode").toString()) == 0) {
+            info.setQrCode(1);
+            info.setParameter(parameter);
+            info.setTicket(map.get("ticket").toString());
+            merchantInfoRepository.save(info);
+            return 200;
+          } else {
+            return 504;
+          }
+        } else {
+          return 408;
+        }
+      } else {
+        return 404;
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      return 500;
+    }
+  }
+
   @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
   public MerchantWallet findMerchantWalletByMerchant(Merchant merchant) {
     return merchantWalletRepository.findByMerchant(merchant);
@@ -455,5 +585,15 @@ public class MerchantService {
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public void saveMerchantWallet(MerchantWallet merchantWallet) {
     merchantWalletRepository.saveAndFlush(merchantWallet);
+  }
+
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+  public Merchant findMerchantByMerchantSid(String merchantSid) {
+    Optional<Merchant> optional = merchantRepository.findByMerchantSid(merchantSid);
+    if (optional.isPresent()) {
+      return optional.get();
+    } else {
+      return null;
+    }
   }
 }

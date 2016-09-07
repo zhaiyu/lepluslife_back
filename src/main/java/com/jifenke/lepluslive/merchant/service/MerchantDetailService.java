@@ -1,7 +1,8 @@
 package com.jifenke.lepluslive.merchant.service;
 
-import com.jifenke.lepluslive.merchant.domain.entities.MerchantScroll;
-import com.jifenke.lepluslive.merchant.repository.MerchantScrollRepository;
+
+import com.jifenke.lepluslive.merchant.domain.entities.MerchantDetail;
+import com.jifenke.lepluslive.merchant.repository.MerchantDetailRepository;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,26 +19,26 @@ import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
 /**
- * Created by wcg on 16/6/8.
+ * 商家详情图 Created by zhangwen on 16/9/3.
  */
 @Service
 @Transactional(readOnly = true)
-public class MerchantScrollService {
+public class MerchantDetailService {
 
   @Inject
-  private MerchantScrollRepository merchantScrollRepository;
+  private MerchantDetailRepository detailRepository;
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-  public Page findScorllPicByPage(Integer offset, Long merchantId) {
+  public Page findDetailPicByPage(Integer offset, Long merchantId) {
     Sort sort = new Sort(Sort.Direction.ASC, "sid");
-    return merchantScrollRepository
+    return detailRepository
         .findAll(getWhereClause(merchantId), new PageRequest(offset - 1, 10, sort));
   }
 
-  private static Specification<MerchantScroll> getWhereClause(Long merchantId) {
-    return new Specification<MerchantScroll>() {
+  private static Specification<MerchantDetail> getWhereClause(Long merchantId) {
+    return new Specification<MerchantDetail>() {
       @Override
-      public Predicate toPredicate(Root<MerchantScroll> r, CriteriaQuery<?> q,
+      public Predicate toPredicate(Root<MerchantDetail> r, CriteriaQuery<?> q,
                                    CriteriaBuilder cb) {
         Predicate predicate = cb.conjunction();
         predicate.getExpressions().add(
@@ -49,27 +50,27 @@ public class MerchantScrollService {
   }
 
 
-  public MerchantScroll findScrollPictureById(Long id) {
-    return merchantScrollRepository.findOne(id);
+  public MerchantDetail findDetailPictureById(Long id) {
+    return detailRepository.findOne(id);
   }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-  public void editScrollPicture(MerchantScroll merchantScroll) {
-    MerchantScroll origin = null;
-    if (merchantScroll.getId() != null) {
-      origin = merchantScrollRepository.findOne(merchantScroll.getId());
+  public void editDetailPicture(MerchantDetail merchantDetail) {
+    MerchantDetail origin = null;
+    if (merchantDetail.getId() != null) {
+      origin = detailRepository.findOne(merchantDetail.getId());
     } else {
-      origin = new MerchantScroll();
+      origin = new MerchantDetail();
     }
-    origin.setPicture(merchantScroll.getPicture());
-    origin.setSid(merchantScroll.getSid());
-    origin.setMerchant(merchantScroll.getMerchant());
-    merchantScrollRepository.save(origin);
+    origin.setPicture(merchantDetail.getPicture());
+    origin.setSid(merchantDetail.getSid());
+    origin.setMerchant(merchantDetail.getMerchant());
+    detailRepository.save(origin);
   }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-  public void deleteScrollPicture(Long id) {
-    merchantScrollRepository.delete(id);
+  public void deleteDetailPicture(Long id) {
+    detailRepository.delete(id);
   }
 
 }
