@@ -157,9 +157,9 @@
                     <div class="col-xs-6 col-sm-3">
                         <div class="thumbnail">
                             <div class="caption">
-                                <a href='/manage/productRec'>
+                                <a href='/manage/banner?type=1'>
                                     <button class="button button--antiman button--round-l button--text-medium">
-                                        <span>APP首页推荐</span></button>
+                                        <span>APP推荐</span></button>
                                 </a>
                             </div>
                         </div>

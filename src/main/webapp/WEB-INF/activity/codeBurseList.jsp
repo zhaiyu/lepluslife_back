@@ -445,7 +445,6 @@
         $('input[name=title]').val('');
         $('input[name=singleMoney]').val(0);
         $('input[name=budget]').val(0);
-
     }
 
     Date.prototype.format = function (fmt) {

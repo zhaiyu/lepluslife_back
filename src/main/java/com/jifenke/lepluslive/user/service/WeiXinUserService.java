@@ -20,6 +20,7 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -59,6 +60,37 @@ public class WeiXinUserService {
         }
       }
     }
+  }
+
+  /**
+   * 获取所有商户邀请码列表页面上部统计数据 16/09/07
+   *
+   * @return 数据
+   */
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+  public Map getTotalData() {
+    Integer count = null;
+    List<Object[]> scoreAs = null;
+    Map<String, Object> map = new HashMap<>();
+    String subSource = "4%";  //关注来源
+    //邀请会员总数
+    count = weiXinUserRepository.countBySubSourceAndState(subSource);
+    map.put("inviteM", count);
+    //邀请粉丝总数
+    count = weiXinUserRepository.countBySubSourceAndSubState(subSource);
+    map.put("inviteU", count);
+    //邀请后取消关注粉丝总数
+    count = weiXinUserRepository.countBySubSourceAndUnSub(subSource);
+    map.put("unSubU", count);
+    //邀请会员的累计产生佣金
+    count = weiXinUserRepository.countLJCommissionByMerchants(subSource);
+    map.put("commission", count);
+    //邀请会员的会员累计红包额和使用红包额
+    scoreAs = weiXinUserRepository.countScoreAByMerchants(subSource);
+    map.put("totalA", scoreAs.get(0)[0]);
+    map.put("usedA", scoreAs.get(0)[1]);
+
+    return map;
   }
 
   //批量修改群发余额

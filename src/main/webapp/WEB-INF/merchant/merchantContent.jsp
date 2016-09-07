@@ -52,14 +52,18 @@
     <div class="main">
       <div class="container-fluid">
         <button type="button" class="btn btn-primary btn-create" style="margin:10px;"
-                onclick="goProductPage()">
-          返回商品列表
+                onclick="goMerchantPage()">
+          返回商家列表
         </button>
         <hr>
         <ul id="myTab" class="nav nav-tabs">
           <%--<li class="active"><a href="#guige" data-toggle="tab">规格管理</a></li>--%>
           <li ><a class="active" href="#lunbotu" data-toggle="tab" >轮播图</a></li>
-          <%--<li><a href="#xiangqing" data-toggle="tab">详情图片</a></li>--%>
+          <li class="active"><a href="#tab2" data-toggle="tab" onclick="searchByType(2)">臻品轮播图</a>
+              </li>
+          <li><a href="#xiangqing" data-toggle="tab">详情图片</a></li>
+
+              <li><a href="#tab3" data-toggle="tab" onclick="searchByType(3)">新品首发</a></li>
         </ul>
         <div id="myTabContent" class="tab-content">
 
@@ -71,6 +75,7 @@
               <thead>
               <tr>
                 <th class="text-center">图片序号</th>
+                <th class="text-center">图片</th>
                 <th class="text-center">操作</th>
               </tr>
               </thead>
@@ -154,7 +159,7 @@
             <%--</div>--%>
           <%--</div>--%>
           <div class="form-group">
-            <label for="productPic" class="col-sm-2 control-label">商品图片</label>
+            <label for="productPic" class="col-sm-2 control-label">商户图片</label>
 
             <div class="col-sm-4">
               <!--<div class="thumbnail">-->
@@ -198,7 +203,7 @@
 
     $('#myTab li:eq(0) a').tab('show');
 
-  })
+  });
 
 
 
@@ -279,7 +284,7 @@
     $("#deleteWarn").modal("show");
   }
 
-  function goProductPage() {
+  function goMerchantPage() {
     location.href = "/manage/merchant"
   }
 </script>

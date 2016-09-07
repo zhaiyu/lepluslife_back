@@ -2,11 +2,11 @@ package com.jifenke.lepluslive.merchant.controller;
 
 import com.jifenke.lepluslive.global.util.LejiaResult;
 import com.jifenke.lepluslive.global.util.MvUtil;
-import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantScroll;
 import com.jifenke.lepluslive.merchant.service.MerchantScrollService;
-import com.jifenke.lepluslive.merchant.service.MerchantService;
 
+import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -20,7 +20,7 @@ import org.springframework.web.servlet.ModelAndView;
 import javax.inject.Inject;
 
 /**
- * Created by wcg on 16/6/8.
+ * 商家详情图 Created by zhangwen on 16/9/3.
  */
 @RestController
 @RequestMapping("/manage/merchant")
@@ -29,48 +29,51 @@ public class MerchantScrollController {
   @Inject
   private MerchantScrollService merchantScrollService;
 
-  @Inject
-  private MerchantService merchantService;
 
-  @RequestMapping(value = "/editContent/{id}", method = RequestMethod.GET)
-  public ModelAndView goMerchantContentPage(@PathVariable Long id, Model model) {
-    Merchant merchant = merchantService.findMerchantById(id);
-    model.addAttribute("merchant", merchant);
-    model.addAttribute("scrollPictures", merchantScrollService.findAllScorllPicture(merchant));
-    return MvUtil.go("/merchant/merchantContent");
-  }
-
-  @RequestMapping("/scrollPicture/{id}")
+  //获取某个轮播图  06/09/02
+  @RequestMapping(value = "/findScroll/{id}", method = RequestMethod.GET)
   public
   @ResponseBody
-  MerchantScroll findScrollPictureById(@PathVariable Long id) {
-    return merchantScrollService.findScrollPictureById(id);
-
+  LejiaResult findProductType(@PathVariable Long id) {
+    return LejiaResult.ok(merchantScrollService.findScrollPictureById(id));
   }
 
-  @RequestMapping(value = "/scrollPicture", method = RequestMethod.PUT)
-  public
-  @ResponseBody
-  LejiaResult editScrollPicture(@RequestBody MerchantScroll merchantScroll) {
+  //新建或修改 06/09/02
+  @RequestMapping(value = "/scrollPicture", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+  public LejiaResult save(@RequestBody MerchantScroll merchantScroll) {
     merchantScrollService.editScrollPicture(merchantScroll);
     return LejiaResult.build(200, "修改成功");
-
   }
 
-  @RequestMapping(value = "/scrollPicture", method = RequestMethod.POST)
+  //轮播图页 06/09/02
+  @RequestMapping(value = "/editContent", method = RequestMethod.GET)
+  public ModelAndView goMerchantContentPage(@RequestParam Long id, @RequestParam Integer type,
+                                            Model model) {
+    model.addAttribute("merchantId", id);
+    model.addAttribute("type", type);
+    return MvUtil.go("/merchant/list");
+  }
+
+  //异步获取轮播图数据 06/09/02
+  @RequestMapping(value = "/scrollList", method = RequestMethod.GET)
   public
   @ResponseBody
-  LejiaResult createScrollPicture(@RequestBody MerchantScroll merchantScroll) {
-    merchantScrollService.editScrollPicture(merchantScroll);
-    return LejiaResult.build(200, "保存成功");
+  LejiaResult ajaxList(@RequestParam Integer offset, @RequestParam Long merchantId) {
+
+    if (offset != null) { //当前页码
+      offset = 1;
+    }
+    Page page = merchantScrollService.findScorllPicByPage(offset, merchantId);
+    return LejiaResult.ok(page);
   }
 
-  @RequestMapping(value = "/scrollPicture/{id}", method = RequestMethod.DELETE)
+  @RequestMapping(value = "/delScroll/{id}", method = RequestMethod.DELETE)
   public
   @ResponseBody
   LejiaResult deleteScrollPicture(@PathVariable Long id) {
     merchantScrollService.deleteScrollPicture(id);
     return LejiaResult.build(200, "删除成功");
   }
+
 
 }
