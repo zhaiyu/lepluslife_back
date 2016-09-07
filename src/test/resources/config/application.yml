@@ -1,0 +1,72 @@
+# ===================================================================
+# Spring Boot configuration.
+#
+# This configuration will be overriden by the Spring profile you use,
+# for example application-dev.yml if you use the "dev" profile.
+# ===================================================================
+
+# ===================================================================
+# Standard Spring Boot properties.
+# Full reference is available at:
+# http://docs.spring.io/spring-boot/docs/current/reference/html/common-application-properties.html
+# ===================================================================
+
+spring:
+    jpa:
+        open-in-view: false
+        hibernate:
+            ddl-auto: none
+            naming-strategy: org.springframework.boot.orm.jpa.hibernate.SpringNamingStrategy
+    messages:
+        basename: classpath:/i18n/messages
+    mvc:
+        favicon:
+            enabled: false
+    thymeleaf:
+        mode: XHTML
+
+security:
+    basic:
+        enabled: false
+bucket:
+    image: lepluslive-image
+    file: lepluslive-file
+    endpoint: "http://oss-cn-beijing.aliyuncs.com"
+    ossAccessId: sUKKLHUWR4Ayjrks
+    ossAccessSecret: IuZif8RNp3DeG0CN0hkzvcCtszQ0Jl
+    barcode: lepluslive-barcode
+    ossBarCodeReadRoot: http://lepluslive-barcode.oss-cn-beijing.aliyuncs.com
+weixin:
+     appId: wxec4f3a2fb6ee8f06
+express:
+    appkey: e5ebeb3f01670d2b
+# ===================================================================
+# JHipster specific properties
+# ===================================================================
+
+jhipster:
+    async:
+        corePoolSize: 2
+        maxPoolSize: 50
+        queueCapacity: 10000
+    #cors: #By default CORS are not enabled. Uncomment to enable.
+        #allowed-origins: "*"
+        #allowed-methods: GET, PUT, POST, DELETE, OPTIONS
+        #allowed-headers: "*"
+        #exposed-headers:
+        #allow-credentials: true
+        #max-age: 1800
+    mail:
+        from: lepluslive@localhost
+    security:
+        rememberme:
+            # security key (this key should be unique for your application, and kept secret)
+            key: 5664edfbba8af651c2fec94c50b03dc583bfa7a9
+    swagger:
+        title: lepluslive API
+        description: lepluslive API documentation
+        version: 0.0.1
+        termsOfServiceUrl:
+        contact:
+        license:
+        licenseUrl:
