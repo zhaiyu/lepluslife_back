@@ -391,7 +391,7 @@
                                '<td>--</td>'
                                contentStr +=
                                '<td>--</td>'
-                               contentStr += '<td>未付款</td>';
+                               contentStr += '<td>未付款</td></tr>';
                            }
                            orderContent.innerHTML += contentStr;
 

@@ -25,7 +25,6 @@
         thead th, tbody td {
             text-align: center;
         }
-
         #myTab {
             margin-bottom: 10px;
         }
@@ -83,6 +82,24 @@
                         <label for="customer-amount">订单金额大于等于</label>
                         <input type="text" id="customer-amount" class="form-control"
                                placeholder="请输入金额"/>
+                    </div>
+                    <!--新增功能:  -->
+                    <div class="form-group col-md-3">
+                        <label for="order-ID">订单编号</label>
+                        <input type="text" id="order-ID" class="form-control"
+                               placeholder="请输入订单编号"/>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="remote-style">所在类型</label>
+                        <select class="form-control" id="remote-style">
+                            <option value="">所在类型(全部)</option>
+                            <option value="0">非会员普通订单</option>
+                            <option value="2">会员普通订单</option>
+                            <option value="1">导流订单</option>
+                            <option value="3">会员订单</option>
+                            <option value="4">非会员扫纯支付码</option>
+                            <option value="5">会员扫纯支付码</option>
+                        </select>
                     </div>
                     <div class="form-group col-md-3">
                         <button class="btn btn-primary" style="margin-top: 24px"
@@ -181,7 +198,6 @@
         $(".createWarn").click(function () {
             $("#createWarn").modal("toggle");
         });
-
         // 时间选择器
         $(document).ready(function () {
 //            $('#date-end span').html(moment().subtract('hours', 1).format('YYYY/MM/DD HH:mm:ss')
@@ -233,10 +249,8 @@
             });
         })
         olOrderCriteria.offset = 1;
-
         getOffLineOrderByAjax(olOrderCriteria);
     });
-
     function getOffLineOrderByAjax(olOrderCriteria) {
         orderContent.innerHTML = "";
         $.ajax({
@@ -263,9 +277,12 @@
                        var orderContent = document.getElementById("orderContent");
                        for (i = 0; i < content.length; i++) {
                            var contentStr = '<tr><td>' + content[i].orderSid + '</td>';
-                           if (content[i].rebateWay == 0 || content[i].rebateWay == 2) {
+                           if (content[i].rebateWay == 0) {
                                contentStr +=
-                               '<td><span>普通订单</span></td>';
+                               '<td><span>普通订单(非会员)</span></td>';
+                           } else if (content[i].rebateWay == 2) {
+                               contentStr +=
+                               '<td><span>普通订单(会员)</span></td>';
                            } else if (content[i].rebateWay == 1) {
                                contentStr +=
                                '<td><span>导流订单</span></td>';
@@ -274,10 +291,10 @@
                                '<td><span>会员订单</span></td>';
                            } else if (content[i].rebateWay == 4) {
                                contentStr +=
-                               '<td><span>普通订单(非会员纯支付码)</span></td>';
+                               '<td><span>非会员纯支付码</span></td>';
                            } else {
                                contentStr +=
-                               '<td><span>普通订单(会员纯支付码)</span></td>';
+                               '<td><span>会员纯支付码</span></td>';
                            }
                            if (content[i].completeDate == null) {
                                contentStr +=
@@ -288,7 +305,6 @@
                                + new Date(content[i].completeDate).format('yyyy-MM-dd HH:mm:ss')
                                + '</span></td>';
                            }
-
                            contentStr +=
                            '<td><span>' + content[i].merchant.name + '</span><br><span>('
                            + content[i].merchant.merchantSid + ')</span></td>'
@@ -320,7 +336,6 @@
                                (content[i].ljCommission - content[i].wxCommission
                                 - content[i].rebate) / 100;
                            }
-
                            contentStr +=
                            '<td>' + share + '</td>'
                            contentStr += '<td>' + content[i].scoreB + '</td>'
@@ -334,7 +349,6 @@
                                contentStr += '<td>已支付</td></tr>'
                            }
                            orderContent.innerHTML += contentStr;
-
                        }
                        $(".changeOrderToPaid").each(function (i) {
                            $(".changeOrderToPaid").eq(i).bind("click", function () {
@@ -406,7 +420,6 @@
         }
         return fmt;
     }
-
     function searchOrderByCriteria() {
         olOrderCriteria.offset = 1;
         init1 = 1;
@@ -439,9 +452,19 @@
         } else {
             olOrderCriteria.merchant = null;
         }
+        // zxf  2016/09/02   设置订单分类、id查询条件
+        if ($("#order-ID").val() != "" && $("#order-ID").val() != null) {
+            olOrderCriteria.orderSid = $("#order-ID").val();
+        } else {
+            olOrderCriteria.orderSid = null;
+        }
+        if ($("#remote-style").val() != "" && $("#remote-style").val() != null ) {
+            olOrderCriteria.rebateWay = $("#remote-style").val();
+        } else {
+            olOrderCriteria.rebateWay = null;
+        }
         getOffLineOrderByAjax(olOrderCriteria);
     }
-
     function searchOrderByState(state) {
         olOrderCriteria.offset = 1;
         if (state != null) {
@@ -495,4 +518,3 @@
 </script>
 </body>
 </html>
-

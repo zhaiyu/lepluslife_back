@@ -13,6 +13,7 @@ import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 
@@ -34,6 +35,7 @@ public class PosOrderService {
   @Inject
   private PosOrderRepository posOrderRepository;
 
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
   public Page findOrderByPage(PosOrderCriteria posOrderCriteria, int limit) {
     Sort sort = new Sort(Sort.Direction.DESC, "createdDate");
     return posOrderRepository

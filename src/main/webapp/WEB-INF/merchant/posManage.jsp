@@ -20,6 +20,7 @@
     <!--<link rel="stylesheet" href="css/bootstrap-datetimepicker.min.css">-->
     <link rel="stylesheet" href="${resourceUrl}/css/daterangepicker-bs3.css">
     <link type="text/css" rel="stylesheet" href="${resourceUrl}/css/commonCss.css"/>
+    <link type="text/css" rel="stylesheet" href="${resourceUrl}/css/jquery.page.css"/>
     <style>thead th, tbody td {
         text-align: center;
     }
@@ -44,11 +45,8 @@
                 <div class="row" style="margin-top: 30px">
                     <div class="form-group col-md-2">
                         <label>商户所在城市</label>
-                        <select class="form-control">
-                            <option>所在城市（全部）</option>
-                            <option>北京</option>
-                            <option>鞍山</option>
-                            <option>宁波</option>
+                        <select class="form-control" id="locationCity">
+                            <option value="">所在城市（全部）</option>
                         </select>
                     </div>
                     <div class="form-group col-md-5">
@@ -62,18 +60,18 @@
                     </div>
                     <div class="form-group col-md-2">
                         <label>乐加商户</label>
-                        <input type="text" class="form-control" placeholder="请输入商户名称或ID查询">
+                        <input type="text" id="merchant-name" class="form-control" placeholder="请输入商户名称或ID查询">
                     </div>
                     <div class="form-group col-md-2">
                         <label>佣金状态</label>
-                        <select class="form-control">
-                            <option>佣金状态（全部）</option>
-                            <option>已开通</option>
-                            <option>未开通</option>
+                        <select class="form-control" id="commission-state">
+                            <option value="">佣金状态（全部）</option>
+                            <option value="1">已开通</option>
+                            <option value="0">未开通</option>
                         </select>
                     </div>
                     <div class="form-group col-md-1">
-                        <button class="btn btn-primary" style="margin-top: 24px">查询</button>
+                        <button class="btn btn-primary" style="margin-top: 24px" onclick="searchOrderByCriteria()">查询</button>
                     </div>
                 </div>
                 <table class="table table-bordered table-hover">
@@ -91,49 +89,12 @@
                         <th>操作</th>
                     </tr>
                     </thead>
-                    <tbody>
-                    <tr>
-                        <td>21323</td>
-                        <td>21323</td>
-                        <td><span>棉花糖KTV</span><br><span>（231313123）</span></td>
-                        <td>2131231321</td>
-                        <td>18710089228</td>
-                        <td><span>2016.6.6</span><br><span>14:14:15</span></td>
-                        <td>已开通（6%）</td>
-                        <td>¥520</td>
-                        <td>¥5520</td>
-                        <td><input type="button" class="btn btn-xs btn-primary"
-                                   data-toggle="modal" data-target="#modifyCommissionWarn"
-                                   value="修改佣金"></td>
-                    </tr>
-                    <tr>
-                        <td>21323</td>
-                        <td>21323</td>
-                        <td><span>棉花糖KTV</span><br><span>（231313123）</span></td>
-                        <td>2131231321</td>
-                        <td>18710089228</td>
-                        <td><span>2016.6.6</span><br><span>14:14:15</span></td>
-                        <td>已开通（6%）</td>
-                        <td>¥520</td>
-                        <td>¥5520</td>
-                        <td><input type="button" class="btn btn-xs btn-primary"
-                                   data-toggle="modal" data-target="#openCommissionWarn"
-                                   value="开通佣金"></td>
-                    </tr>
+                    <tbody id="posContent">
                     </tbody>
                 </table>
-                <nav class="pull-right">
-                    <ul class="pagination pagination-lg">
-                        <li><a href="#" aria-label="Previous"><span aria-hidden="true">«</span></a>
-                        </li>
-                        <li><a href="#" class="focusClass">1</a></li>
-                        <li><a href="#">2</a></li>
-                        <li><a href="#">3</a></li>
-                        <li><a href="#">4</a></li>
-                        <li><a href="#">5</a></li>
-                        <li><a href="#" aria-label="Next"><span aria-hidden="true">»</span></a></li>
-                    </ul>
-                </nav>
+                <div class="tcdPageCode" style="display: inline;">
+                </div>
+                <div style="display: inline;"> 共有 <span id="totalElements"></span> 个</div>
             </div>
         </div>
     </div>
@@ -157,21 +118,23 @@
                         <label class="col-sm-2 col-sm-offset-2 control-label">终端号</label>
 
                         <div class="col-sm-4">
-                            <p>131312421</p>
+                            <p id="open-posid"></p>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 col-sm-offset-2 control-label">佣金比</label>
 
                         <div class="col-sm-6 form-inline">
-                            <input type="text" class="form-control">%
+                            <input type="text" id="open-commission" class="form-control">%
                         </div>
                     </div>
                 </form>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal">确认</button>
+                <button type="button" class="btn btn-primary" id="open-confirm"
+                        data-dismiss="modal">确认
+                </button>
             </div>
         </div>
     </div>
@@ -191,14 +154,14 @@
                         <label class="col-sm-2 col-sm-offset-2 control-label">终端号</label>
 
                         <div class="col-sm-4">
-                            <p>131312421</p>
+                            <p id="change-posid"></p>
                         </div>
                     </div>
                     <div class="form-group">
                         <label class="col-sm-2 col-sm-offset-2 control-label">佣金比</label>
 
                         <div class="col-sm-6 form-inline">
-                            <input type="text" class="form-control">%
+                            <input type="text" id="change-commission" class="form-control">%
                         </div>
                     </div>
                     <div class="form-group">
@@ -209,7 +172,9 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal">确认</button>
+                <button type="button" class="btn btn-primary" id="change-confirm"
+                        data-dismiss="modal">确认
+                </button>
             </div>
         </div>
     </div>
@@ -219,15 +184,32 @@
 <script src="${resourceUrl}/js/daterangepicker.js"></script>
 <!--<script src="js/bootstrap-datetimepicker.zh-CN.js"></script>-->
 <script src="${resourceUrl}/js/moment.min.js"></script>
+<script src="${resourceUrl}/js/jquery.page.js"></script>
 <script>
-    $(function () {
-//        tab切换
-        $('#myTab li:eq(0) a').tab('show');
-    });
+    var posCriteria = {};
+    posCriteria.offset = 1;
+    var posContent = document.getElementById("posContent");
+    $.ajax({
+               type: 'GET',
+               url: '/manage/city/ajax',
+               async: false,
+               dataType: 'json',
+               success: function (data) {
+                   console.log(data[0]);
+                   var dataStr1 = '',
+                           dataStr2 = '';
+                   $.each(data, function (i) {
+                       dataStr1 +=
+                       '<option value="' + data[i].id + '">' + data[i].name + '</option>';
+                   });
+                   $('#locationCity').append(dataStr1);
+               },
+               error: function (jqXHR) {
+                   alert('发生错误：' + jqXHR.status);
+               }
+           });
     //    时间选择器
     $(document).ready(function () {
-        $('#date-end span').html(moment().subtract('hours', 1).format('YYYY/MM/DD HH:mm:ss') + ' - '
-                                 + moment().format('YYYY/MM/DD HH:mm:ss'));
         $('#date-end').daterangepicker({
                                            maxDate: moment(), //最大时间
                                            dateLimit: {
@@ -268,6 +250,180 @@
                                      + end.format('YYYY/MM/DD HH:mm:ss'));
         });
     })
+    Date.prototype.format = function (fmt) {
+        var o = {
+            "M+": this.getMonth() + 1, //月份
+            "d+": this.getDate(), //日
+            "h+": this.getHours() % 12 == 0 ? 12 : this.getHours() % 12, //小时
+            "H+": this.getHours(), //小时
+            "m+": this.getMinutes(), //分
+            "s+": this.getSeconds(), //秒
+            "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+            "S": this.getMilliseconds() //毫秒
+        };
+        var week = {
+            "0": "\u65e5",
+            "1": "\u4e00",
+            "2": "\u4e8c",
+            "3": "\u4e09",
+            "4": "\u56db",
+            "5": "\u4e94",
+            "6": "\u516d"
+        };
+        if (/(y+)/.test(fmt)) {
+            fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+        }
+        if (/(E+)/.test(fmt)) {
+            fmt =
+            fmt.replace(RegExp.$1,
+                        ((RegExp.$1.length > 1) ? (RegExp.$1.length > 2 ? "\u661f\u671f" : "\u5468")
+                                : "") + week[this.getDay() + ""]);
+        }
+        for (var k in o) {
+            if (new RegExp("(" + k + ")").test(fmt)) {
+                fmt =
+                fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr((""
+                                                                                                 + o[k]).length)));
+            }
+        }
+        return fmt;
+    }
+    function getPosByAjax(posCriteria) {
+        posContent.innerHTML = "";
+        $.ajax({
+                   type: "post",
+                   url: "/manage/pos",
+                   async: false,
+                   data: JSON.stringify(posCriteria),
+                   contentType: "application/json",
+                   success: function (data) {
+                       var page = data.data;
+                       var content = page.content;
+                       var totalPage = page.totalPages;
+                       $("#totalElements").html(page.totalElements);
+                       if (totalPage == 0) {
+                           totalPage = 1;
+                       }
+                       initPage(posCriteria.offset, totalPage);
+                       for (i = 0; i < content.length; i++) {
+                           var contentStr = '<tr><td>' + content[i].posId + '</td>';
+                           contentStr += '<td>' + content[i].psamCard + '</td>';
+
+                           contentStr +=
+                           '<td><span>' + content[i].merchant.name + '</span><br><span>('
+                           + content[i].merchant.merchantSid + ')</span></td>'
+                           contentStr += '<td>' + content[i].posMerchantNo + '</td>';
+                           contentStr += '<td>' + content[i].phoneNumber + '</td>';
+                           contentStr +=
+                           '<td>'
+                           + new Date(content[i].createdDate).format('yyyy-MM-dd HH:mm:ss')
+                           + '</td>';
+                           if (content[i].ljCommission != null) {
+                               contentStr += '<td>已开通(' + content[i].ljCommission + '%)</td>';
+                           } else {
+                               contentStr += '<td>未开通</td>';
+                           }
+                           contentStr += '<td>' + content[i].normalOrderFlow / 100 + '</td>';
+                           contentStr += '<td>' + content[i].importOrderFlow / 100 + '</td>';
+                           if (content[i].ljCommission == null) {
+                               contentStr +=
+                               '<td><input type="hidden" class="id-hidden" value="'
+                               + content[i].posId
+                               + '"><input type="button" class="btn btn-xs btn-primary openCommission" data-toggle="modal" data-target="#openCommissionWarn" value="开通佣金"></td></tr>';
+                           } else {
+                               contentStr +=
+                               '<td><input type="hidden" class="id-hidden" value="'
+                               + content[i].posId
+                               + '"><input type="button" class="btn btn-xs btn-primary changeCommission" data-toggle="modal" data-target="#modifyCommissionWarn"value="修改佣金"></td></tr>';
+                           }
+                           posContent.innerHTML += contentStr;
+                       }
+                       $(".openCommission").each(function (i) {
+                           $(".openCommission").eq(i).bind("click", function () {
+                               var id = $(this).parent().find(".id-hidden").val();
+                               $("#open-posid").html(id);
+                               $("#open-confirm").bind("click", function () {
+                                   var commission = $("#open-commission").val();
+                                   $("#open-confirm").unbind("click");
+                                   $.ajax({
+                                              type: "get",
+                                              data: {id: id, commission: commission},
+                                              url: "/manage/pos/change_commission",
+                                              contentType: "application/json",
+                                              success: function (data) {
+                                                  alert(data.msg);
+                                                  getPosByAjax(posCriteria);
+                                              }
+                                          });
+                               });
+
+                           });
+                       });
+                       $(".changeCommission").each(function (i) {
+                           $(".changeCommission").eq(i).bind("click", function () {
+                               var id = $(this).parent().find(".id-hidden").val();
+                               $("#change-posid").html(id);
+                               $("#change-confirm").bind("click", function () {
+                                   $("#change-confirm").unbind("click");
+                                   var commission = $("#change-commission").val();
+                                   $.ajax({
+                                              type: "get",
+                                              data: {id: id, commission: commission},
+                                              url: "/manage/pos/change_commission",
+                                              contentType: "application/json",
+                                              success: function (data) {
+                                                  alert(data.msg);
+                                                  getPosByAjax(posCriteria);
+                                              }
+                                          });
+                               });
+                           });
+                       });
+                       ;
+                   }
+               });
+    }
+    getPosByAjax(posCriteria)
+
+    function initPage(page, totalPage) {
+        $('.tcdPageCode').unbind();
+        $(".tcdPageCode").createPage({
+                                         pageCount: totalPage,
+                                         current: page,
+                                         backFn: function (p) {
+                                             posCriteria.offset = p;
+                                             getPosByAjax(posCriteria);
+                                         }
+                                     });
+    }
+    function searchOrderByCriteria() {
+        posCriteria.offset = 1;
+        var dateStr = $('#date-end span').text().split("-");
+        if (dateStr != null && dateStr != '') {
+            var startDate = dateStr[0].replace(/-/g, "/");
+            var endDate = dateStr[1].replace(/-/g, "/");
+            posCriteria.startDate = startDate;
+            posCriteria.endDate = endDate;
+        }
+        if ($("#locationCity").val() != "" && $("#locationCity").val() != null) {
+            posCriteria.merchantLocation = $("#locationCity").val();
+        } else {
+            posCriteria.merchantLocation = null;
+        }
+        if ($("#merchant-name").val() != "" && $("#merchant-name").val() != null) {
+            posCriteria.merchant = $("#merchant-name").val();
+        } else {
+            posCriteria.merchant = null;
+        }
+
+        if ($("#commission-state").val() != "" && $("#commission-state").val() != null) {
+            posCriteria.state = $("#commission-state").val();
+        } else {
+            posCriteria.state = null;
+        }
+
+        getPosByAjax(posCriteria);
+    }
 </script>
 
 

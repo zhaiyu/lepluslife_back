@@ -62,6 +62,19 @@ public class OffLineOrderService {
               cb.equal(r.get("state"),
                        orderCriteria.getState()));
         }
+
+        // zxf 2016/09/02
+        if (!"".equals(orderCriteria.getOrderSid()) && orderCriteria.getOrderSid() != null) {
+          predicate.getExpressions().add(
+              cb.equal(r.get("orderSid"), orderCriteria.getOrderSid())
+          );
+        }
+        if (orderCriteria.getRebateWay() != null) {
+          predicate.getExpressions().add(
+              cb.equal(r.get("rebateWay"), orderCriteria.getRebateWay())
+          );
+        }
+
         //lss 2016/07/19
         if (orderCriteria.getAmount() != null) {
           predicate.getExpressions().add(
