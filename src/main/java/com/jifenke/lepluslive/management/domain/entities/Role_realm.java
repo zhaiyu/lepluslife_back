@@ -16,31 +16,33 @@ public class Role_realm {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
-  private String rolePercode;
+  private Long realmId;
 
-  private Long roleID;
+  private Long roleId;
+
+  public Long getRoleID() {
+    return roleId;
+  }
+
+  public void setRoleID(Long roleID) {
+    this.roleId = roleID;
+  }
+
+  public Long getRealmId() {
+
+    return realmId;
+  }
+
+  public void setRealmId(Long realmId) {
+    this.realmId = realmId;
+  }
 
   public Long getId() {
+
     return id;
   }
 
   public void setId(Long id) {
     this.id = id;
-  }
-
-  public String getRolePercode() {
-    return rolePercode;
-  }
-
-  public void setRolePercode(String rolePercode) {
-    this.rolePercode = rolePercode;
-  }
-
-  public Long getRoleID() {
-    return roleID;
-  }
-
-  public void setRoleID(Long roleID) {
-    this.roleID = roleID;
   }
 }

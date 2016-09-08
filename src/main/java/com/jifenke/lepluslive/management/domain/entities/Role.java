@@ -11,8 +11,8 @@ import javax.persistence.Table;
  * Created by Administrator on 2016/7/26.
  */
 @Entity
-@Table(name = "MANAGE_ROLE")
-public class ManageRole {
+@Table(name = "ROLE")
+public class Role {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)

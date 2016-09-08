@@ -120,68 +120,16 @@
                         <tr class="active">
                             <th>角色权限</th>
                         </tr>
-                        <c:if test="${roleRealmList.size()==0}">
+                        <c:if test="${realmList.size()==0}">
                             <tr>
                                 <td>此角色没有任何权限</td>
                             </tr>
                         </c:if>
 
-                        <c:forEach items="${roleRealmList}" var="rolePercode">
-
+                        <c:forEach items="${realmList}" var="realm">
                             <tr>
-
-
-                                <c:if test="${rolePercode=='index:query'}">
-                                    <td>首页</td>
-                                </c:if>
-                                <c:if test="${rolePercode=='product:query'}">
-                                    <td>商品管理</td>
-                                </c:if>
-                                <c:if test="${rolePercode=='merchant:query'}">
-                                    <td>周边商户</td>
-                                </c:if>
-                                <c:if test="${rolePercode=='merchant:edit'}">
-                                    <td>周边商户编辑</td>
-                                </c:if>
-                                <c:if test="${rolePercode=='order:query'}">
-                                    <td>订单管理</td>
-                                </c:if>
-
-                                <c:if test="${rolePercode=='onLineOrder:query'}">
-                                    <td>线上订单</td>
-                                </c:if>
-                                <c:if test="${rolePercode=='offLineOrder:query'}">
-                                    <td>线下订单</td>
-                                </c:if>
-                                <c:if test="${rolePercode=='financial:query'}">
-                                    <td>财务结算</td>
-                                </c:if>
-                                <c:if test="${rolePercode=='financial:transfer'}">
-                                    <td>财务结算转账</td>
-                                </c:if>
-                                <c:if test="${rolePercode=='share:query'}">
-                                    <td>分润单</td>
-                                </c:if>
-                                <c:if test="${rolePercode=='topic:query'}">
-                                    <td>专题模块</td>
-                                </c:if>
-                                <c:if test="${rolePercode=='lj_user:query'}">
-                                    <td>会员管理</td>
-                                </c:if>
-                                <c:if test="${rolePercode=='weixin:query'}">
-                                    <td>公众号推荐</td>
-                                </c:if>
-                                <c:if test="${rolePercode=='partner:query'}">
-                                    <td>合伙人管理</td>
-                                </c:if>
-                                <c:if test="${rolePercode=='management:query'}">
-                                    <td>权限管理</td>
-                                </c:if>
-
-
+                                    <td>${realm.name}</td>
                             </tr>
-
-
                         </c:forEach>
                         </thead>
                         <tbody id="merchantContent">

@@ -1,6 +1,6 @@
 package com.jifenke.lepluslive.management.service;
 
-import com.jifenke.lepluslive.management.domain.entities.ManageRole;
+import com.jifenke.lepluslive.management.domain.entities.Role;
 import com.jifenke.lepluslive.management.domain.entities.Role_realm;
 import com.jifenke.lepluslive.management.repository.RoleRealmRepository;
 import com.jifenke.lepluslive.management.repository.RoleRepository;
@@ -33,7 +33,7 @@ public class RoleService {
 
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-  public void saveRole(ManageRole role) {
+  public void saveRole(Role role) {
     roleRepository.save(role);
   }
 
@@ -45,7 +45,7 @@ public class RoleService {
     roleRealmRepository.save(list);
   }
 
-  public List<ManageRole> findAllRole() {
+  public List<Role> findAllRole() {
     return roleRepository.findAll();
   }
 
@@ -67,7 +67,7 @@ public class RoleService {
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public void deleteRole(Long id) {
-    ManageRole role = new ManageRole();
+    Role role = new Role();
     role = roleRepository.findOne(id);
     if (role != null) {
       roleRepository.delete(role);
@@ -76,7 +76,7 @@ public class RoleService {
 
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-  public ManageRole findRoleById(Long id) {
+  public Role findRoleById(Long id) {
     return roleRepository.findOne(id);
   }
 }

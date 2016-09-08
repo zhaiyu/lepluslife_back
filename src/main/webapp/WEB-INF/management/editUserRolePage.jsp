@@ -111,31 +111,32 @@
                 </div>
                 <div class="form-group col-md-3"></div>
             </div>
-            <ul id="myTab1" class="nav nav-tabs">
-                <li><a href="#lunbotu" data-toggle="tab">重新定义${managementUser.name}角色</a></li>
-            </ul>
             <div id="myTabContent" class="tab-content">
                 <div class="tab-pane fade in active" id="lunbotu">
                     <table class="table table-bordered table-hover">
                         <thead>
+                        <button type="button" class="btn btn-default"
+                                onclick="goBack()">返回账号管理
+                        </button>
+                        <tr>
+                            <td><span>重新定义${manageUser.name}的角色</span></td>
+                        </tr>
 
-                        <c:forEach items="${manageRoleList}" var="ManageRole">
+                        <c:forEach items="${roleList}" var="role">
                             <tr>
                                 <td>
-                                    <input type="checkbox" name="newUserRole"
-                                           value="${ManageRole.id}">${ManageRole.roleName}
+                                    <div class="">
+                                        <input type="checkbox" name="box" id="box1"
+                                               value="${role.id}"/>${role.roleName}
+                                    </div>
                                 </td>
                             </tr>
                         </c:forEach>
-
-                        <button type="button" class="btn btn-default"
-                                onclick=" submitEdit()">提交
+                        &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;  &nbsp;
+                        <button type="button" class="btn btn-primary"
+                                onclick="submitUserRole()">
+                            提交
                         </button>
-                        &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-                        <button type="button" class="btn btn-default"
-                                onclick="goback()">取消
-                        </button>
-
                         </thead>
                         <tbody id="merchantContent">
                         </tbody>
@@ -154,18 +155,19 @@
 <!-- Include all compiled plugins (below), or include individual files as needed -->
 <script src="${resourceUrl}/js/bootstrap.min.js"></script>
 <script>
-    function submitEdit() {
-        var id =${managementUser.id};
-        var id_array = new Array();
-        $('input[name="newUserRole"]:checked').each(function () {
-            id_array.push($(this).val());//向数组中添加元素
-        });
-        location.href = "/manage/editUserRole?roleIdArray=" + id_array + "&&id=" + id;
+    function goBack() {
 
-    }
-    function goback() {
         location.href = "/manage/managementUserList";
     }
+    function submitUserRole(){
+        var id_array = new Array();
+        var manageUserId=${manageUser.id};
+        $('input[name="box"]:checked').each(function () {
+            id_array.push($(this).val());//向数组中添加元素
+        });
+
+        location.href = "/manage/editUserRole?manageUserId=" + manageUserId + "&&" + "roleIdArray=" + id_array;
+   }
 </script>
 </body>
 </html>

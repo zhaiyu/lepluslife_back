@@ -57,7 +57,7 @@
                         <div class="form-group">
                             <label class="col-sm-2 control-label" style="font-size: large">
                                 <div class="form-group">
-                                    <c:forEach items="${manageUserList}" var="managementUser">
+                                    <c:forEach items="${managementUserList}" var="managementUser">
                                         <div class="">
                                             <input type="hidden" name="managementUserList"
                                                    value="${managementUser.name}"/>
@@ -68,40 +68,30 @@
                                         <td>
                                             <div class="col-sm-10"><input type="text"
                                                                           class="form-control"
-                                                                          id="userName" name="name">
+                                                                          id="realmName" name="name">
                                             </div>
                                         </td>
-                                        <td><label for="userName">账户</label></td>
+                                        <td><label for="realmName">权限名称</label></td>
                                     </tr>
                                 </div>
                                 <div class="form-group">
                                     <tr>
                                         <td>
-                                            <div class="col-sm-10"><input type="password"
+                                            <div class="col-sm-10"><input type="text"
                                                                           class="form-control"
-                                                                          id="userPassWord"
-                                                                          name="password"></div>
+                                                                          id="rolePercode"
+                                                                          name="rolePercode"></div>
                                         </td>
-                                        <td><label for="userPassWord">密码</label></td>
+                                        <td><label for="rolePercode">rolePercode</label></td>
                                     </tr>
                                 </div>
-                                <div class="form-group">
-                                    <tr>
-                                        <td>
-                                            <div class="col-sm-10"><input type="password"
-                                                                          class="form-control"
-                                                                          id="userPassWord2"
-                                                                          name="password"></div>
-                                        </td>
-                                        <td><label for="userPassWord2">确认密码</label></td>
-                                    </tr>
-                                </div>
+
                             </label>
 
                             <div class="form-group">
                                 <div class="col-sm-offset-2 col-sm-4">
                                     <button type="button" class="btn btn-primary"
-                                            onclick="submitUser()">
+                                            onclick="submitRealm()">
                                         提交
                                     </button>
                                     <button type="button" class="btn btn-default"
@@ -121,40 +111,17 @@
 <script src="${resourceUrl}/js/bootstrap.min.js"></script>
 <script>
 
-    function submitUser() {
-        var userName = $("#userName").val();
-        var userPassWord = $("#userPassWord").val();
-        var userPassWord2 = $("#userPassWord2").val();
-        var managementUserList=new Array();
-        $('input[name="managementUserList"]').each(function () {
-            managementUserList.push($(this).val());//向数组中添加元素
-        });
-
-        var userName_array = new Array();
-        $('input[name="userNames"]').each(function () {
-            userName_array.push($(this).val());//向数组中添加元素
-        });
-        function isCon(arr, val) {
-            for (var i = 0; i < arr.length; i++) {
-                if (arr[i] == val)
-                    return true;
-            }
-            return false;
-        }
-            if (userPassWord == userPassWord2) {
-                if(!isCon(managementUserList,userName)){
-                    location.href = "/manage/addUser?userName=" + userName + '&&' + 'userPassword=' + userPassWord;}
-                else{
-                    alert("用户名重复");
-                }
-            } else {
-                alert("两次密码输入不一致");
-            }
-
-
-    }
     function goBack() {
-        location.href = "/manage/managementUserList"
+        location.href = "/manage/realmList"
+    }
+    function submitRealm(){
+        var name=$("#realmName").val();
+        var rolePercode=$("#rolePercode").val();
+        var id=${realm.id};
+        if(name!=null&&rolePercode!=null){
+            location.href = "/manage/editRealm?id=" + id +  '&&' + 'name='+name + '&&' + 'rolePercode=' + rolePercode;
+        }
+
     }
 </script>
 </body>
