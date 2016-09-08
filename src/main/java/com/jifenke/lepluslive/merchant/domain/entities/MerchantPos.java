@@ -56,7 +56,17 @@ public class MerchantPos {
 
   private String bankNo;//银行卡号
 
+  private Integer posType; //0 餐娱 1一般 2民生
+
   private Date createdDate;
+
+  public Integer getPosType() {
+    return posType;
+  }
+
+  public void setPosType(Integer posType) {
+    this.posType = posType;
+  }
 
   public Date getCreatedDate() {
     return createdDate;

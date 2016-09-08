@@ -356,7 +356,7 @@
       <div class="modal-body">
         <form class="form-horizontal">
           <div class="form-group">
-            <label class="col-sm-3 control-label">商品序号</label>
+            <label class="col-sm-3 control-label">pos商户号</label>
             <div class="col-sm-6">
               <input type="text" class="form-control">
             </div>
