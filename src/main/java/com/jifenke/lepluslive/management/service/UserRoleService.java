@@ -30,8 +30,8 @@ public class UserRoleService {
   }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-  public void saveUser_role(User_role user_role) {
-    userRoleRepository.saveAndFlush(user_role);
+  public void saveUser_role(List<User_role> user_roleList) {
+    userRoleRepository.save(user_roleList);
   }
 
 

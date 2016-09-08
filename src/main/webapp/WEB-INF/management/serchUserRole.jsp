@@ -123,19 +123,19 @@
                 <div class="tab-pane fade in active" id="lunbotu">
                     <table class="table table-bordered table-hover">
                         <thead>
-                        <c:if test="${roleList.size()==0}">
+                        <c:if test="${roleSet.size()==0}">
                             <tr>
                                 <td>此账号没有绑定任何角色</td>
                             </tr>
                         </c:if>
 
-                        <c:forEach items="${roleList}" var="ManageRole">
+                        <c:forEach items="${roleList}" var="role">
                             <tr>
-                                <td><span>${ManageRole.roleName}</span></td>
+                                <td><span>${role.roleName}</span></td>
                             </tr>
                         </c:forEach>
                         </thead>
-                        <tbody id="merchantContent">
+                        <tbody>
                         </tbody>
                     </table>
                 </div>
@@ -153,7 +153,6 @@
 <script src="${resourceUrl}/js/bootstrap.min.js"></script>
 <script>
     function goBack() {
-
         location.href = "/manage/managementUserList";
     }
 </script>

@@ -1,16 +1,16 @@
 package com.jifenke.lepluslive.shiro.config;
 
+import com.jifenke.lepluslive.management.domain.entities.Realm;
+import com.jifenke.lepluslive.management.domain.entities.Role_realm;
 import com.jifenke.lepluslive.management.domain.entities.User_role;
-import com.jifenke.lepluslive.management.repository.RoleRealmRepository;
-import com.jifenke.lepluslive.management.repository.RoleRepository;
+import com.jifenke.lepluslive.management.repository.RealmRepository;
+import com.jifenke.lepluslive.management.repository.Role_realmRepository;
 import com.jifenke.lepluslive.management.repository.UserRoleRepository;
 import com.jifenke.lepluslive.user.domain.entities.ManageUser;
 import com.jifenke.lepluslive.user.repository.ManageUserRepository;
-import com.jifenke.lepluslive.user.service.ManageUserService;
 
 import net.sf.ehcache.CacheManager;
 
-import org.apache.shiro.SecurityUtils;
 import org.apache.shiro.authc.AuthenticationException;
 import org.apache.shiro.authc.AuthenticationInfo;
 import org.apache.shiro.authc.AuthenticationToken;
@@ -22,15 +22,12 @@ import org.apache.shiro.cache.ehcache.EhCacheManager;
 import org.apache.shiro.realm.AuthorizingRealm;
 import org.apache.shiro.subject.PrincipalCollection;
 import org.springframework.beans.BeansException;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.ApplicationContext;
 import org.springframework.context.ApplicationContextAware;
-import org.springframework.stereotype.Component;
 
 import java.util.ArrayList;
 import java.util.List;
 
-import javax.inject.Inject;
 
 /**
  * Created by wcg on 16/3/31.
@@ -46,50 +43,54 @@ public class MyShiroRealm extends AuthorizingRealm implements ApplicationContext
     List<String> permissions = new ArrayList<String>();
     String userName = (String) principalCollection.getPrimaryPrincipal();
     if (userName.equals("root")) {
-      permissions.add("index:query");
-      permissions.add("product:query");
-      permissions.add("merchant:query");
-      permissions.add("merchant:edit");
-      permissions.add("order:query");
-      permissions.add("onLineOrder:query");
-      permissions.add("offLineOrder:query");
-      permissions.add("financial:query");
-      permissions.add("financial:transfer");
-      permissions.add("share:query");
-      permissions.add("topic:query");
-      permissions.add("lj_user:query");
-      permissions.add("weixin:query");
-      permissions.add("partner:query");
-      permissions.add("SalesStaff:query");
+      RealmRepository
+          realmRepository =
+          (RealmRepository) applicationContext.getBean("realmRepository");
+      List<Realm> realmIdList = realmRepository.findAll();
+      List<String> rolePercodes = new ArrayList<String>();
+      for (Realm realmId : realmIdList) {
+        rolePercodes.add(realmId.getRolePercode());
+      }
+      permissions.addAll(rolePercodes);
       permissions.add("management:query");
-      permissions.add("market_center:query");
-      permissions.add("app_manage:query");
-      permissions.add("system_config:query");
-      permissions.add("button_manage:query");
-      permissions.add("multiple_message:query");
-//      permissions.add("multiple_message:query");
-      permissions.add("wx_reply:query");
     } else {
       ManageUserRepository manageUserRepository =
           (ManageUserRepository) applicationContext.getBean("manageUserRepository");
-      ManageUser manageUser = manageUserRepository.findUserByName(userName);
       UserRoleRepository
           userRoleRepository =
           (UserRoleRepository) applicationContext.getBean("userRoleRepository");
-      RoleRealmRepository
-          roleRealmRepository =
-          (RoleRealmRepository) applicationContext.getBean("roleRealmRepository");
+      Role_realmRepository
+          role_realmRepository =
+          (Role_realmRepository) applicationContext.getBean("role_realmRepository");
+      RealmRepository
+          realmRepository =
+          (RealmRepository) applicationContext.getBean("realmRepository");
+      ManageUser manageUser = manageUserRepository.findUserByName(userName);
 
+//获得角色ID
       List<User_role> user_roleList = userRoleRepository.findUserRoleByUserId(manageUser.getId());
       List<Long> roleIdList = new ArrayList<Long>();
 
       for (int i = 0; i < user_roleList.size(); i++) {
-        roleIdList.add(user_roleList.get(i).getRoleID());
+        roleIdList.add(user_roleList.get(i).getRoleId());
+      }
+//获得权限ID
+      List<Long> realmIdList = new ArrayList<Long>();
+
+      for (Long roleId : roleIdList) {
+        List<Role_realm> realmIdList2 = role_realmRepository.findRealmIdByRoleId(roleId);
+        for (Role_realm realm : realmIdList2) {
+          realmIdList.add(realm.getRealmId());
+        }
       }
 
-      for (int i = 0; i < roleIdList.size(); i++) {
-        permissions.addAll(roleRealmRepository.findRealmByID(roleIdList.get(i)));
+//获得权限rolePercode
+
+      List<String> rolePercodes = new ArrayList<String>();
+      for (Long realmId : realmIdList) {
+        rolePercodes.add(realmRepository.findOne(realmId).getRolePercode());
       }
+      permissions.addAll(rolePercodes);
     }
     SimpleAuthorizationInfo simpleAuthorizationInfo = new SimpleAuthorizationInfo();
     simpleAuthorizationInfo.addStringPermissions(permissions);
