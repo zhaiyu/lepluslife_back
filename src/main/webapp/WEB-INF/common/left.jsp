@@ -45,6 +45,7 @@
         top: 0;
         left: 0;
         overflow: auto;
+        padding-bottom: 150px;
     }
 
     .left_menu ul li {
@@ -268,23 +269,13 @@
                 </div>
             </li>
         </shiro:hasPermission>
-        <%--<li><h4 class="M7"><span></span>线下订单</h4></li>--%>
-        <%--<li><h4 class="M8"><span></span>财务结算</h4></li>--%>
-        <%--<li><h4 class="M10"><span></span>分润单</h4></li>--%>
+        <li><h4 class="M6"><span></span>数据中心</h4>
 
-        <%--<shiro:hasPermission name="weixin:query">--%>
-        <%--<li><h4 class="M9"><span></span>公众号及推荐</h4></li>--%>
-        <%--</shiro:hasPermission>--%>
-        <%--<shiro:hasPermission name="management:query">--%>
-        <%--<li><h4 class="M13"><span></span>权限管理</h4></li>--%>
-        <%--</shiro:hasPermission>--%>
-        <%--<li>--%>
-        <%--<h4 class="M9"><span></span>公众号配置</h4>--%>
-        <%--<div class="list-item none">--%>
-        <%--<a href='/weixin/menu/list'>自定义菜单</a>--%>
-        <%--<a href='/weixin/reply/list'>微信回复规则</a>--%>
-        <%--</div>--%>
-        <%--</li>--%>
+            <div class="list-item none none9">
+                <a href='/manage/member_data'>会员分析</a>
+            </div>
+        </li>
+
     </ul>
 </div>
 <script>navList(12);</script>
@@ -327,6 +318,11 @@
             || url.indexOf("/weixin/imageText") != -1 || url.indexOf("managementUserList") != -1) {
             $(".none7").parent('li').addClass('selected');
             $(".none7").slideDown(300);
+        }
+        if (url.indexOf("/manage/member_data") != -1 || url.indexOf("/weixin/reply/list") != -1
+            || url.indexOf("/weixin/imageText") != -1 || url.indexOf("managementUserList") != -1) {
+            $(".none9").parent('li').addClass('selected');
+            $(".none9").slideDown(300);
         }
 
 //        数组

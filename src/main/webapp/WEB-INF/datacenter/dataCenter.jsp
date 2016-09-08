@@ -112,7 +112,7 @@
                       });
 
     // 异步加载数据
-    $.get('/manage/memberdata/count').done(function (data) {
+    $.get('/manage/member_data/count').done(function (data) {
         // 填入数据
         myChart.setOption({
                               series: [{

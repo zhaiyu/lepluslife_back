@@ -29,7 +29,7 @@ public class MemberDataController {
   /*
    *  跳转到展示页面
    */
-  @RequestMapping("/memberdata")
+  @RequestMapping("/member_data")
   public ModelAndView userData() {
     return MvUtil.go("/datacenter/dataCenter");
   }
@@ -38,7 +38,7 @@ public class MemberDataController {
    * 统计消费会员数据
    */
   @RequiresPermissions("financial:transfer")
-  @RequestMapping(value = "/memberdata/count", method = RequestMethod.GET)
+  @RequestMapping(value = "/member_data/count", method = RequestMethod.GET)
   @ResponseBody
   public List doBarChart() {
     return  memberDataService.doBarChart();
