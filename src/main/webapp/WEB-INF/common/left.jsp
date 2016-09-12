@@ -305,7 +305,7 @@
             $(".none5").parent('li').addClass('selected');
             $(".none5").slideDown(300);
         }
-        if (url.indexOf("partner") != -1 || url.indexOf("user") != -1
+        if (url.indexOf("partner") != -1 || url.indexOf("/manage/user") != -1
             || url.indexOf("sales") != -1) {
             $(".none4").parent('li').addClass('selected');
             $(".none4").slideDown(300);
