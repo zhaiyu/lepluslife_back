@@ -100,4 +100,36 @@ public class MerchantPosService {
     merchantPos.setLjCommission(commission);
     merchantPosRepository.save(merchantPos);
   }
+
+  @Transactional(propagation = Propagation.REQUIRED,readOnly = false)
+  public void savePosMachine(MerchantPos merchantPos) {
+    if(merchantPos.getId()==null) {
+      merchantPos.setCreatedDate(new Date());
+      merchantPosRepository.save(merchantPos);
+    }else {
+      MerchantPos existMerchantPos= merchantPosRepository.findById(merchantPos.getId());
+      existMerchantPos.setType(merchantPos.getType());
+      existMerchantPos.setPosId(merchantPos.getPosId());
+      existMerchantPos.setPosMerchantNo(merchantPos.getPosMerchantNo());
+      existMerchantPos.setPsamCard(merchantPos.getPsamCard());
+      existMerchantPos.setPosType(merchantPos.getPosType());
+      existMerchantPos.setCeil(merchantPos.getCeil());
+      existMerchantPos.setPosCommission(merchantPos.getPosCommission());
+      existMerchantPos.setPhoneNumber(merchantPos.getPhoneNumber());
+      existMerchantPos.setBdCommission(merchantPos.getBdCommission());
+      existMerchantPos.setAliCommission(merchantPos.getAliCommission());
+      existMerchantPos.setWxCommission(merchantPos.getWxCommission());
+    }
+  }
+
+  @Transactional(propagation = Propagation.REQUIRED,readOnly = false)
+  public void saveLjCommision(MerchantPos merchantPos) {
+    MerchantPos existMerchantPos = merchantPosRepository.findById(merchantPos.getId());
+    existMerchantPos.setLjCommission(merchantPos.getLjCommission());
+  }
+
+  @Transactional(propagation = Propagation.REQUIRED,readOnly = true)
+  public MerchantPos findPosById(Long id) {
+    return merchantPosRepository.findById(id);
+  }
 }
