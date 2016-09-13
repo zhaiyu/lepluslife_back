@@ -122,7 +122,7 @@
                                     <div class="btn clearfix">
                                         <input type="button" class="btn btn-default pull-left" value="下载" onclick="fileDownload('licenseImg-img')">
                                         <div class="pull-right pic-right-btn">
-                                            <input id="licenseImg" onclick="fileUpload('licenseImg',0,1,0)" name="file" type="file" class="btn">
+                                            <input id="licenseImg" onclick="fileUpload('licenseImg')" name="file" type="file" class="btn">
                                             <input type="button" class="btn btn-primary" value="上传">
                                         </div>
                                     </div>
@@ -133,7 +133,7 @@
                                     <div class="btn clearfix">
                                         <input type="button" class="btn btn-default pull-left" value="下载" onclick="fileDownload('idCardImg-img')">
                                         <div class="pull-right pic-right-btn">
-                                            <input id="idCardImg" onclick="fileUpload('idCardImg',0,2,0)" name="file" type="file" class="btn">
+                                            <input id="idCardImg" onclick="fileUpload('idCardImg')" name="file" type="file" class="btn">
                                             <input type="button" class="btn btn-primary" value="上传">
                                         </div>
                                     </div>
@@ -144,7 +144,7 @@
                                     <div class="btn clearfix">
                                         <input type="button" class="btn btn-default pull-left" value="下载" onclick="fileDownload('taxRegistrationImg-img')">
                                         <div class="pull-right pic-right-btn">
-                                            <input id="taxRegistrationImg" onclick="fileUpload('taxRegistrationImg',0,3,0)" name="file" type="file" class="btn">
+                                            <input id="taxRegistrationImg" onclick="fileUpload('taxRegistrationImg')" name="file" type="file" class="btn">
                                             <input type="button" class="btn btn-primary" value="上传">
                                         </div>
                                     </div>
@@ -155,7 +155,7 @@
                                     <div class="btn clearfix">
                                         <input type="button" class="btn btn-default pull-left" value="下载" onclick="fileDownload('bankIdCardImg-img')">
                                         <div class="pull-right pic-right-btn">
-                                            <input id="bankIdCardImg" onclick="fileUpload('bankIdCardImg',0,4,0)" name="file"  type="file" class="btn">
+                                            <input id="bankIdCardImg" onclick="fileUpload('bankIdCardImg')" name="file"  type="file" class="btn">
                                             <input type="button" class="btn btn-primary" value="上传">
                                         </div>
                                     </div>
@@ -166,7 +166,7 @@
                                     <div class="btn clearfix">
                                         <input type="button" class="btn btn-default pull-left" value="下载"  onclick="fileDownload('orgConstructionImg-img')">
                                         <div class="pull-right pic-right-btn">
-                                            <input id="orgConstructionImg" onclick="fileUpload('orgConstructionImg',0,5,0)" name="file" type="file" class="btn">
+                                            <input id="orgConstructionImg" onclick="fileUpload('orgConstructionImg')" name="file" type="file" class="btn">
                                             <input type="button" class="btn btn-primary" value="上传">
                                         </div>
                                     </div>
@@ -177,7 +177,7 @@
                                     <div class="btn clearfix">
                                         <input type="button" class="btn btn-default pull-left" value="下载" onclick="fileDownload('bankCardImg-img')">
                                         <div class="pull-right pic-right-btn">
-                                            <input id="bankCardImg" onclick="fileUpload('bankCardImg',0,6,0)" name="file" type="file" class="btn">
+                                            <input id="bankCardImg" onclick="fileUpload('bankCardImg')" name="file" type="file" class="btn">
                                             <input type="button" class="btn btn-primary" value="上传">
                                         </div>
                                     </div>
@@ -197,7 +197,7 @@
                                     <div class="btn clearfix">
                                         <input type="button" class="btn btn-default pull-left" value="下载" onclick="fileDownload('platServerProcImg1-img')">
                                         <div class="pull-right pic-right-btn">
-                                            <input id="platServerProcImg1" name="file" type="file" class="btn" onclick="fileUpload('platServerProcImg1',1,1,0)">
+                                            <input id="platServerProcImg1" name="file" type="file" class="btn" onclick="fileUpload('platServerProcImg1')">
                                             <input type="button" class="btn btn-primary" value="上传">
                                         </div>
                                     </div>
@@ -207,7 +207,7 @@
                                     <div class="btn clearfix">
                                         <input type="button" class="btn btn-default pull-left" value="下载" onclick="fileDownload('platServerProcImg2-img')">
                                         <div class="pull-right pic-right-btn">
-                                            <input id="platServerProcImg2" name="file" type="file" class="btn" onclick="fileUpload('platServerProcImg2',1,1,1)">
+                                            <input id="platServerProcImg2" name="file" type="file" class="btn" onclick="fileUpload('platServerProcImg2')">
                                             <input type="button" class="btn btn-primary" value="上传">
                                         </div>
                                     </div>
@@ -217,7 +217,7 @@
                                     <div class="btn clearfix">
                                         <input type="button" class="btn btn-default pull-left" value="下载" onclick="fileDownload('platServerProcImg3-img')">
                                         <div class="pull-right pic-right-btn">
-                                            <input id="platServerProcImg3" name="file" type="file" class="btn"  onclick="fileUpload('platServerProcImg3',1,1,2)">
+                                            <input id="platServerProcImg3" name="file" type="file" class="btn"  onclick="fileUpload('platServerProcImg3')">
                                             <input type="button" class="btn btn-primary" value="上传">
                                         </div>
                                     </div>
@@ -227,7 +227,7 @@
                                     <div class="btn clearfix">
                                         <input type="button" class="btn btn-default pull-left" value="下载" onclick="fileDownload('platServerProcImg4-img')">
                                         <div class="pull-right pic-right-btn">
-                                            <input id="platServerProcImg4" name="file" type="file" class="btn" onclick="fileUpload('platServerProcImg4',1,1,3)">
+                                            <input id="platServerProcImg4" name="file" type="file" class="btn" onclick="fileUpload('platServerProcImg4')">
                                             <input type="button" class="btn btn-primary" value="上传">
                                         </div>
                                     </div>
@@ -237,7 +237,7 @@
                                     <div class="btn clearfix">
                                         <input type="button" class="btn btn-default pull-left" value="下载" onclick="fileDownload('platServerProcImg5-img')">
                                         <div class="pull-right pic-right-btn">
-                                            <input id="platServerProcImg5" name="file" type="file" class="btn"  onclick="fileUpload('platServerProcImg5',1,1,4)">
+                                            <input id="platServerProcImg5" name="file" type="file" class="btn"  onclick="fileUpload('platServerProcImg5')">
                                             <input type="button" class="btn btn-primary" value="上传">
                                         </div>
                                     </div>
@@ -252,7 +252,7 @@
                                     <div class="btn clearfix">
                                         <input type="button" class="btn btn-default pull-left" value="下载" onclick="fileDownload('mercBaseInfoImg1-img')">
                                         <div class="pull-right pic-right-btn">
-                                            <input id="mercBaseInfoImg1" name="file" type="file" class="btn"  onclick="fileUpload('mercBaseInfoImg1',1,2,0)">
+                                            <input id="mercBaseInfoImg1" name="file" type="file" class="btn"  onclick="fileUpload('mercBaseInfoImg1')">
                                             <input type="button" class="btn btn-primary" value="上传">
                                         </div>
                                     </div>
@@ -262,7 +262,7 @@
                                     <div class="btn clearfix">
                                         <input type="button" class="btn btn-default pull-left" value="下载"  onclick="fileDownload('mercBaseInfoImg2-img')">
                                         <div class="pull-right pic-right-btn">
-                                            <input id="mercBaseInfoImg2" name="file" type="file" class="btn" onclick="fileUpload('mercBaseInfoImg2',1,2,1)">
+                                            <input id="mercBaseInfoImg2" name="file" type="file" class="btn" onclick="fileUpload('mercBaseInfoImg2')">
                                             <input type="button" class="btn btn-primary" value="上传">
                                         </div>
                                     </div>
@@ -277,7 +277,7 @@
                                     <div class="btn clearfix">
                                         <input type="button" class="btn btn-default pull-left" value="下载" onclick="fileDownload('cnepaySpecialMercInfoImg1-img')">
                                         <div class="pull-right pic-right-btn">
-                                            <input id="cnepaySpecialMercInfoImg1" name="file" type="file" class="btn" onclick="fileUpload('cnepaySpecialMercInfoImg1',1,3,0)">
+                                            <input id="cnepaySpecialMercInfoImg1" name="file" type="file" class="btn" onclick="fileUpload('cnepaySpecialMercInfoImg1')">
                                             <input type="button" class="btn btn-primary" value="上传">
                                         </div>
                                     </div>
@@ -287,7 +287,7 @@
                                     <div class="btn clearfix">
                                         <input type="button" class="btn btn-default pull-left" value="下载" onclick="fileDownload('cnepaySpecialMercInfoImg2-img')">
                                         <div class="pull-right pic-right-btn">
-                                            <input id="cnepaySpecialMercInfoImg2" name="file"  type="file" class="btn" onclick="fileUpload('cnepaySpecialMercInfoImg2',1,3,1)">
+                                            <input id="cnepaySpecialMercInfoImg2" name="file"  type="file" class="btn" onclick="fileUpload('cnepaySpecialMercInfoImg2')">
                                             <input type="button" class="btn btn-primary" value="上传">
                                         </div>
                                     </div>
@@ -297,7 +297,7 @@
                                     <div class="btn clearfix">
                                         <input type="button" class="btn btn-default pull-left" value="下载" onclick="fileDownload('cnepaySpecialMercInfoImg3-img')">
                                         <div class="pull-right pic-right-btn">
-                                            <input id="cnepaySpecialMercInfoImg3" name="file" type="file" class="btn" onclick="fileUpload('cnepaySpecialMercInfoImg3',1,3,2)">
+                                            <input id="cnepaySpecialMercInfoImg3" name="file" type="file" class="btn" onclick="fileUpload('cnepaySpecialMercInfoImg3')">
                                             <input type="button" class="btn btn-primary" value="上传">
                                         </div>
                                     </div>
@@ -312,7 +312,7 @@
                                     <div class="btn clearfix">
                                         <input type="button" class="btn btn-default pull-left" value="下载" onclick="fileDownload('accountAuthorizationImg-img')">
                                         <div class="pull-right pic-right-btn">
-                                            <input id="accountAuthorizationImg" name="file" type="file" class="btn" onclick="fileUpload('accountAuthorizationImg',1,4,0)">
+                                            <input id="accountAuthorizationImg" name="file" type="file" class="btn" onclick="fileUpload('accountAuthorizationImg')">
                                             <input type="button" class="btn btn-primary" value="上传">
                                         </div>
                                     </div>
@@ -686,10 +686,10 @@
 
     //  图片管理部分
     var merchantId = "${merchantId}";
-    function fileUpload(id,type,imgType,index) {                            // id (标签id) | type 图片大分类 | imgType 图片小分类 | index 图片位置
+    function fileUpload(id) {                            // id (标签id)
         $("#"+id).fileupload({
-                                 url:"/manage/merchant/saveImage",                   //文件上传地址(input的data-url)
-                                 formData:{merchantId:merchantId,type:type,imgType:imgType,index:index},  //参数 type  0-营业执照   1-签约协议
+                                 url:"/manage/merchant/saveImage",
+                                 formData:{merchantId:merchantId,fieldName:id},
                                  done:function(e,result){
                                      var url = "${ossImageReadRoot}/"+JSON.stringify(result.result.data).replace("\"",'').replace("\"",'');
                                      $("#"+id+"-img").attr("src",url);
@@ -709,7 +709,7 @@
 
     function loadLicensePic() {
         $.ajax({
-                   url:"/manage/merchant/loadLiceImg",
+                   url:"/manage/merchant/loadPosImg",
                    type:"get",
                    data:{merchantId:merchantId},
                    contentType:"application/json",
@@ -726,17 +726,7 @@
                        $("#bankIdCardImg-img").attr("src",bankIdCardImg);
                        $("#orgConstructionImg-img").attr("src",orgConstructionImg);
                        $("#bankCardImg-img").attr("src",bankCardImg);
-                   }
-               });
-    }
 
-    function loadProtocolPic() {
-        $.ajax({
-                   url:"/manage/merchant/loadProtImg",
-                   type:"get",
-                   data:{merchantId:merchantId},
-                   contentType:"application/json",
-                   success:function(data) {
                        var platServerProcImg1 = "${ossImageReadRoot}/"+JSON.stringify(data.platServerProcImg1).replace("\"",'').replace("\"",'');
                        var platServerProcImg2 = "${ossImageReadRoot}/"+JSON.stringify(data.platServerProcImg2).replace("\"",'').replace("\"",'');
                        var platServerProcImg3 = "${ossImageReadRoot}/"+JSON.stringify(data.platServerProcImg3).replace("\"",'').replace("\"",'');
@@ -763,6 +753,7 @@
                    }
                });
     }
+
 
 
 </script>

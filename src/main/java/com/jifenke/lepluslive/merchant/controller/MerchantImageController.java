@@ -2,9 +2,8 @@ package com.jifenke.lepluslive.merchant.controller;
 
 import com.jifenke.lepluslive.global.util.LejiaResult;
 import com.jifenke.lepluslive.global.util.MvUtil;
-import com.jifenke.lepluslive.merchant.controller.dto.BussineLicenseImgDto;
-import com.jifenke.lepluslive.merchant.controller.dto.BussineProtocalDto;
-import com.jifenke.lepluslive.merchant.service.MerchantImageService;
+import com.jifenke.lepluslive.merchant.domain.entities.MerchantPosImage;
+import com.jifenke.lepluslive.merchant.service.MerchantPosImageService;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -15,17 +14,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.multipart.MultipartFile;
 
-import java.awt.image.BufferedImage;
-import java.net.URL;
-
-import javax.imageio.ImageIO;
 import javax.inject.Inject;
-import javax.servlet.ServletOutputStream;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
 /**
- * Created by zxf on 2016/9/9. 图片文件 Controller
+ * Created by xf on 2016/9/9. 图片文件 Controller
  */
 @RestController
 @RequestMapping("/manage")
@@ -34,7 +28,7 @@ public class MerchantImageController {
   private final Logger LOG = LoggerFactory.getLogger(MerchantImageController.class);
 
   @Inject
-  private MerchantImageService merchantImageService;
+  private MerchantPosImageService merchantImageService;
 
   @RequestMapping("/merchant/saveImage")
   @ResponseBody
@@ -46,11 +40,9 @@ public class MerchantImageController {
       String extendName = MvUtil.getExtendedName(oriName);
       String filePath = MvUtil.getFilePath(extendName);
       //  获取文件参数
-      Integer type = new Integer(request.getParameter("type"));
       Long merchantId = new Long(request.getParameter("merchantId"));
-      Long imgType = new Long(request.getParameter("imgType"));
-      Long index = new Long(request.getParameter("index"));
-      merchantImageService.saveImage(fileData, filePath, type, imgType, merchantId, index);
+      String fieldName = request.getParameter("fieldName");
+      merchantImageService.saveImage(fileData, filePath, merchantId, fieldName);
       return LejiaResult.ok(filePath);
     } catch (Exception e) {
       LOG.error("图片上传失败: " + e.getMessage());
@@ -58,17 +50,12 @@ public class MerchantImageController {
     }
   }
 
-  @RequestMapping(value = "/merchant/loadProtImg", method = RequestMethod.GET)
+  @RequestMapping(value = "/merchant/loadPosImg", method = RequestMethod.GET)
   @ResponseBody
-  public BussineProtocalDto loadProtImg(Long merchantId) {
-    return merchantImageService.getProtImg(merchantId);
+  public MerchantPosImage loadProtImg(Long merchantId) {
+    return merchantImageService.findByMerchant(merchantId);
   }
 
-  @RequestMapping(value = "/merchant/loadLiceImg", method = RequestMethod.GET)
-  @ResponseBody
-  public BussineLicenseImgDto loadLiceImg(Long merchantId) {
-    return merchantImageService.getLiceImg(merchantId);
-  }
 
 }
 
