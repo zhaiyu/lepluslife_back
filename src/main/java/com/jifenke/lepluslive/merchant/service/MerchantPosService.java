@@ -113,7 +113,12 @@ public class MerchantPosService {
       existMerchantPos.setPosMerchantNo(merchantPos.getPosMerchantNo());
       existMerchantPos.setPsamCard(merchantPos.getPsamCard());
       existMerchantPos.setPosType(merchantPos.getPosType());
-      existMerchantPos.setCeil(merchantPos.getCeil());
+      if(merchantPos.getType()==1) {
+        existMerchantPos.setCeil(merchantPos.getCeil());
+      }
+      if(merchantPos.getType()==0) {
+        existMerchantPos.setCeil(null);
+      }
       existMerchantPos.setPosCommission(merchantPos.getPosCommission());
       existMerchantPos.setPhoneNumber(merchantPos.getPhoneNumber());
       existMerchantPos.setBdCommission(merchantPos.getBdCommission());
