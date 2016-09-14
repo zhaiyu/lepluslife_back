@@ -169,11 +169,11 @@
 <script type="text/javascript" src="${resourceUrl}/js/menu.js"></script>
 <div class="left_menu">
     <ul id="nav_dot">
-        <shiro:hasPermission name="index:query">
-            <li>
-                <h4 class="M1"><span></span>首页</h4>
+        <shiro:hasPermission name="index:query"> 
+            <li>  <h4 class="M1"><span></span><a style="color: #f5f5f5; text-decoration: none;"  
+                                                 href="/manage/index">首页</a></h4> 
             </li>
-        </shiro:hasPermission>
+             </shiro:hasPermission>
         <shiro:hasPermission name="product:query">
             <li><h4 class="M2"><span></span>臻品商城</h4>
 
@@ -197,7 +197,7 @@
                 </shiro:hasPermission>
 
                 <shiro:hasPermission name="app_manage:query">
-                    <a href='/manage/merchant/codePage'>商户邀请码</a> 
+                    <a href='/manage/merchant/codePage'>商户邀请码</a>
                 </shiro:hasPermission>
                 <a href="/manage/pos">pos管理</a>
             </div>
@@ -246,6 +246,7 @@
                 <div class="list-item none none6">
                     <shiro:hasPermission name="market_center:query"> <a
                             href='/manage/codeBurse'>送红包活动</a> </shiro:hasPermission>
+                    <a href='/manage/activity/initial_order_rebate'>首单返红包</a>
                 </div>
             </li>
         </shiro:hasPermission>
