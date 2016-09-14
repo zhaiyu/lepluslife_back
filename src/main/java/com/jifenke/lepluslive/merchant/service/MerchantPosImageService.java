@@ -46,6 +46,8 @@ public class MerchantPosImageService {
   @Inject
   private MerchantRepository merchantRepository;
 
+  private static String ossImageReadRoot = "http://lepluslive-image.oss-cn-beijing.aliyuncs.com/";
+
   private OSSClient getOssClient() {
     if (ossClient == null) {
       synchronized (this) {
@@ -72,10 +74,11 @@ public class MerchantPosImageService {
       merchantImage = new MerchantPosImage();
       merchantImage.setMerchant(merchant);
     }
+    String allFilePath = ossImageReadRoot+filePath;
     Class<? extends MerchantPosImage> clazz = merchantImage.getClass();
     Field field = clazz.getDeclaredField(fieldName);
     field.setAccessible(true);
-    field.set(merchantImage,filePath);
+    field.set(merchantImage,allFilePath);
     merchantPosImageRepostory.save(merchantImage);
   }
 

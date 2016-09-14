@@ -62,8 +62,8 @@
                 <hr>
                 <ul id="myTab" class="nav nav-tabs">
                     <li><a href="#nav1" data-toggle="tab">进件管理</a></li>
-                    <li><a href="#nav2" data-toggle="tab" onclick="loadLicensePic()">营业执照</a></li>
-                    <li><a href="#nav3" data-toggle="tab" onclick="loadProtocolPic()">签约协议</a></li>
+                    <li><a href="#nav2" data-toggle="tab">营业执照</a></li>
+                    <li><a href="#nav3" data-toggle="tab">签约协议</a></li>
                 </ul>
                 <div id="myTabContent" class="tab-content">
                     <!--进件管理-->
@@ -501,6 +501,8 @@
             }
             $('.'+'baseRate'+index).css('display','block');
         })
+//      加载图片
+      loadPic();
     })
 </script>
 <script>
@@ -707,19 +709,19 @@
     }
 
 
-    function loadLicensePic() {
+    function loadPic() {
         $.ajax({
                    url:"/manage/merchant/loadPosImg",
                    type:"get",
                    data:{merchantId:merchantId},
                    contentType:"application/json",
                    success:function(data) {
-                       var licenseImg = "${ossImageReadRoot}/"+JSON.stringify(data.licenseImg).replace("\"",'').replace("\"",'');
-                       var idCardImg = "${ossImageReadRoot}/"+JSON.stringify(data.idCardImg).replace("\"",'').replace("\"",'');
-                       var taxRegistrationImg = "${ossImageReadRoot}/"+JSON.stringify(data.taxRegistrationImg).replace("\"",'').replace("\"",'');
-                       var bankIdCardImg = "${ossImageReadRoot}/"+JSON.stringify(data.bankIdCardImg).replace("\"",'').replace("\"",'');
-                       var orgConstructionImg = "${ossImageReadRoot}/"+JSON.stringify(data.orgConstructionImg).replace("\"",'').replace("\"",'');
-                       var bankCardImg = "${ossImageReadRoot}/"+JSON.stringify(data.bankCardImg).replace("\"",'').replace("\"",'');
+                       var licenseImg = JSON.stringify(data.licenseImg).replace("\"",'').replace("\"",'');
+                       var idCardImg = JSON.stringify(data.idCardImg).replace("\"",'').replace("\"",'');
+                       var taxRegistrationImg =  JSON.stringify(data.taxRegistrationImg).replace("\"",'').replace("\"",'');
+                       var bankIdCardImg =  JSON.stringify(data.bankIdCardImg).replace("\"",'').replace("\"",'');
+                       var orgConstructionImg =  JSON.stringify(data.orgConstructionImg).replace("\"",'').replace("\"",'');
+                       var bankCardImg =  JSON.stringify(data.bankCardImg).replace("\"",'').replace("\"",'');
                        $("#licenseImg-img").attr("src",licenseImg);
                        $("#idCardImg-img").attr("src",idCardImg);
                        $("#taxRegistrationImg-img").attr("src",taxRegistrationImg);
@@ -727,17 +729,17 @@
                        $("#orgConstructionImg-img").attr("src",orgConstructionImg);
                        $("#bankCardImg-img").attr("src",bankCardImg);
 
-                       var platServerProcImg1 = "${ossImageReadRoot}/"+JSON.stringify(data.platServerProcImg1).replace("\"",'').replace("\"",'');
-                       var platServerProcImg2 = "${ossImageReadRoot}/"+JSON.stringify(data.platServerProcImg2).replace("\"",'').replace("\"",'');
-                       var platServerProcImg3 = "${ossImageReadRoot}/"+JSON.stringify(data.platServerProcImg3).replace("\"",'').replace("\"",'');
-                       var platServerProcImg4 = "${ossImageReadRoot}/"+JSON.stringify(data.platServerProcImg4).replace("\"",'').replace("\"",'');
-                       var platServerProcImg5 = "${ossImageReadRoot}/"+JSON.stringify(data.platServerProcImg5).replace("\"",'').replace("\"",'');
-                       var mercBaseInfoImg1 = "${ossImageReadRoot}/"+JSON.stringify(data.mercBaseInfoImg1).replace("\"",'').replace("\"",'');
-                       var mercBaseInfoImg2 = "${ossImageReadRoot}/"+JSON.stringify(data.mercBaseInfoImg2).replace("\"",'').replace("\"",'');
-                       var cnepaySpecialMercInfoImg1 = "${ossImageReadRoot}/"+JSON.stringify(data.cnepaySpecialMercInfoImg1).replace("\"",'').replace("\"",'');
-                       var cnepaySpecialMercInfoImg2 = "${ossImageReadRoot}/"+JSON.stringify(data.cnepaySpecialMercInfoImg2).replace("\"",'').replace("\"",'');
-                       var cnepaySpecialMercInfoImg3 = "${ossImageReadRoot}/"+JSON.stringify(data.cnepaySpecialMercInfoImg3).replace("\"",'').replace("\"",'');
-                       var accountAuthorizationImg = "${ossImageReadRoot}/"+JSON.stringify(data.accountAuthorizationImg).replace("\"",'').replace("\"",'');
+                       var platServerProcImg1 =  JSON.stringify(data.platServerProcImg1).replace("\"",'').replace("\"",'');
+                       var platServerProcImg2 =  JSON.stringify(data.platServerProcImg2).replace("\"",'').replace("\"",'');
+                       var platServerProcImg3 =  JSON.stringify(data.platServerProcImg3).replace("\"",'').replace("\"",'');
+                       var platServerProcImg4 =  JSON.stringify(data.platServerProcImg4).replace("\"",'').replace("\"",'');
+                       var platServerProcImg5 =  JSON.stringify(data.platServerProcImg5).replace("\"",'').replace("\"",'');
+                       var mercBaseInfoImg1 =  JSON.stringify(data.mercBaseInfoImg1).replace("\"",'').replace("\"",'');
+                       var mercBaseInfoImg2 =  JSON.stringify(data.mercBaseInfoImg2).replace("\"",'').replace("\"",'');
+                       var cnepaySpecialMercInfoImg1 =  JSON.stringify(data.cnepaySpecialMercInfoImg1).replace("\"",'').replace("\"",'');
+                       var cnepaySpecialMercInfoImg2 =  JSON.stringify(data.cnepaySpecialMercInfoImg2).replace("\"",'').replace("\"",'');
+                       var cnepaySpecialMercInfoImg3 =  JSON.stringify(data.cnepaySpecialMercInfoImg3).replace("\"",'').replace("\"",'');
+                       var accountAuthorizationImg =  JSON.stringify(data.accountAuthorizationImg).replace("\"",'').replace("\"",'');
 
                        $("#platServerProcImg1-img").attr("src",platServerProcImg1);
                        $("#platServerProcImg2-img").attr("src",platServerProcImg2);
