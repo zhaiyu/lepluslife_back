@@ -16,25 +16,25 @@ public class User_role {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
-  private Long userID;
+  private Long userId;
 
-  private Long roleID;
+  private Long roleId;
 
-  public Long getRoleID() {
-    return roleID;
+  public Long getUserId() {
+    return userId;
   }
 
-  public void setRoleID(Long roleID) {
-    this.roleID = roleID;
+  public void setUserId(Long userId) {
+    this.userId = userId;
   }
 
-  public Long getUserID() {
+  public Long getRoleId() {
 
-    return userID;
+    return roleId;
   }
 
-  public void setUserID(Long userID) {
-    this.userID = userID;
+  public void setRoleId(Long roleId) {
+    this.roleId = roleId;
   }
 
   public Long getId() {

@@ -25,9 +25,17 @@ public class OLOrderCriteria {
 
   private Integer amount;
 
-  public Integer getAmount() {return amount;}
+  private String orderSid;
 
-  public void setAmount(Integer amount) {this.amount = amount;}
+  private Integer rebateWay;
+
+  public Integer getAmount() {
+    return amount;
+  }
+
+  public void setAmount(Integer amount) {
+    this.amount = amount;
+  }
 
   public Integer getOffset() {
     return offset;
@@ -91,5 +99,21 @@ public class OLOrderCriteria {
 
   public void setPayWay(Long payWay) {
     this.payWay = payWay;
+  }
+
+  public String getOrderSid() {
+    return orderSid;
+  }
+
+  public void setOrderSid(String orderSid) {
+    this.orderSid = orderSid;
+  }
+
+  public Integer getRebateWay() {
+    return rebateWay;
+  }
+
+  public void setRebateWay(Integer rebateWay) {
+    this.rebateWay = rebateWay;
   }
 }

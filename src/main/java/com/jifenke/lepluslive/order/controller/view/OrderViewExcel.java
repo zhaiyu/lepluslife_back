@@ -34,7 +34,7 @@ public class OrderViewExcel extends AbstractExcelView {
     List<OffLineOrder> orderList = (List<OffLineOrder>) map.get("orderList");
     setExcelRows(sheet, orderList);
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    String filename =sdf.format(new Date())+".xls";//设置下载时客户端Excel的名称
+    String filename = sdf.format(new Date()) + ".xls";//设置下载时客户端Excel的名称
     response.setContentType("application/vnd.ms-excel");
     response.setHeader("Content-disposition", "attachment;filename=" + filename);
 
@@ -62,6 +62,7 @@ public class OrderViewExcel extends AbstractExcelView {
     excelHeader.createCell(12).setCellValue("分润金额");
     excelHeader.createCell(13).setCellValue("发放积分");
     excelHeader.createCell(14).setCellValue("状态");
+    excelHeader.createCell(15).setCellValue("订单类型");
   }
 
   public void setExcelRows(HSSFSheet excelSheet, List<OffLineOrder> orderList) {
@@ -87,12 +88,12 @@ public class OrderViewExcel extends AbstractExcelView {
       excelRow.createCell(7).setCellValue(order.getTruePay() / 100.0);
       excelRow.createCell(8).setCellValue(order.getLjCommission() / 100.0);
       excelRow.createCell(9)
-          .setCellValue(order.getTransferMoney()/100.0);
+          .setCellValue(order.getTransferMoney() / 100.0);
       excelRow.createCell(10).setCellValue(order.getWxCommission() / 100.0);
       excelRow.createCell(11).setCellValue(order.getRebate() / 100.0);
-      if(order.getRebateWay()!=1){
+      if (order.getRebateWay() != 1) {
         excelRow.createCell(12).setCellValue(0);
-      }else {
+      } else {
         excelRow.createCell(12).setCellValue(
             (order.getLjCommission() - order.getWxCommission() - order.getRebate()) / 100.0);
       }
@@ -102,6 +103,28 @@ public class OrderViewExcel extends AbstractExcelView {
       } else {
         excelRow.createCell(14).setCellValue("已支付");
       }
+      String orderType = null;
+      switch (order.getRebateWay()) {
+        case 0:
+          orderType = "非会员普通订单";
+          break;
+        case 1:
+          orderType = "导流订单";
+          break;
+        case 2:
+          orderType = "会员普通订单";
+          break;
+        case 3:
+          orderType = "会员订单";
+          break;
+        case 4:
+          orderType = "非会员扫纯支付码";
+          break;
+        case 5:
+          orderType = "会员扫纯支付码";
+          break;
+      }
+      excelRow.createCell(15).setCellValue(orderType);
 
     }
   }

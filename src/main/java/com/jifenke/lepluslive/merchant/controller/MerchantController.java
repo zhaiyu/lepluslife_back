@@ -9,6 +9,7 @@ import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantUser;
 import com.jifenke.lepluslive.merchant.service.CityService;
 import com.jifenke.lepluslive.merchant.service.MerchantService;
+import com.jifenke.lepluslive.merchant.service.MerchantWeiXinUserService;
 import com.jifenke.lepluslive.partner.domain.entities.Partner;
 import com.jifenke.lepluslive.partner.service.PartnerService;
 
@@ -56,6 +57,9 @@ public class MerchantController {
 
   @Inject
   private SalesService salesService;
+
+  @Inject
+  private MerchantWeiXinUserService merchantWeiXinUserService;
 
 
   @RequestMapping(value = "/merchant", method = RequestMethod.GET)
@@ -129,7 +133,11 @@ public class MerchantController {
   public ModelAndView goMerchantUserPage(@PathVariable Long id, Model model) {
     Merchant merchant = merchantService.findMerchantById(id);
     model.addAttribute("merchant", merchantService.findMerchantById(id));
-    model.addAttribute("merchantUsers", merchantService.findMerchantUsersByMerchant(merchant));
+    List<MerchantUser>
+        merchantUsers =
+        merchantService.findMerchantUsersByMerchant(merchant);
+    model.addAttribute("merchantUsers", merchantUsers);
+    model.addAttribute("merchantWeiXinUsers",merchantService.findmerchantWeixinUserByMerchanUsers(merchantUsers));
     return MvUtil.go("/merchant/merchantUser");
   }
 
@@ -159,9 +167,17 @@ public class MerchantController {
   @ResponseBody
   LejiaResult deleteMerchantUser(@PathVariable Long id) {
     merchantService.deleteMerchantUser(id);
-
     return LejiaResult.ok("成功停用商户");
   }
+
+  @RequestMapping(value = "/merchant/weiXinUser/{id}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+  public
+  @ResponseBody
+  LejiaResult unBindMerchantWeiXinUser(@PathVariable Long id) {
+    merchantWeiXinUserService.unBindMerchantWeiXinUser(id);
+    return LejiaResult.ok("成功解绑用户");
+  }
+
 
   @RequestMapping(value = "/merchant/user", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
   public
@@ -219,7 +235,7 @@ public class MerchantController {
   @RequestMapping(value = "/merchant/pos_manage/{id}", method = RequestMethod.GET)
   public ModelAndView posManage(@PathVariable Long id, Model model) {
     model.addAttribute(merchantService.findAllPosByMerchant(merchantService.findMerchantById(id)));
-    return MvUtil.go("/merchant/posManage");
+    return MvUtil.go("/merchant/merchantPosManage");
   }
 
 }

@@ -57,37 +57,104 @@
                 </button>
                 <h2>${merchant.name}</h2>
                 <hr>
+                <ul id="myTab" class="nav nav-tabs">
+                    <li><a href="#nav1" data-toggle="tab">账号密码</a>
+                    </li>
+                    <li><a href="#nav2" data-toggle="tab"
+                            >绑定微信号</a></li>
+                    </li>
+                </ul>
                 <div id="myTabContent" class="tab-content">
-                    <button type="button" class="btn btn-primary createWarn" style="margin:10px;"
-                            onclick="createUser()">
-                        新建账户
-                    </button>
-                    <table class="table table-bordered table-hover">
-                        <thead>
-                        <tr class="active">
-                            <th class="text-center">用户名</th>
-                            <th class="text-center">密码</th>
-                            <th class="text-center">操作</th>
-                        </tr>
-                        </thead>
-                        <tbody>
-                        <c:forEach items="${merchantUsers}" var="merchantUser">
-                            <tr>
-                                <td class="text-center">${merchantUser.name}</td>
-                                <td class="text-center">${merchantUser.password}</td>
-                                <td class="text-center">
-                                    <button type="button" class="btn btn-default createWarn"
-                                            onclick="editUser(${merchantUser.id})">编辑
-                                    </button>
-                                    <button type="button" class="btn btn-default deleteWarn"
-                                            onclick="deleteUser(${merchantUser.id})"
-                                            data-target="#deleteWarn">删除
-                                    </button>
-                                </td>
+                    <div class="tab-pane fade in active clearfix" id="nav1">
+                        <button type="button" class="btn btn-primary createWarn"
+                                style="margin:10px;"
+                                onclick="createUser()">
+                            新建账户
+                        </button>
+                        <table class="table table-bordered table-hover">
+                            <thead>
+                            <tr class="active">
+                                <th class="text-center">账号类型</th>
+                                <th class="text-center">用户名</th>
+                                <th class="text-center">密码</th>
+                                <th class="text-center">操作</th>
                             </tr>
-                        </c:forEach>
-                        </tbody>
-                    </table>
+                            </thead>
+                            <tbody>
+                            <c:forEach items="${merchantUsers}" var="merchantUser">
+                                <tr>
+                                    <c:if test="${merchantUser.type==0}">
+                                        <td class="text-center">普通账号</td>
+                                    </c:if>
+                                    <c:if test="${merchantUser.type==1}">
+                                        <td class="text-center">店主账号</td>
+                                    </c:if>
+                                    <c:if test="${merchantUser.name==null}">
+                                        <td class="text-center">--</td>
+                                        <td class="text-center">--</td>
+                                    </c:if>
+                                    <c:if test="${merchantUser.name!=null}">
+                                        <td class="text-center">${merchantUser.name}</td>
+                                        <td class="text-center">${merchantUser.password}</td>
+                                    </c:if>
+                                    <c:if test="${merchantUser.type==0}">
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-default createWarn"
+                                                    onclick="editUser(${merchantUser.id})">编辑
+                                            </button>
+                                            <button type="button" class="btn btn-default deleteWarn"
+                                                    onclick="deleteUser(${merchantUser.id})"
+                                                    data-target="#deleteWarn">删除
+                                            </button>
+                                        </td>
+                                    </c:if>
+                                    <c:if test="${merchantUser.type==1}">
+                                        <td class="text-center">
+                                            <button type="button" class="btn btn-default createWarn"
+                                                    onclick="editUser(${merchantUser.id})">编辑
+                                            </button>
+                                        </td>
+                                    </c:if>
+                                </tr>
+                            </c:forEach>
+                            </tbody>
+                        </table>
+                    </div>
+                    <div class="tab-pane fade in active clearfix" id="nav2">
+                        <table class="table table-bordered table-hover">
+                            <thead>
+                            <tr class="active">
+                                <th>账户类型</th>
+                                <th>账户名</th>
+                                <th>微信头像</th>
+                                <th>昵称</th>
+                                <th>操作</th>
+                            </tr>
+                            </thead>
+                            <tbody>
+                            <c:forEach items="${merchantWeiXinUsers}" var="merchantWeiXinUser">
+                                <tr>
+                                    <c:if test="${merchantWeiXinUser.merchantUser.type==0}">
+                                        <td class="text-center">普通账号</td>
+                                    </c:if>
+                                    <c:if test="${merchantWeiXinUser.merchantUser.type==1}">
+                                        <td class="text-center">店主账号</td>
+                                    </c:if>
+                                    <td class="text-center">${merchantWeiXinUser.merchantUser.name}</td>
+                                    <td class="text-center"><img
+                                            src="${merchantWeiXinUser.headImageUrl}"></td>
+                                    <td class="text-center">${merchantWeiXinUser.nickname}</td>
+                                    <td>
+                                        <button type="button" class="btn btn-default deleteWarn"
+                                                onclick="unbindMerchantWeiXinUser(${merchantWeiXinUser.id})"
+                                                data-target="#deleteWarn">解除绑定
+                                        </button>
+                                    </td>
+                                </tr>
+                            </c:forEach>
+                            </tbody>
+                        </table>
+                    </div>
                 </div>
             </div>
         </div>
@@ -103,7 +170,7 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span
                         aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title">删除账户</h4>
+                <h4 class="modal-title">确定操作吗?</h4>
             </div>
             <div class="modal-body">
                 <h4 id="merchantUserName"></h4>
@@ -253,6 +320,23 @@
                    });
         });
         $("#createWarn").modal("show");
+    }
+    function unbindMerchantWeiXinUser(id) {
+        $("#merchantUserName").html("确定解除绑定吗");
+        $("#delete-merchantUser").bind("click", function () {
+            $.ajax({
+                       type: "post",
+                       url: "/manage/merchant/weiXinUser/" + id,
+                       contentType: "application/json",
+                       success: function (data) {
+                           alert(data.data);
+                           $("#delete-merchantUser").unbind("click");
+                           location.reload(true);
+                       }
+                   });
+        });
+
+        $("#deleteWarn").modal("show");
     }
 </script>
 </body>

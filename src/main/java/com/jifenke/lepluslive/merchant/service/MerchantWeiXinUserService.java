@@ -94,4 +94,11 @@ public class MerchantWeiXinUserService {
     }
 
   }
+
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  public void unBindMerchantWeiXinUser(Long id) {
+    MerchantWeiXinUser merchantWeiXinUser = merchantWeiXinUserRepository.findOne(id);
+    merchantWeiXinUser.setMerchantUser(null);
+    merchantWeiXinUserRepository.save(merchantWeiXinUser);
+  }
 }

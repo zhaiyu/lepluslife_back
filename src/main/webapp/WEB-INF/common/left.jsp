@@ -45,6 +45,7 @@
         top: 0;
         left: 0;
         overflow: auto;
+        padding-bottom: 150px;
     }
 
     .left_menu ul li {
@@ -194,9 +195,11 @@
                 <shiro:hasPermission name="merchant:query">
                     <a href="/manage/merchant">商户管理</a>
                 </shiro:hasPermission>
+
                 <shiro:hasPermission name="app_manage:query">
                     <a href='/manage/merchant/codePage'>商户邀请码</a>
                 </shiro:hasPermission>
+                <a href="/manage/pos">pos管理</a>
             </div>
         </li>
         <shiro:hasPermission name="order:query">
@@ -268,23 +271,13 @@
                 </div>
             </li>
         </shiro:hasPermission>
-        <%--<li><h4 class="M7"><span></span>线下订单</h4></li>--%>
-        <%--<li><h4 class="M8"><span></span>财务结算</h4></li>--%>
-        <%--<li><h4 class="M10"><span></span>分润单</h4></li>--%>
+        <li><h4 class="M6"><span></span>数据中心</h4>
 
-        <%--<shiro:hasPermission name="weixin:query">--%>
-        <%--<li><h4 class="M9"><span></span>公众号及推荐</h4></li>--%>
-        <%--</shiro:hasPermission>--%>
-        <%--<shiro:hasPermission name="management:query">--%>
-        <%--<li><h4 class="M13"><span></span>权限管理</h4></li>--%>
-        <%--</shiro:hasPermission>--%>
-        <%--<li>--%>
-        <%--<h4 class="M9"><span></span>公众号配置</h4>--%>
-        <%--<div class="list-item none">--%>
-        <%--<a href='/weixin/menu/list'>自定义菜单</a>--%>
-        <%--<a href='/weixin/reply/list'>微信回复规则</a>--%>
-        <%--</div>--%>
-        <%--</li>--%>
+            <div class="list-item none none9">
+                <a href='/manage/member_data'>会员分析</a>
+            </div>
+        </li>
+
     </ul>
 </div>
 <script>navList(12);</script>
@@ -314,7 +307,7 @@
             $(".none5").parent('li').addClass('selected');
             $(".none5").slideDown(300);
         }
-        if (url.indexOf("partner") != -1 || url.indexOf("user") != -1
+        if (url.indexOf("partner") != -1 || url.indexOf("/manage/user") != -1
             || url.indexOf("sales") != -1) {
             $(".none4").parent('li').addClass('selected');
             $(".none4").slideDown(300);
@@ -328,6 +321,11 @@
             $(".none7").parent('li').addClass('selected');
             $(".none7").slideDown(300);
         }
+        if (url.indexOf("/manage/member_data") != -1 || url.indexOf("/weixin/reply/list") != -1
+            || url.indexOf("/weixin/imageText") != -1 || url.indexOf("managementUserList") != -1) {
+            $(".none9").parent('li').addClass('selected');
+            $(".none9").slideDown(300);
+        }
 
 //        数组
         var htmlArr = ['/manage/index', '/manage/product', '/manage/product', 'picManger.html',
@@ -335,51 +333,5 @@
                        '/manage/offLineOrder', '/manage/financial', '/manage/weixin/index',
                        '/manage/offLineOrder/share', '/manage/partner', '/manage/sales',
                        '/manage/managementUserList'];
-        $('.M1').click(function () {
-            window.location.href = htmlArr[0];
-        });
-////        $('.M2').click(function () {
-////            window.location.href = htmlArr[1];
-////        });
-//        $('.M3').click(function () {
-//            window.location.href = htmlArr[4];
-//        });
-////        $('.M4').click(function () {
-////            window.location.href=htmlArr[5];
-////        });
-//        $('.M5').click(function () {
-//            window.location.href = htmlArr[6];
-//        });
-//        $('.M6').click(function () {
-//            window.location.href = htmlArr[7];
-//        });
-//        $('.M7').click(function () {
-//            window.location.href = htmlArr[8];
-//        });
-//        $('.M8').click(function () {
-//            window.location.href = htmlArr[9];
-//        });
-//        $('.btn-create').click(function () {
-//            window.location.href = htmlArr[2];
-//        });
-//        $('.picManger').click(function () {
-//            window.location.href = htmlArr[3];
-//        });
-//
-        $('.M9').click(function () {
-            window.location.href = htmlArr[10];
-        });
-//        $('.M10').click(function () {
-//            window.location.href = htmlArr[11];
-//        });
-//        $('.M11').click(function () {
-//            window.location.href = htmlArr[12];
-//        });
-//        $('.M12').click(function () {
-//            window.location.href = htmlArr[13];
-//        });
-        $('.M13').click(function () {
-            window.location.href = htmlArr[14];
-        });
     })
 </script>

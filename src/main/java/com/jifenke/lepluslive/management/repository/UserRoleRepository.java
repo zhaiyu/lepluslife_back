@@ -15,10 +15,10 @@ import java.util.List;
 public interface UserRoleRepository extends JpaRepository<User_role, Long> {
 
 
-  @Query(value = "SELECT * FROM user_role WHERE userid=?1", nativeQuery = true)
+  @Query(value = "SELECT * FROM user_role WHERE user_id=?1", nativeQuery = true)
   List<User_role> findUserRoleByUserId(Long id);
 
 
-  @Query(value = "SELECT * FROM user_role WHERE roleID=?1", nativeQuery = true)
+  @Query(value = "SELECT * FROM user_role WHERE role_id=?1", nativeQuery = true)
   List<User_role> findUserRoleByRoleId(Long id);
 }

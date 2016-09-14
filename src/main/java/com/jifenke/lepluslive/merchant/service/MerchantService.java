@@ -14,6 +14,7 @@ import com.jifenke.lepluslive.merchant.domain.entities.MerchantPos;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantType;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantUser;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantWallet;
+import com.jifenke.lepluslive.merchant.domain.entities.MerchantWeiXinUser;
 import com.jifenke.lepluslive.merchant.repository.MerchantInfoRepository;
 import com.jifenke.lepluslive.merchant.repository.MerchantPosRepository;
 import com.jifenke.lepluslive.merchant.repository.MerchantProtocolRepository;
@@ -300,8 +301,14 @@ public class MerchantService {
     };
   }
 
-  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public List<MerchantUser> findMerchantUsersByMerchant(Merchant merchant) {
+    if (!merchantUserRepository.findByMerchantAndType(merchant, 1).isPresent()) {
+      MerchantUser merchantUser = new MerchantUser();
+      merchantUser.setMerchant(merchant);
+      merchantUser.setType(1);
+      merchantUserRepository.save(merchantUser);
+    }
     return merchantUserRepository.findAllByMerchant(merchant);
   }
 
@@ -314,10 +321,16 @@ public class MerchantService {
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public void editMerchantUser(MerchantUser merchantUser) {
-    Merchant merchant = merchantRepository.findOne(merchantUser.getMerchant().getId());
-    merchantUser.setPassword(MD5Util.MD5Encode(merchantUser.getPassword(), "UTF-8"));
-    merchantUser.setMerchant(merchant);
-    merchantUserRepository.save(merchantUser);
+    MerchantUser origin = merchantUser;
+    if (merchantUser.getId() != null) {
+      origin = merchantUserRepository.findOne(merchantUser.getId());
+    } else {
+      origin.setMerchant(findMerchantById(merchantUser.getMerchant().getId()));
+      origin.setType(0);
+    }
+    origin.setPassword(MD5Util.MD5Encode(merchantUser.getPassword(), "UTF-8"));
+    origin.setName(merchantUser.getName());
+    merchantUserRepository.save(origin);
   }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
@@ -595,5 +608,19 @@ public class MerchantService {
     } else {
       return null;
     }
+  }
+
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+  public List<MerchantWeiXinUser> findmerchantWeixinUserByMerchanUsers(
+      List<MerchantUser> merchantUsers) {
+    List<MerchantWeiXinUser> results = new ArrayList<>();
+    merchantUsers.stream().map(merchantUser -> {
+      List<MerchantWeiXinUser>
+          merchantWeiXinUsers =
+          merchantWeiXinUserService.findMerchantWeiXinUserByMerchantUser(merchantUser);
+      results.addAll(merchantWeiXinUsers);
+      return merchantUser;
+    }).collect(Collectors.toList());
+    return results;
   }
 }
