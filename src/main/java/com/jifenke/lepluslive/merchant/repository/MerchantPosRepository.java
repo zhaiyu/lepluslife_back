@@ -4,7 +4,6 @@ import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantPos;
 
 import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -18,6 +17,8 @@ import java.util.List;
 public interface MerchantPosRepository extends JpaRepository<MerchantPos, Long> {
 
   MerchantPos findByPosId(String posId);
+
+  MerchantPos findById(Long id);
 
   List<MerchantPos> findAllByMerchant(Merchant merchant);
 
