@@ -128,12 +128,18 @@ public class BannerService {
 
         if (criteria.getStatus() != null) {   //上架、下架
           predicate.getExpressions().add(
-              cb.equal(r.get("bannerType"), criteria.getStatus()));
+              cb.equal(r.get("status"), criteria.getStatus()));
         }
 
         if (criteria.getAlive() != null) {   //当期、往期
           predicate.getExpressions().add(
               cb.equal(r.get("alive"), criteria.getAlive()));
+        }
+
+        if (criteria.getCity() != null) {
+          predicate.getExpressions().add(
+              cb.equal(r.get("merchant").get("city"),
+                       new City(criteria.getCity())));
         }
 
         if (criteria.getStartDate() != null && (!"".equals(criteria.getStartDate()))) {

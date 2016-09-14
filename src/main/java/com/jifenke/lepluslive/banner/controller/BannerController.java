@@ -54,6 +54,7 @@ public class BannerController {
     if (type == null) {
       type = 1;
     }
+    model.addAttribute("cities", cityService.findAllCity());
     model.addAttribute("type", type);
     return MvUtil.go("/banner/list");
   }

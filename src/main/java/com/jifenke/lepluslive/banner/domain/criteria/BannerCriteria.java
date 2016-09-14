@@ -13,6 +13,8 @@ public class BannerCriteria {
 
   private Integer alive;   //1=当期   0=往期
 
+  private Long city;    //城市
+
   private String startDate;
 
   private String endDate;
@@ -51,6 +53,14 @@ public class BannerCriteria {
 
   public String getStartDate() {
     return startDate;
+  }
+
+  public Long getCity() {
+    return city;
+  }
+
+  public void setCity(Long city) {
+    this.city = city;
   }
 
   public void setStartDate(String startDate) {

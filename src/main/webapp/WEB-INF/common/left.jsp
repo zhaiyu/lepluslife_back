@@ -194,6 +194,9 @@
                 <shiro:hasPermission name="merchant:query">
                     <a href="/manage/merchant">商户管理</a>
                 </shiro:hasPermission>
+                <shiro:hasPermission name="app_manage:query">
+                    <a href='/manage/merchant/codePage'>商户邀请码</a>
+                </shiro:hasPermission>
             </div>
         </li>
         <shiro:hasPermission name="order:query">
@@ -231,8 +234,6 @@
                 <div class="list-item none none5">
                     <shiro:hasPermission name="app_manage:query"> <a
                             href='/manage/banner?type=1'>APP推荐</a> </shiro:hasPermission>
-                    <shiro:hasPermission name="app_manage:query"> <a
-                            href='/manage/merchant/codePage'>商户邀请码</a> </shiro:hasPermission>
                 </div>
             </li>
         </shiro:hasPermission>

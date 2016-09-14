@@ -60,8 +60,7 @@
     </div>
     <div class="m-right">
         <div class="main">
-            <div class="container-fluid">
-
+            <div class="container-fluid" style="padding-top: 20px">
                 <div class="row" style="margin-bottom: 30px">
                     <div class="form-group col-md-4">
                         <label for="date-end">创建时间</label>
@@ -72,6 +71,28 @@
                             <b class="caret"></b>
                         </div>
                     </div>
+                    <div class="form-group col-md-2">
+                        <label for="status">上架/下架</label>
+                        <select class="form-control" id="status">
+                            <option value="-1">全部分类</option>
+                            <option value="1">上架</option>
+                            <option value="0">下架</option>
+                        </select></div>
+                    <div class="form-group col-md-2">
+                        <label for="alive">当期/往期</label>
+                        <select class="form-control" id="alive">
+                            <option value="-1">全部分类</option>
+                            <option value="1">当期</option>
+                            <option value="0">往期</option>
+                        </select></div>
+                    <div class="form-group col-md-2">
+                        <label for="city">所在城市</label>
+                        <select class="form-control" id="city">
+                            <option value="0">全部分类</option>
+                            <c:forEach items="${cities}" var="city">
+                                <option value="${city.id}">${city.name}</option>
+                            </c:forEach>
+                        </select></div>
                     <div class="form-group col-md-3">
                         <button class="btn btn-primary" style="margin-top: 24px"
                                 onclick="searchByCriteria()">查询
@@ -477,24 +498,24 @@
                                    data-url="/manage/file/saveImage"/>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="afterUrl5"
-                               class="col-sm-3 control-label">后置页面URL</label>
 
-                        <div class="col-sm-6">
-                            <input name="afterUrl5" type="text" class="form-control o-input"
-                                   id="afterUrl5" placeholder="请输入页面链接">
+                    <div class="form-group">
+                        <label for="afterType5"
+                               class="col-sm-3 control-label">后置类型(点击图片后的跳转情况)</label>
+
+                        <div class="col-sm-6" id="afterType5">
+                            <div>
+                                <input type="radio" name="type5" class="checked5" checked="true"
+                                       value="1"/><span>H5页面（跳转到一个H5页面）</span>
+                                <input class="w-input" type="text" placeholder="请输入页面链接地址"/>
+                                <input class="w-input" type="text" placeholder="请输入网页标题"/>
+                            </div>
+                            <div>
+                                <input type="radio" name="type5" value="3"/><span>商家详情</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label for="urlTitle5"
-                               class="col-sm-3 control-label">后置页面标题</label>
 
-                        <div class="col-sm-6">
-                            <input name="urlTitle5" type="text" class="form-control o-input"
-                                   id="urlTitle5" placeholder="请输入页面标题">
-                        </div>
-                    </div>
                     <div class="form-group">
                         <label for="merchantSid5"
                                class="col-sm-3 control-label">商户序号</label>
@@ -1208,24 +1229,28 @@
         var oldPicture = $("#oldPicture5").attr("src");
         var introduce = $("#introduce5").val();
         var title = $('#title5').val();
-        var afterUrl = $('input[name=afterUrl5]').val();
-        var urlTitle = $('input[name=urlTitle5]').val();
+        var input = $(".checked5");
+        var afterType = input.val();
         var merchantSid = $('input[name=merchantSid5]').val();
-
+        var urlTitle = "", url = "";
+        if (afterType == 1) {
+            url = input.next().next().val();
+            urlTitle = input.next().next().next().val();
+            if (url == null || url == "") {
+                alert("请输入页面链接");
+                return false;
+            }
+            if (urlTitle == null || urlTitle == "") {
+                alert("请输入页面标题");
+                return false;
+            }
+        }
         if (picture == null || picture == "") {
             alert("请上传当期图片");
             return false;
         }
         if (oldPicture == null || oldPicture == "") {
             alert("请上传往期图片");
-            return false;
-        }
-        if (afterUrl == null || afterUrl == "") {
-            alert("请输入页面链接");
-            return false;
-        }
-        if (urlTitle == null || urlTitle == "") {
-            alert("请输入页面标题");
             return false;
         }
         if (merchantSid == null || merchantSid == "") {
@@ -1247,12 +1272,15 @@
         banner.picture = picture;
         banner.oldPicture = oldPicture;
         banner.afterType = 1;
-        banner.url = afterUrl;
-        banner.urlTitle = urlTitle;
         merchant.merchantSid = merchantSid;
         banner.merchant = merchant;
         banner.title = title;
         banner.introduce = introduce;
+        banner.afterType = afterType;
+        if (afterType == 1) {
+            banner.url = url;
+            banner.urlTitle = urlTitle;
+        }
         $.ajax({
                    type: "post",
                    url: "/manage/banner/save",
@@ -1736,7 +1764,7 @@
                    });
         } else if (type == 5) { //5=好店推荐
             tr.innerHTML =
-            "<th>序号</th><th>当期图片</th><th>往期图片</th><th>状态</th><th>店铺名称</th><th>点击次数</th><th>状态</th><th>操作</th>";
+            "<th>序号</th><th>当期图片</th><th>往期图片</th><th>状态</th><th>店铺名称</th><th>所在城市</th><th>点击次数</th><th>状态</th><th>操作</th>";
             $.ajax({
                        type: "post",
                        url: "/manage/banner/ajaxList",
@@ -1775,6 +1803,8 @@
                                }
                                contentStr +=
                                '<td><span>' + content[i].merchant.name + '</span></td>';
+                               contentStr +=
+                               '<td><span>' + content[i].merchant.city.name + '</span></td>';
                                contentStr += '<td><span>待定</span></td>';
                                if (content[i].status == 1) {
                                    contentStr += '<td><span>上架</span></td>';
@@ -1845,14 +1875,28 @@
                                               success: function (data) {
                                                   if (data.status == 200) {
                                                       var banner = data.data;
+                                                      var afterType = banner.afterType;
                                                       $('input[name="bannerId5"]').val(banner.id);
                                                       $('#sid5').val(banner.sid);
                                                       $("#picture5").attr("src",
                                                                           banner.picture);
                                                       $("#oldPicture5").attr("src",
-                                                                          banner.oldPicture);
-                                                      $('input[name=afterUrl5]').val(banner.url);
-                                                      $('input[name=urlTitle5]').val(banner.urlTitle);
+                                                                             banner.oldPicture);
+
+                                                      var radioChecked = $('#afterType5 input[type=radio][value='
+                                                                           + afterType
+                                                                           + ']');
+                                                      $("#afterType5 input[type=radio]").removeClass("checked5");
+                                                      $("#afterType5 input[type=radio]").removeAttr("checked");
+                                                      radioChecked[0].checked = true;
+                                                      radioChecked.attr("class", "checked5");
+                                                      $(".w-input").attr("disabled", "true");
+                                                      radioChecked.nextAll().removeAttr("disabled");
+
+                                                      if (afterType == 1) {
+                                                          radioChecked.next().next().val(banner.url);
+                                                          radioChecked.next().next().next().val(banner.urlTitle)
+                                                      }
                                                       $('input[name=merchantSid5]').val(banner.merchant.merchantSid);
                                                       $('#title5').val(banner.title);
                                                       $("#introduce5").val(banner.introduce);
@@ -2049,6 +2093,21 @@
             var endDate = dateStr[1].replace(/-/g, "/");
             bannerCriteria.startDate = startDate;
             bannerCriteria.endDate = endDate;
+        }
+        if ($("#status").val() != -1) {
+            bannerCriteria.status = $("#status").val();
+        } else {
+            bannerCriteria.status = null;
+        }
+        if ($("#alive").val() != -1) {
+            bannerCriteria.alive = $("#alive").val();
+        } else {
+            bannerCriteria.alive = null;
+        }
+        if ($("#city").val() != 0) {
+            bannerCriteria.city = $("#city").val();
+        } else {
+            bannerCriteria.city = null;
         }
         getBannerListByType(bannerCriteria);
     }
