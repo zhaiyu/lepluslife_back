@@ -197,7 +197,7 @@
                 </shiro:hasPermission>
 
                 <shiro:hasPermission name="app_manage:query">
-                    <a href='/manage/merchant/codePage'>商户邀请码</a> 
+                    <a href='/manage/merchant/codePage'>商户邀请码</a>
                 </shiro:hasPermission>
                 <a href="/manage/pos">pos管理</a>
             </div>
