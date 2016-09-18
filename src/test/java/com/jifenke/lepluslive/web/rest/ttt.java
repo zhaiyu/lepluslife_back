@@ -31,13 +31,15 @@ import java.io.IOException;
 import java.math.BigDecimal;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
 /**
-* Created by wcg on 16/4/15.
-*/
+ * Created by wcg on 16/4/15.
+ */
 @RunWith(SpringJUnit4ClassRunner.class)
 @SpringApplicationConfiguration(classes = Application.class)
 @WebAppConfiguration
@@ -64,7 +66,7 @@ public class ttt {
   @Inject
   private BarcodeService barcodeService;
 
-  private String barCodeRootUrl="http://lepluslive-barcode.oss-cn-beijing.aliyuncs.com";
+  private String barCodeRootUrl = "http://lepluslive-barcode.oss-cn-beijing.aliyuncs.com";
 
   @Inject
   private FileImageService fileImageService;
@@ -73,35 +75,56 @@ public class ttt {
   private OffLineOrderService offLineOrderService;
 
 
-
   @Inject
   private FinanicalStatisticService finanicalStatisticService;
 
 
-
   @Test
-  public void tttt(){
-    Calendar calendar = Calendar.getInstance();
-    calendar.setTime(new Date());
-    calendar.add(Calendar.DAY_OF_MONTH, -1);
-    calendar.set(Calendar.HOUR_OF_DAY, 0);
-    calendar.set(Calendar.MINUTE, 0);
-    calendar.set(Calendar.SECOND, 0);
+  public void tttt() {
 
-    Date start = calendar.getTime();
-    calendar.add(Calendar.DAY_OF_MONTH, 1);
-    calendar.add(Calendar.SECOND, -1);
+    Merchant merchant = merchantService.findMerchantById(1L);
 
-    Date end = calendar.getTime();
-
-    List<Object[]> objects = offLineOrderService.countTransferMoney(start, end);
-
-    for (Object[] object : objects) {
-      try {
-        finanicalStatisticService.createFinancialstatistic(object,end);
-      } catch (Exception e) {
-      }
+    Integer count = null;
+    List<Object[]> scoreAs = null;
+    List<Object[]> list = null;
+    Map<String, Object> map = new HashMap<>();
+    String subSource = "4_0_" + merchant.getId();  //关注来源
+    //绑定会员数量
+    count = leJiaUserRepository.countByBindMerchant(merchant.getId());
+    map.put("bindM", count);
+    //邀请会员数
+    count = leJiaUserRepository.countBySubSourceAndState(subSource);
+    map.put("inviteM", count);
+    //邀请粉丝数
+    count = leJiaUserRepository.countBySubSourceAndSubState(subSource);
+    map.put("inviteU", count);
+    //邀请会员的累计产生佣金
+    count = leJiaUserRepository.countLJCommissionByMerchant(subSource);
+    map.put("commission", count);
+    //邀请会员的会员累计红包额和使用红包额
+    scoreAs = leJiaUserRepository.countScoreAByMerchant(subSource);
+    map.put("totalA", scoreAs.get(0)[0]);
+    map.put("usedA", scoreAs.get(0)[1]);
+    //邀请会员的各种订单类型数量
+    list = leJiaUserRepository.countOrderByMerchant(subSource);
+    for (Object[] o : list) {
+      map.put("order_" + o[0], o[1]);
     }
+    if (map.get("order_1") == null) {
+      map.put("order_1", 0);
+    }
+    if (map.get("order_3") == null) {
+      map.put("order_3", 0);
+    }
+    if (map.get("order_5") == null) {
+      map.put("order_5", 0);
+    }
+    map.put("sid", merchant.getMerchantSid());
+    map.put("name", merchant.getName());
+    map.put("partnership", merchant.getPartnership());
+    map.put("qrCode", merchant.getMerchantInfo().getQrCode());
+    map.put("ticket", merchant.getMerchantInfo().getTicket());
+
 
   }
 
@@ -131,8 +154,6 @@ public class ttt {
 //
 //
 //  }
-
-
 
 
 }
