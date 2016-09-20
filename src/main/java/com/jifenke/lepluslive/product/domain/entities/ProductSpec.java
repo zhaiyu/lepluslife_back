@@ -29,7 +29,7 @@ public class ProductSpec {
   private Product product;
 
   @NotNull
-  private Integer repository;
+  private Integer repository = 0;
 
   private String specDetail;
 
@@ -40,13 +40,17 @@ public class ProductSpec {
   private Long version = 0L;
 
   @NotNull
-  private Long price;
+  private Long price;   //市场价
 
   @Column(name = "min_price")
   @NotNull
-  private Long minPrice;
+  private Long minPrice; //购买最低金额
 
-  private Integer state;
+  private Integer minScore = 0;  //兑换最低所需积分
+
+  private Integer saleNumber = 0; //销售量
+
+  private Integer state = 1;
 
   public Long getVersion() {
     return version;
@@ -110,6 +114,22 @@ public class ProductSpec {
 
   public void setMinPrice(Long minPrice) {
     this.minPrice = minPrice;
+  }
+
+  public Integer getMinScore() {
+    return minScore;
+  }
+
+  public void setMinScore(Integer minScore) {
+    this.minScore = minScore;
+  }
+
+  public Integer getSaleNumber() {
+    return saleNumber;
+  }
+
+  public void setSaleNumber(Integer saleNumber) {
+    this.saleNumber = saleNumber;
   }
 
   public Integer getRepository() {

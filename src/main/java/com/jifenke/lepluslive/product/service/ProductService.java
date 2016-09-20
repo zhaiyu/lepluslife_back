@@ -7,16 +7,19 @@ import com.jifenke.lepluslive.global.config.Constants;
 import com.jifenke.lepluslive.global.util.LejiaResult;
 import com.jifenke.lepluslive.global.util.MvUtil;
 import com.jifenke.lepluslive.order.domain.entities.OrderDetail;
+import com.jifenke.lepluslive.product.controller.dto.LimitProductDto;
 import com.jifenke.lepluslive.product.controller.dto.ProductDto;
 import com.jifenke.lepluslive.product.domain.entities.Product;
 import com.jifenke.lepluslive.product.domain.entities.ProductCriteria;
 import com.jifenke.lepluslive.product.domain.entities.ProductDetail;
 import com.jifenke.lepluslive.product.domain.entities.ProductSpec;
 import com.jifenke.lepluslive.product.domain.entities.ProductType;
+import com.jifenke.lepluslive.product.domain.entities.ScrollPicture;
 import com.jifenke.lepluslive.product.repository.ProductDetailRepository;
 import com.jifenke.lepluslive.product.repository.ProductRepository;
 import com.jifenke.lepluslive.product.repository.ProductSpecRepository;
 import com.jifenke.lepluslive.product.repository.ProductTypeRepository;
+import com.jifenke.lepluslive.product.repository.ScrollPictureRepository;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -28,7 +31,10 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -60,10 +66,16 @@ public class ProductService {
   private ProductSpecRepository productSpecRepository;
 
   @Inject
+  private ProductSpecService productSpecService;
+
+  @Inject
   private FileImageService fileImageService;
 
   @Inject
   private BarcodeService barcodeService;
+
+  @Inject
+  private ScrollPictureRepository scrollPictureRepository;
 
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
@@ -190,6 +202,47 @@ public class ProductService {
     }
   }
 
+  /**
+   * 爆品列表 16/09/18
+   *
+   * @param criteria 条件
+   */
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+  public Map findLimitProductByPage(ProductCriteria criteria) {
+    Page<Product>
+        page =
+        productRepository.findAll(getWhereClause(criteria),
+                                  new PageRequest(criteria.getOffset() - 1, 10,
+                                                  new Sort(Sort.Direction.ASC, "id")));
+    List<Product> list = page.getContent();
+    Map<String, Object> result = new HashMap<>();
+    List<Map> productList = new ArrayList<>();
+    result.put("totalPages", page.getTotalPages());
+    result.put("totalElements", page.getTotalElements());
+    for (Product product : list) {
+      Map<String, Object> pro = new HashMap<>();
+      pro.put("id", product.getId());
+      pro.put("name", product.getName());
+      pro.put("minPrice", product.getMinPrice());
+      pro.put("minScore", product.getMinScore());
+      pro.put("state", product.getState());
+      pro.put("saleNumber", product.getSaleNumber());
+      pro.put("thumb", product.getThumb());
+      pro.put("hotStyle", product.getHotStyle());
+
+      //库存
+      List<ProductSpec> specList = productSpecService.findProductSpecsByProduct(product);
+      int repository = 0;
+      for (ProductSpec spec : specList) {
+        repository += spec.getRepository();
+      }
+      pro.put("repository", repository);
+      productList.add(pro);
+    }
+    result.put("productList", productList);
+    return result;
+  }
+
   public static Specification<Product> getWhereClause(ProductCriteria productCriteria) {
     return new Specification<Product>() {
       @Override
@@ -197,8 +250,10 @@ public class ProductService {
                                    CriteriaBuilder cb) {
         Predicate predicate = cb.conjunction();
         predicate.getExpressions().add(
-            cb.equal(r.get("state"),
-                     productCriteria.getState()));
+            cb.equal(r.get("state"), productCriteria.getState()));
+        if (productCriteria.getType() != null) {
+          predicate.getExpressions().add(cb.equal(r.get("type"), productCriteria.getType()));
+        }
         if (productCriteria.getProductType() != null) {
           predicate.getExpressions().add(
               cb.equal(r.<ProductType>get("productType"), productCriteria.getProductType()));
@@ -235,5 +290,162 @@ public class ProductService {
 
     return product.getQrCodePicture();
 
+  }
+
+  /**
+   * 上架或下架 16/09/18
+   *
+   * @param id 商品ID
+   */
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  public void changeState(Long id) {
+    Product p = productRepository.findOne(id);
+    if (p == null) {
+      throw new RuntimeException("不存在的商品");
+    }
+    p.setState(1 - p.getState());
+    productRepository.save(p);
+  }
+
+  /**
+   * 爆款设置 16/09/19
+   *
+   * @param id    商品id
+   * @param thumb 爆款图片(type=1是必须)
+   * @param type  1=设为爆款|0=取消爆款
+   */
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  public void changeHot(Long id, String thumb, Integer type) throws Exception {
+    Product p = productRepository.findOne(id);
+    try {
+      if (p == null) {
+        throw new RuntimeException("不存在的商品");
+      }
+      if (type == 1) {
+        p.setThumb(thumb);
+        p.setHotStyle(1);
+      } else {
+        p.setHotStyle(0);
+      }
+      productRepository.save(p);
+    } catch (Exception e) {
+      throw new Exception();
+    }
+  }
+
+  /**
+   * 保存秒死商品 16/09/19
+   */
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  public void saveLimitProduct(LimitProductDto limitProductDto) throws Exception {
+
+    Product product = limitProductDto.getProduct();
+    List<ProductSpec> specList = limitProductDto.getProductSpecList();
+    List<ProductDetail> detailList = limitProductDto.getProductDetailList();
+    List<ScrollPicture> scrollList = limitProductDto.getScrollPictureList();
+    List<ProductSpec> delSpecList = limitProductDto.getDelSpecList();
+    List<ProductDetail> delDetailList = limitProductDto.getDelDetailList();
+    List<ScrollPicture> delScrollList = limitProductDto.getDelScrollList();
+    try {
+      Product DBProduct = null;
+      if (product.getId() == null) {
+        DBProduct = new Product();
+      } else {
+        DBProduct = productRepository.findOne(product.getId());
+        if (DBProduct == null) {
+          throw new RuntimeException();
+        }
+      }
+      DBProduct.setState(1);
+      DBProduct.setType(2);
+      DBProduct.setBuyLimit(product.getBuyLimit());
+      DBProduct.setMinPrice(product.getMinPrice());
+      DBProduct.setMinScore(product.getMinScore());
+      DBProduct.setName(product.getName());
+      DBProduct.setPrice(product.getPrice());
+      DBProduct.setPostage(product.getPostage());
+      DBProduct.setCustomSale(product.getCustomSale());
+      DBProduct.setPicture(product.getPicture());
+      productRepository.save(DBProduct);
+      if (delSpecList != null && delSpecList.size() > 0) {
+        for (ProductSpec spec : delSpecList) {
+          ProductSpec DBSpec = productSpecRepository.findOne(spec.getId());
+          if (DBSpec == null) {
+            throw new RuntimeException();
+          }
+          DBSpec.setState(0);
+          productSpecRepository.save(DBSpec);
+        }
+      }
+      if (delDetailList != null && delDetailList.size() > 0) {
+        for (ProductDetail detail : delDetailList) {
+          productDetailRepository.delete(detail);
+        }
+      }
+      if (delScrollList != null && delScrollList.size() > 0) {
+        for (ScrollPicture scroll : delScrollList) {
+          scrollPictureRepository.delete(scroll);
+        }
+      }
+      if (specList != null && specList.size() > 0) {
+        for (ProductSpec spec : specList) {
+          ProductSpec DBSpec = null;
+          if (spec.getId() == null) {
+            DBSpec = new ProductSpec();
+          } else {
+            DBSpec = productSpecRepository.findOne(spec.getId());
+            if (DBSpec == null) {
+              throw new RuntimeException();
+            }
+          }
+
+          DBSpec.setProduct(DBProduct);
+          DBSpec.setPicture("2");
+          DBSpec.setPrice(spec.getPrice());
+          DBSpec.setMinPrice(spec.getMinPrice());
+          DBSpec.setMinScore(spec.getMinScore());
+          DBSpec.setRepository(spec.getRepository());
+          DBSpec.setSpecDetail(spec.getSpecDetail());
+          productSpecRepository.save(DBSpec);
+        }
+      }
+      if (detailList != null && detailList.size() > 0) {
+        for (ProductDetail detail : detailList) {
+          ProductDetail DBDetail = null;
+          if (detail.getId() == null) {
+            DBDetail = new ProductDetail();
+          } else {
+            DBDetail = productDetailRepository.findOne(detail.getId());
+            if (DBDetail == null) {
+              throw new RuntimeException();
+            }
+          }
+          DBDetail.setProduct(DBProduct);
+          DBDetail.setPicture(detail.getPicture());
+          DBDetail.setSid(detail.getSid());
+          productDetailRepository.save(DBDetail);
+        }
+      }
+      if (scrollList != null && scrollList.size() > 0) {
+        for (ScrollPicture scroll : scrollList) {
+          ScrollPicture DBScroll = null;
+          if (scroll.getId() == null) {
+            DBScroll = new ScrollPicture();
+          } else {
+            DBScroll = scrollPictureRepository.findOne(scroll.getId());
+            if (DBScroll == null) {
+              throw new RuntimeException();
+            }
+          }
+          DBScroll.setProduct(DBProduct);
+          DBScroll.setSid(scroll.getSid());
+          DBScroll.setPicture(scroll.getPicture());
+          scrollPictureRepository.save(DBScroll);
+        }
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new Exception();
+    }
   }
 }

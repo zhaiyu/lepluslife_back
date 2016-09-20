@@ -52,6 +52,7 @@ public class ProductController {
       Model model) {
     //拼接查询条件
     ProductCriteria productCriteria = new ProductCriteria();
+    productCriteria.setType(1);
     if (offset == null) {
       offset = 1;
     }

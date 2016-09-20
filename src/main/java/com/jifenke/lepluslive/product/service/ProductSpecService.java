@@ -43,6 +43,14 @@ public class ProductSpecService {
     return productSpecRepository.findAllByProduct(product);
   }
 
+  /**
+   * 获取所有的上线的规格 16/09/19
+   */
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+  public List<ProductSpec> findProductSpecsByProductAndState(Product product) {
+    return productSpecRepository.findAllByProductAndState(product, 1);
+  }
+
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public void editProductSpec(ProductSpec productSpec) {
 
@@ -97,7 +105,7 @@ public class ProductSpecService {
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public LejiaResult pullOffProductSpec(Integer id) {
-    ProductSpec productSpec  = productSpecRepository.findOne(id);
+    ProductSpec productSpec = productSpecRepository.findOne(id);
     if (productSpec == null) {
       return LejiaResult.build(500, "商品规格不存在");
     }

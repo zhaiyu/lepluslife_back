@@ -7,7 +7,27 @@ public class ProductCriteria {
 
   private Integer state;
 
+  private Integer offset;
+
+  private Integer type;
+
   private ProductType productType;
+
+  public Integer getOffset() {
+    return offset;
+  }
+
+  public void setOffset(Integer offset) {
+    this.offset = offset;
+  }
+
+  public Integer getType() {
+    return type;
+  }
+
+  public void setType(Integer type) {
+    this.type = type;
+  }
 
   public Integer getState() {
     return state;
