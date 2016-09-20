@@ -2,6 +2,8 @@ package com.jifenke.lepluslive.activity.domain.entities;
 
 import com.jifenke.lepluslive.order.domain.entities.OffLineOrder;
 
+import java.util.Date;
+
 import javax.persistence.CascadeType;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
@@ -25,7 +27,7 @@ public class InitialOrderRebateActivityLog {
   @OneToOne(cascade = CascadeType.ALL)
   private OffLineOrder offLineOrder;
 
-  private String nickname;
+  private String nickname; //防止店主微信号变化 每笔消费记录店主号
 
   private String headImageUrl;
 
@@ -34,6 +36,16 @@ public class InitialOrderRebateActivityLog {
   private Long rebate; //返利金额
 
   private String exceptionLog; //如果未发放,说明原因
+
+  private Date createdDate;
+
+  public Date getCreatedDate() {
+    return createdDate;
+  }
+
+  public void setCreatedDate(Date createdDate) {
+    this.createdDate = createdDate;
+  }
 
   public Long getId() {
     return id;

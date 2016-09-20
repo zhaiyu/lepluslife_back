@@ -49,7 +49,6 @@
     }
 
     .left_menu ul li {
-        width: 200px;
         display: inline;
     }
 
@@ -169,11 +168,9 @@
 <script type="text/javascript" src="${resourceUrl}/js/menu.js"></script>
 <div class="left_menu">
     <ul id="nav_dot">
-        <shiro:hasPermission name="index:query"> 
-            <li>  <h4 class="M1"><span></span><a style="color: #f5f5f5; text-decoration: none;"  
-                                                 href="/manage/index">首页</a></h4> 
-            </li>
-             </shiro:hasPermission>
+        <shiro:hasPermission name="index:query">
+            <li><h4 class="M2"><span></span><a style="color: #f5f5f5; text-decoration: none;"   href="/manage/index">首页</a></h4></li>
+        </shiro:hasPermission>
         <shiro:hasPermission name="product:query">
             <li><h4 class="M2"><span></span>臻品商城</h4>
 

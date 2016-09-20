@@ -86,22 +86,24 @@
                             </div>
                             <div class="form-group col-md-2">
                                 <label>活动状态</label>
-                                <select class="form-control">
-                                    <option>全部状态</option>
-                                    <option>已参与</option>
-                                    <option>未参与</option>
+                                <select class="form-control" id="activity-state">
+                                    <option value="-1">全部状态</option>
+                                    <option value="1">已参与</option>
+                                    <option value="0">未参与</option>
                                 </select>
                             </div>
                             <div class="form-group col-md-2">
                                 <label>微信号绑定</label>
-                                <select class="form-control">
-                                    <option>全部状态</option>
-                                    <option>已绑定</option>
-                                    <option>未绑定</option>
+                                <select class="form-control" id="bind-wx">
+                                    <option value="-1">全部状态</option>
+                                    <option value="1">已绑定</option>
+                                    <option value="0">未绑定</option>
                                 </select>
                             </div>
                             <div class="form-group col-md-3">
-                                <button class="btn btn-primary" style="margin-top: 24px">查询</button>
+                                <button class="btn btn-primary" style="margin-top: 24px"
+                                        onclick="searchActivityByCriteria()">查询
+                                </button>
                             </div>
                         </div>
                         <table class="table table-bordered table-hover">
@@ -142,14 +144,14 @@
                             </div>
                             <div class="form-group col-md-2">
                                 <label>奖励状态</label>
-                                <select class="form-control">
-                                    <option>全部类型</option>
-                                    <option>合伙人提现</option>
-                                    <option>店铺提现</option>
+                                <select class="form-control" id="log-state">
+                                    <option value="-1">全部类型</option>
+                                    <option value="1">已发放</option>
+                                    <option value="0">未发放</option>
                                 </select>
                             </div>
                             <div class="form-group col-md-3">
-                                <button class="btn btn-primary" style="margin-top: 24px">查询</button>
+                                <button class="btn btn-primary" style="margin-top: 24px" onclick="searchMerchantActivityLogByCriteria()">查询</button>
                             </div>
                         </div>
                         <table class="table table-bordered table-hover">
@@ -166,57 +168,13 @@
                                 <th>奖励状态</th>
                             </tr>
                             </thead>
-                            <tbody>
-                            <tr>
-                                <td>32423331</td>
-                                <td>棉花糖KTV</td>
-                                <td><span>13333333333</span><br><span>（231313123）</span></td>
-                                <td>普通订单</td>
-                                <td>￥30</td>
-                                <td><span>2016.6.6</span><br><span>14:25:14</span></td>
-                                <td>¥80</td>
-                                <td><span><img src="#" width="40px" height="40px" alt=""></span><br><span>（曹广言）</span>
-                                </td>
-                                <td><span>已发放</span><br><span></span></td>
-                            </tr>
-                            <tr>
-                                <td>32423331</td>
-                                <td>棉花糖KTV</td>
-                                <td><span>13333333333</span><br><span>（231313123）</span></td>
-                                <td>普通订单</td>
-                                <td>￥30</td>
-                                <td><span>2016.6.6</span><br><span>14:25:14</span></td>
-                                <td>¥80</td>
-                                <td><span><img src="#" width="40px" height="40px" alt=""></span><br><span>（曹广言）</span>
-                                </td>
-                                <td><span>未发放</span><br><span>店主未绑定微信</span></td>
-                            </tr>
-                            <tr>
-                                <td>32423331</td>
-                                <td>棉花糖KTV</td>
-                                <td><span>13333333333</span><br><span>（231313123）</span></td>
-                                <td>普通订单</td>
-                                <td>￥30</td>
-                                <td><span>2016.6.6</span><br><span>14:25:14</span></td>
-                                <td>¥80</td>
-                                <td><span><img src="#" width="40px" height="40px" alt=""></span><br><span>（曹广言）</span>
-                                </td>
-                                <td><span>未发放</span><br><span>错误码原因</span></td>
-                            </tr>
-                            <tr>
-                                <td>32423331</td>
-                                <td>棉花糖KTV</td>
-                                <td><span>13333333333</span><br><span>（231313123）</span></td>
-                                <td>普通订单</td>
-                                <td>￥30</td>
-                                <td><span>2016.6.6</span><br><span>14:25:14</span></td>
-                                <td>¥80</td>
-                                <td><span><img src="#" width="40px" height="40px" alt=""></span><br><span>（曹广言）</span>
-                                </td>
-                                <td><span>未发放</span><br><span>今日发放达上限</span></td>
-                            </tr>
+                            <tbody id="logContent">
                             </tbody>
                         </table>
+                        <div class="tcdPageCode" style="display: inline;">
+                        </div>
+                        <div style="display: inline;"> 共有 <span id="logTotalElements"></span> 个
+                        </div>
                     </div>
                 </div>
             </div>
@@ -270,7 +228,8 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                <button type="button" id="aaa" class="btn btn-primary" data-dismiss="modal">确认
+                <button type="button" id="quit-confirm" class="btn btn-primary"
+                        data-dismiss="modal">确认
                 </button>
             </div>
         </div>
@@ -371,8 +330,11 @@
 <script src="${resourceUrl}/js/jquery.page.js"></script>
 <script>
     var criteria = {};
+    var logCriteria = {};
     criteria.offset = 1;
+    logCriteria.offset = 1;
     var activityContent = document.getElementById("activityContent");
+    var logContent = document.getElementById("logContent");
     function reset(num) {
         var iid = "type" + num;
         $("#" + iid + " input").val("");
@@ -395,6 +357,45 @@
 //            $("#type1").modal("toggle");
 //        });
     })
+
+    Date.prototype.format = function (fmt) {
+        var o = {
+            "M+": this.getMonth() + 1, //月份
+            "d+": this.getDate(), //日
+            "h+": this.getHours() % 12 == 0 ? 12 : this.getHours() % 12, //小时
+            "H+": this.getHours(), //小时
+            "m+": this.getMinutes(), //分
+            "s+": this.getSeconds(), //秒
+            "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+            "S": this.getMilliseconds() //毫秒
+        };
+        var week = {
+            "0": "\u65e5",
+            "1": "\u4e00",
+            "2": "\u4e8c",
+            "3": "\u4e09",
+            "4": "\u56db",
+            "5": "\u4e94",
+            "6": "\u516d"
+        };
+        if (/(y+)/.test(fmt)) {
+            fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+        }
+        if (/(E+)/.test(fmt)) {
+            fmt =
+            fmt.replace(RegExp.$1,
+                        ((RegExp.$1.length > 1) ? (RegExp.$1.length > 2 ? "\u661f\u671f" : "\u5468")
+                                : "") + week[this.getDay() + ""]);
+        }
+        for (var k in o) {
+            if (new RegExp("(" + k + ")").test(fmt)) {
+                fmt =
+                fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr((""
+                                                                                                 + o[k]).length)));
+            }
+        }
+        return fmt;
+    }
     //    时间选择器
     $(document).ready(function () {
         $('#date-end').daterangepicker({
@@ -499,7 +500,7 @@
                            if (content[i][2] == 1) {
                                contentStr +=
                                '<td><input type="hidden" class="id-hidden" value="' + content[i][0]
-                               + '"><input type="button" class="btn btn-xs btn-primary type1"value="编辑"></td><input type="button" class="btn btn-xs btn-primary deleteWarn"value="退出活动"></tr>';
+                               + '"><input type="button" class="btn btn-xs btn-primary editActivity"value="编辑"><input type="button" class="btn btn-xs btn-primary quitActivity"value="退出活动"></td></tr>';
                            } else {
                                contentStr +=
                                '<td><input type="hidden" class="id-hidden" value="' + content[i][0]
@@ -509,42 +510,16 @@
                        }
                        $(".joinActivity").each(function (i) {
                            $(".joinActivity").eq(i).bind("click", function () {
+                               clearTable();
                                var id = $(this).parent().find(".id-hidden").val();
                                $("#activity-confirm").bind("click", function () {
-                                   if ($("#limit").val() == null || $("#limit").val() == "") {
-                                       alert("请输入首单成立金额");
-
-                                       return;
-                                   }
-                                   if ($("input[name=money]:checked").val() == null) {
-                                       alert("请输入首单奖励金额");
-                                       return;
-                                   }
-                                   if ($("input[name=limit]:checked").val() == null) {
-                                       alert("请输入每日奖励上线");
+                                   if (!checkTable()) {
                                        return;
                                    }
                                    $("#activity-confirm").unbind("click")
-                                   var map = {};
-                                   map.id = id;
-                                   map.limit = $("#limit").val();
-                                   if ($("input[name=money]:checked").val() == 1) {
-                                       map.maxValue = $("#maxValue").val();
-                                       map.minValue = $("#minValue").val();
-                                       map.rebateType = 1;
-                                   } else {
-                                       map.maxValue = $("#fixValue").val();
-                                       map.rebateType = 0;
-                                   }
-                                   if ($("input[name=limit]:checked").val() == 1) {
-                                       map.dailyRebateType = 1;
-                                       map.dailyRebateLimit = $("#rebateLimit").val();
-                                   } else {
-                                       map.dailyRebateType = 0;
-                                   }
                                    $.ajax({
                                               type: "post",
-                                              data: JSON.stringify(map),
+                                              data: JSON.stringify(getPostParams(id)),
                                               url: "/manage/activity/initial_order_rebate/join",
                                               contentType: "application/json",
                                               success: function (data) {
@@ -557,24 +532,299 @@
                                $("#type1").modal("toggle");
                            });
 
-                       })
+                       });
+                       $(".editActivity").each(function (i) {
+                           $(".editActivity").eq(i).bind("click", function () {
+                               clearTable();
+                               var id = $(this).parent().find(".id-hidden").val();
+                               $.get("/manage/activity/initial_order_rebate/" + id,
+                                     function (result) {
+                                         var data = result.data;
+                                         if (data.rebateType == 0) {
+                                             $("input[name=money]")[0].checked = true;
+                                             $(".w-input").attr("disabled", "true");
+                                             $($("input[name=money]")[0]).nextAll().removeAttr("disabled");
+                                             $("#fixValue").val(data.maxRebate / 100);
+                                         } else {
+                                             $("input[name=money]")[1].checked = true;
+                                             $($("input[name=money]")[1]).nextAll().removeAttr("disabled");
+                                             $("#maxValue").val(data.maxRebate / 100);
+                                             $("#minValue").val(data.minRebate / 100);
+                                         }
+                                         if (data.dailyRebateType == 0) {
+                                             $("input[name=limit]")[0].checked = true;
+                                         } else {
+                                             $("input[name=limit]")[1].checked = true;
+                                             $($("input[name=limit]")[1]).nextAll().removeAttr("disabled");
+                                             $("#rebateLimit").val(data.dailyRebateLimit / 100);
+                                         }
+
+                                         $("#limit").val(data.limit / 100);
+
+                                         $("#activity-confirm").bind("click", function () {
+                                             if (!checkTable()) {
+                                                 return;
+                                             }
+                                             $("#activity-confirm").unbind("click")
+                                             $.ajax({
+                                                        type: "post",
+                                                        data: JSON.stringify(getPostParams(id)),
+                                                        url: "/manage/activity/initial_order_rebate/join",
+                                                        contentType: "application/json",
+                                                        success: function (data) {
+                                                            alert(data.msg);
+                                                            $("#type1").modal("hide");
+                                                            getMerchantActivityByAjax(cirteria);
+                                                        }
+                                                    });
+                                         });
+                                         $("#type1").modal("toggle");
+                                     });
+                           });
+                       });
+                       $(".quitActivity").each(function (i) {
+                           $(".quitActivity").eq(i).bind("click", function () {
+                               var id = $(this).parent().find(".id-hidden").val();
+                               $("#quit-confirm").bind("click", function () {
+                                   $("#quit-confirm").unbind("click")
+                                   $.ajax({
+                                              type: "get",
+                                              url: "/manage/activity/initial_order_rebate/quit/"
+                                                   + id,
+                                              contentType: "application/json",
+                                              success: function (data) {
+                                                  alert(data.msg);
+                                                  getMerchantActivityByAjax(cirteria);
+                                              }
+                                          });
+                               });
+                               $("#deleteWarn").modal("toggle");
+                           });
+
+                       });
                    }
                });
     }
+    function checkTable() {
+        if ($("#limit").val() == null || $("#limit").val() == "" || $("#limit").val() <= 0) {
+            alert("请输入首单成立金额");
+
+            return false;
+        }
+        if ($("input[name=money]:checked").val() == null) {
+            alert("请输入首单奖励金额");
+            return false;
+        }
+        if ($("input[name=money]:checked").val() == 0) {
+            if ($("#fixValue").val() <= 0) {
+                alert("固定金额不得小于0");
+                return false;
+            }
+        }
+        if ($("input[name=money]:checked").val() == 1) {
+            if ($("#minValue").val() < 0 || $("#maxValue").val() < 0) {
+                alert("金额不得小于0");
+                return false;
+            }
+            if ($("#maxValue").val() < $("#minValue").val()) {
+                alert("最大金额不得小于最小金额");
+                return false;
+            }
+        }
+        if ($("input[name=limit]:checked").val() == null) {
+            alert("请输入每日奖励上线");
+            return false;
+        }
+        if ($("input[name=limit]:checked").val() == 1) {
+            if ($("#rebateLimit").val() < 0) {
+                alert("金额不得小于0");
+                return false;
+            }
+        }
+        return true;
+    }
+    function clearTable() {
+        $("input[name=money]:checked").prop("checked", false);
+        $("input[name=limit]:checked").prop("checked", false);
+        $("#limit").val("");
+        $("#fixValue").val("");
+        $("#minValue").val("");
+        $("#maxValue").val("");
+        $("#rebateLimit").val("");
+    }
+    function getPostParams(id) {
+        var map = {};
+        map.id = id;
+        map.limit = $("#limit").val();
+        if ($("input[name=money]:checked").val() == 1) {
+            map.maxRebate = $("#maxValue").val();
+            map.minRebate = $("#minValue").val();
+            map.rebateType = 1;
+        } else {
+            map.maxRebate = $("#fixValue").val();
+            map.rebateType = 0;
+        }
+        if ($("input[name=limit]:checked").val() == 1) {
+            map.dailyRebateType = 1;
+            map.dailyRebateLimit = $("#rebateLimit").val();
+        } else {
+            map.dailyRebateType = 0;
+        }
+        return map;
+    }
     getMerchantActivityByAjax(criteria);
     function initPage(page, totalPage) {
-        $('.tcdPageCode').unbind();
-        $(".tcdPageCode").createPage({
-                                         pageCount: totalPage,
-                                         current: page,
-                                         backFn: function (p) {
-                                             criteria.offset = p;
-                                             getMerchantActivityByAjax(criteria);
-                                         }
-                                     });
+        $($('.tcdPageCode')[0]).unbind();
+        $($('.tcdPageCode')[0]).createPage({
+                                               pageCount: totalPage,
+                                               current: page,
+                                               backFn: function (p) {
+                                                   criteria.offset = p;
+                                                   getMerchantActivityByAjax(criteria);
+                                               }
+                                           });
+    }
+    function searchActivityByCriteria() {
+        criteria.offset = 1;
+        if ($("#shop-name").val() != "" && $("#shop-name").val() != null) {
+            criteria.merchant = $("#shop-name").val();
+        } else {
+            criteria.merchant = null;
+        }
+        if ($("#activity-state").val() != -1) {
+            criteria.state = $("#activity-state").val();
+        } else {
+            criteria.state = null;
+        }
+        if ($("#bind-wx").val() != -1) {
+            criteria.bindWxState = $("#bind-wx").val();
+        } else {
+            criteria.bindWxState = null;
+        }
+
+        getMerchantActivityByAjax(criteria);
     }
 </script>
 
+<%--首单列表js--%>
+<script>
+    function getMerchantActivityLogByAjax(cirteria) {
+        logContent.innerHTML = "";
+        $.ajax({
+                   type: "post",
+                   url: "/manage/activity/initial_order_rebate_log",
+                   async: false,
+                   data: JSON.stringify(cirteria),
+                   contentType: "application/json",
+                   success: function (data) {
+                       var page = data.data;
+                       var content = page.content;
+                       var totalPage = page.totalPages;
+                       $("#logTotalElements").html(page.totalElements);
+                       if (totalPage == 0) {
+                           totalPage = 1;
+                       }
+                       initLogPage(cirteria.offset, totalPage);
+                       for (i = 0; i < content.length; i++) {
+                           var contentStr = '<tr><td>'
+                                            + content[i].offLineOrder.merchant.merchantSid
+                                            + '</td>';
+                           contentStr +=
+                           '<td>' + content[i].offLineOrder.merchant.name + '</td>'
+                           if (content[i].offLineOrder.leJiaUser.phoneNumber != null) {
+                               contentStr +=
+                               '<td><span>' + content[i].offLineOrder.leJiaUser.phoneNumber
+                               + '</span><br><span>('
+                               + content[i].offLineOrder.leJiaUser.userSid + ')</span></td>'
+                           } else {
+                               contentStr +=
+                               '<td><span>未绑定手机号</span><br><span>('
+                               + content[i].offLineOrder.leJiaUser.userSid + ')</span></td>'
+                           }
+                           if (content[i].offLineOrder.rebateWay == 0) {
+                               contentStr +=
+                               '<td><span>普通订单(非会员)</span></td>';
+                           } else if (content[i].offLineOrder.rebateWay == 2) {
+                               contentStr +=
+                               '<td><span>普通订单(会员)</span></td>';
+                           } else if (content[i].offLineOrder.rebateWay == 1) {
+                               contentStr +=
+                               '<td><span>导流订单</span></td>';
+                           } else if (content[i].offLineOrder.rebateWay == 3) {
+                               contentStr +=
+                               '<td><span>会员订单</span></td>';
+                           } else if (content[i].offLineOrder.rebateWay == 4) {
+                               contentStr +=
+                               '<td><span>非会员纯支付码</span></td>';
+                           } else {
+                               contentStr +=
+                               '<td><span>会员纯支付码</span></td>';
+                           }
+                           contentStr +=
+                           '<td>' + content[i].offLineOrder.totalPrice / 100 + '</td>';
+
+                           contentStr +=
+                           '<td><span>'
+                           + new Date(content[i].offLineOrder.completeDate).format('yyyy-MM-dd HH:mm:ss')
+                           + '</span></td>';
+                           contentStr +=
+                           '<td>' + content[i].rebate / 100 + '</td>';
+
+                           contentStr +=
+                           '<td><span><img src="' + content[i].headImageUrl
+                           + '" width="40px" height="40px" alt=""></span><br><span>'
+                           + content[i].nickname
+                           + '</span></td>'
+
+                           if (content[i].state == 1) {
+                               contentStr += '<td><span>已发放</span><br><span></span></td></tr>';
+                           } else {
+                               contentStr +=
+                               '<td><span>未发放</span><br><span>' + content[i].exceptionLog
+                               + '</span></td></tr>'
+                           }
+                           logContent.innerHTML += contentStr;
+                       }
+                   }
+               });
+    }
+    getMerchantActivityLogByAjax(logCriteria);
+
+    function initLogPage(page, totalPage) {
+        $($(".tcdPageCode")[1]).unbind();
+        $($(".tcdPageCode")[1]).createPage({
+                                               pageCount: totalPage,
+                                               current: page,
+                                               backFn: function (p) {
+                                                   criteria.offset = p;
+                                                   getMerchantActivityLogByAjax(criteria);
+                                               }
+                                           });
+    }
+    function searchMerchantActivityLogByCriteria() {
+        logCriteria.offset = 1;
+        if ($("#shop-name2").val() != "" && $("#shop-name2").val() != null) {
+            logCriteria.merchant = $("#shop-name2").val();
+        } else {
+            logCriteria.merchant = null;
+        }
+        if ($("#log-state").val() != -1) {
+            logCriteria.state = $("#log-state").val();
+        } else {
+            logCriteria.state = null;
+        }
+        var dateStr = $('#date-end span').text().split("-");
+        if (dateStr != null && dateStr != '') {
+            var startDate = dateStr[0].replace(/-/g, "/");
+            var endDate = dateStr[1].replace(/-/g, "/");
+            logCriteria.startDate = startDate;
+            logCriteria.endDate = endDate;
+        }
+
+        getMerchantActivityLogByAjax(logCriteria);
+
+    }
+</script>
 </body>
 </html>
 

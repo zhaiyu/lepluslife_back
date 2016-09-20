@@ -3,6 +3,7 @@ package com.jifenke.lepluslive.activity.domain.entities;
 import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
 
 import javax.persistence.CascadeType;
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
@@ -24,23 +25,24 @@ public class InitialOrderRebateActivity {
   @OneToOne(cascade = CascadeType.ALL)
   private Merchant merchant;
 
-  private Long limit;//每笔订单消费限制
+  @Column(name = "consume_limit")
+  private Long limit = 0L;//每笔订单消费限制
 
   private Integer rebateType; //0 固定金额首单奖励 1 随机金额
 
-  private Long maxRebate;//如果rebateType为 0 代表固定奖励
+  private Long maxRebate = 0L;//如果rebateType为 0 代表固定奖励
 
-  private Long minRebate;
+  private Long minRebate = 0L;
 
   private Integer dailyRebateType; //0无上限 1 有上限
 
-  private Integer dailyRebateLimit;//每日转账限制
+  private Long dailyRebateLimit = 0L;//每日转账限制
 
   private Integer state;//活动状态 0 为开启 1 开启
 
-  private Long totalRebateTimes;//累计返还次数
+  private Long totalRebateTimes = 0L;//累计返还次数
 
-  private Long totalRebateMoney;
+  private Long totalRebateMoney = 0L;
 
   public Long getId() {
     return id;
@@ -98,11 +100,11 @@ public class InitialOrderRebateActivity {
     this.dailyRebateType = dailyRebateType;
   }
 
-  public Integer getDailyRebateLimit() {
+  public Long getDailyRebateLimit() {
     return dailyRebateLimit;
   }
 
-  public void setDailyRebateLimit(Integer dailyRebateLimit) {
+  public void setDailyRebateLimit(Long dailyRebateLimit) {
     this.dailyRebateLimit = dailyRebateLimit;
   }
 

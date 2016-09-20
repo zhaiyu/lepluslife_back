@@ -1,17 +1,19 @@
 package com.jifenke.lepluslive.activity.domain.criteria;
 
 /**
- * Created by wcg on 16/9/12.
+ * Created by wcg on 16/9/18.
  */
-public class RebateOrderCriteria {
+public class RebateActivityLogCriteria {
 
   private Integer offset;
 
   private String merchant;
 
-  private Integer state; //活动状态
+  private Integer state;
 
-  private Integer bindWxState; //0 未绑定店主公众号 1 绑定店主公众号
+  private String startDate;
+
+  private String endDate;
 
   public Integer getOffset() {
     return offset;
@@ -37,11 +39,19 @@ public class RebateOrderCriteria {
     this.state = state;
   }
 
-  public Integer getBindWxState() {
-    return bindWxState;
+  public String getStartDate() {
+    return startDate;
   }
 
-  public void setBindWxState(Integer bindWxState) {
-    this.bindWxState = bindWxState;
+  public void setStartDate(String startDate) {
+    this.startDate = startDate;
+  }
+
+  public String getEndDate() {
+    return endDate;
+  }
+
+  public void setEndDate(String endDate) {
+    this.endDate = endDate;
   }
 }
