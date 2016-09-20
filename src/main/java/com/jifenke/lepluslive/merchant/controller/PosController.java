@@ -14,6 +14,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -70,6 +71,36 @@ public class PosController {
                                        @RequestParam BigDecimal commission) {
     merchantPosService.changePosCommission(id,commission);
     return LejiaResult.ok();
+  }
+
+  @RequestMapping(value="/pos/save_pos",method = RequestMethod.POST)
+  public LejiaResult savePosMachine(@RequestBody MerchantPos merchantPos) {
+    try{
+      merchantPosService.savePosMachine(merchantPos);
+      return LejiaResult.build(200,"信息保存成功!");
+    }catch(Exception e) {
+      return LejiaResult.build(500,"信息保存失败!");
+    }
+  }
+
+
+  @RequestMapping(value="/pos/getById/{id}",method = RequestMethod.GET)
+  @ResponseBody
+  public MerchantPos getPosById(@PathVariable Long id) {
+    MerchantPos merchantPos = merchantPosService.findPosById(id);
+    return merchantPos;
+  }
+
+  @RequestMapping(value="/pos/save_ljCommision",method = RequestMethod.POST)
+  @ResponseBody
+  public LejiaResult saveLjCommision(@RequestBody MerchantPos merchantPos) {
+    try {
+      merchantPosService.saveLjCommision(merchantPos);
+      return LejiaResult.build(200,"信息保存成功!");
+    } catch (Exception e) {
+      return LejiaResult.build(500,"信息保存失败!");
+    }
+
   }
 
 

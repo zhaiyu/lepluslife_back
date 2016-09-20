@@ -49,7 +49,6 @@
     }
 
     .left_menu ul li {
-        width: 200px;
         display: inline;
     }
 
@@ -170,9 +169,7 @@
 <div class="left_menu">
     <ul id="nav_dot">
         <shiro:hasPermission name="index:query">
-            <li>
-                <h4 class="M1"><span></span>首页</h4>
-            </li>
+            <li><h4 class="M2"><span></span><a style="color: #f5f5f5; text-decoration: none;"   href="/manage/index">首页</a></h4></li>
         </shiro:hasPermission>
         <shiro:hasPermission name="product:query">
             <li><h4 class="M2"><span></span>臻品商城</h4>
@@ -249,6 +246,7 @@
                 <div class="list-item none none6">
                     <shiro:hasPermission name="market_center:query"> <a
                             href='/manage/codeBurse'>送红包活动</a> </shiro:hasPermission>
+                    <a href='/manage/activity/initial_order_rebate'>首单返红包</a>
                 </div>
             </li>
         </shiro:hasPermission>
