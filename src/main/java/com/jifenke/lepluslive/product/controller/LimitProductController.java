@@ -15,9 +15,6 @@ import com.jifenke.lepluslive.product.service.ProductDetailService;
 import com.jifenke.lepluslive.product.service.ProductService;
 import com.jifenke.lepluslive.product.service.ProductSpecService;
 import com.jifenke.lepluslive.product.service.ScrollPictureService;
-import com.sun.org.apache.xalan.internal.utils.XMLSecurityManager;
-
-import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;

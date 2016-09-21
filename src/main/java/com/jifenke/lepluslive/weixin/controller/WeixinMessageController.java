@@ -10,7 +10,6 @@ import com.jifenke.lepluslive.user.service.WeiXinUserService;
 import com.jifenke.lepluslive.weixin.domain.criteria.MessageCriteria;
 import com.jifenke.lepluslive.weixin.service.DictionaryService;
 import com.jifenke.lepluslive.weixin.service.WeixinMessageService;
-import com.sun.org.apache.xerces.internal.util.SynchronizedSymbolTable;
 
 import org.springframework.data.domain.Page;
 import org.springframework.ui.Model;
@@ -23,9 +22,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 
-import java.lang.reflect.Method;
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
