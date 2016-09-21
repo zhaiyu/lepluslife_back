@@ -14,6 +14,8 @@ public interface ProductSpecRepository extends JpaRepository<ProductSpec, Intege
 
   List<ProductSpec> findAllByProduct(Product product);
 
+  List<ProductSpec> findAllByProductAndState(Product product,int state);
+
   void deleteByProduct(Product product);
 
 }

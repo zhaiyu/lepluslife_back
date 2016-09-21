@@ -181,6 +181,9 @@
                     <shiro:hasPermission name="product:query">
                         <a href="/manage/product">商品管理</a>
                     </shiro:hasPermission>
+                    <shiro:hasPermission name="product:query">
+                        <a href="/manage/limit?type=1">限量秒杀</a>
+                    </shiro:hasPermission>
                     <shiro:hasPermission name="onLineOrder:query"> <a
                             href='/manage/order'>订单管理</a> </shiro:hasPermission>
                 </div>
