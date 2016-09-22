@@ -278,7 +278,7 @@
                 <a href='/manage/member_data'>会员分析</a>
             </div>
         </li>
-
+        <li><h4 class="M6"><span></span><a style="color: #f5f5f5; text-decoration: none;"   href="/manage/scoreAAccountPage">红包账户</a></h4></li>
     </ul>
 </div>
 <script>navList(12);</script>
