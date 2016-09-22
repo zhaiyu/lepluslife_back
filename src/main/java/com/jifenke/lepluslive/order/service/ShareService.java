@@ -91,4 +91,9 @@ public class ShareService {
     };
   }
 
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+  public OffLineOrderShare findOneByOrderId(Long id) {
+    return offLineOrderShareRepository.findOneByOrderId(id);
+
+  }
 }

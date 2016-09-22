@@ -34,6 +34,9 @@ public interface OffLineOrderRepository extends JpaRepository<OffLineOrder, Long
                  + "  FROM off_line_order WHERE off_line_order.rebate_way = 1 "
                  + "  AND off_line_order.state = 1  GROUP BY le_jia_user_id "
                  + " ) o "
-                 + "WHERE w.le_jia_user_id = o.le_jia_user_id AND w.state = 1 ",nativeQuery = true)
+                 + "WHERE w.le_jia_user_id = o.le_jia_user_id AND w.state = 1 ", nativeQuery = true)
   List<Object[]> countUserByOffLineOrder();
+
+  @Query(value = "SELECT * FROM off_line_order WHERE order_sid=?1", nativeQuery = true)
+  OffLineOrder findOneByOrderSid(String orderSid);
 }

@@ -201,4 +201,8 @@ public class OffLineOrderService {
   public List<FinancialStatistic> findAllNonTransferFinancialStatistic() {
     return financialStatisticRepository.findAllByState(0);
   }
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+  public OffLineOrder findOneByOrderSid(String orderSid) {
+    return offLineOrderRepository.findOneByOrderSid(orderSid);
+  }
 }

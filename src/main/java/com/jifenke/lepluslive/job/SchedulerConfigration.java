@@ -64,6 +64,27 @@ public class SchedulerConfigration {
     }
     return tigger;
   }
+  //每天增加红包账户
+  @Bean(name = "scoreAAccountAdd")
+  public JobDetailFactoryBean scoreAAccountAddDetail() {
+    JobDetailFactoryBean bean = new JobDetailFactoryBean();
+    bean.setJobClass(scoreAAccountJob.class);
+    bean.setDurability(false);
+    return bean;
+  }
+
+  @Bean(name = "scoreAAccountAddTrigger")
+  public CronTriggerFactoryBean scoreAAccountAddCronTriggerBean() {
+    CronTriggerFactoryBean tigger = new CronTriggerFactoryBean();
+    tigger.setJobDetail(scoreAAccountAddDetail().getObject());
+    try {
+      tigger.setCronExpression("0 0 1 * * ? ");//每天凌晨1点执行
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return tigger;
+  }
+
 
   @Bean
   public SchedulerFactoryBean schedulerFactory() {
@@ -71,7 +92,7 @@ public class SchedulerConfigration {
 //    bean.setConfigLocation(resourceLoader.getResource("classpath:quartz.properties"));
 //    bean.setApplicationContextSchedulerContextKey("applicationContextKey");
 //    bean.setDataSource(dataSource);
-//    bean.setTriggers(cronTriggerBean().getObject(), wxCronTriggerBean().getObject());
+//   bean.setTriggers(cronTriggerBean().getObject(), wxCronTriggerBean().getObject(),scoreAAccountAddCronTriggerBean().getObject());
 //    bean.setSchedulerName("orderConfrim");
     return bean;
   }
