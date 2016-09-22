@@ -196,9 +196,6 @@
                     <a href="/manage/merchant">商户管理</a>
                 </shiro:hasPermission>
 
-                <shiro:hasPermission name="app_manage:query">
-                    <a href='/manage/merchant/codePage'>商户邀请码</a>
-                </shiro:hasPermission>
                 <a href="/manage/pos">pos管理</a>
             </div>
         </li>
@@ -247,6 +244,9 @@
                     <shiro:hasPermission name="market_center:query"> <a
                             href='/manage/codeBurse'>送红包活动</a> </shiro:hasPermission>
                     <a href='/manage/activity/initial_order_rebate'>首单返红包</a>
+                    <shiro:hasPermission name="app_manage:query">
+                        <a href='/manage/merchant/codePage'>商户邀请码</a>
+                    </shiro:hasPermission>
                 </div>
             </li>
         </shiro:hasPermission>
@@ -313,7 +313,7 @@
             $(".none4").parent('li').addClass('selected');
             $(".none4").slideDown(300);
         }
-        if (url.indexOf("codeBurse") != -1) {
+        if (url.indexOf("codeBurse") != -1||url.indexOf("initial_order_rebate") ||url.indexOf("codePage") ) {
             $(".none6").parent('li').addClass('selected');
             $(".none6").slideDown(300);
         }

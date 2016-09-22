@@ -250,11 +250,11 @@
                     <div class="form-group">
                         <label class="col-sm-3 control-label">首单定义</label>
 
-                        <div class="col-sm-7">
-                            <span>消费者产生的首笔超过</span>
-                            <input name="bannerType" id="limit" type="number" style="width: 20%">
-                            <span>元订单</span>
-                        </div>
+                        <%--<div class="col-sm-7">--%>
+                            <%--<span>消费者产生的首笔超过</span>--%>
+                            <%--<input name="bannerType"  type="number" style="width: 20%">--%>
+                            <%--<span>元订单</span>--%>
+                        <%--</div>--%>
                     </div>
 
                     <div class="form-group">
@@ -509,6 +509,7 @@
                            activityContent.innerHTML += contentStr;
                        }
                        $(".joinActivity").each(function (i) {
+                           $(".joinActivity").eq(i).unbind("click");
                            $(".joinActivity").eq(i).bind("click", function () {
                                clearTable();
                                var id = $(this).parent().find(".id-hidden").val();
@@ -534,6 +535,7 @@
 
                        });
                        $(".editActivity").each(function (i) {
+                           $(".editActivity").eq(i).unbind("click");
                            $(".editActivity").eq(i).bind("click", function () {
                                clearTable();
                                var id = $(this).parent().find(".id-hidden").val();
@@ -559,7 +561,7 @@
                                              $("#rebateLimit").val(data.dailyRebateLimit / 100);
                                          }
 
-                                         $("#limit").val(data.limit / 100);
+//                                         $("#limit").val(data.limit / 100);
 
                                          $("#activity-confirm").bind("click", function () {
                                              if (!checkTable()) {
@@ -583,6 +585,7 @@
                            });
                        });
                        $(".quitActivity").each(function (i) {
+                           $(".quitActivity").eq(i).unbind("click");
                            $(".quitActivity").eq(i).bind("click", function () {
                                var id = $(this).parent().find(".id-hidden").val();
                                $("#quit-confirm").bind("click", function () {
@@ -606,11 +609,11 @@
                });
     }
     function checkTable() {
-        if ($("#limit").val() == null || $("#limit").val() == "" || $("#limit").val() <= 0) {
-            alert("请输入首单成立金额");
-
-            return false;
-        }
+//        if ($("#limit").val() == null || $("#limit").val() == "" || $("#limit").val() <= 0) {
+//            alert("请输入首单成立金额");
+//
+//            return false;
+//        }
         if ($("input[name=money]:checked").val() == null) {
             alert("请输入首单奖励金额");
             return false;
@@ -646,7 +649,7 @@
     function clearTable() {
         $("input[name=money]:checked").prop("checked", false);
         $("input[name=limit]:checked").prop("checked", false);
-        $("#limit").val("");
+//        $("#limit").val("");
         $("#fixValue").val("");
         $("#minValue").val("");
         $("#maxValue").val("");
@@ -655,7 +658,7 @@
     function getPostParams(id) {
         var map = {};
         map.id = id;
-        map.limit = $("#limit").val();
+//        map.limit = $("#limit").val();
         if ($("input[name=money]:checked").val() == 1) {
             map.maxRebate = $("#maxValue").val();
             map.minRebate = $("#minValue").val();

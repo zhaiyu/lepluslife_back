@@ -71,20 +71,21 @@ public class InitialOrderRebateActivityService {
             " and merchant.id not in (select merchant_user.merchant_id from merchant_wx_user,merchant_user where merchant_wx_user.merchant_user_id = merchant_user.id and merchant_user.type = 1 ) ");
       }
     }
+    if (criteria.getState() != null) {
+      if (criteria.getState() == 0) {
+        sql.append(
+            " and merchant.id not in (select merchant_id from initial_order_rebate_activity where state = 1)");
+      } else {
+        sql.append(" and merchant.id  in (select merchant_id from initial_order_rebate_activity where state = 1) ");
+      }
+    }
     sql.append("order by create_date desc limit ");
     sql.append(start);
     sql.append(",10 )merchant");
     sql.append(
         " left join  initial_order_rebate_activity on merchant.id =  initial_order_rebate_activity.merchant_id where 1=1 ");
 
-    if (criteria.getState() != null) {
-      if (criteria.getState() == 0) {
-        sql.append(
-            " and initial_order_rebate_activity.state is null or initial_order_rebate_activity.state = 0 ");
-      } else {
-        sql.append(" and initial_order_rebate_activity.state = 1  ");
-      }
-    }
+
     Query nativeQuery = em.createNativeQuery(sql.toString());
     List<Object[]> resultList = nativeQuery.getResultList();
     return resultList;
@@ -137,8 +138,8 @@ public class InitialOrderRebateActivityService {
     }
     initialOrderRebateActivity.setState(1);
     BigDecimal ratio = new BigDecimal(100);
-    initialOrderRebateActivity
-        .setLimit(new BigDecimal(map.get("limit")).multiply(ratio).longValue());
+//    initialOrderRebateActivity
+//        .setLimit(new BigDecimal(map.get("limit")).multiply(ratio).longValue());
     if (new Integer(map.get("rebateType")) == 1) {
       initialOrderRebateActivity
           .setMinRebate(new BigDecimal(map.get("minRebate")).multiply(ratio).longValue());
