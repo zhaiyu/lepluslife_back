@@ -80,4 +80,13 @@ public interface LeJiaUserRepository extends JpaRepository<LeJiaUser, Long> {
    */
   @Query(value = "SELECT rebate_way,COUNT(*) FROM wei_xin_user u,off_line_order o WHERE u.le_jia_user_id=o.le_jia_user_id AND sub_source=?1 AND u.state=1 AND o.state=1 GROUP BY rebate_way", nativeQuery = true)
   List<Object[]> countOrderByMerchant(String subSource);
+
+  /**
+   * 某个商户绑定会员数量 16/09/21
+   *
+   * @param merchantId 商户ID
+   * @return 绑定会员数量 (时间段)
+   */
+  @Query(value = "SELECT COUNT(*) FROM le_jia_user WHERE le_jia_user.bind_merchant_id = ?1 AND bind_merchant_date BETWEEN ?2 AND  ?3 ", nativeQuery = true)
+  Integer countByBindMerchantAndDate(Long merchantId,String startDate,String endDate);
 }
