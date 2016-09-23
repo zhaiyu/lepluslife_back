@@ -104,25 +104,25 @@ public class ScoreAAccountDetailViewExcel extends AbstractExcelView {
       }
       if (scoreAAccountDetail.get("useScoreA") != null) {
         excelRow.createCell(2).setCellValue(
-            "￥" + (Integer.parseInt(scoreAAccountDetail.get("useScoreA").toString())) / 100);
+            "￥" + (Double.valueOf(scoreAAccountDetail.get("useScoreA").toString().toString())) / 100);
       } else {
         excelRow.createCell(2).setCellValue("￥" + 0);
       }
       if (scoreAAccountDetail.get("issuedScoreA") != null) {
         excelRow.createCell(3).setCellValue(
-            "￥" + (Integer.parseInt(scoreAAccountDetail.get("issuedScoreA").toString())) / 100);
+            "￥" + (Double.valueOf(scoreAAccountDetail.get("issuedScoreA").toString().toString())) / 100);
       } else {
         excelRow.createCell(3).setCellValue("￥" + 0);
       }
       if (scoreAAccountDetail.get("commissionIncome") != null) {
         excelRow.createCell(4).setCellValue(
-            "￥" + (Integer.parseInt(scoreAAccountDetail.get("commissionIncome").toString())) / 100);
+            "￥" + (Double.valueOf(scoreAAccountDetail.get("commissionIncome").toString().toString())) / 100);
       } else {
         excelRow.createCell(4).setCellValue("￥" + 0);
       }
       if (scoreAAccountDetail.get("jfkShare") != null) {
         excelRow.createCell(5).setCellValue(
-            "￥" + (Integer.parseInt(scoreAAccountDetail.get("jfkShare").toString())) / 100);
+            "￥" + (Double.valueOf(scoreAAccountDetail.get("jfkShare").toString().toString())) / 100);
       } else {
         excelRow.createCell(5).setCellValue("￥" + 0);
       }

@@ -57,11 +57,11 @@ public class ScoreAAccountViewExcel extends AbstractExcelView {
       HSSFRow excelRow = excelSheet.createRow(record++);
       SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
       excelRow.createCell(0).setCellValue(sdf.format(scoreAAccount.getChangeDate()));
-      excelRow.createCell(1).setCellValue("￥" + scoreAAccount.getUseScoreA() / 100 + "(" + "￥"
-                                          + scoreAAccount.getSettlementAmount() / 100 + ")");
-      excelRow.createCell(2).setCellValue("￥" + scoreAAccount.getIssuedScoreA() / 100);
-      excelRow.createCell(3).setCellValue("￥" + scoreAAccount.getCommissionIncome() / 100);
-      excelRow.createCell(4).setCellValue("￥" + scoreAAccount.getJfkShare() / 100);
+      excelRow.createCell(1).setCellValue("￥" + (double)scoreAAccount.getUseScoreA() / 100 + "(" + "￥"
+                                          + (double)scoreAAccount.getSettlementAmount() / 100 + ")");
+      excelRow.createCell(2).setCellValue("￥" + (double)scoreAAccount.getIssuedScoreA() / 100);
+      excelRow.createCell(3).setCellValue("￥" + (double)scoreAAccount.getCommissionIncome() / 100);
+      excelRow.createCell(4).setCellValue("￥" + (double)scoreAAccount.getJfkShare() / 100);
     }
 
   }
