@@ -1,7 +1,8 @@
 package com.jifenke.lepluslive.order.controller.view;
 
-import com.jifenke.lepluslive.global.util.MvUtil;
 import com.jifenke.lepluslive.order.domain.entities.OffLineOrder;
+import com.jifenke.lepluslive.order.repository.OffLineOrderRepository;
+import com.jifenke.lepluslive.user.domain.entities.LeJiaUser;
 
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -15,6 +16,7 @@ import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
@@ -23,6 +25,8 @@ import javax.servlet.http.HttpServletResponse;
  */
 @Configuration
 public class OrderViewExcel extends AbstractExcelView {
+  @Inject
+  OffLineOrderRepository offLineOrderRepository;
 
   @Override
   protected void buildExcelDocument(Map<String, Object> map, HSSFWorkbook hssfWorkbook,
@@ -50,22 +54,28 @@ public class OrderViewExcel extends AbstractExcelView {
     excelHeader.createCell(0).setCellValue("订单编号");
     excelHeader.createCell(1).setCellValue("交易完成时间");
     excelHeader.createCell(2).setCellValue("商户名称");
-    excelHeader.createCell(3).setCellValue("消费者信息");
-    excelHeader.createCell(4).setCellValue("订单金额");
-    excelHeader.createCell(5).setCellValue("红包使用");
-    excelHeader.createCell(6).setCellValue("支付方式");
-    excelHeader.createCell(7).setCellValue("实际支付");
-    excelHeader.createCell(8).setCellValue("佣金");
-    excelHeader.createCell(9).setCellValue("商户应入账");
-    excelHeader.createCell(10).setCellValue("手续费");
-    excelHeader.createCell(11).setCellValue("发放红包");
-    excelHeader.createCell(12).setCellValue("分润金额");
-    excelHeader.createCell(13).setCellValue("发放积分");
-    excelHeader.createCell(14).setCellValue("状态");
-    excelHeader.createCell(15).setCellValue("订单类型");
+    excelHeader.createCell(3).setCellValue("商户编号");
+    excelHeader.createCell(4).setCellValue("消费者手机号");
+    excelHeader.createCell(5).setCellValue("消费者编号");
+    excelHeader.createCell(6).setCellValue("订单金额");
+    excelHeader.createCell(7).setCellValue("红包使用");
+    excelHeader.createCell(8).setCellValue("支付方式");
+    excelHeader.createCell(9).setCellValue("实际支付");
+    excelHeader.createCell(10).setCellValue("佣金");
+    excelHeader.createCell(11).setCellValue("商户应入账");
+    excelHeader.createCell(12).setCellValue("手续费");
+    excelHeader.createCell(13).setCellValue("发放红包");
+    excelHeader.createCell(14).setCellValue("分润金额");
+    excelHeader.createCell(15).setCellValue("发放积分");
+    excelHeader.createCell(16).setCellValue("状态");
+    excelHeader.createCell(17).setCellValue("订单类型");
+    excelHeader.createCell(18).setCellValue("城市");
+    excelHeader.createCell(19).setCellValue("销售姓名");
+    excelHeader.createCell(20).setCellValue("消费者类别");
   }
 
   public void setExcelRows(HSSFSheet excelSheet, List<OffLineOrder> orderList) {
+
     int record = 1;
     for (OffLineOrder order : orderList) {
       HSSFRow excelRow = excelSheet.createRow(record++);
@@ -74,34 +84,36 @@ public class OrderViewExcel extends AbstractExcelView {
       excelRow.createCell(1).setCellValue(order.getCompleteDate() == null ? "未完成的订单"
                                                                           : sdf
                                               .format(order.getCompleteDate()));
-      excelRow.createCell(2).setCellValue(
-          order.getMerchant().getName() + "(" + order.getMerchant().getMerchantSid() + ")");
+      excelRow.createCell(2).setCellValue(order.getMerchant().getName());
+      excelRow.createCell(3).setCellValue(order.getMerchant().getMerchantSid());
       if (order.getLeJiaUser().getPhoneNumber() == null) {
-        excelRow.createCell(3).setCellValue("未绑定手机号(" + order.getLeJiaUser().getUserSid() + ")");
+        excelRow.createCell(4).setCellValue("未绑定手机号");
+        excelRow.createCell(5).setCellValue(order.getLeJiaUser().getUserSid());
       } else {
-        excelRow.createCell(3).setCellValue(
-            order.getLeJiaUser().getPhoneNumber() + "(" + order.getLeJiaUser().getUserSid() + ")");
+        excelRow.createCell(4).setCellValue(
+            order.getLeJiaUser().getPhoneNumber());
+        excelRow.createCell(5).setCellValue(order.getLeJiaUser().getUserSid());
       }
-      excelRow.createCell(4).setCellValue(order.getTotalPrice() / 100.0);
-      excelRow.createCell(5).setCellValue(order.getTrueScore() / 100.0);
-      excelRow.createCell(6).setCellValue(order.getPayWay().getPayWay());
-      excelRow.createCell(7).setCellValue(order.getTruePay() / 100.0);
-      excelRow.createCell(8).setCellValue(order.getLjCommission() / 100.0);
-      excelRow.createCell(9)
+      excelRow.createCell(6).setCellValue(order.getTotalPrice() / 100.0);
+      excelRow.createCell(7).setCellValue(order.getTrueScore() / 100.0);
+      excelRow.createCell(8).setCellValue(order.getPayWay().getPayWay());
+      excelRow.createCell(9).setCellValue(order.getTruePay() / 100.0);
+      excelRow.createCell(10).setCellValue(order.getLjCommission() / 100.0);
+      excelRow.createCell(11)
           .setCellValue(order.getTransferMoney() / 100.0);
-      excelRow.createCell(10).setCellValue(order.getWxCommission() / 100.0);
-      excelRow.createCell(11).setCellValue(order.getRebate() / 100.0);
+      excelRow.createCell(12).setCellValue(order.getWxCommission() / 100.0);
+      excelRow.createCell(13).setCellValue(order.getRebate() / 100.0);
       if (order.getRebateWay() != 1) {
-        excelRow.createCell(12).setCellValue(0);
+        excelRow.createCell(14).setCellValue(0);
       } else {
-        excelRow.createCell(12).setCellValue(
+        excelRow.createCell(14).setCellValue(
             (order.getLjCommission() - order.getWxCommission() - order.getRebate()) / 100.0);
       }
-      excelRow.createCell(13).setCellValue(order.getScoreB());
+      excelRow.createCell(15).setCellValue(order.getScoreB());
       if (order.getState() == 0) {
-        excelRow.createCell(14).setCellValue("未支付");
+        excelRow.createCell(16).setCellValue("未支付");
       } else {
-        excelRow.createCell(14).setCellValue("已支付");
+        excelRow.createCell(16).setCellValue("已支付");
       }
       String orderType = null;
       switch (order.getRebateWay()) {
@@ -124,8 +136,27 @@ public class OrderViewExcel extends AbstractExcelView {
           orderType = "会员扫纯支付码";
           break;
       }
-      excelRow.createCell(15).setCellValue(orderType);
-
+      excelRow.createCell(17).setCellValue(orderType);
+      LeJiaUser leJiaUser=order.getLeJiaUser();
+      if(order.getMerchant()!=null&&order.getMerchant().getSalesStaff()!=null&&order.getMerchant().getSalesStaff().getName()!=null)
+      {
+        excelRow.createCell(19).setCellValue(order.getMerchant().getSalesStaff().getName());
+      }
+      else{
+        excelRow.createCell(19).setCellValue("----");
+      }
+      if(order.getMerchant()!=null&&order.getMerchant().getCity()!=null&&order.getMerchant().getCity().getName()!=null)
+      {
+        excelRow.createCell(18).setCellValue(order.getMerchant().getCity().getName());
+      }
+      else{
+        excelRow.createCell(18).setCellValue("----");
+      }
+      Long  leJiaUserId =leJiaUser.getId();
+      int count=offLineOrderRepository.findOffLineOrderCountOfLeJiaUser(leJiaUserId);
+      if(count==0){excelRow.createCell(20).setCellValue("未消费过");}
+      if(count==1){excelRow.createCell(20).setCellValue("微信新用户");}
+      if(count>1){excelRow.createCell(20).setCellValue("微信老用户");}
     }
   }
 }

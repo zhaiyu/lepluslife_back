@@ -49,4 +49,7 @@ public interface OffLineOrderRepository extends JpaRepository<OffLineOrder, Long
   @Query(value = "select count(1),sum(total_price),sum(lj_commission) from off_line_order where merchant_id=?1 and  state=1 and rebate_way = ?2 and complete_date  between ?3 and ?4 and total_price>=?5 ", nativeQuery = true)
   List<Object[]> countLeadOrderByMidAndWay(Long merchantId, Long rebateWay, String startDate,
                                            String endDate,Long validAmount);
+
+  @Query(value = "SELECT COUNT(*) FROM off_line_order WHERE le_jia_user_id=?1", nativeQuery = true)
+  int findOffLineOrderCountOfLeJiaUser(Long leJiaUserId);
 }
