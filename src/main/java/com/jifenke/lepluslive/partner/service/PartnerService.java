@@ -1,6 +1,9 @@
 package com.jifenke.lepluslive.partner.service;
 
 import com.jifenke.lepluslive.global.util.MD5Util;
+import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
+import com.jifenke.lepluslive.merchant.domain.entities.MerchantInfo;
+import com.jifenke.lepluslive.merchant.service.MerchantService;
 import com.jifenke.lepluslive.partner.domain.entities.Partner;
 import com.jifenke.lepluslive.partner.domain.entities.PartnerManager;
 import com.jifenke.lepluslive.partner.domain.entities.PartnerManagerWallet;
@@ -50,7 +53,10 @@ public class PartnerService {
   private PartnerWalletRepository partnerWalletRepository;
 
   @Inject
-  private PartnerWalletLogRepository PprtnerWalletLogRepository;
+  private PartnerWalletLogRepository partnerWalletLogRepository;
+
+  @Inject
+  private MerchantService merchantService;
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public List<Partner> findAllParter() {
@@ -101,7 +107,19 @@ public class PartnerService {
     PartnerWallet partnerWallet = new PartnerWallet();
     partnerWallet.setPartner(partner);
     partnerWalletRepository.save(partnerWallet);
-
+    Merchant merchant = new Merchant();//天使合伙人虚拟商户
+    merchant.setPartner(partner);
+    merchant.setName(partner.getName());
+    merchant.setPartnership(2);
+    MerchantInfo merchantInfo = new MerchantInfo();
+    merchant.setMerchantInfo(merchantInfo);
+    merchantService.saveMerchant(merchant);
+    //为商户开通商户邀请码
+    try {
+      merchantService.createQrCode(merchant.getId());
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
   }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
@@ -127,7 +145,8 @@ public class PartnerService {
 
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-  public PartnerManagerWallet findPartnerManagerWalletByPartnerManager(PartnerManager PartnerManager) {
+  public PartnerManagerWallet findPartnerManagerWalletByPartnerManager(
+      PartnerManager PartnerManager) {
     return partnerManagerWalletRepository.findByPartnerManager(PartnerManager);
   }
 
@@ -137,9 +156,6 @@ public class PartnerService {
   }
 
 
-
-
-
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public void savePartnerManagerWallet(PartnerManagerWallet partnerManagerWallet) {
     partnerManagerWalletRepository.saveAndFlush(partnerManagerWallet);
@@ -147,7 +163,7 @@ public class PartnerService {
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public void partnerWalletLog(PartnerWalletLog PartnerWalletLog) {
-    PprtnerWalletLogRepository.saveAndFlush(PartnerWalletLog);
+    partnerWalletLogRepository.saveAndFlush(PartnerWalletLog);
   }
 
 

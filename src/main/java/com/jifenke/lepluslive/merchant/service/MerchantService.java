@@ -242,6 +242,10 @@ public class MerchantService {
           predicate.getExpressions().add(
               cb.equal(r.get("partnership"),
                        merchantCriteria.getPartnership()));
+        } else {
+          predicate.getExpressions().add(
+              cb.notEqual(r.get("partnership"),
+                          2));
         }
 
         if (merchantCriteria.getMerchantType() != null) {

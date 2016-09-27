@@ -169,7 +169,8 @@
 <div class="left_menu">
     <ul id="nav_dot">
         <shiro:hasPermission name="index:query">
-            <li><h4 class="M2"><span></span><a style="color: #f5f5f5; text-decoration: none;"   href="/manage/index">首页</a></h4></li>
+            <li><h4 class="M2"><span></span><a style="color: #f5f5f5; text-decoration: none;"  
+                                               href="/manage/index">首页</a></h4></li>
         </shiro:hasPermission>
         <shiro:hasPermission name="product:query">
             <li><h4 class="M2"><span></span>臻品商城</h4>
@@ -276,9 +277,10 @@
 
             <div class="list-item none none9">
                 <a href='/manage/member_data'>会员分析</a>
+                <a href='/manage/merchant_data'>商户数据</a>
+                <a href='/manage/scoreAAccountPage'>红包账户</a>
             </div>
         </li>
-        <li><h4 class="M6"><span></span><a style="color: #f5f5f5; text-decoration: none;"   href="/manage/scoreAAccountPage">红包账户</a></h4></li>
     </ul>
 </div>
 <script>navList(12);</script>
@@ -296,15 +298,16 @@
             $(".none1").slideDown(300);
         }
         if ((url.indexOf("/manage/product") != -1 || url.indexOf("/manage/order") != -1
-             || url.indexOf("topic") != -1) && url.indexOf("productRec") == -1) {
+             || url.indexOf("/manage/topic") != -1) || url.indexOf("productRec") != -1) {
             $(".none2").parent('li').addClass('selected');
             $(".none2").slideDown(300);
         }
-        if (url.indexOf("merchant") != -1 && url.indexOf("merchantRec") == -1) {
+        if ((url.indexOf("/manage/merchant") != -1 || url.indexOf("merchantRec") != -1
+             || url.indexOf("/manage/pos") != -1) && url.indexOf("/manage/merchant_data") == -1) {
             $(".none3").parent('li').addClass('selected');
             $(".none3").slideDown(300);
         }
-        if (url.indexOf("/manage/productRec") != -1 || url.indexOf("/manage/merchantRec") != -1) {
+        if (url.indexOf("/manage/banner") != -1) {
             $(".none5").parent('li').addClass('selected');
             $(".none5").slideDown(300);
         }
@@ -313,7 +316,8 @@
             $(".none4").parent('li').addClass('selected');
             $(".none4").slideDown(300);
         }
-        if (url.indexOf("codeBurse") != -1||url.indexOf("initial_order_rebate") ||url.indexOf("codePage") ) {
+        if (url.indexOf("codeBurse") != -1 || url.indexOf("initial_order_rebate") != -1
+            || url.indexOf("codePage") != -1) {
             $(".none6").parent('li').addClass('selected');
             $(".none6").slideDown(300);
         }
@@ -322,17 +326,11 @@
             $(".none7").parent('li').addClass('selected');
             $(".none7").slideDown(300);
         }
-        if (url.indexOf("/manage/member_data") != -1 || url.indexOf("/weixin/reply/list") != -1
-            || url.indexOf("/weixin/imageText") != -1 || url.indexOf("managementUserList") != -1) {
+        if (url.indexOf("/manage/member_data") != -1 || url.indexOf("/manage/merchant_data")
+                                                        != -1|| url.indexOf("/manage/scoreAAccountPage")
+                                                                != -1) {
             $(".none9").parent('li').addClass('selected');
             $(".none9").slideDown(300);
         }
-
-//        数组
-        var htmlArr = ['/manage/index', '/manage/product', '/manage/product', 'picManger.html',
-                       '/manage/merchant', '/manage/order', '/manage/topic', '/manage/user',
-                       '/manage/offLineOrder', '/manage/financial', '/manage/weixin/index',
-                       '/manage/offLineOrder/share', '/manage/partner', '/manage/sales',
-                       '/manage/managementUserList'];
     })
 </script>
