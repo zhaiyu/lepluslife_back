@@ -252,7 +252,7 @@ public class OffLineOrderController {
           merchantWeiXinUserService.findMerchantWeiXinUserByMerchantUser(merchantUser);
       for (MerchantWeiXinUser merchantWeiXinUser : merchantWeiXinUsers) {
         wxTemMsgService.sendTemMessage(merchantWeiXinUser.getOpenId(), 4L, keys,
-                                       financialStatistic.getStatisticId(), 41L, map2);
+                                       financialStatistic.getStatisticId(), map2);
       }
     }
   }

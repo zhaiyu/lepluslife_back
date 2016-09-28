@@ -1,5 +1,6 @@
 package com.jifenke.lepluslive.order.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
 import com.jifenke.lepluslive.product.domain.entities.Product;
 import com.jifenke.lepluslive.product.domain.entities.ProductSpec;
 
@@ -21,6 +22,7 @@ public class OrderDetail {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
+  @JsonIgnore
   @ManyToOne
   private OnLineOrder onLineOrder;
 

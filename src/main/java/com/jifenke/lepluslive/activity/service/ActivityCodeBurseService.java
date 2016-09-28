@@ -4,6 +4,8 @@ import com.jifenke.lepluslive.activity.domain.entities.ActivityCodeBurse;
 import com.jifenke.lepluslive.activity.repository.ActivityCodeBurseRepository;
 
 import com.jifenke.lepluslive.global.util.MvUtil;
+import com.jifenke.lepluslive.weixin.domain.entities.WeiXinQrCode;
+import com.jifenke.lepluslive.weixin.repository.WeiXinQrCodeRepository;
 import com.jifenke.lepluslive.weixin.service.WeiXinService;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -35,6 +37,9 @@ public class ActivityCodeBurseService {
 
   @Inject
   private WeiXinService weiXinService;
+
+  @Inject
+  private WeiXinQrCodeRepository weiXinQrCodeRepository;
 
   @Value("${bucket.ossBarCodeReadRoot}")
   private String barCodeRootUrl;
@@ -103,10 +108,16 @@ public class ActivityCodeBurseService {
         if (map.get("errcode") == null || Integer.valueOf(map.get("errcode").toString()) == 0) {
           codeBurse.setParameter(parameter);
           codeBurse.setTicket(map.get("ticket").toString());
+          //在永久二维码表中添加记录
+          WeiXinQrCode qrCode = new WeiXinQrCode();
+          qrCode.setParameter(parameter);
+          qrCode.setTicket(map.get("ticket").toString());
+          qrCode.setType(2);
+          weiXinQrCodeRepository.save(qrCode);
+          activityCodeBurseRepository.save(codeBurse);
         } else {
           return 504;
         }
-        activityCodeBurseRepository.save(codeBurse);
       }
     } catch (Exception e) {
       e.printStackTrace();

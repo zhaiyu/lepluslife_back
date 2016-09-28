@@ -12,6 +12,8 @@ import com.jifenke.lepluslive.order.domain.entities.OnLineOrder;
 import com.jifenke.lepluslive.order.service.ExpressInfoService;
 import com.jifenke.lepluslive.order.service.OrderService;
 import com.jifenke.lepluslive.user.domain.entities.WeiXinUser;
+import com.jifenke.lepluslive.weixin.domain.entities.Dictionary;
+import com.jifenke.lepluslive.weixin.service.DictionaryService;
 import com.jifenke.lepluslive.weixin.service.WxTemMsgService;
 
 import org.springframework.data.domain.Page;
@@ -21,6 +23,7 @@ import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -44,37 +47,43 @@ public class OrderController {
   @Inject
   private WxTemMsgService wxTemMsgService;
 
-  @RequestMapping("/order")
-  public ModelAndView findOrderByPage(
-      @RequestParam(value = "page", required = false) Integer offset,
-      @RequestParam(value = "orderSid", required = false) String orderSid,
-      @RequestParam(required = false) Integer state,
-      Model model) {
-    OrderCriteria orderCriteria = new OrderCriteria();
+  @Inject
+  private DictionaryService dictionaryService;
 
-    if (state != null) {
-      orderCriteria.setState(state);
-    }
-    if (orderSid != null) {
-      orderCriteria.setOrderSid(orderSid);
-    }
-    if (offset == null) {
-      offset = 1;
-    }
-    Page
-        page =
-        orderService.findOrderByPage(offset, orderCriteria);
-    model.addAttribute("orders", page.getContent());
-    model.addAttribute("pages", page.getTotalPages());
-    model.addAttribute("currentPage", offset);
-    model.addAttribute("orderCriteria", orderCriteria);
-    return MvUtil.go("/order/orderList");
+  @RequestMapping(value = "/order", method = RequestMethod.GET)
+  public ModelAndView findOrderByPage(Model model) {
+    model.addAttribute("state", 5);
+    model.addAttribute("backA", dictionaryService.findDictionaryById(3L).getValue());
+    return MvUtil.go("/order/onLineOrderList");
+  }
+
+  /**
+   * ajax获取线上订单数据 16/09/26
+   *
+   * @param orderCriteria 筛选条件及分页
+   */
+  @RequestMapping(value = "/order/onLineOrderList", method = RequestMethod.POST)
+  public
+  @ResponseBody
+  LejiaResult userList(@RequestBody OrderCriteria orderCriteria) {
+    Page page = orderService.findOrderByPage(orderCriteria);
+    return LejiaResult.ok(page);
+
   }
 
   @RequestMapping("/orderCancle/{id}")
   public LejiaResult cancleOrder(@PathVariable Long id) {
     orderService.cancleOrder(id);
     return LejiaResult.build(200, "取消订单成功");
+  }
+
+  /**
+   * 线上自提订单的确认完成  16/09/26
+   */
+  @RequestMapping("/finishOrder/{id}")
+  public LejiaResult finishOrder(@PathVariable Long id) {
+    orderService.finishOrder(id);
+    return LejiaResult.build(200, "确认订单成功");
   }
 
   @RequestMapping(value = "/order/delivery", method = RequestMethod.POST)
@@ -88,7 +97,6 @@ public class OrderController {
       //如果用户有对应的微信信息，则异步发送一个模板消息
       WeiXinUser weiXinUser = order.getLeJiaUser().getWeiXinUser();
       if (weiXinUser != null) {
-        new Thread(()->{
           Address address = order.getAddress();
           String[] keys = new String[4];
           keys[0] = "订单号(" + order.getOrderSid() + ")";
@@ -97,8 +105,7 @@ public class OrderController {
           keys[3] =
               address.getName() + " " + address.getCity() + address.getCounty() + address
                   .getLocation();
-          wxTemMsgService.sendTemMessage(weiXinUser.getOpenId(), 1L, keys,order.getId());
-        }).start();
+          wxTemMsgService.sendTemMessage(weiXinUser.getOpenId(), 1L, keys, order.getId());
       }
     } else if (onLineOrder.getState() == 1) {
       orderService

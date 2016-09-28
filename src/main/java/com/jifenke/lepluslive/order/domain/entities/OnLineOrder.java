@@ -43,10 +43,14 @@ public class OnLineOrder {
 
   private Long freightPrice;     //运费
 
+  private Long payBackA = 0L;   //订单支付后的返红包额度
+
   @ManyToOne
   private LeJiaUser leJiaUser;
 
   private Date createDate = new Date();
+
+  private Date payDate;      //付款时间
 
   private Date confirmDate;  //订单确认收货时间
 
@@ -58,6 +62,11 @@ public class OnLineOrder {
   private Address address;
 
   private Integer state;//0 未支付 1 已支付 2 已发货 3已收获 4 订单取消
+
+
+  private Integer payState = 0;    //支付状态 0=未支付|1=已支付
+
+  private Integer transmitWay;    //取货方式  1=线下自提|2=快递
 
   @ManyToOne
   private PayOrigin payOrigin;    //支付方式及订单来源
@@ -192,6 +201,38 @@ public class OnLineOrder {
 
   public void setAddress(Address address) {
     this.address = address;
+  }
+
+  public Integer getPayState() {
+    return payState;
+  }
+
+  public void setPayState(Integer payState) {
+    this.payState = payState;
+  }
+
+  public Integer getTransmitWay() {
+    return transmitWay;
+  }
+
+  public void setTransmitWay(Integer transmitWay) {
+    this.transmitWay = transmitWay;
+  }
+
+  public Date getPayDate() {
+    return payDate;
+  }
+
+  public Long getPayBackA() {
+    return payBackA;
+  }
+
+  public void setPayBackA(Long payBackA) {
+    this.payBackA = payBackA;
+  }
+
+  public void setPayDate(Date payDate) {
+    this.payDate = payDate;
   }
 
   public Date getDeliveryDate() {

@@ -153,7 +153,7 @@
 
                     <div class="form-group">
                         <label for="picture"
-                               class="col-sm-3 control-label">爆款图片(宽高比:750*200)</label>
+                               class="col-sm-3 control-label">爆款图片(宽高比:702*360)</label>
 
                         <div class="col-sm-6">
                             <!--<div class="thumbnail">-->

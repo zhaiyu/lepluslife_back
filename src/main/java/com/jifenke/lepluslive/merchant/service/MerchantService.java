@@ -27,6 +27,8 @@ import com.jifenke.lepluslive.sales.domain.entities.SalesStaff;
 import com.jifenke.lepluslive.user.domain.entities.RegisterOrigin;
 import com.jifenke.lepluslive.user.repository.LeJiaUserRepository;
 import com.jifenke.lepluslive.user.repository.RegisterOriginRepository;
+import com.jifenke.lepluslive.weixin.domain.entities.WeiXinQrCode;
+import com.jifenke.lepluslive.weixin.repository.WeiXinQrCodeRepository;
 import com.jifenke.lepluslive.weixin.service.WeiXinService;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -98,6 +100,9 @@ public class MerchantService {
 
   @Inject
   private WeiXinService weiXinService;
+
+  @Inject
+  private WeiXinQrCodeRepository weiXinQrCodeRepository;
 
   @Value("${bucket.ossBarCodeReadRoot}")
   private String barCodeRootUrl;
@@ -526,6 +531,12 @@ public class MerchantService {
             info.setQrCode(1);
             info.setParameter(parameter);
             info.setTicket(map.get("ticket").toString());
+            //在永久二维码表中添加记录
+            WeiXinQrCode qrCode = new WeiXinQrCode();
+            qrCode.setParameter(parameter);
+            qrCode.setTicket(map.get("ticket").toString());
+            qrCode.setType(1);
+            weiXinQrCodeRepository.save(qrCode);
             merchantInfoRepository.save(info);
             return 200;
           } else {

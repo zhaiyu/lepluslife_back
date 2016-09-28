@@ -149,7 +149,7 @@
             <input type="text" id="name" class="check" value="${product.name}"/>
         </div>
         <div>
-            <div>商品图片</div>
+            <div>商品图片(宽高比:336*210)</div>
             <div class="col-sm-6">
                 <div>
                     <!--<div class="thumbnail">-->
@@ -248,7 +248,7 @@
             </div>
         </div>
         <div>
-            <div>轮播图</div>
+            <div>轮播图(宽高比:750*600)</div>
             <div class="banner">
                 <c:forEach items="${scrollList}" var="scroll" step="1"
                            varStatus="scrollNumber">

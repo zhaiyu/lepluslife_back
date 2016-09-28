@@ -21,6 +21,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.thymeleaf.util.DartUtils;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -102,10 +103,11 @@ public class OrderService {
         return map;
     }
 
-    public Page findOrderByPage(Integer offset, OrderCriteria orderCriteria) {
+    public Page findOrderByPage(OrderCriteria orderCriteria) {
         Sort sort = new Sort(Sort.Direction.DESC, "createDate");
       return orderRepository
-          .findAll(getWhereClause(orderCriteria), new PageRequest(offset - 1, 10, sort));
+          .findAll(getWhereClause(orderCriteria),
+                   new PageRequest(orderCriteria.getOffset() - 1, 10, sort));
     }
 
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
@@ -113,6 +115,19 @@ public class OrderService {
         OnLineOrder onLineOrder = orderRepository.findOne(id);
         onLineOrder.setState(4);
         productService.orderCancle(onLineOrder.getOrderDetails());
+        orderRepository.save(onLineOrder);
+    }
+
+    /**
+     * 线上自提订单的确认完成  16/09/26
+     */
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+    public void finishOrder(Long id) {
+        OnLineOrder onLineOrder = orderRepository.findOne(id);
+        Date date = new Date();
+        onLineOrder.setDeliveryDate(date);
+        onLineOrder.setConfirmDate(date);
+        onLineOrder.setState(3);
         orderRepository.save(onLineOrder);
     }
 
@@ -186,15 +201,44 @@ public class OrderService {
             public Predicate toPredicate(Root<OnLineOrder> r, CriteriaQuery<?> q,
                                          CriteriaBuilder cb) {
                 Predicate predicate = cb.conjunction();
-                if (orderCriteria.getState() != null) {
+                if (orderCriteria.getState() != null && orderCriteria.getState() != 5) {
                     predicate.getExpressions().add(
                             cb.equal(r.get("state"),
                                     orderCriteria.getState()));
+                }
+                if (orderCriteria.getTransmitWay() != null) {
+                    predicate.getExpressions().add(
+                            cb.equal(r.get("transmitWay"),
+                                    orderCriteria.getTransmitWay()));
                 }
                 if (orderCriteria.getOrderSid() != null) {
                     predicate.getExpressions().add(
                             cb.like(r.get("orderSid"), "%" + orderCriteria.getOrderSid() + "%"));
                 }
+
+              if (orderCriteria.getStartDate() != null && !"".equals(orderCriteria.getStartDate())) {
+                predicate.getExpressions().add(
+                    cb.between(r.get("createDate"), new Date(orderCriteria.getStartDate()),
+                               new Date(orderCriteria.getEndDate())));
+              }
+              if (orderCriteria.getPhoneNumber() != null && !"".equals(orderCriteria.getPhoneNumber())) {
+                predicate.getExpressions().add(
+                    cb.like(r.get("address").get("phoneNumber"), "%" + orderCriteria.getPhoneNumber() + "%"));
+              }
+              if (orderCriteria.getUserName() != null && !"".equals(orderCriteria.getUserName())) {
+                predicate.getExpressions().add(
+                    cb.like(r.get("address").get("name"), "%" + orderCriteria.getUserName() + "%"));
+              }
+
+              if (orderCriteria.getMinTruePrice() != null) {
+                predicate.getExpressions().add(
+                    cb.greaterThanOrEqualTo(r.get("truePrice"), orderCriteria.getMinTruePrice()));
+              }
+
+              if (orderCriteria.getMaxTruePrice() != null) {
+                predicate.getExpressions().add(
+                    cb.lessThanOrEqualTo(r.get("truePrice"), orderCriteria.getMaxTruePrice()));
+              }
                 return predicate;
             }
         };
