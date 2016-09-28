@@ -90,7 +90,7 @@ public class ScoreAAccountService {
     Date beginDate = new Date();
     Calendar date = Calendar.getInstance();
     date.setTime(beginDate);
-    date.set(Calendar.DATE, date.get(Calendar.DATE) - 1);
+    date.set(Calendar.DATE, date.get(Calendar.DATE) - 2);
 
     try {
       Date endDate = dft.parse(dft.format(date.getTime()));
