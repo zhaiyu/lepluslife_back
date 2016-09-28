@@ -3,10 +3,14 @@ package com.jifenke.lepluslive.merchant.controller;
 import com.jifenke.lepluslive.global.util.LejiaResult;
 import com.jifenke.lepluslive.global.util.MvUtil;
 import com.jifenke.lepluslive.global.util.PaginationUtil;
+import com.jifenke.lepluslive.global.util.ParseUtil;
 import com.jifenke.lepluslive.merchant.controller.view.MerchantViewExcel;
 import com.jifenke.lepluslive.merchant.domain.criteria.MerchantCriteria;
+import com.jifenke.lepluslive.merchant.domain.entities.BankName;
 import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
+import com.jifenke.lepluslive.merchant.domain.entities.MerchantBank;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantUser;
+import com.jifenke.lepluslive.merchant.service.BankNameService;
 import com.jifenke.lepluslive.merchant.service.CityService;
 import com.jifenke.lepluslive.merchant.service.MerchantService;
 import com.jifenke.lepluslive.merchant.service.MerchantWeiXinUserService;
@@ -61,6 +65,8 @@ public class MerchantController {
   @Inject
   private MerchantWeiXinUserService merchantWeiXinUserService;
 
+  @Inject
+  private BankNameService bankNameService;
 
   @RequestMapping(value = "/merchant", method = RequestMethod.GET)
   public ModelAndView goShowMerchantPage(Model model) {
@@ -113,6 +119,16 @@ public class MerchantController {
 
   @RequestMapping(value = "/merchant", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
   public LejiaResult createMerchant(@RequestBody Merchant merchant) {
+    boolean isNum = ParseUtil.isNum(merchant.getMerchantBank().getBankName());          //  判断BankName是否为数字
+    if(isNum) {
+      Long bankType = new Long(merchant.getMerchantBank().getBankName());               //  将bankName 转换为 id
+      if(1<=bankType && bankType<=22) {                                                 //  1-22  参考数据库(bank_name)
+        BankName bankName = bankNameService.findOne(bankType);                          //  根据 id 获取银行名称
+        MerchantBank bank = merchant.getMerchantBank();
+        bank.setBankName(bankName.getName());
+        merchant.setMerchantBank(bank);
+      }
+    }
     merchantService.createMerchant(merchant);
 
     return LejiaResult.ok("添加商户成功");
@@ -120,6 +136,16 @@ public class MerchantController {
 
   @RequestMapping(value = "/merchant", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
   public LejiaResult eidtMerchant(@RequestBody Merchant merchant) {
+    boolean isNum = ParseUtil.isNum(merchant.getMerchantBank().getBankName());          //  判断BankName是否为数字
+    if(isNum) {
+      Long bankType = new Long(merchant.getMerchantBank().getBankName());               //  将bankName 转换为 id
+      if(1<=bankType && bankType<=22) {                                                 //  1-22  参考数据库(bank_name)
+        BankName bankName = bankNameService.findOne(bankType);                          //  根据 id 获取银行名称
+        MerchantBank bank = merchant.getMerchantBank();
+        bank.setBankName(bankName.getName());
+        merchant.setMerchantBank(bank);
+      }
+    }
     merchantService.editMerchant(merchant);
 
     return LejiaResult.ok("修改商户成功");
@@ -244,5 +270,6 @@ public class MerchantController {
     model.addAttribute("merchantId",id);
     return MvUtil.go("/merchant/merchantPosManage");
   }
+
 
 }
