@@ -3,7 +3,7 @@
   User: wcg
   Date: 16/4/6
   Time: 下午4:42
-  To change this template use File | Settings | File Templates.
+  待删除
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -70,7 +70,7 @@
                                 </c:forEach>
                             </td>
                             <td class="text-center">${order.address.name}${order.address.phoneNumber}${order.address.province}${order.address.city}${order.address.county}${order.address.location}</td>
-                            <td class="text-center">${order.totalPrice/100}</td>
+                            <td class="text-center">${order.totalPrice/100}+${order.totalScore}积分</td>
                             <td class="text-center">${order.truePrice/100}+${order.trueScore}积分</td>
                             <td class="text-center"><fmt:formatNumber type="number"
                                                                       value="${order.truePrice*12/10000}"
@@ -79,7 +79,8 @@
                                                                     type="both"/></td>
                             <td class="text-center">
                                 <c:if test="${order.state==0}">待付款</c:if>
-                                <c:if test="${order.state==1}">已付款未发货</c:if>
+                                <c:if test="${order.state==1 && order.transmitWay == 1}">已付款(线下自提)</c:if>
+                                <c:if test="${order.state==1 && order.transmitWay != 1}">已付款未发货</c:if>
                                 <c:if test="${order.state==2}">已发货</c:if>
                                 <c:if test="${order.state==3}">订单完成</c:if>
                                 <c:if test="${order.state==4}">订单已取消</c:if>
@@ -92,10 +93,18 @@
                                     </button>
                                 </c:if>
                                 <c:if test="${order.state==1}">
-                                    <button type="button" class="btn confirmWarn"
-                                            onclick="delivery('${order.id}','${order.expressCompany}','${order.expressNumber}',0)">
-                                        确认发货
-                                    </button>
+                                    <c:if test="${order.transmitWay == 1}">
+                                        <button type="button" class="btn confirmWarn"
+                                                onclick="finishOrder('${order.id}')">
+                                            确认完成
+                                        </button>
+                                    </c:if>
+                                    <c:if test="${order.transmitWay != 1}">
+                                        <button type="button" class="btn confirmWarn"
+                                                onclick="delivery('${order.id}','${order.expressCompany}','${order.expressNumber}',0)">
+                                            确认发货
+                                        </button>
+                                    </c:if>
                                     <button type="button" class="btn btn-default deleteWarn"
                                             data-target="#deleteWarn"
                                             onclick="cancleOrder(${order.id})">取消订单
@@ -260,6 +269,28 @@
     </div>
 </div>
 
+<!--取消订单提示框-->
+<div class="modal" id="finishWarn">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span
+                        aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">确认完成订单</h4>
+            </div>
+            <div class="modal-body">
+                <p>将该订单设为已完成?</p>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal"
+                        id="finish-confirm">确认
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <!--如果只是做布局的话不需要下面两个引用-->
 <!-- jQuery (necessary for Bootstrap's JavaScript plugins) -->
 <script src="${resourceUrl}/js/bootstrap.min.js"></script>
@@ -288,6 +319,23 @@
                    });
         });
         $("#deleteWarn").modal("show");
+    }
+
+    function finishOrder(id) {
+        $("#finish-confirm").bind("click", function () {
+            $.ajax({
+                       type: "get",
+                       url: "/manage/finishOrder/" + id,
+                       contentType: "application/json",
+                       success: function (data) {
+                           alert(data.msg);
+                           setTimeout(function () {
+                               location.reload(true);
+                           }, 0);
+                       }
+                   });
+        });
+        $("#finishWarn").modal("show");
     }
 
     function delivery(id, expressCompany, expressNumber, state) { //state=1 修改物流信息  =0确认发货
