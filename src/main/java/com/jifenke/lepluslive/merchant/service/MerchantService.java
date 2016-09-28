@@ -187,6 +187,7 @@ public class MerchantService {
     if (origin == null) {
       throw new RuntimeException("不存在的商户");
     }
+    origin.setSalesStaff(merchant.getSalesStaff());
     origin.setLjBrokerage(merchant.getLjBrokerage());
     origin.setLjCommission(merchant.getLjCommission());
     origin.setName(merchant.getName());
@@ -297,7 +298,7 @@ public class MerchantService {
         if (merchantCriteria.getSalesStaff() != null) {
           predicate.getExpressions().add(
               cb.equal(r.get("salesStaff"),
-                       new SalesStaff(merchantCriteria.getSalesStaff())));
+                       merchantCriteria.getSalesStaff()));
         }
 
         return predicate;

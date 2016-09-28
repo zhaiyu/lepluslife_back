@@ -71,11 +71,23 @@
 
         <div>
             <label for="sales">所属销售</label>
+             <c:if test="${salesStaff ==null}">
             <select name="name" id="sales" class="check">
+                <option value="nullValue"></option>
                 <c:forEach items="${sales}" var="saleStaff">
                     <option value="${saleStaff.id}">${saleStaff.name}</option>
                 </c:forEach>
             </select>
+             </c:if>
+            <c:if test="${salesStaff !=null}">
+                <select name="name" id="sales" class="check">
+                    <option value="nullValue"></option>
+                    <option value="${salesStaff.id}">${salesStaff.name}</option>
+                    <c:forEach items="${sales}" var="saleStaff">
+                        <option value="${saleStaff.id}">${saleStaff.name}</option>
+                    </c:forEach>
+                </select>
+            </c:if>
         </div>
 
 
@@ -570,8 +582,11 @@
         var salesStaff = {};
 
         salesStaff.id = $("#sales").val();
-
-        merchant.salesStaff = salesStaff;
+        if(salesStaff.id=="nullValue"){
+            merchant.salesStaff = null;
+        }else{
+            merchant.salesStaff = salesStaff;
+        }
         partner.id = $("#partners").val();
         merchant.partner = partner;
         var city = {};
