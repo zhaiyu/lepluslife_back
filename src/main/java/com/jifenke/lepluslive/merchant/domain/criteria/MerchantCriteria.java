@@ -27,13 +27,13 @@ public class MerchantCriteria {
 
   private String merchantSid;
 
-  private String salesStaff;
+  private Long salesStaff;
 
-  public String getSalesStaff() {return salesStaff;}
+  public Long getSalesStaff() {return salesStaff;}
 
-  public void setSalesStaff(String salesStaff) {this.salesStaff = salesStaff;}
+  public void setSalesStaff(Long salesStaff) {this.salesStaff = salesStaff;}
 
-    public Long getCity() {
+  public Long getCity() {
     return city;
   }
 

@@ -102,7 +102,11 @@ public class MerchantController {
     model.addAttribute("merchant", merchantService.findMerchantById(id));
     model.addAttribute("merchantTypes", merchantService.findAllMerchantTypes());
     model.addAttribute("partners", partnerService.findAllParter());
+    Merchant merchant=merchantService.findMerchantById(id);
+    SalesStaff salesStaff=merchant.getSalesStaff();
+    model.addAttribute("salesStaff",salesStaff);
     List<SalesStaff> salesStaffList = salesService.findAllSaleStaff();
+    salesStaffList.remove(salesStaff);
     model.addAttribute("sales", salesStaffList);
     return MvUtil.go("/merchant/merchantCreate");
   }
