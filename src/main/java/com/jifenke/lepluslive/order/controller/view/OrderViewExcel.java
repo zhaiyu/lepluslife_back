@@ -72,6 +72,7 @@ public class OrderViewExcel extends AbstractExcelView {
     excelHeader.createCell(18).setCellValue("城市");
     excelHeader.createCell(19).setCellValue("销售姓名");
     excelHeader.createCell(20).setCellValue("消费者类别");
+    excelHeader.createCell(21).setCellValue("交易完成日期");
   }
 
   public void setExcelRows(HSSFSheet excelSheet, List<OffLineOrder> orderList) {
@@ -81,6 +82,7 @@ public class OrderViewExcel extends AbstractExcelView {
       HSSFRow excelRow = excelSheet.createRow(record++);
       excelRow.createCell(0).setCellValue(order.getOrderSid());
       SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+      SimpleDateFormat sdf2 = new SimpleDateFormat("yyyy-MM-dd");
       excelRow.createCell(1).setCellValue(order.getCompleteDate() == null ? "未完成的订单"
                                                                           : sdf
                                               .format(order.getCompleteDate()));
@@ -157,6 +159,7 @@ public class OrderViewExcel extends AbstractExcelView {
       if(count==0){excelRow.createCell(20).setCellValue("未消费过");}
       if(count==1){excelRow.createCell(20).setCellValue("微信新用户");}
       if(count>1){excelRow.createCell(20).setCellValue("微信老用户");}
+      excelRow.createCell(21).setCellValue(order.getCompleteDate() == null ? "未完成的订单" : sdf2.format(order.getCompleteDate()));
     }
   }
 }
