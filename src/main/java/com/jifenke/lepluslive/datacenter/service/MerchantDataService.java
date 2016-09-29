@@ -7,6 +7,7 @@ import com.jifenke.lepluslive.merchant.domain.entities.City;
 import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantType;
 import com.jifenke.lepluslive.merchant.repository.CityRepository;
+import com.jifenke.lepluslive.merchant.repository.MerchantRepository;
 import com.jifenke.lepluslive.merchant.repository.MerchantTypeRepository;
 import com.jifenke.lepluslive.order.repository.OffLineOrderRepository;
 import com.jifenke.lepluslive.sales.domain.entities.SalesStaff;
@@ -22,12 +23,15 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.math.BigInteger;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.servlet.ServletOutputStream;
 
 /**
@@ -47,6 +51,10 @@ public class MerchantDataService {
   private LeJiaUserRepository leJiaUserRepository;
   @Inject
   private OffLineOrderRepository offeLineOrderRepository;
+  @Inject
+  private MerchantRepository merchantRepository;
+  @Inject
+  private EntityManager entityManager;
 
   public List<City> findAllCitys() {
     return cityRepository.findAll();
@@ -59,6 +67,74 @@ public class MerchantDataService {
   public List<SalesStaff> findAllStaffList() {
     return salesStaffRepository.findAll();
   }
+
+  /**
+   *  根据条件查询商户及订单数量
+   */
+  public Map<String,List> findMerchantAndCountByCriteria(MerchantCriteriaEx merchantCriteria) {
+                    StringBuffer sql = new StringBuffer("select merchant.id,count(1),sum(total_price) money from merchant inner join off_line_order on merchant.id = merchant_id ");
+                    sql.append(" where off_line_order.complete_date BETWEEN '"+merchantCriteria.getStartDate()+ "' and '"+merchantCriteria.getEndDate()+"'");
+                    if(merchantCriteria.getMerchantName()!=null && !"".equals(           // 商户名称
+                        merchantCriteria.getMerchantName().trim())) {
+                        sql.append(" and merchant.`name` like '%"+merchantCriteria.getMerchantName()+"%'");
+                    }
+                    if(merchantCriteria.getSalesStaff()!=null) {                         // 销售名称
+                        sql.append(" and merchant.sales_staff_id = "+merchantCriteria.getSalesStaff());
+                    }
+                    if(merchantCriteria.getCity()!=null) {
+                        sql.append(" and merchant.city_id = "+merchantCriteria.getCity()); // 城市
+                    }
+                    if(merchantCriteria.getMerchantType()!=null) {
+                        sql.append(" and merchant.merchant_type_id = "+merchantCriteria.getMerchantType()); // 商户类型
+                    }
+                    if(merchantCriteria.getValidAmount()!=null) {
+                        sql.append(" and total_price>"+merchantCriteria.getValidAmount()); //  大于该金额算有效订单
+                    }
+                    sql.append(" group by merchant_id");
+                    if(merchantCriteria.getNeedNum()!=null) {
+                       sql.append(" having count(1)  >="+merchantCriteria.getNeedNum());       // 订单数量
+                    }
+                    sql.append(" order by count(1)  desc");                                   // 根据订单量排序
+                    if(merchantCriteria.getOffset()!=null) {
+                      sql.append(" limit "+(merchantCriteria.getOffset()-1)+",10 ");        // 分页
+                    }
+                    Query nativeQuery = entityManager.createNativeQuery(sql.toString());
+                    List<Object[]> list = nativeQuery.getResultList();
+                    Map<String, List> map = new HashMap<>();
+                    List<Merchant> merchants = new ArrayList<>();
+                    List<Long> orderNum = new ArrayList<>();
+                    List<Double> orderTotal = new ArrayList<>();
+                    if (list != null && list.size() > 0) {
+                      for (int i = 0; i < list.size(); i++) {
+                        Object[] objects = list.get(i);
+                        if (objects[0] != null) {
+                          Long id = new Long(objects[0].toString());
+                          Merchant merchant = merchantRepository.findOne(id);
+                          merchants.add(merchant);
+                        }
+                        if (objects[1] != null) {
+                          orderNum.add(new Long(objects[1].toString()));
+                        } else {
+                          orderNum.add(0L);
+                        }
+                        if (objects[2] != null) {
+                          double dtotal = new Long(objects[2].toString());
+                          orderTotal.add((dtotal / 100));                               // 1:100
+                        } else {
+                          orderTotal.add(0.0);
+                        }
+                      }
+                    }
+                    String countSql = new String("select count(1) from ( "+sql.toString().replace(" limit "+(merchantCriteria.getOffset()==null?1:merchantCriteria.getOffset()-1)+",10 ","")+" ) records");
+                    Query countQuery = entityManager.createNativeQuery(countSql);
+                    List<BigInteger> details = countQuery.getResultList();
+                    map.put("merchants",merchants);
+                    map.put("orderNum",orderNum);
+                    map.put("orderTotal",orderTotal);
+                    map.put("totalElements",details);
+                    return map;
+  }
+
 
   /**
    * 查询锁定用户
