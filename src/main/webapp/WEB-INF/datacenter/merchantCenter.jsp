@@ -90,6 +90,12 @@
                             </select>
                         </div>
 
+                        <div class="form-group col-md-2">
+                            <label for="needNum">有效订单量大于</label>
+                            <input type="number" id="needNum" class="form-control"
+                                   placeholder="请输入订单量"/>
+                        </div>
+
                         <div class="form-group col-md-3">
                             <button class="btn btn-primary" style="margin-top: 20px"
                                     onclick="searchMerchantByCriteria()">查询
@@ -123,6 +129,9 @@
                     <div class="tcdPageCode" style="display: inline;">
                     </div>
                     <div style="display: inline;"> 共有 <span id="totalElements"></span> 个</div>
+                    <button class="btn btn-info pull-right" style="margin-top: 5px"
+                            onclick="exportExcelAll()">导出全部
+                    </button>
                     <button class="btn btn-success pull-right" style="margin-top: 5px"
                             onclick="exportExcel()">导出excel
                     </button>
@@ -335,6 +344,9 @@
         if ($("#valid-amount").val() != "" && $("#valid-amount").val() != null) {
             merchantCriteria.validAmount = $("#valid-amount").val();
         }
+        if ($("#needNum").val() != "" && $("#needNum").val() != null) {
+            merchantCriteria.needNum = $("#needNum").val();
+        }
         getMerchantByAjax(merchantCriteria);
     }
     Date.prototype.format = function (fmt) {
@@ -391,8 +403,13 @@
         return temp;
     }
     function exportExcel() {
-            alert("正在导出 , 请稍等候 ~ ");
             post("/manage/merchant_data/merchantDataExport",merchantCriteria);
+    }
+    function exportExcelAll() {
+            var sure = confirm("导出全部会比较慢,确认要全部导出吗?");
+            if(sure) {
+               post("/manage/merchant_data/merchantDataExportAll",merchantCriteria);
+            }
     }
 </script>
 </body>

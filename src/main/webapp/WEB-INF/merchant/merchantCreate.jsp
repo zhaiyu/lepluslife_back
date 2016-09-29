@@ -197,7 +197,31 @@
                 </div>
                 <div>
                     <label for="bank">开户支行</label>
-                    <input type="text" id="bank"/>
+                    <select id="bank">
+                        <option value=""> -- 请选择 --</option>
+                        <option value="1">中国农业银行</option>
+                        <option value="2">中国工商银行</option>
+                        <option value="3">中国银行</option>
+                        <option value="4">交通银行</option>
+                        <option value="5">中信银行</option>
+                        <option value="6">中国光大银行</option>
+                        <option value="7">华夏银行</option>
+                        <option value="8">中国民生银行</option>
+                        <option value="9">广发银行股份有限公司</option>
+                        <option value="10">中国邮政储蓄银行</option>
+                        <option value="11">平安银行</option>
+                        <option value="12">兴业银行</option>
+                        <option value="13">上海浦东发展银行</option>
+                        <option value="14">中国建设银行</option>
+                        <option value="15">鞍山市商业银行</option>
+                        <option value="16">营口银行</option>
+                        <option value="17">农村信用社</option>
+                        <option value="18">锦州银行</option>
+                        <option value="19">北京农村商业银行</option>
+                        <option value="20">吉林银行</option>
+                        <option value="21">盛京银行</option>
+                        <option value="22">大连银行</option>
+                    </select>
                 </div>
                 <div>
                     <label for="payee">收款人</label>
@@ -670,7 +694,7 @@
         }
         merchant.id = $("#merchantId").val();
         if (merchantBank.bankName == "" || merchantBank.bankNumber == null) {
-            alert("请输入结算人");
+            alert("请输入结算人 / 开户支行");
             return;
         }
         if (merchantBank.bankNumber == "" || merchantBank.bankNumber == null) {
