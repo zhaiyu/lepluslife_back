@@ -197,7 +197,7 @@
                 </div>
                 <div>
                     <label for="bank">开户支行</label>
-                    <select id="bank">
+                    <select id="selBankName">
                         <option value=""> -- 请选择 --</option>
                         <option value="1">中国农业银行</option>
                         <option value="2">中国工商银行</option>
@@ -222,6 +222,9 @@
                         <option value="21">盛京银行</option>
                         <option value="22">大连银行</option>
                     </select>
+                    <div>
+                        <input type="text" id="bank" style="width:180px"/>
+                    </div>
                 </div>
                 <div>
                     <label for="payee">收款人</label>
@@ -449,6 +452,13 @@
             if (val == 1) {
                 $(".cardpay").removeClass("dis");
                 $(".zfbpay").addClass("dis");
+            }
+        });
+
+        $("#selBankName").bind('change',function(){
+            var $selBankName = $("#selBankName");
+            if($selBankName.val()!=null && $selBankName.val()!='') {
+                $("#bank").val($selBankName.find("option:selected").text());
             }
         });
     });

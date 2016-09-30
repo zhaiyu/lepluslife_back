@@ -11,6 +11,10 @@ public class MerchantCriteriaEx extends MerchantCriteria {
 
   private Long needNum;                    // 订单数量 (只显示大于该订单成交量的商户)
 
+  private String merchantCreateStart;            // 商户创建时间
+
+  private String merchantCreateEnd;
+
   public Long getValidAmount() {
     return validAmount;
   }
@@ -25,5 +29,22 @@ public class MerchantCriteriaEx extends MerchantCriteria {
 
   public void setNeedNum(Long needNum) {
     this.needNum = needNum;
+  }
+
+
+  public String getMerchantCreateEnd() {
+    return merchantCreateEnd;
+  }
+
+  public void setMerchantCreateEnd(String merchantCreateEnd) {
+    this.merchantCreateEnd = merchantCreateEnd;
+  }
+
+  public String getMerchantCreateStart() {
+    return merchantCreateStart;
+  }
+
+  public void setMerchantCreateStart(String merchantCreateStart) {
+    this.merchantCreateStart = merchantCreateStart;
   }
 }

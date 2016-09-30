@@ -119,16 +119,6 @@ public class MerchantController {
 
   @RequestMapping(value = "/merchant", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
   public LejiaResult createMerchant(@RequestBody Merchant merchant) {
-    boolean isNum = ParseUtil.isNum(merchant.getMerchantBank().getBankName());          //  判断BankName是否为数字
-    if(isNum) {
-      Long bankType = new Long(merchant.getMerchantBank().getBankName());               //  将bankName 转换为 id
-      if(1<=bankType && bankType<=22) {                                                 //  1-22  参考数据库(bank_name)
-        BankName bankName = bankNameService.findOne(bankType);                          //  根据 id 获取银行名称
-        MerchantBank bank = merchant.getMerchantBank();
-        bank.setBankName(bankName.getName());
-        merchant.setMerchantBank(bank);
-      }
-    }
     merchantService.createMerchant(merchant);
 
     return LejiaResult.ok("添加商户成功");
@@ -136,16 +126,6 @@ public class MerchantController {
 
   @RequestMapping(value = "/merchant", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
   public LejiaResult eidtMerchant(@RequestBody Merchant merchant) {
-    boolean isNum = ParseUtil.isNum(merchant.getMerchantBank().getBankName());          //  判断BankName是否为数字
-    if(isNum) {
-      Long bankType = new Long(merchant.getMerchantBank().getBankName());               //  将bankName 转换为 id
-      if(1<=bankType && bankType<=22) {                                                 //  1-22  参考数据库(bank_name)
-        BankName bankName = bankNameService.findOne(bankType);                          //  根据 id 获取银行名称
-        MerchantBank bank = merchant.getMerchantBank();
-        bank.setBankName(bankName.getName());
-        merchant.setMerchantBank(bank);
-      }
-    }
     merchantService.editMerchant(merchant);
 
     return LejiaResult.ok("修改商户成功");

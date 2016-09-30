@@ -19,7 +19,9 @@ import org.apache.poi.hssf.usermodel.HSSFCellStyle;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.usermodel.Cell;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
@@ -78,6 +80,15 @@ public class MerchantDataService {
                         merchantCriteria.getMerchantName().trim())) {
                         sql.append(" and merchant.`name` like '%"+merchantCriteria.getMerchantName()+"%'");
                     }
+                    if(merchantCriteria.getMerchantCreateStart()!=null
+                       &&merchantCriteria.getEndDate()!=null
+                       &&!"".equals(merchantCriteria.getEndDate())
+                       &&!"".equals(merchantCriteria.getEndDate())) {
+                       sql.append(" and merchant.create_date BETWEEN '"+merchantCriteria.getMerchantCreateStart()+"' and '"+merchantCriteria.getMerchantCreateEnd()+"' ");
+                    }
+                    if(merchantCriteria.getMerchant()!=null && !"".equals(merchantCriteria.getMerchant())) {
+                       sql.append(" and merchant.id = "+merchantCriteria.getMerchant());
+                    }
                     if(merchantCriteria.getSalesStaff()!=null) {                         // 销售名称
                         sql.append(" and merchant.sales_staff_id = "+merchantCriteria.getSalesStaff());
                     }
@@ -135,6 +146,31 @@ public class MerchantDataService {
                     return map;
   }
 
+  @Transactional(propagation = Propagation.REQUIRED,readOnly = true)
+  public List<Merchant> findMerchantNotInOffLineOrder(List<Merchant> merchants) {
+    StringBuffer sql =
+        new StringBuffer(
+            "select merchant.id from merchant");
+    List<Merchant> otherMerchants = new ArrayList<>();
+    List<Long> otherMerchantsIds = new ArrayList<>();
+    if (merchants != null && merchants.size() > 0) {
+      //  取出商户 id 存入 list
+      for (Merchant merchant : merchants) {
+        otherMerchantsIds.add(merchant.getId());
+      }
+      //  将id如 [0,1,2] 转为 (0,1,2)
+      String ids = otherMerchantsIds.toString().replace("[", "(").replace("]", ")");
+      sql.append(" where merchant.id not in " + ids);
+      Query countQuery = entityManager.createNativeQuery(sql.toString());
+      List<BigInteger> merchantIds = countQuery.getResultList();
+      //  将查询出的 id 转为 merchant
+      for(BigInteger merchantId : merchantIds) {
+        Merchant merchant = merchantRepository.findOne(merchantId.longValue());
+        otherMerchants.add(merchant);
+      }
+    }
+    return  otherMerchants;
+  }
 
   /**
    * 查询锁定用户
@@ -286,8 +322,8 @@ public class MerchantDataService {
    * @ titles
    * @ outStream
    */
-  public void exportExcel(List<SalesStaff> staffs, List<Merchant> merchants, List<Integer> binds,
-                          List<Integer> timeBinds, List<Long> orderNum,
+  public void exportExcel(List<SalesStaff> staffs, List<Merchant> merchants,List<Merchant> otherMerchants, List<Integer> binds,
+                          List<Integer> otherBinds,List<Integer> timeBinds,List<Integer> otherTimeBinds, List<Long> orderNum,
                           List<Double> orderTotal, List<Long> leadOrderNum, List<Double> leadTotal,
                           List<Double> leadCommission,
                           String[] titles, ServletOutputStream outputStream) throws IOException {
@@ -340,6 +376,47 @@ public class MerchantDataService {
       cell9.setCellValue(leadCommission.get(j));
       cell9.setCellStyle(bodyStyle);
     }
+    // 如果不为空
+    if(otherMerchants!=null && otherMerchants.size()>0) {
+      for (int a=0;a < otherMerchants.size();a++) {
+        HSSFRow bodyRow = sheet.createRow(sheet.getLastRowNum()+1);
+        HSSFCell cell0 = bodyRow.createCell(0);
+        if(otherMerchants.get(a).getSalesStaff()!=null&&otherMerchants.get(a).getSalesStaff().getName()!=null) {
+          cell0.setCellValue(otherMerchants.get(a).getSalesStaff().getName());
+        }else {
+          cell0.setCellValue("待定");
+        }
+        cell0.setCellStyle(bodyStyle);
+        HSSFCell cell1 = bodyRow.createCell(1);
+        cell1.setCellValue(otherMerchants.get(a).getName());
+        cell1.setCellStyle(bodyStyle);
+        HSSFCell cell2 = bodyRow.createCell(2);
+        cell2.setCellValue(otherMerchants.get(a).getMerchantType().getName());
+        cell2.setCellStyle(bodyStyle);
+        HSSFCell cell3 = bodyRow.createCell(3);
+        cell3.setCellValue(otherBinds.get(a));
+        cell3.setCellStyle(bodyStyle);
+        HSSFCell cell4 = bodyRow.createCell(4);
+        cell4.setCellValue(otherTimeBinds.get(a));
+        cell4.setCellStyle(bodyStyle);
+        HSSFCell cell5 = bodyRow.createCell(5);
+        cell5.setCellValue(0);
+        cell5.setCellStyle(bodyStyle);
+        HSSFCell cell6 = bodyRow.createCell(6);
+        cell6.setCellValue(0);
+        cell6.setCellStyle(bodyStyle);
+        HSSFCell cell7 = bodyRow.createCell(7);
+        cell7.setCellValue(0);
+        cell7.setCellStyle(bodyStyle);
+        HSSFCell cell8 = bodyRow.createCell(8);
+        cell8.setCellValue(0);
+        cell8.setCellStyle(bodyStyle);
+        HSSFCell cell9 = bodyRow.createCell(9);
+        cell9.setCellValue(0);
+        cell9.setCellStyle(bodyStyle);
+      }
+    }
+
     // 设置列宽
     for(int z=0;z<10;z++) {
       sheet.autoSizeColumn(z);
