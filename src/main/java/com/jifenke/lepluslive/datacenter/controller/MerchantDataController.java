@@ -177,7 +177,7 @@ public class MerchantDataController {
       String[] titles =
           {"销售名称", "商户名称", "商户类型", "当前锁定情况", "时段内锁定", "流水额", "有效订单量", "导流订单数", "导流订单流水", "导流佣金"};
       outputStream = response.getOutputStream();
-      merchantDataService.exportExcel(staffs, merchants, binds, timeBinds, orderNum, orderTotal,
+      merchantDataService.exportExcel(staffs, merchants,null, binds,null,timeBinds,null,orderNum, orderTotal,
                                       leadOrderNum,
                                       leadTotal, leadCommission, titles, outputStream);
     } catch (Exception e) {
@@ -222,6 +222,8 @@ public class MerchantDataController {
     Map<String, List> merchantMap =
         merchantDataService.findMerchantAndCountByCriteria(merchantCriteria);
     List<Merchant> merchants = merchantMap.get("merchants");
+    //  查出其他用户 , 并入用户列表
+    List<Merchant> otherMerchants = merchantDataService.findMerchantNotInOffLineOrder(merchants);
     ServletOutputStream outputStream = null;
     try {
       Date date = new Date();
@@ -233,8 +235,11 @@ public class MerchantDataController {
       //  获取需要导出的数据
       List<SalesStaff> staffs = merchantDataService.findStaffByMerchant(merchants);
       List<Integer> binds = merchantService.findBindLeJiaUsers(merchants);       // 查找锁定用户
+      List<Integer> otherBinds = merchantService.findBindLeJiaUsers(otherMerchants);
       List<Integer> timeBinds = merchantDataService
-          .findBindLeJiaUsersByDate(merchants, merchantCriteria);        // 时间段锁定用户
+          .findBindLeJiaUsersByDate(otherMerchants, merchantCriteria);        // 时间段锁定用户
+      List<Integer> otherTimeBinds = merchantDataService
+          .findBindLeJiaUsersByDate(otherMerchants, merchantCriteria);
       List<Long> orderNum = merchantMap.get("orderNum");                                 // 有效订单数
       List<Double> orderTotal = merchantMap.get("orderTotal");                           // 有效订单流水
       Map<String, List> map = merchantDataService.findLeadOrder(merchants, merchantCriteria);
@@ -245,7 +250,7 @@ public class MerchantDataController {
       String[] titles =
           {"销售名称", "商户名称", "商户类型", "当前锁定情况", "时段内锁定", "流水额", "有效订单量", "导流订单数", "导流订单流水", "导流佣金"};
       outputStream = response.getOutputStream();
-      merchantDataService.exportExcel(staffs, merchants, binds, timeBinds, orderNum, orderTotal,
+      merchantDataService.exportExcel(staffs, merchants,otherMerchants, binds,otherBinds, timeBinds,otherTimeBinds, orderNum, orderTotal,
                                       leadOrderNum,
                                       leadTotal, leadCommission, titles, outputStream);
     } catch (Exception e) {
