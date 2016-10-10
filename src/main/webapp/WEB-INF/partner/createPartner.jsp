@@ -156,6 +156,14 @@
                         </div>
                     </div>
                     <div class="form-group">
+                        <label class="col-sm-2 control-label">每日发福利次数</label>
+
+                        <div class="col-sm-4">
+                            <input type="text" onkeyup="this.value=this.value.replace(/\D/g,'')" class="form-control" id="benefitTime"
+                                   value="${partner.benefitTime}">
+                        </div>
+                    </div>
+                    <div class="form-group">
                         <div class="col-sm-offset-2 col-sm-4">
                             <button type="button" class="btn btn-primary" onclick="submitPartner()">
                                 提交
@@ -221,10 +229,15 @@
             alert("请输入会员限制");
             return;
         }
+        if($("#benefitTime").val()==null||$("#benefitTime").val()==""){
+            alert("请输入每日发放限制");
+            return;
+        }
         partner.partnerName = $("#partnerName").val();
         partner.phoneNumber = $("#partnerPhone").val();
         partner.merchantLimit = $("#merchantLimit").val();
         partner.userLimit = $("#userLimit").val();
+        partner.benefitTime = $("#benefitTime").val();
         var payWay = $("input[name='optionsRadios']:checked").val();
         if (payWay == 0) {
             partner.bankNumber = $("#bankNumber").val();

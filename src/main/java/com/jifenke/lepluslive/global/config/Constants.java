@@ -22,6 +22,8 @@ public final class Constants {
 
   public static final String MERCHANT_URL = "http://www.lepluslife.com/lepay/merchant/";
 
+  public static final String PARTNER_URL = "http://www.lepluslife.com/weixin/partner/bind_wx_user/";
+
   public static final String BAR_CODE_EXT = "png";
 
   public static final Integer COOKIE_DISABLE_TIME = 7200;

@@ -25,7 +25,6 @@ public class Partner {
 
   private String name; //账户名
 
-
   private Long userLimit = 0L;
 
   private Long merchantLimit = 0L;
@@ -42,8 +41,18 @@ public class Partner {
 
   private String payee;
 
+  private Integer benefitTime; //发放福利次数
+
   @ManyToOne
   private PartnerManager partnerManager;
+
+  public Integer getBenefitTime() {
+    return benefitTime;
+  }
+
+  public void setBenefitTime(Integer benefitTime) {
+    this.benefitTime = benefitTime;
+  }
 
   public String getPayee() {
     return payee;

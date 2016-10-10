@@ -1,26 +1,37 @@
 package com.jifenke.lepluslive.partner.service;
 
+import com.jifenke.lepluslive.barcode.BarcodeConfig;
+import com.jifenke.lepluslive.barcode.service.BarcodeService;
+import com.jifenke.lepluslive.filemanage.service.FileImageService;
+import com.jifenke.lepluslive.global.config.Constants;
 import com.jifenke.lepluslive.global.util.MD5Util;
+import com.jifenke.lepluslive.global.util.MvUtil;
 import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantInfo;
 import com.jifenke.lepluslive.merchant.service.MerchantService;
 import com.jifenke.lepluslive.partner.domain.entities.Partner;
+import com.jifenke.lepluslive.partner.domain.entities.PartnerInfo;
 import com.jifenke.lepluslive.partner.domain.entities.PartnerManager;
 import com.jifenke.lepluslive.partner.domain.entities.PartnerManagerWallet;
 import com.jifenke.lepluslive.partner.domain.entities.PartnerManagerWalletLog;
+import com.jifenke.lepluslive.partner.domain.entities.PartnerScoreLog;
 import com.jifenke.lepluslive.partner.domain.entities.PartnerWallet;
 import com.jifenke.lepluslive.partner.domain.entities.PartnerWalletLog;
+import com.jifenke.lepluslive.partner.repository.PartnerInfoRepository;
 import com.jifenke.lepluslive.partner.repository.PartnerManagerRepository;
 import com.jifenke.lepluslive.partner.repository.PartnerManagerWalletLogRepository;
 import com.jifenke.lepluslive.partner.repository.PartnerManagerWalletRepository;
 import com.jifenke.lepluslive.partner.repository.PartnerRepository;
+import com.jifenke.lepluslive.partner.repository.PartnerScoreLogRepository;
 import com.jifenke.lepluslive.partner.repository.PartnerWalletLogRepository;
 import com.jifenke.lepluslive.partner.repository.PartnerWalletRepository;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.IOException;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -56,7 +67,22 @@ public class PartnerService {
   private PartnerWalletLogRepository partnerWalletLogRepository;
 
   @Inject
+  private PartnerScoreLogRepository partnerScoreLogRepository;
+
+  @Inject
+  private PartnerInfoRepository partnerInfoRepository;
+
+  @Inject
   private MerchantService merchantService;
+
+  @Inject
+  private BarcodeService barcodeService;
+
+  @Inject
+  private FileImageService fileImageService;
+
+  @Value("${bucket.ossBarCodeReadRoot}")
+  private String barCodeRootUrl;
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public List<Partner> findAllParter() {
@@ -106,7 +132,49 @@ public class PartnerService {
     partnerRepository.save(partner);
     PartnerWallet partnerWallet = new PartnerWallet();
     partnerWallet.setPartner(partner);
+    partnerWallet.setAvailableScoreA(500000L);
+    partnerWallet.setAvailableScoreB(10000L);
+    partnerWallet.setTotalScoreA(500000L);
+    partnerWallet.setTotalScoreB(10000L);
     partnerWalletRepository.save(partnerWallet);
+    PartnerScoreLog partnerScoreLog = new PartnerScoreLog();
+    partnerScoreLog.setDescription("关注送红包");
+    partnerScoreLog.setType(1);
+    partnerScoreLog.setPartnerId(partner.getId());
+    partnerScoreLog.setNumber(500000L);
+    partnerScoreLog.setScoreAOrigin(0);
+    partnerScoreLogRepository.save(partnerScoreLog);
+    PartnerScoreLog partnerScoreBLog = new PartnerScoreLog();
+    partnerScoreBLog.setDescription("关注送积分");
+    partnerScoreBLog.setType(0);
+    partnerScoreBLog.setPartnerId(partner.getId());
+    partnerScoreBLog.setNumber(10000L);
+    partnerScoreBLog.setScoreBOrigin(0);
+    partnerScoreLogRepository.save(partnerScoreBLog);
+    //设置发红包机制
+    PartnerInfo partnerInfo = new PartnerInfo();
+    partnerInfo.setMaxScoreA(300);
+    partnerInfo.setMinScoreA(100);
+    partnerInfo.setScoreAType(1);
+    partnerInfo.setMaxScoreB(5);
+    partnerInfo.setScoreBType(0);
+    partnerInfo.setPartner(partner);
+    byte[]
+        bytes =
+        new byte[0];
+    try {
+      bytes = barcodeService.qrCode(Constants.PARTNER_URL + partner.getPartnerSid(),
+                                    BarcodeConfig.QRCode.defaultConfig());
+    } catch (InterruptedException e) {
+      e.printStackTrace();
+    } catch (IOException e) {
+      e.printStackTrace();
+    }
+    String filePath = MvUtil.getFilePath(Constants.BAR_CODE_EXT);
+    partnerInfo.setQrCodeUrl(barCodeRootUrl + "/" + filePath);
+    partnerInfoRepository.save(partnerInfo);
+    final byte[] finalBytes = bytes;
+    fileImageService.SaveBarCode(finalBytes, filePath);
     Merchant merchant = new Merchant();//天使合伙人虚拟商户
     merchant.setPartner(partner);
     merchant.setName(partner.getName());
@@ -134,6 +202,7 @@ public class PartnerService {
     origin.setPayee(partner.getPayee());
     origin.setPhoneNumber(partner.getPhoneNumber());
     origin.setPartnerName(partner.getPartnerName());
+    origin.setBenefitTime(partner.getBenefitTime());
     partnerRepository.save(origin);
 
   }
