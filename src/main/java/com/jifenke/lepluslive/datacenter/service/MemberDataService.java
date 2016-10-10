@@ -34,4 +34,31 @@ public class MemberDataService {
     return data;
   }
 
+
+
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+  public  List<Object[]> findOfflineWxTruePayAndDate() {
+    return  offLineOrderRepository.findOfflineWxTruePayAndDate();
+  }
+
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+  public  List<Object[]> findOnlineWxTruePayAndDate() {
+    return  offLineOrderRepository.findOnlineWxTruePayAndDate();
+  }
+
+
+
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+  public  List<Object[]> findOfflineWxCommissionAndDate() {
+    return  offLineOrderRepository.findOfflineWxCommissionAndDate();
+  }
+
+
+
+
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+  public  List<Object[]> findOnlineWxCommissionAndDate() {
+    return  offLineOrderRepository.findOnlineWxCommissionAndDate();
+  }
+
 }

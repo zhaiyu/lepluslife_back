@@ -279,6 +279,7 @@
                 <a href='/manage/member_data'>会员分析</a>
                 <a href='/manage/merchant_data'>商户数据</a>
                 <a href='/manage/scoreAAccountPage'>红包账户</a>
+                <a href='/manage/transactionAnalysisPage'>交易分析</a>
             </div>
         </li>
     </ul>
