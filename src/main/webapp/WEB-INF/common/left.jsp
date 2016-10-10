@@ -328,8 +328,7 @@
             $(".none7").slideDown(300);
         }
         if (url.indexOf("/manage/member_data") != -1 || url.indexOf("/manage/merchant_data")
-                                                        != -1|| url.indexOf("/manage/scoreAAccountPage")
-                                                                != -1) {
+                                                        != -1|| url.indexOf("/manage/scoreAAccountPage") != -1||url.indexOf("/manage/transactionAnalysisPage") != -1) {
             $(".none9").parent('li').addClass('selected');
             $(".none9").slideDown(300);
         }

@@ -26,6 +26,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.math.BigInteger;
+import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
@@ -71,82 +72,94 @@ public class MerchantDataService {
   }
 
   /**
-   *  根据条件查询商户及订单数量
+   * 根据条件查询商户及订单数量
    */
-  public Map<String,List> findMerchantAndCountByCriteria(MerchantCriteriaEx merchantCriteria) {
-                    StringBuffer sql = new StringBuffer("select merchant.id,count(1),sum(total_price) money from merchant inner join off_line_order on merchant.id = merchant_id ");
-                    sql.append(" where off_line_order.complete_date BETWEEN '"+merchantCriteria.getStartDate()+ "' and '"+merchantCriteria.getEndDate()+"'");
-                    if(merchantCriteria.getMerchantName()!=null && !"".equals(           // 商户名称
-                        merchantCriteria.getMerchantName().trim())) {
-                        sql.append(" and merchant.`name` like '%"+merchantCriteria.getMerchantName()+"%'");
-                    }
-                    if(merchantCriteria.getMerchantCreateStart()!=null
-                       &&merchantCriteria.getEndDate()!=null
-                       &&!"".equals(merchantCriteria.getEndDate())
-                       &&!"".equals(merchantCriteria.getEndDate())) {
-                       sql.append(" and merchant.create_date BETWEEN '"+merchantCriteria.getMerchantCreateStart()+"' and '"+merchantCriteria.getMerchantCreateEnd()+"' ");
-                    }
-                    if(merchantCriteria.getMerchant()!=null && !"".equals(merchantCriteria.getMerchant())) {
-                       sql.append(" and merchant.id = "+merchantCriteria.getMerchant());
-                    }
-                    if(merchantCriteria.getSalesStaff()!=null) {                         // 销售名称
-                        sql.append(" and merchant.sales_staff_id = "+merchantCriteria.getSalesStaff());
-                    }
-                    if(merchantCriteria.getCity()!=null) {
-                        sql.append(" and merchant.city_id = "+merchantCriteria.getCity()); // 城市
-                    }
-                    if(merchantCriteria.getMerchantType()!=null) {
-                        sql.append(" and merchant.merchant_type_id = "+merchantCriteria.getMerchantType()); // 商户类型
-                    }
-                    if(merchantCriteria.getValidAmount()!=null) {
-                        sql.append(" and total_price>"+merchantCriteria.getValidAmount()); //  大于该金额算有效订单
-                    }
-                    sql.append(" group by merchant_id");
-                    if(merchantCriteria.getNeedNum()!=null) {
-                       sql.append(" having count(1)  >="+merchantCriteria.getNeedNum());       // 订单数量
-                    }
-                    sql.append(" order by count(1)  desc");                                   // 根据订单量排序
-                    if(merchantCriteria.getOffset()!=null) {
-                      sql.append(" limit "+((merchantCriteria.getOffset()-1)*10)+",10 ");        // 分页
-                    }
-                    Query nativeQuery = entityManager.createNativeQuery(sql.toString());
-                    List<Object[]> list = nativeQuery.getResultList();
-                    Map<String, List> map = new HashMap<>();
-                    List<Merchant> merchants = new ArrayList<>();
-                    List<Long> orderNum = new ArrayList<>();
-                    List<Double> orderTotal = new ArrayList<>();
-                    if (list != null && list.size() > 0) {
-                      for (int i = 0; i < list.size(); i++) {
-                        Object[] objects = list.get(i);
-                        if (objects[0] != null) {
-                          Long id = new Long(objects[0].toString());
-                          Merchant merchant = merchantRepository.findOne(id);
-                          merchants.add(merchant);
-                        }
-                        if (objects[1] != null) {
-                          orderNum.add(new Long(objects[1].toString()));
-                        } else {
-                          orderNum.add(0L);
-                        }
-                        if (objects[2] != null) {
-                          double dtotal = new Long(objects[2].toString());
-                          orderTotal.add((dtotal / 100));                               // 1:100
-                        } else {
-                          orderTotal.add(0.0);
-                        }
-                      }
-                    }
-                    String countSql = new String("select count(1) from ( "+sql.toString().replace(" limit "+(merchantCriteria.getOffset()==null?1:(merchantCriteria.getOffset()-1)*10)+",10 ","")+" ) records");
-                    Query countQuery = entityManager.createNativeQuery(countSql);
-                    List<BigInteger> details = countQuery.getResultList();
-                    map.put("merchants",merchants);
-                    map.put("orderNum",orderNum);
-                    map.put("orderTotal",orderTotal);
-                    map.put("totalElements",details);
-                    return map;
+  public Map<String, List> findMerchantAndCountByCriteria(MerchantCriteriaEx merchantCriteria) {
+    StringBuffer
+        sql =
+        new StringBuffer(
+            "select merchant.id,count(1),sum(total_price) money from merchant inner join off_line_order on merchant.id = merchant_id ");
+    sql.append(" where off_line_order.complete_date BETWEEN '" + merchantCriteria.getStartDate()
+               + "' and '" + merchantCriteria.getEndDate() + "'");
+    if (merchantCriteria.getMerchantName() != null && !"".equals(           // 商户名称
+                                                                            merchantCriteria
+                                                                                .getMerchantName()
+                                                                                .trim())) {
+      sql.append(" and merchant.`name` like '%" + merchantCriteria.getMerchantName() + "%'");
+    }
+    if (merchantCriteria.getMerchantCreateStart() != null
+        && merchantCriteria.getEndDate() != null
+        && !"".equals(merchantCriteria.getEndDate())
+        && !"".equals(merchantCriteria.getEndDate())) {
+      sql.append(" and merchant.create_date BETWEEN '" + merchantCriteria.getMerchantCreateStart()
+                 + "' and '" + merchantCriteria.getMerchantCreateEnd() + "' ");
+    }
+    if (merchantCriteria.getMerchant() != null && !"".equals(merchantCriteria.getMerchant())) {
+      sql.append(" and merchant.id = " + merchantCriteria.getMerchant());
+    }
+    if (merchantCriteria.getSalesStaff() != null) {                         // 销售名称
+      sql.append(" and merchant.sales_staff_id = " + merchantCriteria.getSalesStaff());
+    }
+    if (merchantCriteria.getCity() != null) {
+      sql.append(" and merchant.city_id = " + merchantCriteria.getCity()); // 城市
+    }
+    if (merchantCriteria.getMerchantType() != null) {
+      sql.append(" and merchant.merchant_type_id = " + merchantCriteria.getMerchantType()); // 商户类型
+    }
+    if (merchantCriteria.getValidAmount() != null) {
+      sql.append(" and total_price>" + merchantCriteria.getValidAmount()); //  大于该金额算有效订单
+    }
+    sql.append(" group by merchant_id");
+    if (merchantCriteria.getNeedNum() != null) {
+      sql.append(" having count(1)  >=" + merchantCriteria.getNeedNum());       // 订单数量
+    }
+    sql.append(" order by count(1)  desc");                                   // 根据订单量排序
+    if (merchantCriteria.getOffset() != null) {
+      sql.append(" limit " + ((merchantCriteria.getOffset() - 1) * 10) + ",10 ");        // 分页
+    }
+    Query nativeQuery = entityManager.createNativeQuery(sql.toString());
+    List<Object[]> list = nativeQuery.getResultList();
+    Map<String, List> map = new HashMap<>();
+    List<Merchant> merchants = new ArrayList<>();
+    List<Long> orderNum = new ArrayList<>();
+    List<Double> orderTotal = new ArrayList<>();
+    if (list != null && list.size() > 0) {
+      for (int i = 0; i < list.size(); i++) {
+        Object[] objects = list.get(i);
+        if (objects[0] != null) {
+          Long id = new Long(objects[0].toString());
+          Merchant merchant = merchantRepository.findOne(id);
+          merchants.add(merchant);
+        }
+        if (objects[1] != null) {
+          orderNum.add(new Long(objects[1].toString()));
+        } else {
+          orderNum.add(0L);
+        }
+        if (objects[2] != null) {
+          double dtotal = new Long(objects[2].toString());
+          orderTotal.add((dtotal / 100));                               // 1:100
+        } else {
+          orderTotal.add(0.0);
+        }
+      }
+    }
+    String
+        countSql =
+        new String("select count(1) from ( " + sql.toString().replace(
+            " limit " + (merchantCriteria.getOffset() == null ? 1
+                                                              : (merchantCriteria.getOffset() - 1)
+                                                                * 10) + ",10 ", "") + " ) records");
+    Query countQuery = entityManager.createNativeQuery(countSql);
+    List<BigInteger> details = countQuery.getResultList();
+    map.put("merchants", merchants);
+    map.put("orderNum", orderNum);
+    map.put("orderTotal", orderTotal);
+    map.put("totalElements", details);
+    return map;
   }
 
-  @Transactional(propagation = Propagation.REQUIRED,readOnly = true)
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
   public List<Merchant> findMerchantNotInOffLineOrder(List<Merchant> merchants) {
     StringBuffer sql =
         new StringBuffer(
@@ -164,12 +177,12 @@ public class MerchantDataService {
       Query countQuery = entityManager.createNativeQuery(sql.toString());
       List<BigInteger> merchantIds = countQuery.getResultList();
       //  将查询出的 id 转为 merchant
-      for(BigInteger merchantId : merchantIds) {
+      for (BigInteger merchantId : merchantIds) {
         Merchant merchant = merchantRepository.findOne(merchantId.longValue());
         otherMerchants.add(merchant);
       }
     }
-    return  otherMerchants;
+    return otherMerchants;
   }
 
   /**
@@ -322,11 +335,14 @@ public class MerchantDataService {
    * @ titles
    * @ outStream
    */
-  public void exportExcel(List<SalesStaff> staffs, List<Merchant> merchants,List<Merchant> otherMerchants, List<Integer> binds,
-                          List<Integer> otherBinds,List<Integer> timeBinds,List<Integer> otherTimeBinds, List<Long> orderNum,
+  public void exportExcel(List<SalesStaff> staffs, List<Merchant> merchants,
+                          List<Merchant> otherMerchants, List<Integer> binds,
+                          List<Integer> otherBinds, List<Integer> timeBinds,
+                          List<Integer> otherTimeBinds, List<Long> orderNum,
                           List<Double> orderTotal, List<Long> leadOrderNum, List<Double> leadTotal,
                           List<Double> leadCommission,
                           String[] titles, ServletOutputStream outputStream) throws IOException {
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     //  创建表格对象
     HSSFWorkbook workbook = new HSSFWorkbook();
     HSSFSheet sheet = workbook.createSheet();
@@ -375,15 +391,22 @@ public class MerchantDataService {
       HSSFCell cell9 = bodyRow.createCell(9);
       cell9.setCellValue(leadCommission.get(j));
       cell9.setCellStyle(bodyStyle);
+      HSSFCell cell10 = bodyRow.createCell(10);
+      cell10.setCellValue(merchants.get(j).getMerchantSid());
+      cell10.setCellStyle(bodyStyle);
+      HSSFCell cell11 = bodyRow.createCell(11);
+      cell11.setCellValue(sdf.format(merchants.get(j).getCreateDate()));
+      cell11.setCellStyle(bodyStyle);
     }
     // 如果不为空
-    if(otherMerchants!=null && otherMerchants.size()>0) {
-      for (int a=0;a < otherMerchants.size();a++) {
-        HSSFRow bodyRow = sheet.createRow(sheet.getLastRowNum()+1);
+    if (otherMerchants != null && otherMerchants.size() > 0) {
+      for (int a = 0; a < otherMerchants.size(); a++) {
+        HSSFRow bodyRow = sheet.createRow(sheet.getLastRowNum() + 1);
         HSSFCell cell0 = bodyRow.createCell(0);
-        if(otherMerchants.get(a).getSalesStaff()!=null&&otherMerchants.get(a).getSalesStaff().getName()!=null) {
+        if (otherMerchants.get(a).getSalesStaff() != null
+            && otherMerchants.get(a).getSalesStaff().getName() != null) {
           cell0.setCellValue(otherMerchants.get(a).getSalesStaff().getName());
-        }else {
+        } else {
           cell0.setCellValue("待定");
         }
         cell0.setCellStyle(bodyStyle);
@@ -414,11 +437,17 @@ public class MerchantDataService {
         HSSFCell cell9 = bodyRow.createCell(9);
         cell9.setCellValue(0);
         cell9.setCellStyle(bodyStyle);
+        HSSFCell cell10 = bodyRow.createCell(10);
+        cell10.setCellValue(0);
+        cell10.setCellStyle(bodyStyle);
+        HSSFCell cell11 = bodyRow.createCell(11);
+        cell11.setCellValue(0);
+        cell11.setCellStyle(bodyStyle);
       }
     }
 
     // 设置列宽
-    for(int z=0;z<10;z++) {
+    for (int z = 0; z < 12; z++) {
       sheet.autoSizeColumn(z);
     }
     // 输出流
@@ -426,5 +455,93 @@ public class MerchantDataService {
     outputStream.flush();
     outputStream.close();
   }
+
+  //到表格的查询方法
+  public Map<String, List> findMerchantAndCountByCriteriaForExcel(
+      MerchantCriteriaEx merchantCriteria) {
+    StringBuffer
+        sql =
+        new StringBuffer(
+            "select merchant.id,count(1),sum(total_price) money from merchant inner join off_line_order on merchant.id = merchant_id ");
+    sql.append(" where off_line_order.complete_date BETWEEN '" + merchantCriteria.getStartDate()
+               + "' and '" + merchantCriteria.getEndDate() + "'");
+    if (merchantCriteria.getMerchantName() != null && !"".equals(           // 商户名称
+                                                                            merchantCriteria
+                                                                                .getMerchantName()
+                                                                                .trim())) {
+      sql.append(" and merchant.`name` like '%" + merchantCriteria.getMerchantName() + "%'");
+    }
+    if (merchantCriteria.getMerchantCreateStart() != null
+        && merchantCriteria.getEndDate() != null
+        && !"".equals(merchantCriteria.getEndDate())
+        && !"".equals(merchantCriteria.getEndDate())) {
+      sql.append(" and merchant.create_date BETWEEN '" + merchantCriteria.getMerchantCreateStart()
+                 + "' and '" + merchantCriteria.getMerchantCreateEnd() + "' ");
+    }
+    if (merchantCriteria.getMerchant() != null && !"".equals(merchantCriteria.getMerchant())) {
+      sql.append(" and merchant.id = " + merchantCriteria.getMerchant());
+    }
+    if (merchantCriteria.getSalesStaff() != null) {                         // 销售名称
+      sql.append(" and merchant.sales_staff_id = " + merchantCriteria.getSalesStaff());
+    }
+    if (merchantCriteria.getCity() != null) {
+      sql.append(" and merchant.city_id = " + merchantCriteria.getCity()); // 城市
+    }
+    if (merchantCriteria.getMerchantType() != null) {
+      sql.append(" and merchant.merchant_type_id = " + merchantCriteria.getMerchantType()); // 商户类型
+    }
+    if (merchantCriteria.getValidAmount() != null) {
+      sql.append(" and total_price>" + merchantCriteria.getValidAmount()); //  大于该金额算有效订单
+    }
+    sql.append(" group by merchant_id");
+    if (merchantCriteria.getNeedNum() != null) {
+      sql.append(" having count(1)  >=" + merchantCriteria.getNeedNum());       // 订单数量
+    }
+    sql.append(" order by count(1)  desc");                                   // 根据订单量排序
+//    if(merchantCriteria.getOffset()!=null) {
+//      sql.append(" limit "+((merchantCriteria.getOffset()-1)*10)+",10 ");        // 分页
+//    }
+    Query nativeQuery = entityManager.createNativeQuery(sql.toString());
+    List<Object[]> list = nativeQuery.getResultList();
+    Map<String, List> map = new HashMap<>();
+    List<Merchant> merchants = new ArrayList<>();
+    List<Long> orderNum = new ArrayList<>();
+    List<Double> orderTotal = new ArrayList<>();
+    if (list != null && list.size() > 0) {
+      for (int i = 0; i < list.size(); i++) {
+        Object[] objects = list.get(i);
+        if (objects[0] != null) {
+          Long id = new Long(objects[0].toString());
+          Merchant merchant = merchantRepository.findOne(id);
+          merchants.add(merchant);
+        }
+        if (objects[1] != null) {
+          orderNum.add(new Long(objects[1].toString()));
+        } else {
+          orderNum.add(0L);
+        }
+        if (objects[2] != null) {
+          double dtotal = new Long(objects[2].toString());
+          orderTotal.add((dtotal / 100));                               // 1:100
+        } else {
+          orderTotal.add(0.0);
+        }
+      }
+    }
+    String
+        countSql =
+        new String("select count(1) from ( " + sql.toString().replace(
+            " limit " + (merchantCriteria.getOffset() == null ? 1
+                                                              : (merchantCriteria.getOffset() - 1)
+                                                                * 10) + ",10 ", "") + " ) records");
+    Query countQuery = entityManager.createNativeQuery(countSql);
+    List<BigInteger> details = countQuery.getResultList();
+    map.put("merchants", merchants);
+    map.put("orderNum", orderNum);
+    map.put("orderTotal", orderTotal);
+    map.put("totalElements", details);
+    return map;
+  }
+
 
 }
