@@ -107,7 +107,7 @@ public class MerchantDataService {
                     }
                     sql.append(" order by count(1)  desc");                                   // 根据订单量排序
                     if(merchantCriteria.getOffset()!=null) {
-                      sql.append(" limit "+(merchantCriteria.getOffset()-1)+",10 ");        // 分页
+                      sql.append(" limit "+((merchantCriteria.getOffset()-1)*10)+",10 ");        // 分页
                     }
                     Query nativeQuery = entityManager.createNativeQuery(sql.toString());
                     List<Object[]> list = nativeQuery.getResultList();
@@ -136,7 +136,7 @@ public class MerchantDataService {
                         }
                       }
                     }
-                    String countSql = new String("select count(1) from ( "+sql.toString().replace(" limit "+(merchantCriteria.getOffset()==null?1:merchantCriteria.getOffset()-1)+",10 ","")+" ) records");
+                    String countSql = new String("select count(1) from ( "+sql.toString().replace(" limit "+(merchantCriteria.getOffset()==null?1:(merchantCriteria.getOffset()-1)*10)+",10 ","")+" ) records");
                     Query countQuery = entityManager.createNativeQuery(countSql);
                     List<BigInteger> details = countQuery.getResultList();
                     map.put("merchants",merchants);
