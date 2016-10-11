@@ -52,4 +52,24 @@ public interface OffLineOrderRepository extends JpaRepository<OffLineOrder, Long
 
   @Query(value = "SELECT COUNT(*) FROM off_line_order WHERE le_jia_user_id=?1", nativeQuery = true)
   int findOffLineOrderCountOfLeJiaUser(Long leJiaUserId);
+
+
+
+  @Query(value = "SELECT SUM(true_pay) ,DATE_FORMAT(complete_date,'%Y%m%d')    FROM off_line_order WHERE DATE_FORMAT(complete_date,'%Y%m%d') IS NOT NULL GROUP BY  DATE_FORMAT(complete_date,'%Y%m%d')", nativeQuery = true)
+  List<Object[]> findOfflineWxTruePayAndDate();
+
+
+
+  @Query(value = "SELECT SUM(true_price) ,DATE_FORMAT(create_date,'%Y%m%d') FROM on_line_order WHERE    state NOT IN (0,4) GROUP BY  DATE_FORMAT(create_date,'%Y%m%d')", nativeQuery = true)
+  List<Object[]> findOnlineWxTruePayAndDate();
+
+
+
+  @Query(value = "SELECT SUM(wx_commission) ,DATE_FORMAT(complete_date,'%Y%m%d') FROM off_line_order WHERE DATE_FORMAT(complete_date,'%Y%m%d') IS NOT NULL  GROUP BY  DATE_FORMAT(complete_date,'%Y%m%d')", nativeQuery = true)
+  List<Object[]> findOfflineWxCommissionAndDate();
+
+
+
+  @Query(value = "SELECT true_price ,DATE_FORMAT(create_date,'%Y%m%d') FROM on_line_order WHERE    state NOT IN (0,4) ", nativeQuery = true)
+  List<Object[]> findOnlineWxCommissionAndDate();
 }

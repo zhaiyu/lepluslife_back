@@ -125,6 +125,72 @@ public class MerchantDataController {
     return LejiaResult.ok(model);
   }
 
+  //  @RequestMapping(value = "/merchant_data/merchantDataExport", method = RequestMethod.POST)
+//  public String merchantDataExport(MerchantCriteriaEx merchantCriteria,
+//                                   HttpServletResponse response) {
+//    //  初始化分页数
+//    if (merchantCriteria.getOffset() == null) {
+//      merchantCriteria.setOffset(1);
+//    }
+//    //  设置默认有效金额
+//    if (merchantCriteria.getValidAmount() == null) {
+//      merchantCriteria.setValidAmount(10L);           // 设置默认有效金额为 10 元
+//    }
+//    // 获取查询条件中的时间
+//    String startDate = merchantCriteria.getStartDate();
+//    String endDate = merchantCriteria.getEndDate();
+//    //  设置默认时间为当天
+//    if (startDate == null && endDate == null) {
+//      Date date = new Date();
+//      SimpleDateFormat format = new SimpleDateFormat("yyyy/MM/dd");
+//      String today = format.format(date);
+//      startDate = today + " 00:00:00";
+//      endDate = today + " 23:59:59";
+//      //  设置数据统计的时间范围
+//      merchantCriteria.setStartDate(startDate);
+//      merchantCriteria.setEndDate(endDate);
+//    }
+//    //  表格所需数据
+//    Map<String, List> merchantMap =
+//        merchantDataService.findMerchantAndCountByCriteria(merchantCriteria);
+//    List<Merchant> merchants = merchantMap.get("merchants");
+//    ServletOutputStream outputStream = null;
+//    try {
+//      Date date = new Date();
+//      SimpleDateFormat format = new SimpleDateFormat("yyyyMMddHHssmm");
+//      String time = format.format(date);
+//      String filename = new String(("MerchantData-" + time).getBytes(), "ISO8859_1");
+//      response.setContentType("application/binary;charset=ISO8859_1");
+//      response.setHeader("Content-disposition", "attachment; filename=" + filename + ".xls");
+//      //  获取需要导出的数据
+//      List<SalesStaff> staffs = merchantDataService.findStaffByMerchant(merchants);
+//      List<Integer> binds = merchantService.findBindLeJiaUsers(merchants);       // 查找锁定用户
+//      List<Integer> timeBinds = merchantDataService
+//          .findBindLeJiaUsersByDate(merchants, merchantCriteria);        // 时间段锁定用户
+//      List<Long> orderNum = merchantMap.get("orderNum");                                 // 有效订单数
+//      List<Double> orderTotal = merchantMap.get("orderTotal");                           // 有效订单流水
+//      Map<String, List> map = merchantDataService.findLeadOrder(merchants, merchantCriteria);
+//      List<Long> leadOrderNum = map.get("leadOrderNum");     // 导流订单数
+//      List<Double> leadTotal = map.get("leadTotal");           // 导流流水
+//      List<Double> leadCommission = map.get("leadCommission"); // 导流佣金
+//      //  调用导出方法
+//      String[] titles =
+//          {"销售名称", "商户名称", "商户类型", "当前锁定情况", "时段内锁定", "流水额", "有效订单量", "导流订单数", "导流订单流水", "导流佣金"};
+//      outputStream = response.getOutputStream();
+//      merchantDataService.exportExcel(staffs, merchants,null, binds,null,timeBinds,null,orderNum, orderTotal,
+//                                      leadOrderNum,
+//                                      leadTotal, leadCommission, titles, outputStream);
+//    } catch (Exception e) {
+//      e.printStackTrace();
+//    } finally {
+//      try {
+//        outputStream.close();
+//      } catch (Exception e) {
+//        e.printStackTrace();
+//      }
+//    }
+//    return null;
+//  }
   @RequestMapping(value = "/merchant_data/merchantDataExport", method = RequestMethod.POST)
   public String merchantDataExport(MerchantCriteriaEx merchantCriteria,
                                    HttpServletResponse response) {
@@ -152,7 +218,7 @@ public class MerchantDataController {
     }
     //  表格所需数据
     Map<String, List> merchantMap =
-        merchantDataService.findMerchantAndCountByCriteria(merchantCriteria);
+        merchantDataService.findMerchantAndCountByCriteriaForExcel(merchantCriteria);
     List<Merchant> merchants = merchantMap.get("merchants");
     ServletOutputStream outputStream = null;
     try {
@@ -175,11 +241,13 @@ public class MerchantDataController {
       List<Double> leadCommission = map.get("leadCommission"); // 导流佣金
       //  调用导出方法
       String[] titles =
-          {"销售名称", "商户名称", "商户类型", "当前锁定情况", "时段内锁定", "流水额", "有效订单量", "导流订单数", "导流订单流水", "导流佣金"};
+          {"销售名称", "商户名称", "商户类型", "当前锁定情况", "时段内锁定", "流水额", "有效订单量", "导流订单数", "导流订单流水", "导流佣金",
+           "商户编号", "商户创建日期"};
       outputStream = response.getOutputStream();
-      merchantDataService.exportExcel(staffs, merchants,null, binds,null,timeBinds,null,orderNum, orderTotal,
-                                      leadOrderNum,
-                                      leadTotal, leadCommission, titles, outputStream);
+      merchantDataService
+          .exportExcel(staffs, merchants, null, binds, null, timeBinds, null, orderNum, orderTotal,
+                       leadOrderNum,
+                       leadTotal, leadCommission, titles, outputStream);
     } catch (Exception e) {
       e.printStackTrace();
     } finally {
@@ -191,7 +259,6 @@ public class MerchantDataController {
     }
     return null;
   }
-
 
   @RequestMapping(value = "/merchant_data/merchantDataExportAll", method = RequestMethod.POST)
   public String merchantDataExportAll(MerchantCriteriaEx merchantCriteria,
@@ -250,9 +317,11 @@ public class MerchantDataController {
       String[] titles =
           {"销售名称", "商户名称", "商户类型", "当前锁定情况", "时段内锁定", "流水额", "有效订单量", "导流订单数", "导流订单流水", "导流佣金"};
       outputStream = response.getOutputStream();
-      merchantDataService.exportExcel(staffs, merchants,otherMerchants, binds,otherBinds, timeBinds,otherTimeBinds, orderNum, orderTotal,
-                                      leadOrderNum,
-                                      leadTotal, leadCommission, titles, outputStream);
+      merchantDataService
+          .exportExcel(staffs, merchants, otherMerchants, binds, otherBinds, timeBinds,
+                       otherTimeBinds, orderNum, orderTotal,
+                       leadOrderNum,
+                       leadTotal, leadCommission, titles, outputStream);
     } catch (Exception e) {
       e.printStackTrace();
     } finally {
