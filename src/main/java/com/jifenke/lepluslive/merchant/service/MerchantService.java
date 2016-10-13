@@ -396,6 +396,11 @@ public class MerchantService {
       merchantInfo.setPerSale(info.getPerSale());
       merchantInfo.setStar(info.getStar());
       merchantInfo.setWifi(info.getWifi());
+      merchantInfo.setDescription(info.getDescription());
+      merchantInfo.setDiscount(info.getDiscount());
+      merchantInfo.setFeature(info.getFeature());
+      merchantInfo.setReason(info.getReason());
+      merchantInfo.setVipPicture(info.getVipPicture());
       merchantInfoRepository.save(merchantInfo);
     } else {
       merchantInfoRepository.save(info);

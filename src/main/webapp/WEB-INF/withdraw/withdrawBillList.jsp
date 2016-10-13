@@ -58,6 +58,7 @@
             -webkit-border-radius: 0 10px 10px 10px;
             -moz-border-radius: 0 10px 10px 10px;
             border-radius: 0 10px 10px 10px;
+            display: none;
         }
     </style>
     <script type="text/javascript" src="${resourceUrl}/js/jquery-2.0.3.min.js"></script>

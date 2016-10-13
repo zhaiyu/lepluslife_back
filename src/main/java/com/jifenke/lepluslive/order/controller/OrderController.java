@@ -5,7 +5,9 @@ import com.jifenke.lepluslive.Address.domain.entities.Address;
 import com.jifenke.lepluslive.global.util.JsonUtils;
 import com.jifenke.lepluslive.global.util.LejiaResult;
 import com.jifenke.lepluslive.global.util.MvUtil;
+import com.jifenke.lepluslive.merchant.domain.criteria.MerchantCriteria;
 import com.jifenke.lepluslive.order.controller.dto.ExpressDto;
+import com.jifenke.lepluslive.order.controller.view.OnLineOrderViewExcel;
 import com.jifenke.lepluslive.order.domain.criteria.OrderCriteria;
 import com.jifenke.lepluslive.order.domain.entities.ExpressInfo;
 import com.jifenke.lepluslive.order.domain.entities.OnLineOrder;
@@ -27,7 +29,9 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -50,6 +54,9 @@ public class OrderController {
   @Inject
   private DictionaryService dictionaryService;
 
+  @Inject
+  private OnLineOrderViewExcel orderViewExcel;
+
   @RequestMapping(value = "/order", method = RequestMethod.GET)
   public ModelAndView findOrderByPage(Model model) {
     model.addAttribute("state", 5);
@@ -66,7 +73,7 @@ public class OrderController {
   public
   @ResponseBody
   LejiaResult userList(@RequestBody OrderCriteria orderCriteria) {
-    Page page = orderService.findOrderByPage(orderCriteria);
+    Page page = orderService.findOrderByPage(orderCriteria, 10);
     return LejiaResult.ok(page);
 
   }
@@ -97,15 +104,15 @@ public class OrderController {
       //如果用户有对应的微信信息，则异步发送一个模板消息
       WeiXinUser weiXinUser = order.getLeJiaUser().getWeiXinUser();
       if (weiXinUser != null) {
-          Address address = order.getAddress();
-          String[] keys = new String[4];
-          keys[0] = "订单号(" + order.getOrderSid() + ")";
-          keys[1] = order.getExpressCompany();
-          keys[2] = order.getExpressNumber();
-          keys[3] =
-              address.getName() + " " + address.getCity() + address.getCounty() + address
-                  .getLocation();
-          wxTemMsgService.sendTemMessage(weiXinUser.getOpenId(), 1L, keys, order.getId());
+        Address address = order.getAddress();
+        String[] keys = new String[4];
+        keys[0] = "订单号(" + order.getOrderSid() + ")";
+        keys[1] = order.getExpressCompany();
+        keys[2] = order.getExpressNumber();
+        keys[3] =
+            address.getName() + " " + address.getCity() + address.getCounty() + address
+                .getLocation();
+        wxTemMsgService.sendTemMessage(weiXinUser.getOpenId(), 1L, keys, order.getId());
       }
     } else if (onLineOrder.getState() == 1) {
       orderService
@@ -137,6 +144,18 @@ public class OrderController {
     model.addAttribute("expressNumber", order.getExpressNumber());
 
     return MvUtil.go("/order/orderExpress");
+  }
+
+  @RequestMapping(value = "/order/export", method = RequestMethod.GET)
+  public ModelAndView exporeExcel(@RequestParam String condition) {
+    OrderCriteria criteria = JsonUtils.jsonToPojo(condition, OrderCriteria.class);
+    if (criteria.getOffset() == null) {
+      criteria.setOffset(1);
+    }
+    Page page = orderService.findOrderByPage(criteria, 10000);
+    Map map = new HashMap();
+    map.put("orderList", page.getContent());
+    return new ModelAndView(orderViewExcel, map);
   }
 
 }

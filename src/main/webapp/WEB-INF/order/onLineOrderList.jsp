@@ -63,12 +63,21 @@
             <div class="container-fluid" style="padding-top: 20px">
 
                 <div class="row" style="margin-bottom: 30px">
-                    <div class="form-group col-md-4">
+                    <div class="form-group col-md-3">
                         <label for="date-end">创建时间</label>
 
                         <div id="date-end" class="form-control">
                             <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
                             <span id="searchDateRange"></span>
+                            <b class="caret"></b>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="date-pay">支付时间</label>
+
+                        <div id="date-pay" class="form-control">
+                            <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
+                            <span id="searchDateRang"></span>
                             <b class="caret"></b>
                         </div>
                     </div>
@@ -82,17 +91,25 @@
                         <input type="text" id="userName" class="form-control"
                                placeholder="请输入买家姓名"/>
                     </div>
-                    <div class="form-group col-md-3">
+                    <div class="form-group col-md-2">
+                        <label for="payOrigin">订单来源</label>
+                        <select class="form-control" id="payOrigin">
+                            <option value="-1">全部分类</option>
+                            <option value="1">APP</option>
+                            <option value="2">公众号</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-2">
                         <label for="phoneNumber">买家手机号</label>
                         <input type="text" id="phoneNumber" class="form-control"
                                placeholder="请输入买家手机号"/>
                     </div>
-                    <div class="form-group col-md-3">
+                    <div class="form-group col-md-2">
                         <label for="minTruePrice">实付最小金额</label>
                         <input type="number" id="minTruePrice" class="form-control"
                                placeholder="请输入最低金额"/>
                     </div>
-                    <div class="form-group col-md-3">
+                    <div class="form-group col-md-2">
                         <label for="maxTruePrice">实付最大金额</label>
                         <input type="number" id="maxTruePrice" class="form-control"
                                placeholder="请输入最高金额"/>
@@ -105,6 +122,16 @@
                             <option value="2">物流发货</option>
                         </select>
                     </div>
+                    <div class="form-group col-md-2">
+                        <label for="payWay">支付方式</label>
+                        <select class="form-control" id="payWay">
+                            <option value="-1">全部</option>
+                            <option value="1">纯微信</option>
+                            <option value="3">微信+积分</option>
+                            <option value="4">纯积分</option>
+                        </select>
+                    </div>
+
 
                     <div class="form-group col-md-3">
                         <button class="btn btn-primary" style="margin-top: 24px"
@@ -116,11 +143,11 @@
                 <ul id="myTab" class="nav nav-tabs">
                     <li><a href="#tab1" data-toggle="tab" onclick="searchByType(5)">全部</a></li>
                     <li class="active"><a href="#tab2" data-toggle="tab" onclick="searchByType(0)">待付款</a>
+                    </li>
                     <li><a href="#tab1" data-toggle="tab" onclick="searchByType(1)">待发货</a></li>
                     <li><a href="#tab1" data-toggle="tab" onclick="searchByType(2)">已发货</a></li>
                     <li><a href="#tab1" data-toggle="tab" onclick="searchByType(3)">已完成</a></li>
                     <li><a href="#tab1" data-toggle="tab" onclick="searchByType(4)">已取消</a></li>
-                    </li>
                 </ul>
                 <div id="myTabContent" class="tab-content">
                     <div class="tab-pane fade in active" id="tab1">
@@ -133,6 +160,7 @@
                                 <th class="text-center">买家信息</th>
                                 <th class="text-center">总价</th>
                                 <th class="text-center">实际支付</th>
+                                <th class="text-center">来源</th>
                                 <th class="text-center">红包返还</th>
                                 <th class="text-center">下单时间</th>
                                 <th class="text-center">状态</th>
@@ -146,6 +174,9 @@
                     <div class="tcdPageCode" style="display: inline;">
                     </div>
                     <div style="display: inline;"> 共有 <span id="totalElements"></span> 个</div>
+                    <button class="btn btn-primary pull-right" style="margin-top: 5px"
+                            onclick="exportExcel(onLineOrderCriteria)">导出表格
+                    </button>
                 </div>
             </div>
         </div>
@@ -264,6 +295,47 @@
                                                }
                                            }, function (start, end, label) {//格式化日期显示框
                 $('#date-end span').html(start.format('YYYY/MM/DD HH:mm:ss') + ' - '
+                                         + end.format('YYYY/MM/DD HH:mm:ss'));
+            });
+            $('#date-pay').daterangepicker({
+                                               maxDate: moment(), //最大时间
+                                               showDropdowns: true,
+                                               showWeekNumbers: false, //是否显示第几周
+                                               timePicker: true, //是否显示小时和分钟
+                                               timePickerIncrement: 60, //时间的增量，单位为分钟
+                                               timePicker12Hour: false, //是否使用12小时制来显示时间
+                                               ranges: {
+                                                   '最近1小时': [moment().subtract('hours', 1),
+                                                             moment()],
+                                                   '今日': [moment().startOf('day'), moment()],
+                                                   '昨日': [moment().subtract('days',
+                                                                            1).startOf('day'),
+                                                          moment().subtract('days',
+                                                                            1).endOf('day')],
+                                                   '最近7日': [moment().subtract('days', 6), moment()],
+                                                   '最近30日': [moment().subtract('days', 29),
+                                                             moment()]
+                                               },
+                                               opens: 'right', //日期选择框的弹出位置
+                                               buttonClasses: ['btn btn-default'],
+                                               applyClass: 'btn-small btn-primary blue',
+                                               cancelClass: 'btn-small',
+                                               format: 'YYYY-MM-DD HH:mm:ss', //控件中from和to 显示的日期格式
+                                               separator: ' to ',
+                                               locale: {
+                                                   applyLabel: '确定',
+                                                   cancelLabel: '取消',
+                                                   fromLabel: '起始时间',
+                                                   toLabel: '结束时间',
+                                                   customRangeLabel: '自定义',
+                                                   daysOfWeek: ['日', '一', '二', '三', '四', '五', '六'],
+                                                   monthNames: ['一月', '二月', '三月', '四月', '五月', '六月',
+                                                                '七月', '八月', '九月', '十月', '十一月',
+                                                                '十二月'],
+                                                   firstDay: 1
+                                               }
+                                           }, function (start, end, label) {//格式化日期显示框
+                $('#date-pay span').html(start.format('YYYY/MM/DD HH:mm:ss') + ' - '
                                          + end.format('YYYY/MM/DD HH:mm:ss'));
             });
         });
@@ -448,6 +520,38 @@
                            '<td>实际支付:' + toDecimal(content[i].truePrice / 100) + '元<br>实际使用:'
                            + content[i].trueScore
                            + '积分</td>';
+                           //支付方式 6种
+                           var pO = content[i].payOrigin.id, pOT = '';
+                           switch (pO) {
+                               case 1:
+                                   pOT = 'APP';
+                                   break;
+                               case 2:
+                                   pOT = 'APP';
+                                   break;
+                               case 4:
+                                   pOT = 'APP';
+                                   break;
+                               case 9:
+                                   pOT = 'APP';
+                                   break;
+                               case 5:
+                                   pOT = '公众号';
+                                   break;
+                               case 6:
+                                   pOT = '公众号';
+                                   break;
+                               case 8:
+                                   pOT = '公众号';
+                                   break;
+                               case 10:
+                                   pOT = '公众号';
+                                   break;
+                           }
+                           if (pO == 1) {
+                               pOT = 'APP';
+                           }
+                           contentStr += '<td>' + pOT + '</td>';
                            contentStr += '<td>' + toDecimal(content[i].payBackA / 100) + '</td>';
                            contentStr +=
                            '<td>' + new Date(content[i].createDate).format('yyyy-MM-dd HH:mm:ss')
@@ -589,6 +693,10 @@
     }
 
     function searchByCriteria() {
+        condition();
+        getOrderListByCriteria(onLineOrderCriteria);
+    }
+    function condition() {
         onLineOrderCriteria.offset = 1;
         init1 = 1;
         var dateStr = $('#date-end span').text().split("-");
@@ -597,6 +705,11 @@
             var endDate = dateStr[1].replace(/-/g, "/");
             onLineOrderCriteria.startDate = startDate;
             onLineOrderCriteria.endDate = endDate;
+        }
+        var datePay = $('#date-pay span').text().split("-");
+        if (datePay != null && datePay != '') {
+            onLineOrderCriteria.startPayDate = datePay[0].replace(/-/g, "/");
+            onLineOrderCriteria.endPayDate = datePay[1].replace(/-/g, "/");
         }
         var orderId = $("#order-ID").val();
         if (orderId != "" && orderId != null) {
@@ -634,7 +747,22 @@
         } else {
             onLineOrderCriteria.transmitWay = null;
         }
-        getOrderListByCriteria(onLineOrderCriteria);
+        var payOrigin = $("#payOrigin").val();
+        if (payOrigin != -1) {
+            onLineOrderCriteria.payOrigin = payOrigin;
+        } else {
+            onLineOrderCriteria.payOrigin = null;
+        }
+        var payWay = $("#payWay").val();
+        if (payWay != -1) {
+            onLineOrderCriteria.payWay = payWay;
+        } else {
+            onLineOrderCriteria.payWay = null;
+        }
+    }
+    function exportExcel(criteria) {
+        condition();
+        location.href = '/manage/order/export?condition=' + JSON.stringify(criteria);
     }
 </script>
 </body>

@@ -114,13 +114,11 @@ public class ProductService {
     origin.setName(productDto.getName());
     float minPrice = Float.parseFloat(productDto.getMinPrice());
     origin.setMinPrice((long) (minPrice * 100));
-  //  origin.setPacketCount(productDto.getPacketCount());
     origin.setPicture(productDto.getPicture());
-  //  origin.setPointsCount(productDto.getPointsCount());
     origin.setDescription(productDto.getDescription());
-    //origin.setSaleNumber(productDto.getSaleNumber());
     origin.setThumb(productDto.getThumb());
     origin.setPrice((long) (Float.parseFloat(productDto.getPrice()) * 100));
+    origin.setCustomSale(productDto.getCustomSale());
     origin.setProductType(productDto.getProductType());
 
     productRepository.save(origin);
