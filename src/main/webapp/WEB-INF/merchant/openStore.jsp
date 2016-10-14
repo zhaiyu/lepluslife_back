@@ -1,9 +1,9 @@
 <%--
   Created by IntelliJ IDEA.
-  User: wcg
-  Date: 16/6/7
+  User: zhangwen
+  Date: 16/10/11
   Time: 下午5:32
-  To change this template use File | Settings | File Templates.
+  乐店编辑
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
@@ -17,18 +17,73 @@
     <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
     <title>乐+生活 后台模板管理系统</title>
     <link type="text/css" rel="stylesheet" href="${resourceUrl}/css/commonCss.css"/>
-    <link type="text/css" rel="stylesheet" href="${resourceUrl}/css/checkshop.css"/>
+    <link href="${resourceUrl}/css/bootstrap.min.css" rel="stylesheet">
 
-
-    <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
-    <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
-    <!--[if lt IE 9]>
-    <![endif]-->
     <script type="text/javascript" src="${resourceUrl}/js/jquery-2.0.3.min.js"></script>
     <script type="text/javascript" src="${resourceUrl}/js/menu.js"></script>
     <script type="text/javascript" src="${resourceUrl}/js/vendor/jquery.ui.widget.js"></script>
     <script type="text/javascript" src="${resourceUrl}/js/jquery.iframe-transport.js"></script>
     <script type="text/javascript" src="${resourceUrl}/js/jquery.fileupload.js"></script>
+    <script type="text/javascript" src="${resourceUrl}/js/bootstrap.min.js"></script>
+    <style>
+        .thumbnail {
+            width: 160px;
+            height: 160px;
+        }
+
+        .thumbnail img {
+            width: 100%;
+            height: 100%;
+        }
+
+        .addList input[type='text'] {
+            width: 50px;
+            margin-left: 5px;
+        }
+
+        .addList input[type='button'] {
+            margin-left: 5px;
+        }
+
+        .addList span {
+            cursor: pointer;
+        }
+
+        #service, #features {
+            padding-top: 5px;
+        }
+
+        #service input[type=checkbox], #features input[type=checkbox] {
+            margin-left: 15px;
+        !important;
+        }
+
+        .informationList {
+            margin-bottom: 10px
+        }
+
+        .informationList * {
+            float: left
+        }
+
+        .informationList > input {
+            width: 80%;
+        }
+
+        .informationList > button {
+            margin-left: 10px;
+        }
+
+        .informationList:after {
+            content: '\20';
+            display: block;
+            clear: both
+        }
+
+        .spanColor {
+            color: red;
+        }
+    </style>
 </head>
 
 <body>
@@ -40,108 +95,197 @@
         <%@include file="../common/left.jsp" %>
     </div>
     <div class="m-right">
-        <p>
-            <button onclick="javascript:history.go(-1);">返回我的店铺</button>
-            创建乐店信息
-        </p>
-        <div>
-            <div>店铺所在城市</div>
-            <input type="text" id="city" class="check" value="${merchant.city.name}"
-                   style="border: 0;" readonly="readonly"/>
-        </div>
-        <div>
-            <div>所在区域</div>
-            <input type="text" id="area" class="check" value="${merchant.area.name}"
-                   style="border: 0;" readonly="readonly"/>
-        </div>
-        <div>
-            <div>详细地址</div>
-            <input type="text" id="address" class="check" value="${merchant.location}"
-                   style="border: 0;" readonly="readonly"/>
-        </div>
-        <div>
-            <div>店铺类型</div>
-            <input type="text" id="type" class="check" value="${merchant.merchantType.name}"
-                   style="border: 0;" readonly="readonly"/>
-        </div>
-        <div>
-            <div>服务电话（选填）</div>
-            <input type="text" id="phone" value="${merchant.phoneNumber}" class="check"
-                   placeholder="请输入服务电话"/>
-        </div>
-        <div>
-            <div>商户图片</div>
-            <div class="col-sm-4">
-                <div class="thumbnail">
-                    <img src="${merchant.picture}" alt="..." id="merchantPicture">
+        <div class="main">
+            <div class="container-fluid">
+                <button type="button" class="btn btn-primary btn-return" style="margin:10px;"
+                        onclick="javascript:history.go(-1);">返回我的店铺
+                </button>
+                <hr>
+                <div class="form-horizontal">
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">店铺名称<span
+                                class="spanColor">*</span></label>
+
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" value="${merchant.name}"
+                                   disabled>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">店铺所在城市<span class="spanColor">*</span></label>
+
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" value="${merchant.city.name}"
+                                   disabled>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">所在区域<span
+                                class="spanColor">*</span></label>
+
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" value="${merchant.area.name}"
+                                   disabled>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">详细地址<span
+                                class="spanColor">*</span></label>
+
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" value="${merchant.location}"
+                                   disabled>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label class="col-sm-2 control-label">店铺类型<span
+                                class="spanColor">*</span></label>
+
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control"
+                                   value="${merchant.merchantType.name}" disabled>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="phone" class="col-sm-2 control-label">服务电话<span
+                                class="spanColor">*</span></label>
+
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="phone"
+                                   value="${merchant.phoneNumber}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="lng" class="col-sm-2 control-label">经度<span
+                                class="spanColor">*</span></label>
+
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" value="${merchant.lng}"
+                                   id="lng">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="lat" class="col-sm-2 control-label">纬度<span
+                                class="spanColor">*</span></label>
+
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" value="${merchant.lat}"
+                                   id="lat">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="sid" class="col-sm-2 control-label">展示序号<span class="spanColor">*</span></label>
+
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="sid"
+                                   value="${merchant.sid}">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="merchantPic" class="col-sm-2 control-label">商品图片<span
+                                class="spanColor">*</span></label>
+
+                        <div class="col-sm-4">
+                            <div class="thumbnail">
+                                <img src="${merchant.picture}" alt="..." id="merchantPicture">
+                            </div>
+                            <input type="file" class="form-control" id="merchantPic" name="file"
+                                   data-url="/manage/file/saveImage">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="service" class="col-sm-2 control-label">服务信息</label>
+
+                        <div class="col-sm-4" id="service">
+                            <input type="checkbox" id="park" name="checkbox"
+                                   <c:if test="${merchant.merchantInfo.park == 1}">checked="true" </c:if>><span>免费停车位</span>
+                            <input type="checkbox" id="wifi" name="checkbox"
+                                   <c:if test="${merchant.merchantInfo.wifi == 1}">checked="true" </c:if>><span>免费wifi</span>
+                            <input type="checkbox" id="card" name="checkbox"
+                                   <c:if test="${merchant.merchantInfo.card == 1}">checked="true" </c:if>><span>可刷卡</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="star" class="col-sm-2 control-label">星级</label>
+
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control"
+                                   value="${merchant.merchantInfo.star}" id="star">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="perSale" class="col-sm-2 control-label">客单价</label>
+
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control"
+                                   value="${merchant.merchantInfo.perSale/100}" id="perSale">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="discount" class="col-sm-2 control-label">专享折扣</label>
+
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control"
+                                   style="width: 50%;float: left;"
+                                   id="discount" value="${merchant.merchantInfo.discount}">
+
+                            <div style="width: 45%;float: left;margin-top: 7px;margin-left: 5%">折
+                            </div>
+                            <div style="clear: both;"></div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="features" class="col-sm-2 control-label">商铺特色</label>
+
+                        <div class="col-sm-8" id="features">
+                            <input type="checkbox" name="ts" id="feature_1"
+                                   value="1"><span>乐加联盟</span>
+                            <input type="checkbox" name="ts" id="feature_2"
+                                   value="2"><span>消费获礼</span>
+                            <input type="checkbox" name="ts" id="feature_3"
+                                   value="3"><span>优先体验</span>
+                            <input type="checkbox" name="ts" id="feature_4"
+                                   value="4"><span>双重优惠</span>
+                            <input type="checkbox" name="ts" id="feature_5"
+                                   value="5"><span>会员积分</span>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="vipPic" class="col-sm-2 control-label">专享活动图</label>
+
+                        <div class="col-sm-4">
+                            <div class="thumbnail">
+                                <img src="${merchant.merchantInfo.vipPicture}" alt="..."
+                                     id="vipPicture">
+                            </div>
+                            <input type="file" class="form-control" id="vipPic" name="file"
+                                   data-url="/manage/file/saveImage">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="reasons" class="col-sm-2 control-label">推荐理由</label>
+
+                        <div class="col-sm-4" id="reasons">
+
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="description" class="col-sm-2 control-label">服务说明</label>
+
+                        <div class="col-sm-4" id="description">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <div class="col-sm-offset-2 col-sm-4">
+                            <button id="saveMerchant" class="btn btn-primary" type="submit">保存
+                            </button>
+                            <c:if test="${merchant.state==1}">
+                                <button id="close" class="btn btn-primary">关闭乐店</button>
+                            </c:if>
+                        </div>
+                    </div>
                 </div>
-                <input type="file" class="form-control" id="merchantPic" name="file"
-                       data-url="/manage/file/saveImage">
             </div>
-        </div>
-        <div>
-            <div>营业时间</div>
-            <input type="text" id="startHour" style="width: 15%;" name="datetime" class="check"
-                   placeholder="开始（时）"/>
-
-            <div style="width: 3%;text-align: center;line-height: 25px;">:</div>
-            <input type="text" id="startMinute" style="width: 15%;" name="datetime" class="check"
-                   placeholder="开始（分）"/>
-
-            <div style="width: 4%;text-align: center;line-height: 25px;">-</div>
-            <input type="text" id="endHour" style="width: 15%;" name="datetime" class="check"
-                   placeholder="结束（时）"/>
-
-            <div style="width: 3%;text-align: center;line-height: 25px;">:</div>
-            <input type="text" id="endMinute" style="width: 15%;" name="datetime" class="check"
-                   placeholder="结束（分）"/>
-        </div>
-        <div>
-            <div>星级</div>
-            <input type="text" value="${merchant.merchantInfo.star}" id="star" class="check"/>
-        </div>
-        <div>
-            <div>客单价</div>
-            <input type="text" value="${merchant.merchantInfo.perSale/100}" id="perSale"
-                   class="check"/>
-        </div>
-        <div>
-            <div>经度</div>
-            <input type="text" value="${merchant.lng}" id="lng" class="check"/>
-        </div>
-        <div>
-            <div>展示序号</div>
-            <input type="text" value="${merchant.sid}" id="sid" class="check"/>
-        </div>
-        <div>
-            <div>纬度</div>
-            <input type="text" value="${merchant.lat}" id="lat" class="check"/>
-        </div>
-
-        <div>
-            <div>服务信息</div>
-            <div>
-                <p><input type="checkbox" style="width: 5%" id="park"
-                          <c:if test="${merchant.merchantInfo.park == 1}">checked="true" </c:if>/>免费停车位
-                </p>
-
-                <p><input type="checkbox" id="wifi" style="width: 5%"
-                          <c:if test="${merchant.merchantInfo.wifi == 1}">checked="true" </c:if>/>免费WIFI
-                </p>
-
-                <p><input type="checkbox" id="card" style="width: 5%"
-                          <c:if test="${merchant.merchantInfo.card == 1}">checked="true" </c:if>/>可刷卡
-                </p>
-            </div>
-
-        </div>
-
-        <div>
-            <button id="saveMerchant">保存</button>
-            <%--<button>取消</button>--%>
-            <c:if test="${merchant.state==1}">
-                <button id="close">关闭乐店</button>
-            </c:if>
         </div>
     </div>
 </div>
@@ -149,7 +293,51 @@
     <%@include file="../common/bottom.jsp" %>
 </div>
 </body>
-</html>
+<script>
+    var addNewLine = '<button type="button" class="btn btn-primary addNewLine">添加新行</button>';
+    var reason = $('#reasons'), description = $('#description');
+    var r = '${merchant.merchantInfo.reason}', d = '${merchant.merchantInfo.description}', features = '${merchant.merchantInfo.feature}'.split('_');
+    if (r != null && r != '') {
+        var reasons = r.split('+=');
+        for (var i = 0; i < reasons.length; i++) {
+            reason.html(reason.html()
+                        + " <div class='informationList'><input type='text' name='reasonsList' class='form-control' value='"
+                        + reasons[i]
+                        + "'><button type='button' class='btn btn-danger'onclick='del(this)'>删除</button></div>");
+        }
+    }
+    if (d != null && d != '') {
+        descriptions = d.split('+=');
+        for (var j = 0; j < descriptions.length; j++) {
+            description.html(description.html()
+                             + " <div class='informationList'><input type='text' name='descriptionList' class='form-control' value='"
+                             + descriptions[j]
+                             + "'><button type='button' class='btn btn-danger'onclick='del(this)'>删除</button></div>");
+        }
+    }
+    reason.html(reason.html() + addNewLine);
+    description.html(description.html() + addNewLine);
+    for (var x = 0; x < features.length; x++) {
+        var id = 'feature_' + features[x];
+        $("#" + id).attr('checked', 'true');
+    }
+    $(".addNewLine").click(function (e) {
+        var addClass = $(this).parent().attr('id') + 'List';
+        $(this).before(" <div class='informationList'><input type='text' class='form-control' name='"
+                       + addClass
+                       + "'><button type='button' class='btn btn-danger'onclick='del(this)'>删除</button></div>");
+    });
+    $("#features > input[type=checkbox]").click(function (e) {
+        if ($("input[name='ts']:checked").length > 3) {
+            $(this).removeAttr("checked");
+            alert("最多选3个!")
+        }
+    });
+    function del(t) {
+        $(t).closest(".informationList").remove();
+    }
+
+</script>
 <script>
     $(function () {
         $('#merchantPic').fileupload({
@@ -166,7 +354,21 @@
                                                                         + resp.data);
                                          }
                                      });
-    })
+        $('#vipPic').fileupload({
+                                    dataType: 'json',
+                                    maxFileSize: 5000000,
+                                    acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+                                    add: function (e, data) {
+                                        data.submit();
+                                    },
+                                    done: function (e, data) {
+                                        var resp = data.result;
+                                        $('#vipPicture').attr('src',
+                                                              '${ossImageReadRoot}/'
+                                                              + resp.data);
+                                    }
+                                });
+    });
 
     if (${merchant.officeHour!=null}) {
         var time = '${merchant.officeHour}';
@@ -180,13 +382,56 @@
 
         var merchant = {};
         var merchantInfo = {};
+        var discount = $("#discount").val();
+        if (parseInt(discount, 10) == discount && 1 <= discount && discount <= 100
+            && discount != 0) {
+            merchantInfo.discount = discount;
+        } else {
+            alert("请输入1到100的正整数");
+            $("#discount").focus();
+            return false;
+        }
+        var feature = '', reasonList = '', descriptionList = '', shutOff = 0;
+        $('input[name="ts"]:checked').each(function () {
+            feature += $(this).val() + '_';
+        });
+        merchantInfo.feature = feature.substr(0, feature.length - 1);
+        merchantInfo.vipPicture = $("#vipPicture").attr("src");
+        $('input[name="reasonsList"]').each(function () {
+            if ($(this).val() == null || $(this).val() == '') {
+                alert("推荐理由不能为空");
+                $(this).focus();
+                shutOff = 1;
+                return false;
+            }
+            reasonList += $(this).val() + '+=';
+        });
+        if (shutOff == 1) {
+            return
+        }
+        $('input[name="descriptionList"]').each(function () {
+            if ($(this).val() == null || $(this).val() == '') {
+                alert("服务说明不能为空");
+                $(this).focus();
+                shutOff = 1;
+                return false;
+            }
+            descriptionList += $(this).val() + '+=';
+        });
+        if (shutOff == 1) {
+            return
+        }
+        merchantInfo.reason = reasonList.substr(0, reasonList.length - 2);
+        merchantInfo.description = descriptionList.substr(0, descriptionList.length - 2);
+
         merchantInfo.park = 0;
         merchantInfo.wifi = 0;
         merchantInfo.card = 0;
-        $('input[type="checkbox"]:checked').each(function () {
+        $('input[name="checkbox"]:checked').each(function () {
             var id = $(this).attr('id');
             merchantInfo[id] = 1;
         });
+
         merchantInfo.star = $("#star").val();
         merchantInfo.perSale = $("#perSale").val() * 100;
         merchant.merchantInfo = merchantInfo;
@@ -223,4 +468,4 @@
                });
     });
 </script>
-
+</html>

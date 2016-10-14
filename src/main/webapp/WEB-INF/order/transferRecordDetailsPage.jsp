@@ -308,7 +308,7 @@
     function exportExcel(olOrderCriteria) {
         var d=$("#detailsID").val();
 
-        location.href="/manage//offLineOrderDetails/exportDetails?messageDetails="+d+"&&"+"olOrderCriteria="+olOrderCriteria;
+        location.href="/manage/offLineOrderDetails/exportDetails?messageDetails="+d+"&&"+"olOrderCriteria="+olOrderCriteria;
     }
 </script>
 </body>

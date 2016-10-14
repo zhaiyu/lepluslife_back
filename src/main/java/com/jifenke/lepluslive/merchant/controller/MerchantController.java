@@ -154,7 +154,6 @@ public class MerchantController {
   @RequestMapping(value = "/merchant/openStore", method = RequestMethod.POST)
   public LejiaResult openStore(@RequestBody Merchant merchant) {
     merchantService.openStore(merchant);
-//    model.addAttribute("merchant", merchant);
     return LejiaResult.build(200, "开启成功");
   }
 
@@ -235,7 +234,11 @@ public class MerchantController {
     if (merchantCriteria.getOffset() == null) {
       merchantCriteria.setOffset(1);
     }
-    merchantCriteria.setCity(Long.parseLong(city));
+    if(!"0".equals(city)){
+      merchantCriteria.setCity(Long.parseLong(city));
+    }else {
+      merchantCriteria.setCity(null);
+    }
     Page page = merchantService.findMerchantsByPage(merchantCriteria, 10000);
     Map map = new HashMap();
     map.put("merchantList", page.getContent());
