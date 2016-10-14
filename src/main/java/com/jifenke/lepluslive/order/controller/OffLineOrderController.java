@@ -135,7 +135,7 @@ public class OffLineOrderController {
     olOrderCriteria.setMerchant(stringArray[0]);
     olOrderCriteria.setMerchant(merchant);
     Page page = offLineOrderService.findOrderByPage(olOrderCriteria, 10000);
-    List<OffLineOrder> list = page.getContent();
+   // List<OffLineOrder> list = page.getContent();
     Map detailsMap = new HashMap();
     detailsMap.put("orderList", page.getContent());
     return new ModelAndView(orderViewExcel, detailsMap);

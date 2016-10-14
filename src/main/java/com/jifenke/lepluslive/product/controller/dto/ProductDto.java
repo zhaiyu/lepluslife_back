@@ -9,6 +9,7 @@ import java.util.List;
  * Created by wcg on 16/4/5.
  */
 public class ProductDto {
+
   private Long id;
 
   private Long sid;
@@ -30,6 +31,7 @@ public class ProductDto {
 
   private String description;
 
+  private Integer customSale;
 
   private Integer state;
 
@@ -86,6 +88,14 @@ public class ProductDto {
 
   public void setMinPrice(String minPrice) {
     this.minPrice = minPrice;
+  }
+
+  public Integer getCustomSale() {
+    return customSale;
+  }
+
+  public void setCustomSale(Integer customSale) {
+    this.customSale = customSale;
   }
 
   public Integer getSaleNumber() {

@@ -51,7 +51,7 @@
         <div class="main">
             <div class="container-fluid">
                 <button type="button" class="btn btn-primary btn-return" style="margin:10px;" onclick="goProductPage()">
-                    返回专题列表
+                    返回商品列表
                 </button>
                 <hr>
                 <form class="form-horizontal">
@@ -135,6 +135,14 @@
                                    value="${product.minPrice/100}">
                         </div>
                     </div>
+                    <div class="form-group">
+                        <label for="productMinPrice" class="col-sm-2 control-label">初始销量(展示用)</label>
+
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="customSale"
+                                   value="${product.customSale}">
+                        </div>
+                    </div>
 
                     <div class="form-group">
                         <div class="col-sm-offset-2 col-sm-4">
@@ -202,6 +210,7 @@
         productDto.description = $("#productDescription").val();
         productDto.price = $("#productPrice").val();
         productDto.minPrice = $("#productMinPrice").val();
+        productDto.customSale = $("#customSale").val();
         productDto.picture = $("#productPicture").attr("src");
         productDto.thumb = $("#productThumb").attr("src");
 

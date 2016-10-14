@@ -9,6 +9,10 @@ public class OrderCriteria {
 
   private String endDate;
 
+  private String startPayDate; //订单创建时间
+
+  private String endPayDate;
+
   private Integer offset;
 
   private Integer transmitWay; //取货方式  1=线下自提|2=快递
@@ -24,6 +28,10 @@ public class OrderCriteria {
   private Long maxTruePrice;   //实付最大金额
 
   private Long minTruePrice;   //实付最小金额
+
+  private Integer payOrigin;   //订单来源 1=APP
+
+  private Integer payWay;    //支付方式  0=未选择 1=微信 2=微信+A积分 3=微信+B积分
 
   public String getOrderSid() {
     return orderSid;
@@ -81,6 +89,14 @@ public class OrderCriteria {
     return minTruePrice;
   }
 
+  public Integer getPayWay() {
+    return payWay;
+  }
+
+  public void setPayWay(Integer payWay) {
+    this.payWay = payWay;
+  }
+
   public void setMinTruePrice(Long minTruePrice) {
     this.minTruePrice = minTruePrice;
   }
@@ -89,8 +105,32 @@ public class OrderCriteria {
     return userName;
   }
 
+  public String getStartPayDate() {
+    return startPayDate;
+  }
+
+  public void setStartPayDate(String startPayDate) {
+    this.startPayDate = startPayDate;
+  }
+
+  public String getEndPayDate() {
+    return endPayDate;
+  }
+
+  public void setEndPayDate(String endPayDate) {
+    this.endPayDate = endPayDate;
+  }
+
   public void setUserName(String userName) {
     this.userName = userName;
+  }
+
+  public Integer getPayOrigin() {
+    return payOrigin;
+  }
+
+  public void setPayOrigin(Integer payOrigin) {
+    this.payOrigin = payOrigin;
   }
 
   public void setTransmitWay(Integer transmitWay) {
