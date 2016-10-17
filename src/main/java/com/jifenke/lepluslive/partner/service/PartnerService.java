@@ -162,8 +162,13 @@ public class PartnerService {
     byte[]
         bytes =
         new byte[0];
+    byte[]
+        bytes2 =
+        new byte[0];
     try {
       bytes = barcodeService.qrCode(Constants.PARTNER_URL + partner.getPartnerSid(),
+                                    BarcodeConfig.QRCode.defaultConfig());
+      bytes2 = barcodeService.qrCode(Constants.PARTNER_HB_URL + partner.getPartnerSid(),          // 海报二维码
                                     BarcodeConfig.QRCode.defaultConfig());
     } catch (InterruptedException e) {
       e.printStackTrace();
@@ -171,10 +176,14 @@ public class PartnerService {
       e.printStackTrace();
     }
     String filePath = MvUtil.getFilePath(Constants.BAR_CODE_EXT);
+    String filePath2 = MvUtil.getFilePath(Constants.BAR_CODE_EXT);                                // 地址
     partnerInfo.setQrCodeUrl(barCodeRootUrl + "/" + filePath);
+    partnerInfo.setHbQrCodeUrl(barCodeRootUrl + "/" + filePath2);
     partnerInfoRepository.save(partnerInfo);
     final byte[] finalBytes = bytes;
+    final byte[] finalBytes2 = bytes2;
     fileImageService.SaveBarCode(finalBytes, filePath);
+    fileImageService.SaveBarCode(finalBytes2, filePath2);
     Merchant merchant = new Merchant();//天使合伙人虚拟商户
     merchant.setPartner(partner);
     merchant.setName(partner.getName());
