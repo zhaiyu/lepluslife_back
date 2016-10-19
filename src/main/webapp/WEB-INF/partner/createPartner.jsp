@@ -234,6 +234,7 @@
             return;
         }
         partner.partnerName = $("#partnerName").val();
+        partner.name = $("#partnerName").val();
         partner.phoneNumber = $("#partnerPhone").val();
         partner.merchantLimit = $("#merchantLimit").val();
         partner.userLimit = $("#userLimit").val();
