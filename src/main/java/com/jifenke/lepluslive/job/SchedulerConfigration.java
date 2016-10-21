@@ -89,11 +89,11 @@ public class SchedulerConfigration {
   @Bean
   public SchedulerFactoryBean schedulerFactory() {
     SchedulerFactoryBean bean = new SchedulerFactoryBean();
-    bean.setConfigLocation(resourceLoader.getResource("classpath:quartz.properties"));
-    bean.setApplicationContextSchedulerContextKey("applicationContextKey");
-    bean.setDataSource(dataSource);
-   bean.setTriggers(cronTriggerBean().getObject(), wxCronTriggerBean().getObject(),scoreAAccountAddCronTriggerBean().getObject());
-    bean.setSchedulerName("orderConfrim");
+//    bean.setConfigLocation(resourceLoader.getResource("classpath:quartz.properties"));
+//    bean.setApplicationContextSchedulerContextKey("applicationContextKey");
+//    bean.setDataSource(dataSource);
+//   bean.setTriggers(cronTriggerBean().getObject(), wxCronTriggerBean().getObject(),scoreAAccountAddCronTriggerBean().getObject());
+//    bean.setSchedulerName("orderConfrim");
     return bean;
   }
 }
