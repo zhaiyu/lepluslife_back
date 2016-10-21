@@ -88,7 +88,7 @@
               <c:forEach items="${partnerManagers}" var="partnerManager">
                 <tr>
                   <td class="text-center">${partnerManager.partnerManager.id}</td><td class="text-center">${partnerManager.partnerManager.name}</td>
-                  <td class="text-center">￥${partnerManager.availableBalance}</td>
+                  <td class="text-center">￥${partnerManager.availableBalance/100}</td>
                   <%--<td class="text-center">--%>
                     <%--<button type="button" class="btn btn-default editWarn">编辑</button>--%>
                     <%--&lt;%&ndash;<button type="button" class="btn btn-default deleteWarn" data-target="#deleteWarn">删除</button>&ndash;%&gt;--%>

@@ -133,9 +133,9 @@ public class PartnerService {
     PartnerWallet partnerWallet = new PartnerWallet();
     partnerWallet.setPartner(partner);
     partnerWallet.setAvailableScoreA(500000L);
-    partnerWallet.setAvailableScoreB(10000L);
+    partnerWallet.setAvailableScoreB(14000L);
     partnerWallet.setTotalScoreA(500000L);
-    partnerWallet.setTotalScoreB(10000L);
+    partnerWallet.setTotalScoreB(14000L);
     partnerWalletRepository.save(partnerWallet);
     PartnerScoreLog partnerScoreLog = new PartnerScoreLog();
     partnerScoreLog.setDescription("关注送红包");
@@ -168,15 +168,19 @@ public class PartnerService {
     try {
       bytes = barcodeService.qrCode(Constants.PARTNER_URL + partner.getPartnerSid(),
                                     BarcodeConfig.QRCode.defaultConfig());
-      bytes2 = barcodeService.qrCode(Constants.PARTNER_HB_URL + partner.getPartnerSid(),          // 海报二维码
-                                    BarcodeConfig.QRCode.defaultConfig());
+      bytes2 =
+          barcodeService
+              .qrCode(Constants.PARTNER_HB_URL + partner.getPartnerSid(),          // 海报二维码
+                      BarcodeConfig.QRCode.defaultConfig());
     } catch (InterruptedException e) {
       e.printStackTrace();
     } catch (IOException e) {
       e.printStackTrace();
     }
     String filePath = MvUtil.getFilePath(Constants.BAR_CODE_EXT);
-    String filePath2 = MvUtil.getFilePath(Constants.BAR_CODE_EXT);                                // 地址
+    String
+        filePath2 =
+        MvUtil.getFilePath(Constants.BAR_CODE_EXT);                                // 地址
     partnerInfo.setQrCodeUrl(barCodeRootUrl + "/" + filePath);
     partnerInfo.setHbQrCodeUrl(barCodeRootUrl + "/" + filePath2);
     partnerInfoRepository.save(partnerInfo);
@@ -186,7 +190,7 @@ public class PartnerService {
     fileImageService.SaveBarCode(finalBytes2, filePath2);
     Merchant merchant = new Merchant();//天使合伙人虚拟商户
     merchant.setPartner(partner);
-    merchant.setName(partner.getName());
+    merchant.setName(partner.getPartnerName() + "(合伙人)");
     merchant.setPartnership(2);
     MerchantInfo merchantInfo = new MerchantInfo();
     merchant.setMerchantInfo(merchantInfo);

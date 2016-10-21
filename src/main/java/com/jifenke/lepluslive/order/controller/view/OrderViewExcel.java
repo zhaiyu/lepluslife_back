@@ -185,9 +185,25 @@ public class OrderViewExcel extends AbstractExcelView {
           .setCellValue(order.getTransferMoney() / 100.0);
       excelRow.createCell(15).setCellValue(order.getWxCommission() / 100.0);
       //手续费补贴
+        BigDecimal memberCommission=new BigDecimal(0);
+        BigDecimal ljBrokerage=new BigDecimal(0);
+        if(order.getMerchant().getMemberCommission()!=null){
+            memberCommission=order.getMerchant().getMemberCommission();
+        }
+        if(order.getMerchant().getLjBrokerage()!=null){
+            ljBrokerage=order.getMerchant().getLjBrokerage();
+        }
+        int a8= memberCommission.compareTo(ljBrokerage);
+
       double wxCommission = order.getWxCommission().doubleValue() / 100.0;
       double commissionSubsidy = currencyCommissionCharge - wxCommission;
-      excelRow.createCell(16).setCellValue(commissionSubsidy);
+        if(a8==1||order.getRebateWay()==1){
+            excelRow.createCell(16).setCellValue(0);
+        }
+        else {
+            excelRow.createCell(16).setCellValue(commissionSubsidy);
+        }
+
       //佣金纯收入
       if (order.getRebateWay() == 1) {
         Long ljCommission = order.getLjCommission();

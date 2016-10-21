@@ -25,7 +25,7 @@ public final class Constants {
   public static final String PARTNER_URL = "http://www.lepluslife.com/weixin/partner/bind_wx_user/";
 
   // Poster
-  public static final String PARTNER_HB_URL = "http://www.lepluslife.com/poster/partner/downloadPage/";
+  public static final String PARTNER_HB_URL = "http://www.lepluspay.com/poster/partner/downloadPage/";
 
   public static final String BAR_CODE_EXT = "png";
 

@@ -75,19 +75,9 @@ public class MvUtil {
   }
 
 //  public static void main(String[] args) {
-//    Date start = new Date();
-//    String s = "1111111222222";
-////    String s1 =  s.substring(0,s.length()-4);
-////    String s3 = s1.replaceAll("\\d", "*");
-////    String s2 =     s.substring(s.length() - 4, s.length());
-//
-//    StringBuffer sb = new StringBuffer(s.substring(s.length() - 4,s.length()));
-//    for(int i =0;i<s.length()-4;i++){
-//      sb.insert(0,"*");
+//    for(int i = 0;i<7;i++){
+//      System.out.println(getPartnerSid());
 //    }
-//    System.out.println(sb.toString());
-//    Date end = new Date();
-//    System.out.println(end.getTime() - start.getTime());
 //  }
 
 }
