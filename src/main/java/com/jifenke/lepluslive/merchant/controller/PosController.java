@@ -53,9 +53,9 @@ public class PosController {
       merchantPosDto.setPosId(merchantPos.getPosId());
       merchantPosDto.setPsamCard(merchantPos.getPsamCard());
       merchantPosDto.setMerchant(merchantPos.getMerchant());
-      merchantPosDto.setPosMerchantNo(merchantPos.getPosMerchantNo());
-      merchantPosDto.setPhoneNumber(merchantPos.getPhoneNumber());
-      merchantPosDto.setCreatedDate(merchantPos.getCreatedDate());
+//      merchantPosDto.setPosMerchantNo(merchantPos.getPosMerchantNo());
+//      merchantPosDto.setPhoneNumber(merchantPos.getPhoneNumber());
+//      merchantPosDto.setCreatedDate(merchantPos.getCreatedDate());
       merchantPosDto.setLjCommission(merchantPos.getLjCommission());
       return merchantPosService.countPosOrderFlow(merchantPosDto);
     }).collect(Collectors.toList());

@@ -18,7 +18,7 @@ import javax.persistence.Table;
  */
 @Entity
 @Table(name = "POS_ORDER")
-public class PosOrder  {
+public class PosOrder{
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
@@ -59,11 +59,31 @@ public class PosOrder  {
 
   private Long totalPrice;
 
-  private Long truePay; //实际支付
+  private Long truePay = 0L; //实际支付
 
   private Integer tradeFlag; //0支付宝、3POS刷卡、4微信、5纯积分（会员登录后不能用现金交易） 6现金支付
 
   private Integer paidType;  //1,非会员消费   2只用货币完成交易、3混用了货币积分完成交易、4只用积分完成了交易
+
+  private String cardNo; //如果刷卡支付 则为卡号
+
+  private Integer cardType; //卡的类型
+
+  public String getCardNo() {
+    return cardNo;
+  }
+
+  public void setCardNo(String cardNo) {
+    this.cardNo = cardNo;
+  }
+
+  public Integer getCardType() {
+    return cardType;
+  }
+
+  public void setCardType(Integer cardType) {
+    this.cardType = cardType;
+  }
 
   public Long getTransferByBank() {
     return transferByBank;
