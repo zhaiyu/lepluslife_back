@@ -29,17 +29,77 @@ public class MerchantPos {
 
   private String psamCard;
 
-  private BigDecimal debitCardCommission; //借记卡佣金比
+  private BigDecimal debitCardCommission; //借记卡非会员佣金比
 
-  private BigDecimal ljCommission; //会员刷卡消费佣金
+  private BigDecimal ljCommission; //会员刷卡消费佣金比 或者纯红包消费佣金比
 
-  private BigDecimal wxCommission; // 微信佣金
+  private BigDecimal wxCommission; // 微信非会员佣金比
 
-  private BigDecimal aliCommission; //阿里佣金
+  private BigDecimal aliCommission; //阿里非会员佣金比
 
-  private BigDecimal creditCardCommission; //贷记卡佣金比
+  private BigDecimal creditCardCommission; //贷记卡非会员佣金比
 
-  private Long ceil; //封顶手续费
+  private Long ceil; //借记卡非会员封顶手续费
+
+  private BigDecimal wxUserCommission;//微信会员佣金比
+
+  private BigDecimal aliUserCommission; //支付宝会员佣金比
+
+  private BigDecimal scoreARebate;//导流订单返红包比
+
+  private BigDecimal scoreBRebate; //导流订单返积分比
+
+  private BigDecimal userScoreARebate; //会员订单返红包比
+
+  private BigDecimal userScoreBRebate; //会员订单返积分比
+
+  public BigDecimal getScoreARebate() {
+    return scoreARebate;
+  }
+
+  public void setScoreARebate(BigDecimal scoreARebate) {
+    this.scoreARebate = scoreARebate;
+  }
+
+  public BigDecimal getScoreBRebate() {
+    return scoreBRebate;
+  }
+
+  public void setScoreBRebate(BigDecimal scoreBRebate) {
+    this.scoreBRebate = scoreBRebate;
+  }
+
+  public BigDecimal getUserScoreARebate() {
+    return userScoreARebate;
+  }
+
+  public void setUserScoreARebate(BigDecimal userScoreARebate) {
+    this.userScoreARebate = userScoreARebate;
+  }
+
+  public BigDecimal getUserScoreBRebate() {
+    return userScoreBRebate;
+  }
+
+  public void setUserScoreBRebate(BigDecimal userScoreBRebate) {
+    this.userScoreBRebate = userScoreBRebate;
+  }
+
+  public BigDecimal getWxUserCommission() {
+    return wxUserCommission;
+  }
+
+  public void setWxUserCommission(BigDecimal wxUserCommission) {
+    this.wxUserCommission = wxUserCommission;
+  }
+
+  public BigDecimal getAliUserCommission() {
+    return aliUserCommission;
+  }
+
+  public void setAliUserCommission(BigDecimal aliUserCommission) {
+    this.aliUserCommission = aliUserCommission;
+  }
 
   public BigDecimal getLjCommission() {
     return ljCommission;
