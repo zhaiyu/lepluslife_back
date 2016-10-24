@@ -168,7 +168,8 @@
                             <button type="button" class="btn btn-primary" onclick="submitPartner()">
                                 提交
                             </button>
-                            <button type="submit" class="btn btn-default">取消</button>
+                            <a type="button" class="btn btn-primary btn-return" style="margin:10px;"
+                               href="/manage/partner">取消</a>
                         </div>
                     </div>
                 </form>
