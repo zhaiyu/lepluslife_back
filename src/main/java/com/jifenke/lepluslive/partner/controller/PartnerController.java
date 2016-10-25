@@ -2,6 +2,7 @@ package com.jifenke.lepluslive.partner.controller;
 
 import com.jifenke.lepluslive.global.util.LejiaResult;
 import com.jifenke.lepluslive.global.util.MvUtil;
+import com.jifenke.lepluslive.partner.controller.dto.PartnerDto;
 import com.jifenke.lepluslive.partner.domain.entities.Partner;
 import com.jifenke.lepluslive.partner.service.PartnerService;
 
@@ -47,8 +48,8 @@ public class PartnerController {
   }
 
   @RequestMapping(value = "/partner", method = RequestMethod.POST)
-  public LejiaResult createPartner(@RequestBody Partner partner) {
-    partnerService.createPartner(partner);
+  public LejiaResult createPartner(@RequestBody PartnerDto partnerDto) {
+    partnerService.createPartner(partnerDto);
     return LejiaResult.ok();
   }
 

@@ -20,7 +20,10 @@ import org.springframework.web.multipart.MultipartFile;
 import org.springframework.web.multipart.commons.CommonsMultipartFile;
 
 import java.awt.image.BufferedImage;
+import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
+import java.io.FileNotFoundException;
+import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -41,9 +44,6 @@ public class FileImageController {
 
   @Inject
   private FileImageService fileImageService;
-
-  //获取文件后缀名
-
 
   @RequestMapping(value = "/file/saveImage")
   public
@@ -73,11 +73,6 @@ public class FileImageController {
     String filePath = MvUtil.getFilePath(extendName);
     try {
       fileImageService.saveImage(filedata, filePath);
-//        BufferedImage buff = ImageIO.read(filedata.getInputStream());
-//        new ProductD
-//        buff.getHeight();
-//        buff.getWidth();
-
       return LejiaResult.ok(filePath);
     } catch (IOException e) {
       LOG.error("图片上传失败" + e.getMessage());
@@ -88,15 +83,11 @@ public class FileImageController {
 
 
   @RequestMapping(value = "/file/downloadPicture")
-  public void getPhotoById(String url,HttpServletResponse response) {
-//    PhotoEntity entity = this.photoMapper.getPhotoEntityByPhotoId(id);
-//   byte[] data = ;
-//    response.setContentType("image/jpeg");
+  public void getPhotoById(String url, HttpServletResponse response) {
     response.setContentType("application/x-msdownload;");
     response.setHeader("Content-disposition", "attachment; filename=image.jpg");
     response.setCharacterEncoding("UTF-8");
     OutputStream outputSream = null;
-   // byte[] image =ImageLoad.saveToFile(url) ;
     try {
       outputSream = response.getOutputStream();
       InputStream in = ImageLoad.returnStream(url);
@@ -109,12 +100,27 @@ public class FileImageController {
     } catch (Exception e) {
       e.printStackTrace();
     }
-//    HttpHeaders headers = new HttpHeaders();
-//    headers.setContentType(MediaType);
-//    headers.setContentLength(image.length);
-    //return new HttpEntity<byte[]>(image, headers);
-
   }
 
+  @RequestMapping(value = "/file/pos_excel_handle")
+  public void posExcelUploadAndHandle(@RequestParam MultipartFile file, @RequestParam String path,
+                                      @RequestParam String verify) {
+    String name = file.getOriginalFilename();
+    try {
+      fileImageService.saveImage(file, name);
+    } catch (IOException e) {
+      LOG.error("文件上传失败" + e.getMessage());
+      try {
+        BufferedOutputStream
+            buf =
+            new BufferedOutputStream(new FileOutputStream("/app/logs" + name));
+        buf.write(file.getBytes());
+        buf.flush();
+        buf.close();
+      } catch (Exception e1) {
+        e1.printStackTrace();
+      }
+    }
+  }
 
 }

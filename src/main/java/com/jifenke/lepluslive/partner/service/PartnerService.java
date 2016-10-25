@@ -9,6 +9,7 @@ import com.jifenke.lepluslive.global.util.MvUtil;
 import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantInfo;
 import com.jifenke.lepluslive.merchant.service.MerchantService;
+import com.jifenke.lepluslive.partner.controller.dto.PartnerDto;
 import com.jifenke.lepluslive.partner.domain.entities.Partner;
 import com.jifenke.lepluslive.partner.domain.entities.PartnerInfo;
 import com.jifenke.lepluslive.partner.domain.entities.PartnerManager;
@@ -128,27 +129,30 @@ public class PartnerService {
   }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-  public void createPartner(Partner partner) {
+  public void createPartner(PartnerDto partnerDto) {
+    Partner partner = partnerDto.getPartner();
     partnerRepository.save(partner);
     PartnerWallet partnerWallet = new PartnerWallet();
     partnerWallet.setPartner(partner);
-    partnerWallet.setAvailableScoreA(500000L);
-    partnerWallet.setAvailableScoreB(14000L);
-    partnerWallet.setTotalScoreA(500000L);
-    partnerWallet.setTotalScoreB(14000L);
+    Long scoreA = partnerDto.getScoreA() * 100;
+    Long scoreB = partnerDto.getScoreB();
+    partnerWallet.setAvailableScoreA(scoreA);
+    partnerWallet.setAvailableScoreB(scoreB);
+    partnerWallet.setTotalScoreA(scoreA);
+    partnerWallet.setTotalScoreB(scoreB);
     partnerWalletRepository.save(partnerWallet);
     PartnerScoreLog partnerScoreLog = new PartnerScoreLog();
     partnerScoreLog.setDescription("关注送红包");
     partnerScoreLog.setType(1);
     partnerScoreLog.setPartnerId(partner.getId());
-    partnerScoreLog.setNumber(500000L);
+    partnerScoreLog.setNumber(scoreA);
     partnerScoreLog.setScoreAOrigin(0);
     partnerScoreLogRepository.save(partnerScoreLog);
     PartnerScoreLog partnerScoreBLog = new PartnerScoreLog();
     partnerScoreBLog.setDescription("关注送积分");
     partnerScoreBLog.setType(0);
     partnerScoreBLog.setPartnerId(partner.getId());
-    partnerScoreBLog.setNumber(10000L);
+    partnerScoreBLog.setNumber(scoreB);
     partnerScoreBLog.setScoreBOrigin(0);
     partnerScoreLogRepository.save(partnerScoreBLog);
     //设置发红包机制

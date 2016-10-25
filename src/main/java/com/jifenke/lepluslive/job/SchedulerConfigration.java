@@ -1,12 +1,18 @@
 package com.jifenke.lepluslive.job;
 
+import com.jifenke.lepluslive.global.config.Constants;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.core.env.Environment;
 import org.springframework.core.io.ResourceLoader;
 import org.springframework.scheduling.quartz.CronTriggerFactoryBean;
 import org.springframework.scheduling.quartz.JobDetailFactoryBean;
 import org.springframework.scheduling.quartz.SchedulerFactoryBean;
+
+import java.util.Arrays;
+import java.util.Collection;
 
 import javax.inject.Inject;
 import javax.sql.DataSource;
@@ -23,6 +29,9 @@ public class SchedulerConfigration {
 
   @Autowired
   private ResourceLoader resourceLoader;
+
+  @Inject
+  private Environment env;
 
   @Bean(name = "offLineOrderDetail")
   public JobDetailFactoryBean offLineOrderDetail() {
@@ -64,6 +73,7 @@ public class SchedulerConfigration {
     }
     return tigger;
   }
+
   //每天增加红包账户
   @Bean(name = "scoreAAccountAdd")
   public JobDetailFactoryBean scoreAAccountAddDetail() {
@@ -88,12 +98,17 @@ public class SchedulerConfigration {
 
   @Bean
   public SchedulerFactoryBean schedulerFactory() {
+    Collection<String> activeProfiles = Arrays.asList(env.getActiveProfiles());
     SchedulerFactoryBean bean = new SchedulerFactoryBean();
-//    bean.setConfigLocation(resourceLoader.getResource("classpath:quartz.properties"));
-//    bean.setApplicationContextSchedulerContextKey("applicationContextKey");
-//    bean.setDataSource(dataSource);
-//   bean.setTriggers(cronTriggerBean().getObject(), wxCronTriggerBean().getObject(),scoreAAccountAddCronTriggerBean().getObject());
-//    bean.setSchedulerName("orderConfrim");
+    if (activeProfiles
+        .contains(Constants.SPRING_PROFILE_PRODUCTION)) {
+      bean.setConfigLocation(resourceLoader.getResource("classpath:quartz.properties"));
+      bean.setApplicationContextSchedulerContextKey("applicationContextKey");
+      bean.setDataSource(dataSource);
+      bean.setTriggers(cronTriggerBean().getObject(), wxCronTriggerBean().getObject(),
+                       scoreAAccountAddCronTriggerBean().getObject());
+      bean.setSchedulerName("orderConfrim");
+    }
     return bean;
   }
 }

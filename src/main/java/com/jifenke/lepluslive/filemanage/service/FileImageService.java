@@ -63,8 +63,6 @@ public class FileImageService {
     // 必须设置ContentLength
     meta.setContentLength(bytes.length);
     PutObjectResult putObjectResult = ossClient.putObject(barCodeBucket, filePath, is, meta);
-
-
   }
 
 }
