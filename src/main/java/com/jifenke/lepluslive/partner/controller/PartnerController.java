@@ -33,7 +33,8 @@ public class PartnerController {
   }
 
   @RequestMapping(value = "/partner/editUser")
-  public LejiaResult editPartnerPassword(@RequestBody Partner partner) {
+  public LejiaResult editPartnerPassword(@RequestBody Partner partner,Model model) {
+    model.addAttribute("partners", partnerService.findAll());
     partnerService.editPartnerPassword(partner);
     return LejiaResult.ok();
   }
