@@ -23,6 +23,7 @@ import com.jifenke.lepluslive.merchant.repository.MerchantTypeRepository;
 import com.jifenke.lepluslive.merchant.repository.MerchantUserRepository;
 import com.jifenke.lepluslive.merchant.repository.MerchantWalletRepository;
 import com.jifenke.lepluslive.order.domain.entities.FinancialStatistic;
+import com.jifenke.lepluslive.partner.domain.entities.Partner;
 import com.jifenke.lepluslive.sales.domain.entities.SalesStaff;
 import com.jifenke.lepluslive.user.domain.entities.RegisterOrigin;
 import com.jifenke.lepluslive.user.repository.LeJiaUserRepository;
@@ -643,5 +644,12 @@ public class MerchantService {
       return merchantUser;
     }).collect(Collectors.toList());
     return results;
+  }
+
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  public void editPartnerVirtualMerchant(Partner origin) {
+    Merchant merchant = merchantRepository.findByPartnerAndPartnership(origin, 2);
+    merchant.setName(origin.getPartnerName() + "(合伙人)");
+    merchantRepository.save(merchant);
   }
 }

@@ -202,6 +202,10 @@
 </div>
 <script src="${resourceUrl}/js/bootstrap.min.js"></script>
 <script>
+    if (${partner!=null}) {
+        $("#benefitScoreA").css("display", "none");
+        $("#benefitScoreB").css("display", "none");
+    }
     $("#partnerManager").find("option[value='${partner.partnerManager.id}']").attr("selected",
                                                                                    true);
     if (${partner!=null}) {

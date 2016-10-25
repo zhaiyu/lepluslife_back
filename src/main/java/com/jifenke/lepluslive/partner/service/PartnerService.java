@@ -220,6 +220,7 @@ public class PartnerService {
     origin.setPhoneNumber(partner.getPhoneNumber());
     origin.setPartnerName(partner.getPartnerName());
     origin.setBenefitTime(partner.getBenefitTime());
+    merchantService.editPartnerVirtualMerchant(origin);
     partnerRepository.save(origin);
 
   }
