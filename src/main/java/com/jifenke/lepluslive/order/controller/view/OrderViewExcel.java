@@ -82,6 +82,9 @@ public class OrderViewExcel extends AbstractExcelView {
     excelHeader.createCell(25).setCellValue("销售姓名");
     excelHeader.createCell(26).setCellValue("消费者类别");
     excelHeader.createCell(27).setCellValue("交易完成日期");
+    excelHeader.createCell(28).setCellValue("商户应入账(微信渠道)");
+    excelHeader.createCell(29).setCellValue("商户应入账(红包渠道)");
+
   }
 
   public void setExcelRows(HSSFSheet excelSheet, List<OffLineOrder> orderList) {
@@ -112,8 +115,8 @@ public class OrderViewExcel extends AbstractExcelView {
       //货币手续费
       Integer partnership = order.getMerchant().getPartnership();
       double currencyCommissionCharge = 0;
-      double totalPrice = order.getTotalPrice().doubleValue() / 100;
-      double truePay = order.getTruePay().doubleValue() / 100;
+      double totalPrice = order.getTotalPrice().doubleValue() / 100.0;
+      double truePay = order.getTruePay().doubleValue() / 100.0;
       if (partnership == 0) {
         BigDecimal ljCommission = order.getMerchant().getLjCommission().divide(new BigDecimal(100));
         double result = ljCommission.multiply(new BigDecimal(truePay)).doubleValue();
@@ -130,51 +133,19 @@ public class OrderViewExcel extends AbstractExcelView {
       }
       //红包手续费
       double scoreaCommissionCharge = 0;
-      if (partnership == 0) {
-        BigDecimal ljCommission = order.getMerchant().getLjCommission().divide(new BigDecimal(100));
-        double result = ljCommission.multiply(new BigDecimal(totalPrice)).doubleValue();
-        double ljCommissionCharge = Math.round(result * 100) / 100.0;//乐加手续费
-
-        double result2 = ljCommission.multiply(new BigDecimal(truePay)).doubleValue();
-        double wxCommissionCharge = Math.round(result2 * 100) / 100.0;
-        scoreaCommissionCharge = ljCommissionCharge - wxCommissionCharge;
-        excelRow.createCell(11).setCellValue(scoreaCommissionCharge);
+      Long ljCommission=order.getLjCommission();
+      Long truePayCommission=order.getTruePayCommission();
+      if(ljCommission==null){
+        ljCommission=0L;
       }
-      if (partnership == 1) {
-        if (order.getRebateWay() == 1) {
-          BigDecimal
-              ljCommission =
-              order.getMerchant().getLjCommission().divide(new BigDecimal(100));
-          double result = ljCommission.multiply(new BigDecimal(totalPrice)).doubleValue();
-          double ljCommissionCharge = Math.round(result * 100) / 100.0;//乐加手续费
-
-          double result2 = ljCommission.multiply(new BigDecimal(truePay)).doubleValue();
-          double wxCommissionCharge = Math.round(result2 * 100) / 100.0;
-          scoreaCommissionCharge = ljCommissionCharge - wxCommissionCharge;
-          excelRow.createCell(11).setCellValue(scoreaCommissionCharge);
-        }
-        if (order.getRebateWay() == 3) {
-          BigDecimal
-              memberCommission =
-              order.getMerchant().getMemberCommission().divide(new BigDecimal(100));
-          double result = memberCommission.multiply(new BigDecimal(totalPrice)).doubleValue();
-          double ljCommissionCharge = Math.round(result * 100) / 100.0;//乐加手续费
-
-          double result2 = memberCommission.multiply(new BigDecimal(truePay)).doubleValue();
-          double wxCommissionCharge = Math.round(result2 * 100) / 100.0;
-          scoreaCommissionCharge = ljCommissionCharge - wxCommissionCharge;
-          excelRow.createCell(11).setCellValue(scoreaCommissionCharge);
-        } else {
-          BigDecimal ljBrokerage = order.getMerchant().getLjBrokerage().divide(new BigDecimal(100));
-          double result = ljBrokerage.multiply(new BigDecimal(totalPrice)).doubleValue();
-          double ljCommissionCharge = Math.round(result * 100) / 100.0;//乐加手续费
-
-          double result2 = ljBrokerage.multiply(new BigDecimal(truePay)).doubleValue();
-          double wxCommissionCharge = Math.round(result2 * 100) / 100.0;
-          scoreaCommissionCharge = ljCommissionCharge - wxCommissionCharge;
-          excelRow.createCell(11).setCellValue(scoreaCommissionCharge);
-        }
+      if(truePayCommission==null){
+        truePayCommission=0L;
       }
+      double dLjCommission = ljCommission.doubleValue() / 100.0;
+      double dtruePayCommission = truePayCommission.doubleValue() / 100.0;
+         scoreaCommissionCharge =dLjCommission-dtruePayCommission;
+      scoreaCommissionCharge= Math.round(scoreaCommissionCharge*100)/100.0;
+      excelRow.createCell(11).setCellValue(scoreaCommissionCharge);
       //红包补贴
       double trueScore = order.getTrueScore().doubleValue() / 100.0;
       double scoreaSubsidy = trueScore - scoreaCommissionCharge;
@@ -206,7 +177,6 @@ public class OrderViewExcel extends AbstractExcelView {
 
       //佣金纯收入
       if (order.getRebateWay() == 1) {
-        Long ljCommission = order.getLjCommission();
         double dljCommission = new Double(ljCommission.toString()) / 100.0;
 
         double a = Math.round(dljCommission * 100) / 100.0;
@@ -220,7 +190,6 @@ public class OrderViewExcel extends AbstractExcelView {
       }
       //会员高签收入
       if (order.getRebateWay() == 3) {
-        Long ljCommission = order.getLjCommission();
         double dljCommission = new Double(ljCommission.toString()) / 100.0;
 
         double a = Math.round(dljCommission * 100) / 100.0;
@@ -298,6 +267,16 @@ public class OrderViewExcel extends AbstractExcelView {
       }
       excelRow.createCell(27).setCellValue(
           order.getCompleteDate() == null ? "未完成的订单" : sdf2.format(order.getCompleteDate()));
+      //商户应入账(微信渠道)
+           double dtruePay = order.getTruePay().doubleValue();
+           double ddtruePay=order.getTruePay().doubleValue()/100.0;
+           double wxMerchantRecorded=Math.round((ddtruePay-dtruePayCommission))*100/100.0;
+      excelRow.createCell(28).setCellValue(wxMerchantRecorded);
+      // 商户应入账(红包渠道)
+      Long transferMoney=order.getTransferMoney();
+      double dtransferMoney=transferMoney.doubleValue() / 100.0;
+      double scoreaMerchantRecorded=Math.round((dtransferMoney-(truePay-dtruePayCommission)))*100/100.0;
+      excelRow.createCell(29).setCellValue(scoreaMerchantRecorded);
     }
   }
 }
