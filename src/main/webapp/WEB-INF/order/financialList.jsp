@@ -44,38 +44,60 @@
     <div class="m-right">
         <div class="main">
             <div class="container-fluid">
+                <div class="row" style="margin-top: 30px">
+                    <div class="form-group col-md-5">
+                        <label for="date-end" id="date-content"></label>
+
+                        <div id="date-end" class="form-control">
+                            <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
+                            <span id="searchDateRange"></span>
+                            <b class="caret"></b>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-3">
+                        <label for="merchant-info">商户信息</label>
+                        <input id="merchant-name" type="text" id="merchant-info"
+                               class="form-control"
+                               placeholder="请输入商户名称或ID"/>
+                    </div>
+                    <div class="forDifferent" style="display: none;">
+                        <div class="form-group col-md-2">
+                            <label>结算状态</label>
+                            <select class="form-control" id="billingStatus">
+                                <option value="">全部</option>
+                                <option value="3">已结算</option>
+                                <option value="4">未结算</option>
+                                <option value="0">挂账</option>
+                            </select>
+                        </div>
+                        <div class="form-group col-md-2">
+                            <label>处理状态</label>
+                            <select class="form-control" id="dealStatus">
+                                <option value="">全部</option>
+                                <option value="3">已处理</option>
+                                <option value="4">未处理</option>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group col-md-1">
+                        <button class="btn btn-primary" style="margin-top: 24px"
+                                onclick="searchFinancialByCriteria()">查询
+                        </button>
+                    </div>
+                </div>
                 <ul id="myTab" class="nav nav-tabs" style="margin-top: 10px">
                     <li><a href="#tab1" data-toggle="tab"
                            onclick="searchFinancialByState(0)">待转账</a></li>
                     <li class="active"><a href="#tab2" data-toggle="tab"
                                           onclick="searchFinancialByState(1)">转账记录</a></li>
                     <li class="active"><a href="#tab2" data-toggle="tab"
+                                          onclick="searchFinancialByState(3)">结算单差错记录</a></li>
+                    <li class="active"><a href="#tab2" data-toggle="tab"
                                           onclick="searchFinancialByState(2)">挂账记录</a></li>
                 </ul>
                 <div id="myTabContent" class="tab-content">
                     <div class="tab-pane fade in active" id="tab1">
-                        <div class="row" style="margin-top: 30px">
-                            <div class="form-group col-md-5">
-                                <label for="date-end" id="date-content"></label>
 
-                                <div id="date-end" class="form-control">
-                                    <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
-                                    <span id="searchDateRange"></span>
-                                    <b class="caret"></b>
-                                </div>
-                            </div>
-                            <div class="form-group col-md-3">
-                                <label for="merchant-info">商户信息</label>
-                                <input id="merchant-name" type="text" id="merchant-info"
-                                       class="form-control"
-                                       placeholder="请输入商户名称或ID"/>
-                            </div>
-                            <div class="form-group col-md-1">
-                                <button class="btn btn-primary" style="margin-top: 24px"
-                                        onclick="searchFinancialByCriteria()">查询
-                                </button>
-                            </div>
-                        </div>
                         <table class="table table-bordered table-hover">
                             <thead>
                             <tr class="active" id="head-content">
@@ -140,6 +162,26 @@
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                 <button type="button" class="btn btn-primary" data-dismiss="modal"
                         id="hover-confirm">确认
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+<%--点击确认处理弹窗--%>
+<div class="modal" id="deal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span
+                        aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+                <h4>是否要根据差错单内容修改对账单?</h4>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal"
+                        id="deal-confirm">确认
                 </button>
             </div>
         </div>
@@ -236,18 +278,24 @@
                            initPage(1, totalPage);
                        }
                        headContent.innerHTML =
-                       '<th>结算单号</th><th>结算日期</th><th>商户信息</th><th>结算方式</th><th>结算账户信息</th><th>结算周期</th><th>收款人</th>';
-                       if (financialCriteria.state == 0) {
-                           headContent.innerHTML += "<th>待转账金额</th><th>操作</th>"
-                           dateContent.innerHTML = "结算日期";
+                       '<th>结算单号</th><th>账单日期</th><th>商户信息</th>';
+                       if (financialCriteria.state == 0 ||financialCriteria.state == 1||financialCriteria.state == 2) {
+                           headContent.innerHTML += "<th>结算方式</th><th>结算账户信息</th><th>结算周期</th><th>扫码付款</th><th>APP收款</th><th>POS红包收款</th><th>结算总金额</th><th>操作</th>";
+                           dateContent.innerHTML = "账单日期";
+                           $(".forDifferent").hide();
                        }
-                       if (financialCriteria.state == 1) {
-                           headContent.innerHTML += "<th>转账金额</th><th>转账日期</th><th>操作</th>";
-                           dateContent.innerHTML = "转账日期";
-                       }
-                       if (financialCriteria.state == 2) {
-                           headContent.innerHTML += "<th>待转账金额</th><th>操作</th>";
-                           dateContent.innerHTML = "结算日期";
+//                       if (financialCriteria.state == 1) {
+//                           headContent.innerHTML += "<th>转账金额</th><th>转账日期</th><th>操作</th>";
+//                           dateContent.innerHTML = "转账日期";
+//                       }
+//                       if (financialCriteria.state == 2) {
+//                           headContent.innerHTML += "<th>待转账金额</th><th>操作</th>";
+//                           dateContent.innerHTML = "结算日期";
+//                       }
+                       if (financialCriteria.state == 3) {
+                           headContent.innerHTML += "<th>记录生成时间</th><th>结算状态</th><th>处理状态</th><th>扫码付款</th><th>APP收款</th><th>POS红包收款</th><th>结算总金额</th><th>操作</th>";
+                           dateContent.innerHTML = "账单日期";
+                           $(".forDifferent").show();
                        }
                        for (i = 0; i < content.length; i++) {
                            var contentStr = '<tr><td>' + content[i].statisticId + '</td>';
