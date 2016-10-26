@@ -45,55 +45,61 @@
         <%@include file="../common/left.jsp" %>
     </div>
     <div class="m-right">
-        <div class="main">
+        <div class="main" style="width: 98%;margin: 0 auto">
             <div class="container-fluid">
-                <div class="row" style="margin-top: 30px">
-                    </div>
+                <div class="row" style="margin-top: 30px"></div>
+            </div>
+            <div class="form-group">
+                <input type="hidden" id="detailsID" value="${messageDetailsStr}">
+                <button class="btn btn-primary" style="margin-top: 24px"
+                        onclick="goFinancialSettlementPage()">返回财务结算
+                </button>
+            </div>
+            <div>
+                <ul id="myTab" class="nav nav-tabs" style="margin-top: 10px">
+                    <li><a href="#tab1" data-toggle="tab"
+                           onclick="searchFinancialByState(0)">全部订单</a></li>
+                    <li class="active"><a href="#tab2" data-toggle="tab">扫码订单</a></li>
+                    <li class="active"><a href="#tab2" data-toggle="tab">POS订单</a></li>
+                    <li class="active"><a href="#tab2" data-toggle="tab">APP订单</a></li>
+                </ul>
+            </div>
+            <div id="myTabContent" class="tab-content">
+                <div class="tab-pane fade in active" id="tab1">
+                    <table class="table table-bordered table-hover">
+                        <thead>
+                        <tr class="active">
+                            <th>订单编号</th>
+                            <th>交易完成时间</th>
+                            <th>商户名称</th>
+                            <th>消费者信息</th>
+                            <th>订单金额</th>
+                            <th>红包使用</th>
+                            <th>支付方式</th>
+                            <th>实际支付</th>
+                            <th>佣金(手续费)</th>
+                            <th>商户应入账</th>
+                            <th>第三方手续费</th>
+                            <th>发放红包</th>
+                            <th>分润金额</th>
+                            <th>发放积分</th>
+                            <th>状态</th>
+                        </tr>
+                        </thead>
+                        <tbody id="orderContent">
+                        </tbody>
+                    </table>
                 </div>
-                    <div class="form-group col-md-3">
-                        <input type="hidden" id="detailsID" value="${messageDetailsStr}">
-                        <button class="btn btn-primary" style="margin-top: 24px"
-                                onclick="goFinancialSettlementPage()">返回财务结算
-                        </button>
-                    </div>
+                <div class="pagination">
+                    <a href="#" class="first" data-action="first">&laquo;</a>
+                    <a href="#" class="previous" data-action="previous">&lsaquo;</a>
+                    <input id="page" type="text" readonly="readonly" data-max-page="1"/>
+                    <a href="#" class="next" data-action="next">&rsaquo;</a>
+                    <a href="#" class="last" data-action="last">&raquo;</a>
                 </div>
-                <div id="myTabContent" class="tab-content">
-                    <div class="tab-pane fade in active" id="tab1">
-                        <table class="table table-bordered table-hover">
-                            <thead>
-                            <tr class="active">
-                                <th>订单编号</th>
-                                <th>交易完成时间</th>
-                                <th>商户名称</th>
-                                <th>消费者信息</th>
-                                <th>订单金额</th>
-                                <th>红包使用</th>
-                                <th>支付方式</th>
-                                <th>实际支付</th>
-                                <th>佣金(手续费)</th>
-                                <th>商户应入账</th>
-                                <th>第三方手续费</th>
-                                <th>发放红包</th>
-                                <th>分润金额</th>
-                                <th>发放积分</th>
-                                <th>状态</th>
-                            </tr>
-                            </thead>
-                            <tbody id="orderContent">
-                            </tbody>
-                        </table>
-                    </div>
-                    <div class="pagination">
-                        <a href="#" class="first" data-action="first">&laquo;</a>
-                        <a href="#" class="previous" data-action="previous">&lsaquo;</a>
-                        <input id="page" type="text" readonly="readonly" data-max-page="1"/>
-                        <a href="#" class="next" data-action="next">&rsaquo;</a>
-                        <a href="#" class="last" data-action="last">&raquo;</a>
-                    </div>
-                    <button class="btn btn-primary pull-right" style="margin-top: 5px"
-                            onclick="exportExcel(olOrderCriteria)">导出excel
-                    </button>
-                </div>
+                <button class="btn btn-primary pull-right" style="margin-top: 5px"
+                        onclick="exportExcel(olOrderCriteria)">导出excel
+                </button>
             </div>
         </div>
     </div>

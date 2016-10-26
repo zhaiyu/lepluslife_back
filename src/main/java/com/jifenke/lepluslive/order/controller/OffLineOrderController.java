@@ -257,4 +257,15 @@ public class OffLineOrderController {
     }
   }
 
+  @RequestMapping(value = "/billingDownload", method = RequestMethod.GET)
+  public ModelAndView billingDownload() {
+
+    return MvUtil.go("/order/billingDownload");
+  }
+  @RequestMapping(value = "/reconciliationDifferences", method = RequestMethod.GET)
+  public ModelAndView reconciliationDifferences() {
+
+      return MvUtil.go("/order/reconciliationDifferences");
+}
+
 }
