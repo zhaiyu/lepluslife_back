@@ -71,17 +71,10 @@ public class WeiXinUserService {
   public Map getTotalData() {
     Integer count = null;
     List<Object[]> scoreAs = null;
-    Map<String, Object> map = new HashMap<>();
+    Map<Object, Object> map = new HashMap<>();
     String subSource = "4%";  //关注来源
-    //邀请会员总数
-    count = weiXinUserRepository.countBySubSourceAndState(subSource);
-    map.put("inviteM", count);
-    //邀请粉丝总数
-    count = weiXinUserRepository.countBySubSourceAndSubState(subSource);
-    map.put("inviteU", count);
-    //邀请后取消关注粉丝总数
-    count = weiXinUserRepository.countBySubSourceAndUnSub(subSource);
-    map.put("unSubU", count);
+    Map result = subSourceCount(1, 1, 1, subSource);
+    map.putAll(result);
     //邀请会员的累计产生佣金
     count = weiXinUserRepository.countLJCommissionByMerchants(subSource);
     map.put("commission", count);
@@ -90,6 +83,36 @@ public class WeiXinUserService {
     map.put("totalA", scoreAs.get(0)[0]);
     map.put("usedA", scoreAs.get(0)[1]);
 
+    return map;
+  }
+
+  /**
+   * 某种关注来源的数据统计 16/10/27
+   *
+   * @param inviteM   邀请会员总数
+   * @param inviteU   邀请粉丝总数
+   * @param unSubU    邀请后取消关注粉丝总数
+   * @param subSource 关注来源 "_%"
+   */
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+  public Map subSourceCount(int inviteM, int inviteU, int unSubU, String subSource) {
+    Integer count = null;
+    Map<Object, Object> map = new HashMap<>();
+    if (inviteM == 1) {
+      //邀请会员总数
+      count = weiXinUserRepository.countBySubSourceAndState(subSource);
+      map.put("inviteM", count);
+    }
+    if (inviteU == 1) {
+      //邀请粉丝总数
+      count = weiXinUserRepository.countBySubSourceAndSubState(subSource);
+      map.put("inviteU", count);
+    }
+    if (unSubU == 1) {
+      //邀请后取消关注粉丝总数
+      count = weiXinUserRepository.countBySubSourceAndUnSub(subSource);
+      map.put("unSubU", count);
+    }
     return map;
   }
 
