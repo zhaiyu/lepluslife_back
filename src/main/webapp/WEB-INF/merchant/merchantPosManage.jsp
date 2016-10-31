@@ -154,46 +154,46 @@
                                         <h5>（非会员）</h5>
                                         <h5>&nbsp;&nbsp;借记卡 ${pos.debitCardCommission}% &nbsp; 封顶 ${pos.ceil}</h5>
                                         <h5>&nbsp;&nbsp;贷记卡 ${pos.creditCardCommission}% &nbsp;
-                                            <c:if test="${pos.bankCommission!=null}">
-                                                佣金 ${pos.bankCommission} %
+                                            <c:if test="${pos.ljCommission!=null}">
+                                                佣金 ${pos.ljCommission} %
                                             </c:if>
-                                            <c:if test="${pos.bankCommission==null}">
+                                            <c:if test="${pos.ljCommission==null}">
                                                 佣金 未开通
                                             </c:if>
                                         </h5>
                                     </td>
                                     <!--微信-->
                                     <c:choose>
-                                        <c:when test="${pos.wxCommission==null&&pos.wxProcedureFee==null}">
+                                        <c:when test="${pos.wxCommission==null&&pos.wxUserCommission==null}">
                                             <td>未开通</td>
                                         </c:when>
-                                        <c:when test="${pos.wxCommission==null&&pos.wxProcedureFee!=null}">
+                                        <c:when test="${pos.wxCommission==null&&pos.wxUserCommission!=null}">
                                             <td>
-                                                <h5>手续费：${pos.wxProcedureFee} %  </h5>
+                                                <h5>手续费：${pos.wxUserCommission} %  </h5>
                                                 <h5>佣金： 未开通 </h5>
                                             </td>
                                         </c:when>
                                         <c:otherwise>
                                             <td>
-                                                <h5>手续费：${pos.wxProcedureFee} % </h5>
+                                                <h5>手续费：${pos.wxUserCommission} % </h5>
                                                 <h5>佣金： ${pos.wxCommission} %  </h5>
                                             </td>
                                         </c:otherwise>
                                     </c:choose>
                                     <!--支付宝-->
                                     <c:choose>
-                                        <c:when test="${pos.aliCommission==null&&pos.aliProcedureFee==null}">
+                                        <c:when test="${pos.aliCommission==null&&pos.aliUserCommission==null}">
                                             <td>未开通</td>
                                         </c:when>
-                                        <c:when test="${pos.aliCommission==null&&pos.aliProcedureFee!=null}">
+                                        <c:when test="${pos.aliCommission==null&&pos.aliUserCommission!=null}">
                                             <td>
-                                                <h5>手续费：${pos.aliProcedureFee} %  </h5>
+                                                <h5>手续费：${pos.aliUserCommission} %  </h5>
                                                 <h5>佣金： 未开通 </h5>
                                             </td>
                                         </c:when>
                                         <c:otherwise>
                                             <td>
-                                                <h5>手续费：${pos.aliProcedureFee} %  </h5>
+                                                <h5>手续费：${pos.aliUserCommission} %  </h5>
                                                 <h5>佣金： ${pos.aliCommission} % </h5>
                                             </td>
                                         </c:otherwise>
@@ -475,7 +475,7 @@
                     <div>
                         <div><span>借记卡</span><input type="number" class="form-control" name="debitCardCommission"/><span style="margin-right: 5%;">%</span><input type="number" class="form-control" name="ceil"/><span>元封顶</span></div>
                         <div><span>信用卡</span><input type="number" class="form-control" name="creditCardCommission"/><span style="margin-right: 5%;">%</span></div>
-                        <div><input type="checkbox"><span>开通佣金</span><input type="number" class="form-control" name="bankCommission"/><span>%</span></div>
+                        <div><input type="checkbox"><span>开通佣金</span><input type="number" class="form-control" name="ljCommission"/><span>%</span></div>
                     </div>
                 </div>
                 <div>
@@ -487,7 +487,7 @@
                         </div>
                         <div>
                             <div>
-                                <span>普通手续费</span><input type="number" class="form-control" name="wxProcedureFee"/><span>%</span>
+                                <span>普通手续费</span><input type="number" class="form-control" name="wxUserCommission"/><span>%</span>
                             </div>
                             <div>
                                 <input type="checkbox"><span>开通佣金</span><input type="number" class="form-control"  name="wxCommission"/><span>%</span>
@@ -504,7 +504,7 @@
                         </div>
                         <div>
                             <div>
-                                <span>普通手续费</span><input type="number" class="form-control"  name="aliProcedureFee" /><span>%</span>
+                                <span>普通手续费</span><input type="number" class="form-control"  name="aliUserCommission" /><span>%</span>
                             </div>
                             <div>
                                 <input type="checkbox" checked="checked" ><span>开通佣金</span><input type="number" class="form-control" name="aliCommission"/><span>%</span>
@@ -661,13 +661,13 @@
         $("input[name=posId]").val('');
         $("input[name=creditCardCommission]").val('');
         $("input[name=debitCardCommission]").val('');
-        $("input[name=bankCommission]").val('');
+        $("input[name=ljCommission]").val('');
         $("input[name=ceil]").val('');
         $("input[name=wxCommission]").val('');
         $("input[name=aliCommission]").val('');
         $("input[name=wxCommission]").val('');
-        $("input[name=wxProcedureFee]").val('');
-        $("input[name=aliProcedureFee]").val('');
+        $("input[name=wxUserCommission]").val('');
+        $("input[name=aliUserCommission]").val('');
         $("input[name=scoreARebate]").val('');
         $("input[name=scoreBRebate]").val('');
         $("input[name=userScoreARebate]").val('');
@@ -719,13 +719,13 @@
         }else {
             return;
         }
-        merchantPos.bankCommission = $("input[name=bankCommission]").val();
+        merchantPos.ljCommission = $("input[name=ljCommission]").val();
         merchantPos.id = $("input[name=id]").val();
         //  表单提交
         merchantPos.wxCommission = $("input[name=wxCommission]").val();
         merchantPos.aliCommission = $("input[name=aliCommission]").val();
-        merchantPos.wxProcedureFee = $("input[name=wxProcedureFee]").val();
-        merchantPos.aliProcedureFee = $("input[name=aliProcedureFee]").val();
+        merchantPos.wxUserCommission = $("input[name=wxUserCommission]").val();
+        merchantPos.aliUserCommission = $("input[name=aliUserCommission]").val();
         merchantPos.merchant={id:"${merchantId}"};
         $.ajax({
             type:"post",
@@ -746,13 +746,13 @@
             $("input[name=posId]").val(pos.posId);
             $("input[name=creditCardCommission]").val(pos.creditCardCommission);
             $("input[name=debitCardCommission]").val(pos.debitCardCommission);
-            $("input[name=bankCommission]").val(pos.bankCommission);
+            $("input[name=ljCommission]").val(pos.ljCommission);
             $("input[name=ceil]").val(pos.ceil);
             $("input[name=wxCommission]").val(pos.wxCommission);
             $("input[name=aliCommission]").val(pos.aliCommission);
             $("input[name=wxCommission]").val(pos.wxCommission);
-            $("input[name=wxProcedureFee]").val(pos.wxProcedureFee);
-            $("input[name=aliProcedureFee]").val(pos.aliProcedureFee);
+            $("input[name=wxUserCommission]").val(pos.wxUserCommission);
+            $("input[name=aliUserCommission]").val(pos.aliUserCommission);
             $("input[name=scoreARebate]").val(pos.scoreARebate);
             $("input[name=scoreBRebate]").val(pos.scoreBRebate);
             $("input[name=userScoreARebate]").val(pos.userScoreARebate);
