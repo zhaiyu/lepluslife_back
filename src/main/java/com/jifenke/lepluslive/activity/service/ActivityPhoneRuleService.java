@@ -1,14 +1,9 @@
 package com.jifenke.lepluslive.activity.service;
 
-import com.jifenke.lepluslive.activity.domain.criteria.PhoneOrderCriteria;
 import com.jifenke.lepluslive.activity.domain.entities.ActivityPhoneRule;
 import com.jifenke.lepluslive.activity.repository.ActivityPhoneRuleRepository;
 
 import org.springframework.beans.factory.annotation.Value;
-
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.PageRequest;
-import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -19,7 +14,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
-
 
 /**
  * 手机话费规则相关 Created by zhangwen on 2016/10/26.
@@ -69,6 +63,8 @@ public class ActivityPhoneRuleService {
       dbRule.setPayType(phoneRule.getPayType());
       dbRule.setPrice(phoneRule.getPrice());
       dbRule.setScore(phoneRule.getScore());
+      dbRule.setCheap(phoneRule.getCheap());
+      dbRule.setRepository(phoneRule.getRepository());
       dbRule.setTotalLimit(phoneRule.getTotalLimit());
       dbRule.setLimitType(phoneRule.getLimitType());
       dbRule.setLimit(phoneRule.getLimit());

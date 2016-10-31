@@ -34,6 +34,10 @@ public class ActivityPhoneRule {
 
   private Integer score = 0;  //所需积分 type!=2时使用
 
+  private Integer cheap = 0;  //是否是特惠活动（是的话没有下面两个购买限制，属于全局限购）
+
+  private Integer repository = 0;  //特惠时有库存限制
+
   private Integer totalLimit = 0;  //累计购买限制  0=无限制
 
   private Integer limitType = 1;  //分类限购(和totalLimit联合限制，无冲突)  1=每日限购|2=每周限购|3=每月限购
@@ -145,6 +149,22 @@ public class ActivityPhoneRule {
 
   public Integer getRebate() {
     return rebate;
+  }
+
+  public Integer getCheap() {
+    return cheap;
+  }
+
+  public void setCheap(Integer cheap) {
+    this.cheap = cheap;
+  }
+
+  public Integer getRepository() {
+    return repository;
+  }
+
+  public void setRepository(Integer repository) {
+    this.repository = repository;
   }
 
   public void setRebate(Integer rebate) {

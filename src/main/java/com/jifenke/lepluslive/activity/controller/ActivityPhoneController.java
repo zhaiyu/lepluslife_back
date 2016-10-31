@@ -15,6 +15,9 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 
+import java.text.SimpleDateFormat;
+import java.util.Date;
+import java.util.HashMap;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -45,27 +48,37 @@ public class ActivityPhoneController {
   }
 
   /**
-   * 查询或修改每日话费池  16/10/27
+   * 查询或修改每日话费池和特惠限购  16/10/27
    *
-   * @param type  类型（1=查询|2=修改）
-   * @param worth type=1时为0，type=2时为要修改的话费池（单位/分）
+   * @param type   类型（1=查询|2=修改）
+   * @param worth  type=1时为0，type=2时为要修改的话费池（单位/分）
+   * @param limit  特惠限购次数
+   * @param update 是否更新特惠活动
    */
   @RequestMapping(value = "/pool", method = RequestMethod.GET)
-  public LejiaResult pool(@RequestParam Integer type, @RequestParam Integer worth) {
+  public LejiaResult pool(@RequestParam Integer type, @RequestParam Integer worth,
+                          @RequestParam Integer limit, @RequestParam Integer update) {
 
     if (type == 1) {
-      return LejiaResult.ok(dictionaryService.findDictionaryById(48L).getValue());
+      String[] o = dictionaryService.findDictionaryById(48L).getValue().split("_");
+      Map<Object, Object> result = new HashMap<>();
+      result.put("worth", o[0]);
+      result.put("limit", o[1]);
+      return LejiaResult.ok(result);
     } else {
-      if (worth != null) {
+      if (worth != null && limit != null && update != null) {
+        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+        String date = sdf.format(new Date());
+
         try {
-          dictionaryService.update(48L, "" + worth);
+          dictionaryService.update(48L, worth + "_" + limit + "_" + date);
           return LejiaResult.ok();
         } catch (Exception e) {
           e.printStackTrace();
           return LejiaResult.build(500, "edit error");
         }
       } else {
-        return LejiaResult.build(500, "worth is null");
+        return LejiaResult.build(500, "params is null");
       }
     }
   }
