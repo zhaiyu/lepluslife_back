@@ -26,4 +26,7 @@ public interface MerchantPosRepository extends JpaRepository<MerchantPos, Long> 
 
   @Query(value = "select ifnull(sum(case  when rebate_way = 1 or rebate_way = 2  then total_price end),0),ifnull(sum(case  when rebate_way = 3 then total_price end),0) from pos_order where merchant_pos_id  = ?1 and state = 1", nativeQuery = true)
   List<Object[]> countPosOrderFlow(Long id);
+
+  @Query(value = "select count(1) from merchant_pos where merchant_id = ?1 ",nativeQuery = true)
+  Long countByMerchant(Long merchantId);
 }

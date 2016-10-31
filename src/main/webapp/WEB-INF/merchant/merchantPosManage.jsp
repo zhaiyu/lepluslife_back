@@ -31,6 +31,74 @@
         .pic-right-btn input[type='file']{width: 50px;height: 33px;position: absolute;opacity: 0;}
         #nav2 .form-group>label,#nav2 .form-group>div{margin-top: 40px;}
         #nav3 label{display: block;text-align: left;padding: 30px 20px}
+
+        /*新增*/
+        /*弹窗页面CSS*/
+        .w-addPOS {
+            width: 95%;
+            margin: 0px auto;
+            padding:10px 0;
+        }
+        .w-addPOS > div > div:first-child {
+            float: left;
+            width: 20%;
+            margin-right: 10%;
+            margin-top: 10px;
+            text-align: right;
+            font-size: 14px;
+        }
+        .w-addPOS > div > div:last-child {
+            float: left;
+            width: 70%;
+        }
+        .w-addPOS > div{
+            margin: 20px 0;
+        }
+        .w-addPOS > div > div > div,.w-addPOS > div > div > div > div{
+            margin: 5px 0;
+        }
+        .w-addPOS input {
+            display: inline;
+        }
+        .w-addPOS > div > div:last-child input[type=number] {
+            width: 30%;
+            margin:0 1%;
+        }
+        .w-b {
+            margin: 0 !important;
+        }
+        .w-b > div {
+            float: left;
+            width: 10%;
+            padding:1%;
+            color: #333;
+            text-align: center;
+            border:1px solid #ddd;
+            cursor: pointer;
+            -webkit-border-radius: 5px 0 0 5px;
+            -moz-border-radius: 5px 0 0 5px;
+            border-radius: 5px 0 0 5px;
+        }
+        .w-b > div:first-child {
+            border-right: 0;
+        }
+        .w-b > div:last-child {
+            border-left: 0;
+            -webkit-border-radius:0 5px 5px 0;
+            -moz-border-radius:0 5px 5px 0;
+            border-radius:0 5px 5px 0;
+        }
+        .w-bActive {
+            background-color: #337ab7;
+            border:1px solid #337ab7 !important;
+            color: #FFFFFF !important;
+        }
+
+        .w-addPOS > div:after,.w-b:after {
+            content: '\20';
+            display: block;
+            clear: both;
+        }
     </style>
     <script src="${resourceUrl}/js/html5shiv.min.js"></script>
     <script src="${resourceUrl}/js/respond.min.js"></script>
@@ -72,39 +140,66 @@
                         <table class="table table-bordered table-hover">
                             <thead>
                             <tr class="active">
-                                <th>PSAM卡号</th><th>POS商户号</th>
-                                <th>终端号</th><th>POS注册手机号</th>
-                                <th>费率类型</th><th>添加时间</th>
-                                <th>佣金状态</th><th>操作</th>
+                                <th>设备号</th><th>添加时间</th>
+                                <th>银行卡</th><th>微信</th>
+                                <th>支付宝</th><th>操作</th>
                             </tr>
                             </thead>
                             <tbody>
-
                             <c:forEach items="${posList}" var="pos">
                                 <tr>
-                                    <td>${pos.psamCard}</td><td>${pos.posMerchantNo}</td>
-                                    <td>${pos.posId}</td><td>${pos.phoneNumber}</td>
-
-                                    <c:if test="${pos.type==0}">
-                                        <td>非封顶机（${pos.posCommission}%）</td>
-                                    </c:if>
-                                    <c:if test="${pos.type==1}">
-                                        <td>封顶机（${pos.posCommission}%，${pos.ceil}元封顶）</td>
-                                    </c:if>
-
-                                    <td><h5>${pos.createdDate}</h5></td>
-
-                                    <c:if test="${pos.ljCommission==null}">
-                                    <td>未开通</td>
+                                    <td>${pos.posId}</td><td>${pos.createdDate}</td>
+                                    <!--银行-->
                                     <td>
-                                        <button type="button" class="btn btn-default openWarn" onclick="editLjCommission('${pos.id}','${pos.ljCommission}')">开通佣金</button>
-                                        </c:if>
-
-                                        <c:if test="${pos.ljCommission!=null}">
-                                    <td>已开通</td>
+                                        <h5>（非会员）</h5>
+                                        <h5>&nbsp;&nbsp;借记卡 ${pos.debitCardCommission}% &nbsp; 封顶 ${pos.ceil}</h5>
+                                        <h5>&nbsp;&nbsp;贷记卡 ${pos.creditCardCommission}% &nbsp;
+                                            <c:if test="${pos.bankCommission!=null}">
+                                                佣金 ${pos.bankCommission} %
+                                            </c:if>
+                                            <c:if test="${pos.bankCommission==null}">
+                                                佣金 未开通
+                                            </c:if>
+                                        </h5>
+                                    </td>
+                                    <!--微信-->
+                                    <c:choose>
+                                        <c:when test="${pos.wxCommission==null&&pos.wxProcedureFee==null}">
+                                            <td>未开通</td>
+                                        </c:when>
+                                        <c:when test="${pos.wxCommission==null&&pos.wxProcedureFee!=null}">
+                                            <td>
+                                                <h5>手续费：${pos.wxProcedureFee} %  </h5>
+                                                <h5>佣金： 未开通 </h5>
+                                            </td>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <td>
+                                                <h5>手续费：${pos.wxProcedureFee} % </h5>
+                                                <h5>佣金： ${pos.wxCommission} %  </h5>
+                                            </td>
+                                        </c:otherwise>
+                                    </c:choose>
+                                    <!--支付宝-->
+                                    <c:choose>
+                                        <c:when test="${pos.aliCommission==null&&pos.aliProcedureFee==null}">
+                                            <td>未开通</td>
+                                        </c:when>
+                                        <c:when test="${pos.aliCommission==null&&pos.aliProcedureFee!=null}">
+                                            <td>
+                                                <h5>手续费：${pos.aliProcedureFee} %  </h5>
+                                                <h5>佣金： 未开通 </h5>
+                                            </td>
+                                        </c:when>
+                                        <c:otherwise>
+                                            <td>
+                                                <h5>手续费：${pos.aliProcedureFee} %  </h5>
+                                                <h5>佣金： ${pos.aliCommission} % </h5>
+                                            </td>
+                                        </c:otherwise>
+                                    </c:choose>
+                                    <!--操作-->
                                     <td>
-                                        <button type="button" class="btn btn-default openWarn" onclick="editLjCommission('${pos.id}','${pos.ljCommission}')">编辑佣金</button>
-                                        </c:if>
                                         <button type="button" class="btn btn-default createWarn" onclick="editPos('${pos.id}')">编辑</button>
                                     </td>
                                 </tr>
@@ -364,119 +459,125 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title">POS机具</h4>
+                <h4 class="modal-title">添加POS机具</h4>
             </div>
-            <div class="modal-body">
-                <form class="form-horizontal">
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label">pos商户号</label>
-                        <div class="col-sm-6">
-                            <input name="id" type="hidden"/>
-                            <input name="posMerchantNo" type="text" class="form-control">
+            <div class="w-addPOS">
+                <div>
+                    <div style="margin-top: 0;">乐加商户</div>
+                    <div>${merchantName}</div>
+                </div>
+                <div>
+                    <div>设备号</div>
+                    <div><input name="id" type="hidden"/><input id="sbh" type="text" class="form-control" name="posId"></div>
+                </div>
+                <div>
+                    <div>银行卡费率</div>
+                    <div>
+                        <div><span>借记卡</span><input type="number" class="form-control" name="debitCardCommission"/><span style="margin-right: 5%;">%</span><input type="number" class="form-control" name="ceil"/><span>元封顶</span></div>
+                        <div><span>信用卡</span><input type="number" class="form-control" name="creditCardCommission"/><span style="margin-right: 5%;">%</span></div>
+                        <div><input type="checkbox"><span>开通佣金</span><input type="number" class="form-control" name="bankCommission"/><span>%</span></div>
+                    </div>
+                </div>
+                <div>
+                    <div>微信收款</div>
+                    <div>
+                        <div class="w-b">
+                            <div class="w-bActive">未开通</div>
+                            <div>已开通</div>
+                        </div>
+                        <div>
+                            <div>
+                                <span>普通手续费</span><input type="number" class="form-control" name="wxProcedureFee"/><span>%</span>
+                            </div>
+                            <div>
+                                <input type="checkbox"><span>开通佣金</span><input type="number" class="form-control"  name="wxCommission"/><span>%</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label">POS注册手机号</label>
-                        <div class="col-sm-6">
-                            <input name="phoneNumber" type="text" class="form-control">
+                </div>
+                <div>
+                    <div>支付宝收款</div>
+                    <div>
+                        <div class="w-b">
+                            <div class="w-bActive">未开通</div>
+                            <div>已开通</div>
+                        </div>
+                        <div>
+                            <div>
+                                <span>普通手续费</span><input type="number" class="form-control"  name="aliProcedureFee" /><span>%</span>
+                            </div>
+                            <div>
+                                <input type="checkbox" checked="checked" ><span>开通佣金</span><input type="number" class="form-control" name="aliCommission"/><span>%</span>
+                            </div>
                         </div>
                     </div>
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label">PSAM卡号</label>
-                        <div class="col-sm-6">
-                            <input name="psamCard" type="text" class="form-control">
-                        </div>
+                </div>
+                <div>
+                    <div>导流订单参数</div>
+                    <div>
+                        <div><span>红包比</span><input type="number" class="form-control"  name="scoreARebate" /><span style="margin-right: 5%;">%</span><span>积分比</span><input type="number" class="form-control"  name="scoreBRebate"/><span>%</span></div>
                     </div>
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label">终端号</label>
-                        <div class="col-sm-6">
-                            <input name="posId" type="text" class="form-control">
-                        </div>
+                </div>
+                <div>
+                    <div>会员订单参数</div>
+                    <div>
+                        <div><span>红包比</span><input type="number" class="form-control"  name="userScoreARebate"/><span style="margin-right: 5%;">%</span><span>积分比</span><input type="number" class="form-control"  name="userScoreBRebate"/><span>%</span></div>
                     </div>
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label">行业大类</label>
-                        <div class="col-sm-6">
-                            <select name="posType" class="form-control" id="select-btn">
-                                <option value="0">餐娱类</option>
-                                <option value="1">一般类</option>
-                                <option value="2">民生类</option>
-                            </select>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label">结算周期</label>
-                        <div class="col-sm-6" style="margin-top: 7px">
-                            T+1
-                        </div>
-                    </div>
-
-                    <div class="form-group baseRate baseRate0">
-                        <label class="col-sm-3 control-label">基本费率</label>
-                        <div class="col-sm-9">
-                            <label class="radio-inline col-sm-4">
-                                <input id="Radio0-0" type="radio" name="Radio0" value="0" checked>非封顶类POS
-                                <div class="form-group">
-                                    <p>单笔计费 <input type="text" class="w-food1" style="width: 50%" onkeyup="value=value.replace(/[^\-?\d.]/g,'')"> %</p>
-                                    <p><font color="gray">餐娱类比例在（1.15%~1.25%）</font></p>
-                                </div>
-                            </label>
-                            <label class="radio-inline col-sm-7">
-                                <input id="Radio0-1" type="radio" name="Radio0" value="1">封顶类POS
-                                <div class="form-group">
-                                    <p><input type="text" class="w-food2" style="width: 30%"  onkeyup="value=value.replace(/[^\-?\d.]/g,'')"> 元/笔封顶 <font color="gray">（封顶费不得低于80元）</font></p>
-                                    <p><font color="gray">少于封顶金额的部分手续费率</font></p>
-                                    <p><input type="text" class="w-food3" style="width: 30%" onkeyup="value=value.replace(/[^\-?\d.]/g,'')"> % <font color="gray">（至少是1.25%）</font></p>
-                                </div>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="form-group baseRate baseRate1">
-                        <label class="col-sm-3 control-label">基本费率</label>
-                        <div class="col-sm-9">
-                            <label class="radio-inline col-sm-4">
-                                <input id="Radio1-0" type="radio" name="Radio1" value="0">非封顶类POS
-                                <div class="form-group">
-                                    <p>单笔计费 <input type="text" class="w-common1" style="width: 50%" onkeyup="value=value.replace(/[^\-?\d.]/g,'')"> %</p>
-                                    <p><font color="gray">一般类比例在（0.65%~0.78%）</font></p>
-                                </div>
-                            </label>
-                            <label class="radio-inline col-sm-7">
-                                <input id="Radio1-1" type="radio" name="Radio1" value="1">封顶类POS
-                                <div class="form-group">
-                                    <p><input type="text" class="w-common2" style="width: 30%" onkeyup="value=value.replace(/[^\-?\d.]/g,'')"> 元/笔封顶 <font color="gray">（封顶费不得低于80元）</font></p>
-                                    <p><font color="gray">少于封顶金额的部分手续费率</font></p>
-                                    <p><input type="text" class="w-common3" style="width: 30%" onkeyup="value=value.replace(/[^\-?\d.]/g,'')">% <font color="gray">（至少是0.78%）</font></p>
-                                </div>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="form-group baseRate baseRate2">
-                        <label class="col-sm-3 control-label">基本费率</label>
-                        <div class="col-sm-9">
-                            <label class="radio-inline col-sm-4">
-                                <input type="radio" name="Radio2" value="0" checked>非封顶类POS
-                                <div class="form-group">
-                                    <p> 单笔计费<input type="text" class="w-live1" style="width: 50%" onkeyup="value=value.replace(/[^\-?\d.]/g,'')"> %</p>
-                                    <p><font color="gray">民生类比例在（0.35%~0.38%）</font></p>
-                                </div>
-                            </label>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label class="col-sm-3 control-label">结算周期</label>
-                        <div class="col-sm-6" style="margin-top: 7px">
-                            <p><font color="red">开通失败，该终端号已存在</font></p>
-                            <p>微信支付 <input name="wxCommission" type="text" style="width: 30%"> %</p>
-                            <p>&nbsp;&nbsp;&nbsp;支付宝 <input name="aliCommission" type="text" style="width: 30%"> %</p>
-                            <p>百度钱包 <input name="bdCommission" type="text" style="width: 30%"> %</p>
-                        </div>
-                    </div>
-                </form>
+                </div>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal" onclick="saveMerchantPos()">确认</button>
+                <button type="button" class="btn btn-primary" id="w-check" >确认</button>
             </div>
+            <script>
+                $(".w-b").next().hide();
+                $("#createWarn input").addClass("ing");
+                $("#sbh").removeClass("ing");
+                $("#createWarn input").focus(function () {
+                    $(this).css("background-color","#FFF");
+                });
+                $(".w-b > div").click(function () {
+                    $(this).parent().children().removeClass("w-bActive");
+                    $(this).addClass("w-bActive");
+                    var tabText = $(this).html();
+                    switch (tabText){
+                        case "未开通":
+                            $(this).parent(".w-b").next().hide();
+                            break;
+                        case "已开通":
+                            $(this).parent(".w-b").next().show();
+                            break;
+                    }
+                });
+                $("input[type=number]").blur(function () {
+                    var val = $(this).val();
+                    val = Math.round(val*100)/100;
+                    $(this).val(val);
+                    $(this).removeClass("ing");
+                });
+                $("input[type=checkbox]").next().next().attr("disabled","disabled");
+                if($("input[type=checkbox]").is(':checked')) {
+                    $("input[checked=checked]").next().next().removeAttr("disabled");
+                    $("input[checked=checked]").next().next().removeClass("ing");
+                }
+                $("input[type=checkbox]").click(function () {
+                    if($(this).is(':checked')){
+                        $(this).next().next().removeAttr("disabled");
+                        $(this).removeClass("ing")
+                    }else{
+                        $(this).next().next().attr("disabled","disabled");
+                        $(this).addClass("ing")
+                    }
+                });
+                $("#w-check").click(function () {
+                    $("#createWarn .ing").css("background-color","rgba(255,0,0,0.3)");
+                    if($("#sbh").val() == ""){
+                        $("#sbh").css("background-color","rgba(255,0,0,0.3)")
+                        return;
+                    }
+                    saveMerchantPos();              //  保存
+                });
+            </script>
         </div>
     </div>
 </div>
@@ -502,7 +603,7 @@
             $('.'+'baseRate'+index).css('display','block');
         })
 //      加载图片
-      loadPic();
+        loadPic();
     })
 </script>
 <script>
@@ -556,112 +657,106 @@
     }
 
     function resetAll() {
-        $(".w-food1").val('');
-        $(".w-food2").val('');
-        $(".w-food3").val('');
-        $(".w-common1").val('');
-        $(".w-common2").val('');
-        $(".w-common3").val('');
-        $(".w-live1").val('');
-
+        $("input[name=id]").val('');
         $("input[name=posId]").val('');
-        $("input[name=posMerchantNo]").val('');
-        $("input[name=psamCard]").val('');
-        $("input[name=phoneNumber]").val('');
-
+        $("input[name=creditCardCommission]").val('');
+        $("input[name=debitCardCommission]").val('');
+        $("input[name=bankCommission]").val('');
+        $("input[name=ceil]").val('');
         $("input[name=wxCommission]").val('');
         $("input[name=aliCommission]").val('');
-        $("input[name=bdCommission]").val('');
+        $("input[name=wxCommission]").val('');
+        $("input[name=wxProcedureFee]").val('');
+        $("input[name=aliProcedureFee]").val('');
+        $("input[name=scoreARebate]").val('');
+        $("input[name=scoreBRebate]").val('');
+        $("input[name=userScoreARebate]").val('');
+        $("input[name=userScoreBRebate]").val('');
     }
 
     //  保存机具信息
     function saveMerchantPos() {
         var merchantPos = {};
-        merchantPos.id=$("input[name=id]").val();
-        merchantPos.posId = $("input[name=posId]").val();
-        merchantPos.posMerchantNo = $("input[name=posMerchantNo]").val();
-        merchantPos.psamCard = $("input[name=psamCard]").val();
-        merchantPos.phoneNumber = $("input[name=phoneNumber]").val();
-        merchantPos.merchant={id:"${merchantId}"};
-        var posType = $("select[name=posType]").val();
-        merchantPos.posType= posType;
-        if(posType==0) {
-            var type = $("input[name=Radio0]:checked").val();
-            merchantPos.type = type;
-            if(type==0) {
-                merchantPos.posCommission=$(".w-food1").val();
-            }else if(type==1) {
-                merchantPos.ceil=$(".w-food2").val();
-                merchantPos.posCommission=$(".w-food3").val();
-            }
+        //  校验
+        if($("input[name=posId]").val()!=null&&$("input[name=posId]").val()!='') {
+            merchantPos.posId = $("input[name=posId]").val();
+        }else {
+            return;
         }
-        if(posType==1) {
-            var type = $("input[name=Radio1]:checked").val();
-            merchantPos.type = type;
-            if(type==0) {
-                merchantPos.posCommission= $(".w-common1").val();
-            }else if(type==1) {
-                merchantPos.ceil=$(".w-common2").val();
-                merchantPos.posCommission=$(".w-common3").val();
-            }
+        if($("input[name=debitCardCommission]").val()!=null&&$("input[name=debitCardCommission]").val()!='') {
+            merchantPos.debitCardCommission = $("input[name=debitCardCommission]").val();
+        }else {
+            return;
         }
-        if(posType==2) {
-            merchantPos.posCommission=$(".w-live1").val();
+        if($("input[name=creditCardCommission]").val()!=null&&$("input[name=creditCardCommission]").val()!='') {
+            merchantPos.creditCardCommission = $("input[name=creditCardCommission]").val();
+        }else {
+            return;
         }
+        if($("input[name=ceil]").val()!=null&&$("input[name=ceil]").val()!='') {
+            merchantPos.ceil = $("input[name=ceil]").val();
+        }else {
+            return;
+        }
+
+        if($("input[name=ceil]").val()!=null&&$("input[name=ceil]").val()!='') {
+            merchantPos.scoreARebate = $("input[name=scoreARebate]").val();
+        }else {
+            return;
+        }
+        if($("input[name=ceil]").val()!=null&&$("input[name=ceil]").val()!='') {
+            merchantPos.scoreBRebate = $("input[name=scoreBRebate]").val();
+        }else {
+            return;
+        }
+        if($("input[name=userScoreARebate]").val()!=null&&$("input[name=userScoreARebate]").val()!='') {
+            merchantPos.userScoreARebate = $("input[name=userScoreARebate]").val();
+        }else {
+            return;
+        }
+        if($("input[name=userScoreBRebate]").val()!=null&&$("input[name=userScoreBRebate]").val()!='') {
+            merchantPos.userScoreBRebate = $("input[name=userScoreBRebate]").val();
+        }else {
+            return;
+        }
+        merchantPos.bankCommission = $("input[name=bankCommission]").val();
+        merchantPos.id = $("input[name=id]").val();
+        //  表单提交
         merchantPos.wxCommission = $("input[name=wxCommission]").val();
         merchantPos.aliCommission = $("input[name=aliCommission]").val();
-        merchantPos.bdCommission = $("input[name=bdCommission]").val();
+        merchantPos.wxProcedureFee = $("input[name=wxProcedureFee]").val();
+        merchantPos.aliProcedureFee = $("input[name=aliProcedureFee]").val();
+        merchantPos.merchant={id:"${merchantId}"};
         $.ajax({
-                   type:"post",
-                   url:"/manage/pos/save_pos",
-                   contentType:"application/json",
-                   data:JSON.stringify(merchantPos),
-                   success:function(data){
-                       alert(data.msg);
-                       location.href="/manage/merchant/pos_manage/${merchantId}";
-                   }
-               });
+            type:"post",
+            url:"/manage/pos/save_pos",
+            contentType:"application/json",
+            data:JSON.stringify(merchantPos),
+            success:function(data){
+                alert(data.msg);
+                location.href="/manage/merchant/pos_manage/${merchantId}";
+            }
+        });
     }
-
     //  编辑机具信息
     function editPos(id) {
         resetAll();                                                         //  清空上一次信息
         $.get("/manage/pos/getById/"+id,function(pos){                      //  查询并进行数据回显
             $("input[name=id]").val(pos.id);
             $("input[name=posId]").val(pos.posId);
-            $("input[name=posMerchantNo]").val(pos.posMerchantNo);
-            $("input[name=psamCard]").val(pos.psamCard);
-            $("input[name=phoneNumber]").val(pos.phoneNumber);
-            var posType = pos.posType;
-            $("select[name=posType]").val(posType);
-            if(posType==0) {
-                var type = pos.type;
-                if(type==0) {
-                    $("#Radio0-0").attr("checked",true);
-                    $(".w-food1").val(pos.posCommission);
-                }else if(type==1){
-                    $("#Radio0-1").attr("checked",true);
-                    $(".w-food2").val(pos.ceil);
-                    $(".w-food3").val(pos.posCommission);
-                }
-            }
-            if(posType==1) {
-                var type = pos.type;
-                if(type==0) {
-                    $("#Radio1-0").attr("checked",true);
-                    $(".w-common1").val(pos.posCommission);
-                }else {
-                    $("#Radio1-1").attr("checked",true);
-                    $(".w-common2").val(pos.ceil);
-                    $(".w-common3").val(pos.posCommission);
-                }
-            }
-            if(posType==2) {
-                $(".w-live1").val(pos.posCommission);
-            }
+            $("input[name=creditCardCommission]").val(pos.creditCardCommission);
+            $("input[name=debitCardCommission]").val(pos.debitCardCommission);
+            $("input[name=bankCommission]").val(pos.bankCommission);
+            $("input[name=ceil]").val(pos.ceil);
             $("input[name=wxCommission]").val(pos.wxCommission);
             $("input[name=aliCommission]").val(pos.aliCommission);
-            $("input[name=bdCommission]").val(pos.bdCommission);
+            $("input[name=wxCommission]").val(pos.wxCommission);
+            $("input[name=wxProcedureFee]").val(pos.wxProcedureFee);
+            $("input[name=aliProcedureFee]").val(pos.aliProcedureFee);
+            $("input[name=scoreARebate]").val(pos.scoreARebate);
+            $("input[name=scoreBRebate]").val(pos.scoreBRebate);
+            $("input[name=userScoreARebate]").val(pos.userScoreARebate);
+            $("input[name=userScoreBRebate]").val(pos.userScoreBRebate);
         },"json");
     }
 
@@ -675,28 +770,28 @@
         var id  = $("#comisId").val();
         var json = JSON.stringify({id:id,ljCommission:ljCommission});
         $.ajax({
-                   url:"/manage/pos/save_ljCommision",
-                   type:"post",
-                   contentType:"application/json",
-                   data:json,
-                   success:function(result){
-                       alert(result.msg);
-                       location.href="/manage/merchant/pos_manage/${merchantId}";
-                   }
-               });
+            url:"/manage/pos/save_ljCommision",
+            type:"post",
+            contentType:"application/json",
+            data:json,
+            success:function(result){
+                alert(result.msg);
+                location.href="/manage/merchant/pos_manage/${merchantId}";
+            }
+        });
     }
 
     //  图片管理部分
     var merchantId = "${merchantId}";
     function fileUpload(id) {                            // id (标签id)
         $("#"+id).fileupload({
-                                 url:"/manage/merchant/saveImage",
-                                 formData:{merchantId:merchantId,fieldName:id},
-                                 done:function(e,result){
-                                     var url = "${ossImageReadRoot}/"+JSON.stringify(result.result.data).replace("\"",'').replace("\"",'');
-                                     $("#"+id+"-img").attr("src",url);
-                                 }
-                             });
+            url:"/manage/merchant/saveImage",
+            formData:{merchantId:merchantId,fieldName:id},
+            done:function(e,result){
+                var url = "${ossImageReadRoot}/"+JSON.stringify(result.result.data).replace("\"",'').replace("\"",'');
+                $("#"+id+"-img").attr("src",url);
+            }
+        });
     }
 
     function fileDownload(id) {
@@ -711,49 +806,49 @@
 
     function loadPic() {
         $.ajax({
-                   url:"/manage/merchant/loadPosImg",
-                   type:"get",
-                   data:{merchantId:merchantId},
-                   contentType:"application/json",
-                   success:function(data) {
-                       var licenseImg = JSON.stringify(data.licenseImg).replace("\"",'').replace("\"",'');
-                       var idCardImg = JSON.stringify(data.idCardImg).replace("\"",'').replace("\"",'');
-                       var taxRegistrationImg =  JSON.stringify(data.taxRegistrationImg).replace("\"",'').replace("\"",'');
-                       var bankIdCardImg =  JSON.stringify(data.bankIdCardImg).replace("\"",'').replace("\"",'');
-                       var orgConstructionImg =  JSON.stringify(data.orgConstructionImg).replace("\"",'').replace("\"",'');
-                       var bankCardImg =  JSON.stringify(data.bankCardImg).replace("\"",'').replace("\"",'');
-                       $("#licenseImg-img").attr("src",licenseImg);
-                       $("#idCardImg-img").attr("src",idCardImg);
-                       $("#taxRegistrationImg-img").attr("src",taxRegistrationImg);
-                       $("#bankIdCardImg-img").attr("src",bankIdCardImg);
-                       $("#orgConstructionImg-img").attr("src",orgConstructionImg);
-                       $("#bankCardImg-img").attr("src",bankCardImg);
+            url:"/manage/merchant/loadPosImg",
+            type:"get",
+            data:{merchantId:merchantId},
+            contentType:"application/json",
+            success:function(data) {
+                var licenseImg = JSON.stringify(data.licenseImg).replace("\"",'').replace("\"",'');
+                var idCardImg = JSON.stringify(data.idCardImg).replace("\"",'').replace("\"",'');
+                var taxRegistrationImg =  JSON.stringify(data.taxRegistrationImg).replace("\"",'').replace("\"",'');
+                var bankIdCardImg =  JSON.stringify(data.bankIdCardImg).replace("\"",'').replace("\"",'');
+                var orgConstructionImg =  JSON.stringify(data.orgConstructionImg).replace("\"",'').replace("\"",'');
+                var bankCardImg =  JSON.stringify(data.bankCardImg).replace("\"",'').replace("\"",'');
+                $("#licenseImg-img").attr("src",licenseImg);
+                $("#idCardImg-img").attr("src",idCardImg);
+                $("#taxRegistrationImg-img").attr("src",taxRegistrationImg);
+                $("#bankIdCardImg-img").attr("src",bankIdCardImg);
+                $("#orgConstructionImg-img").attr("src",orgConstructionImg);
+                $("#bankCardImg-img").attr("src",bankCardImg);
 
-                       var platServerProcImg1 =  JSON.stringify(data.platServerProcImg1).replace("\"",'').replace("\"",'');
-                       var platServerProcImg2 =  JSON.stringify(data.platServerProcImg2).replace("\"",'').replace("\"",'');
-                       var platServerProcImg3 =  JSON.stringify(data.platServerProcImg3).replace("\"",'').replace("\"",'');
-                       var platServerProcImg4 =  JSON.stringify(data.platServerProcImg4).replace("\"",'').replace("\"",'');
-                       var platServerProcImg5 =  JSON.stringify(data.platServerProcImg5).replace("\"",'').replace("\"",'');
-                       var mercBaseInfoImg1 =  JSON.stringify(data.mercBaseInfoImg1).replace("\"",'').replace("\"",'');
-                       var mercBaseInfoImg2 =  JSON.stringify(data.mercBaseInfoImg2).replace("\"",'').replace("\"",'');
-                       var cnepaySpecialMercInfoImg1 =  JSON.stringify(data.cnepaySpecialMercInfoImg1).replace("\"",'').replace("\"",'');
-                       var cnepaySpecialMercInfoImg2 =  JSON.stringify(data.cnepaySpecialMercInfoImg2).replace("\"",'').replace("\"",'');
-                       var cnepaySpecialMercInfoImg3 =  JSON.stringify(data.cnepaySpecialMercInfoImg3).replace("\"",'').replace("\"",'');
-                       var accountAuthorizationImg =  JSON.stringify(data.accountAuthorizationImg).replace("\"",'').replace("\"",'');
+                var platServerProcImg1 =  JSON.stringify(data.platServerProcImg1).replace("\"",'').replace("\"",'');
+                var platServerProcImg2 =  JSON.stringify(data.platServerProcImg2).replace("\"",'').replace("\"",'');
+                var platServerProcImg3 =  JSON.stringify(data.platServerProcImg3).replace("\"",'').replace("\"",'');
+                var platServerProcImg4 =  JSON.stringify(data.platServerProcImg4).replace("\"",'').replace("\"",'');
+                var platServerProcImg5 =  JSON.stringify(data.platServerProcImg5).replace("\"",'').replace("\"",'');
+                var mercBaseInfoImg1 =  JSON.stringify(data.mercBaseInfoImg1).replace("\"",'').replace("\"",'');
+                var mercBaseInfoImg2 =  JSON.stringify(data.mercBaseInfoImg2).replace("\"",'').replace("\"",'');
+                var cnepaySpecialMercInfoImg1 =  JSON.stringify(data.cnepaySpecialMercInfoImg1).replace("\"",'').replace("\"",'');
+                var cnepaySpecialMercInfoImg2 =  JSON.stringify(data.cnepaySpecialMercInfoImg2).replace("\"",'').replace("\"",'');
+                var cnepaySpecialMercInfoImg3 =  JSON.stringify(data.cnepaySpecialMercInfoImg3).replace("\"",'').replace("\"",'');
+                var accountAuthorizationImg =  JSON.stringify(data.accountAuthorizationImg).replace("\"",'').replace("\"",'');
 
-                       $("#platServerProcImg1-img").attr("src",platServerProcImg1);
-                       $("#platServerProcImg2-img").attr("src",platServerProcImg2);
-                       $("#platServerProcImg3-img").attr("src",platServerProcImg3);
-                       $("#platServerProcImg4-img").attr("src",platServerProcImg4);
-                       $("#platServerProcImg5-img").attr("src",platServerProcImg5);
-                       $("#mercBaseInfoImg1-img").attr("src",mercBaseInfoImg1);
-                       $("#mercBaseInfoImg2-img").attr("src",mercBaseInfoImg2);
-                       $("#cnepaySpecialMercInfoImg1-img").attr("src",cnepaySpecialMercInfoImg1);
-                       $("#cnepaySpecialMercInfoImg2-img").attr("src",cnepaySpecialMercInfoImg2);
-                       $("#cnepaySpecialMercInfoImg3-img").attr("src",cnepaySpecialMercInfoImg3);
-                       $("#accountAuthorizationImg-img").attr("src",accountAuthorizationImg);
-                   }
-               });
+                $("#platServerProcImg1-img").attr("src",platServerProcImg1);
+                $("#platServerProcImg2-img").attr("src",platServerProcImg2);
+                $("#platServerProcImg3-img").attr("src",platServerProcImg3);
+                $("#platServerProcImg4-img").attr("src",platServerProcImg4);
+                $("#platServerProcImg5-img").attr("src",platServerProcImg5);
+                $("#mercBaseInfoImg1-img").attr("src",mercBaseInfoImg1);
+                $("#mercBaseInfoImg2-img").attr("src",mercBaseInfoImg2);
+                $("#cnepaySpecialMercInfoImg1-img").attr("src",cnepaySpecialMercInfoImg1);
+                $("#cnepaySpecialMercInfoImg2-img").attr("src",cnepaySpecialMercInfoImg2);
+                $("#cnepaySpecialMercInfoImg3-img").attr("src",cnepaySpecialMercInfoImg3);
+                $("#accountAuthorizationImg-img").attr("src",accountAuthorizationImg);
+            }
+        });
     }
 
 
