@@ -67,7 +67,7 @@ public class ActivityPhoneRuleService {
       dbRule.setRepository(phoneRule.getRepository());
       dbRule.setTotalLimit(phoneRule.getTotalLimit());
       dbRule.setLimitType(phoneRule.getLimitType());
-      dbRule.setLimit(phoneRule.getLimit());
+      dbRule.setBuyLimit(phoneRule.getBuyLimit());
       dbRule.setRebateType(phoneRule.getRebateType());
       dbRule.setRebate(phoneRule.getRebate());
       dbRule.setMinRebate(phoneRule.getMinRebate());

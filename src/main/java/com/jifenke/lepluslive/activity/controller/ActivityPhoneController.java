@@ -141,5 +141,21 @@ public class ActivityPhoneController {
     return LejiaResult.ok(phoneRuleService.findListByState(state));
   }
 
+  /**
+   * 分天获取订单统计数量列表  16/10/31
+   *
+   * @param begin  开始时间  yyyy-MM-dd
+   * @param end    结束时间  yyyy-MM-dd
+   * @param worth  面值
+   * @param ruleId 规则ID
+   */
+  @RequestMapping(value = "/orderByDayList", method = RequestMethod.GET)
+  public LejiaResult orderDayList(@RequestParam String begin, @RequestParam String end,
+                                  @RequestParam Integer worth,
+                                  @RequestParam Long ruleId) {
+
+    return LejiaResult.ok(phoneOrderService.orderByDayList(begin, end, worth, ruleId));
+  }
+
 
 }
