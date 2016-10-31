@@ -101,13 +101,13 @@ public class MerchantPosService {
     merchantPosRepository.save(merchantPos);
   }
 
-  @Transactional(propagation = Propagation.REQUIRED,readOnly = false)
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public void savePosMachine(MerchantPos merchantPos) {
-    if(merchantPos.getId()==null) {
+    if (merchantPos.getId() == null) {
 //      merchantPos.setCreatedDate(new Date());
       merchantPosRepository.save(merchantPos);
-    }else {
-      MerchantPos existMerchantPos= merchantPosRepository.findById(merchantPos.getId());
+    } else {
+      MerchantPos existMerchantPos = merchantPosRepository.findById(merchantPos.getId());
 //      existMerchantPos.setType(merchantPos.getType());
 //      existMerchantPos.setPosId(merchantPos.getPosId());
 //      existMerchantPos.setPosMerchantNo(merchantPos.getPosMerchantNo());
@@ -127,14 +127,18 @@ public class MerchantPosService {
     }
   }
 
-  @Transactional(propagation = Propagation.REQUIRED,readOnly = false)
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public void saveLjCommision(MerchantPos merchantPos) {
     MerchantPos existMerchantPos = merchantPosRepository.findById(merchantPos.getId());
     existMerchantPos.setLjCommission(merchantPos.getLjCommission());
   }
 
-  @Transactional(propagation = Propagation.REQUIRED,readOnly = true)
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
   public MerchantPos findPosById(Long id) {
     return merchantPosRepository.findById(id);
+  }
+
+  public MerchantPos findPosByPosId(String posId) {
+    return merchantPosRepository.findByPosId(posId);
   }
 }

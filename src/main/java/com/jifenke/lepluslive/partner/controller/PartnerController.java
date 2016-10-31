@@ -33,7 +33,7 @@ public class PartnerController {
   }
 
   @RequestMapping(value = "/partner/editUser")
-  public LejiaResult editPartnerPassword(@RequestBody Partner partner,Model model) {
+  public LejiaResult editPartnerPassword(@RequestBody Partner partner, Model model) {
     model.addAttribute("partners", partnerService.findAll());
     partnerService.editPartnerPassword(partner);
     return LejiaResult.ok();
@@ -42,7 +42,8 @@ public class PartnerController {
   @RequestMapping(value = "/partner/edit", method = RequestMethod.GET)
   public ModelAndView goCreatePartnertPage(Long id, Model model) {
     if (id != null) {
-      model.addAttribute("partner", partnerService.findPartnerById(id));
+      model.addAttribute("partnerInfo", partnerService
+          .findPartnerInfoByPartner(partnerService.findPartnerById(id)));
     }
     model.addAttribute("partnerManagers", partnerService.findAllPartnerManager());
     return MvUtil.go("/partner/createPartner");
@@ -55,8 +56,8 @@ public class PartnerController {
   }
 
   @RequestMapping(value = "/partner", method = RequestMethod.PUT)
-    public LejiaResult editPartner(@RequestBody Partner partner) {
-    partnerService.editPartner(partner);
+  public LejiaResult editPartner(@RequestBody PartnerDto partnerDto) {
+    partnerService.editPartner(partnerDto);
     return LejiaResult.ok();
   }
 

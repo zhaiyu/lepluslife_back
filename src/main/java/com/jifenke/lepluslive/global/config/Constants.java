@@ -30,6 +30,7 @@ public final class Constants {
   public static final String BAR_CODE_EXT = "png";
 
   public static final Integer COOKIE_DISABLE_TIME = 7200;
+  public static final String POS_BILL_URL = "http://lepluslive-pos-excel.oss-cn-beijing.aliyuncs.com/";
 
   private Constants() {
   }

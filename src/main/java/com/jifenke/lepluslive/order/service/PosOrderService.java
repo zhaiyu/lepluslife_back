@@ -2,9 +2,13 @@ package com.jifenke.lepluslive.order.service;
 
 import com.jifenke.lepluslive.merchant.domain.entities.City;
 import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
+import com.jifenke.lepluslive.merchant.domain.entities.MerchantPos;
+import com.jifenke.lepluslive.merchant.service.MerchantPosService;
 import com.jifenke.lepluslive.order.domain.criteria.OLOrderCriteria;
 import com.jifenke.lepluslive.order.domain.criteria.PosOrderCriteria;
+import com.jifenke.lepluslive.order.domain.entities.PosDailyBill;
 import com.jifenke.lepluslive.order.domain.entities.PosOrder;
+import com.jifenke.lepluslive.order.repository.PosDailyBillRepository;
 import com.jifenke.lepluslive.order.repository.PosOrderRepository;
 import com.jifenke.lepluslive.user.domain.entities.LeJiaUser;
 
@@ -17,6 +21,9 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 
+import java.math.BigDecimal;
+import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.inject.Inject;
@@ -34,6 +41,12 @@ public class PosOrderService {
 
   @Inject
   private PosOrderRepository posOrderRepository;
+
+  @Inject
+  private PosDailyBillRepository posDailyBillRepository;
+
+  @Inject
+  private MerchantPosService merchantPosService;
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
   public Page findOrderByPage(PosOrderCriteria posOrderCriteria, int limit) {
@@ -101,5 +114,55 @@ public class PosOrderService {
         return predicate;
       }
     };
+  }
+
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  public void savePosDailyBill(PosDailyBill posDailyBill) {
+    posDailyBillRepository.save(posDailyBill);
+  }
+
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  public boolean checkOrder(String posId, String orderSid, String paidMoney, String transferMoney,
+                            String paidResult, String completeDate) throws ParseException {
+    PosOrder posOrder = posOrderRepository.findByOrderSid(orderSid);
+    BigDecimal truePay = new BigDecimal(paidMoney).multiply(new BigDecimal(100));
+    Long
+        truePayCommission =
+        truePay.subtract(new BigDecimal(transferMoney).multiply(new BigDecimal(100))).longValue();
+    if (posOrder != null) {//订单存在
+
+      if (posOrder.getState() == 1 && posOrder.getTruePay() == truePay.longValue()
+          && truePayCommission
+          .equals(posOrder.getTruePayCommission())) {
+        return true;
+      } else {
+        posOrder.setTruePay(truePay.longValue());
+        posOrder.setTruePayCommission(truePayCommission);
+        posOrder.setState(1);
+        posOrderRepository.save(posOrder);
+        return false;
+      }
+    } else {//订单不存在
+      SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+      Date date = simpleDateFormat.parse(completeDate);
+      posOrder.setTruePay(truePay.longValue());
+      posOrder.setTruePayCommission(truePayCommission);
+      posOrder.setTotalPrice(truePay.longValue());
+      posOrder.setTrueScore(0L);
+      posOrder.setLjCommission(truePayCommission);
+      posOrder.setRebateWay(1);
+      posOrder.setTransferByBank(
+          new BigDecimal(transferMoney).multiply(new BigDecimal(100)).longValue());
+      posOrder.setCreatedDate(date);
+      posOrder.setCompleteDate(date);
+      posOrder.setState(1);
+      MerchantPos merchantPos = merchantPosService.findPosByPosId(posId);
+      Merchant merchant = merchantPos.getMerchant();
+      posOrder.setMerchant(merchant);
+      posOrder.setMerchantPos(merchantPos);
+      posOrderRepository.save(posOrder);
+      return false;
+    }
+
   }
 }

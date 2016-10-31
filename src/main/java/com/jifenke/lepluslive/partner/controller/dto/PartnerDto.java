@@ -13,6 +13,16 @@ public class PartnerDto {
 
   private Long scoreB;
 
+  private Integer inviteLimit;//邀请礼包限制
+
+  public Integer getInviteLimit() {
+    return inviteLimit;
+  }
+
+  public void setInviteLimit(Integer inviteLimit) {
+    this.inviteLimit = inviteLimit;
+  }
+
   public Partner getPartner() {
     return partner;
   }

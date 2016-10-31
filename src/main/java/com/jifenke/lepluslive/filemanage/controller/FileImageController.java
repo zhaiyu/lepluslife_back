@@ -4,7 +4,12 @@ import com.jifenke.lepluslive.filemanage.service.FileImageService;
 import com.jifenke.lepluslive.global.util.ImageLoad;
 import com.jifenke.lepluslive.global.util.LejiaResult;
 import com.jifenke.lepluslive.global.util.MvUtil;
+import com.jifenke.lepluslive.order.service.PosOrderService;
 
+import org.apache.poi.hssf.usermodel.HSSFCell;
+import org.apache.poi.hssf.usermodel.HSSFRow;
+import org.apache.poi.hssf.usermodel.HSSFSheet;
+import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.http.HttpEntity;
@@ -44,6 +49,9 @@ public class FileImageController {
 
   @Inject
   private FileImageService fileImageService;
+
+  @Inject
+  private PosOrderService posOrderService;
 
   @RequestMapping(value = "/file/saveImage")
   public
@@ -107,8 +115,28 @@ public class FileImageController {
                                       @RequestParam String verify) {
     String name = file.getOriginalFilename();
     try {
-      fileImageService.saveImage(file, name);
-    } catch (IOException e) {
+      fileImageService.saveExcel(file, name);
+      HSSFWorkbook hssfWorkbook = new HSSFWorkbook(file.getInputStream());
+      for (int numSheet = 0; numSheet < hssfWorkbook.getNumberOfSheets(); numSheet++) {
+        HSSFSheet hssfSheet = hssfWorkbook.getSheetAt(numSheet);
+        if (hssfSheet == null) {
+          continue;
+        }
+        for (int rowNum = 0; rowNum <= hssfSheet.getLastRowNum(); rowNum++) {
+          HSSFRow hssfRow = hssfSheet.getRow(rowNum);
+          if (hssfRow != null) {
+            String posId = getValue(hssfRow.getCell(3));
+            String orderSid = getValue(hssfRow.getCell(6));
+            String paidMoney = getValue(hssfRow.getCell(7));
+            String transferMoney = getValue(hssfRow.getCell(8));
+            String paidResult = getValue(hssfRow.getCell(9));
+            String completeDate = getValue(hssfRow.getCell(11));
+            posOrderService
+                .checkOrder(posId, orderSid, paidMoney, transferMoney, paidResult, completeDate);
+          }
+        }
+      }
+    } catch (Exception e) {
       LOG.error("文件上传失败" + e.getMessage());
       try {
         BufferedOutputStream
@@ -120,6 +148,17 @@ public class FileImageController {
       } catch (Exception e1) {
         e1.printStackTrace();
       }
+    }
+  }
+
+  @SuppressWarnings("static-access")
+  private String getValue(HSSFCell hssfCell) {
+    if (hssfCell.getCellType() == hssfCell.CELL_TYPE_BOOLEAN) {
+      return String.valueOf(hssfCell.getBooleanCellValue());
+    } else if (hssfCell.getCellType() == hssfCell.CELL_TYPE_NUMERIC) {
+      return String.valueOf(hssfCell.getNumericCellValue());
+    } else {
+      return String.valueOf(hssfCell.getStringCellValue());
     }
   }
 

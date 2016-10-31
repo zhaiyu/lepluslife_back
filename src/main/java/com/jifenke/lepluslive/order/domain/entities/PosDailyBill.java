@@ -13,8 +13,8 @@ import javax.persistence.Table;
  * Created by wcg on 2016/10/25.
  */
 @Entity
-@Table(name = "POS_DAILY_STATISTIC")
-public class PosDailyStatistic {
+@Table(name = "POS_DAILY_BILL")
+public class PosDailyBill {
 
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
@@ -27,9 +27,6 @@ public class PosDailyStatistic {
 
   private String filename;
 
-  private String path;
-
-  private String verify;
 
   public Long getId() {
     return id;
@@ -63,19 +60,4 @@ public class PosDailyStatistic {
     this.filename = filename;
   }
 
-  public String getPath() {
-    return path;
-  }
-
-  public void setPath(String path) {
-    this.path = path;
-  }
-
-  public String getVerify() {
-    return verify;
-  }
-
-  public void setVerify(String verify) {
-    this.verify = verify;
-  }
 }

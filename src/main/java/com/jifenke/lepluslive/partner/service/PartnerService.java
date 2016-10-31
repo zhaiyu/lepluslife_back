@@ -163,6 +163,7 @@ public class PartnerService {
     partnerInfo.setMaxScoreB(5);
     partnerInfo.setScoreBType(0);
     partnerInfo.setPartner(partner);
+    partnerInfo.setInviteLimit(partnerDto.getInviteLimit());
     byte[]
         bytes =
         new byte[0];
@@ -208,7 +209,8 @@ public class PartnerService {
   }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-  public void editPartner(Partner partner) {
+  public void editPartner(PartnerDto partnerDto) {
+    Partner partner = partnerDto.getPartner();
     Partner origin = partnerRepository.findOne(partner.getId());
     origin.setName(partner.getName());
     origin.setBankName(partner.getBankName());
@@ -222,7 +224,9 @@ public class PartnerService {
     origin.setBenefitTime(partner.getBenefitTime());
     merchantService.editPartnerVirtualMerchant(origin);
     partnerRepository.save(origin);
-
+    PartnerInfo partnerInfo = partnerInfoRepository.findByPartner(origin);
+    partnerInfo.setInviteLimit(partnerDto.getInviteLimit());
+    partnerInfoRepository.save(partnerInfo);
   }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
@@ -257,5 +261,9 @@ public class PartnerService {
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public void savePartnerManagerWalletLog(PartnerManagerWalletLog partnerManagerWalletLog) {
     partnerManagerWalletLogRepository.saveAndFlush(partnerManagerWalletLog);
+  }
+
+  public PartnerInfo findPartnerInfoByPartner(Partner partner) {
+    return partnerInfoRepository.findByPartner(partner);
   }
 }
