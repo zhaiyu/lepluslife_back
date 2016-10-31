@@ -168,12 +168,13 @@ public class OrderViewExcel extends AbstractExcelView {
 
       double wxCommission = order.getWxCommission().doubleValue() / 100.0;
       double commissionSubsidy = currencyCommissionCharge - wxCommission;
-        if(a8==1||order.getRebateWay()==1){
-            excelRow.createCell(16).setCellValue(0);
-        }
-        else {
-            excelRow.createCell(16).setCellValue(commissionSubsidy);
-        }
+      if(order.getRebateWay()==1){
+        excelRow.createCell(16).setCellValue(0);
+      }  if(a8==1&&order.getRebateWay()==3){
+        excelRow.createCell(16).setCellValue(0);
+      } else {
+        excelRow.createCell(16).setCellValue(commissionSubsidy);
+      }
 
       //佣金纯收入
       if (order.getRebateWay() == 1) {
