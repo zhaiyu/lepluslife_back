@@ -16,6 +16,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 
@@ -103,27 +104,24 @@ public class MerchantPosService {
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public void savePosMachine(MerchantPos merchantPos) {
-    if (merchantPos.getId() == null) {
-//      merchantPos.setCreatedDate(new Date());
+    if(merchantPos.getId()==null) {
+      merchantPos.setCreatedDate(new Date());
       merchantPosRepository.save(merchantPos);
-    } else {
+    }else {
       MerchantPos existMerchantPos = merchantPosRepository.findById(merchantPos.getId());
-//      existMerchantPos.setType(merchantPos.getType());
-//      existMerchantPos.setPosId(merchantPos.getPosId());
-//      existMerchantPos.setPosMerchantNo(merchantPos.getPosMerchantNo());
-//      existMerchantPos.setPsamCard(merchantPos.getPsamCard());
-//      existMerchantPos.setPosType(merchantPos.getPosType());
-//      if(merchantPos.getType()==1) {
-//        existMerchantPos.setCeil(merchantPos.getCeil());
-//      }
-//      if(merchantPos.getType()==0) {
-//        existMerchantPos.setCeil(null);
-//      }
-//      existMerchantPos.setPosCommission(merchantPos.getPosCommission());
-//      existMerchantPos.setPhoneNumber(merchantPos.getPhoneNumber());
-//      existMerchantPos.setBdCommission(merchantPos.getBdCommission());
-//      existMerchantPos.setAliCommission(merchantPos.getAliCommission());
-//      existMerchantPos.setWxCommission(merchantPos.getWxCommission());
+      existMerchantPos.setPosId(merchantPos.getPosId());
+      existMerchantPos.setCeil(merchantPos.getCeil());
+      existMerchantPos.setAliCommission(merchantPos.getAliCommission());
+      existMerchantPos.setAliProcedureFee(merchantPos.getAliProcedureFee());
+      existMerchantPos.setWxCommission(merchantPos.getWxCommission());
+      existMerchantPos.setWxProcedureFee(merchantPos.getWxProcedureFee());
+      existMerchantPos.setCreditCardCommission(merchantPos.getCreditCardCommission());
+      existMerchantPos.setDebitCardCommission(merchantPos.getDebitCardCommission());
+      existMerchantPos.setScoreARebate(merchantPos.getScoreARebate());
+      existMerchantPos.setScoreBRebate(merchantPos.getScoreBRebate());
+      existMerchantPos.setBankCommission(merchantPos.getBankCommission());
+      existMerchantPos.setUserScoreARebate(merchantPos.getUserScoreARebate());
+      existMerchantPos.setUserScoreBRebate(merchantPos.getUserScoreBRebate());
     }
   }
 
@@ -140,5 +138,16 @@ public class MerchantPosService {
 
   public MerchantPos findPosByPosId(String posId) {
     return merchantPosRepository.findByPosId(posId);
+  }
+
+
+  @Transactional(propagation = Propagation.REQUIRED,readOnly = true)
+  public List<Long> countPosByMerchants(List<Merchant> merchants) {
+    if(merchants!=null && merchants.size()>0) {
+      List<Long> posCounts = new ArrayList<>();
+      merchants.forEach(merchant -> posCounts.add(merchantPosRepository.countByMerchant(merchant.getId())));
+      return posCounts;
+    }
+    return null;
   }
 }

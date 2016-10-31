@@ -190,6 +190,7 @@
                                 <th>锁定会员</th>
                                 <th>合约分类</th>
                                 <th>佣金比(手续费)</th>
+                                <th>POS机具</th>
                                 <th>乐店状态</th>
                                 <th>收取红包权限</th>
                                 <th>创建时间</th>
@@ -366,6 +367,7 @@
                        var list = data.data;
                        var page = list[0];
                        var binds = list[1];
+                       var posCount = list[2];
                        var content = page.content;
                        var totalPage = page.totalPages;
                        $("#totalElements").html(page.totalElements);
@@ -399,6 +401,13 @@
                            }
                            contentStr +=
                            '<td>' + content[i].ljCommission + '%</td>'
+                           if(posCount[i]==0) {
+                               contentStr +=
+                                       '<td>未进件</td>'
+                           }else {
+                               contentStr +=
+                                       '<td>'+posCount[i]+'个</td>'
+                           }
                            if (content[i].state == 0) {
                                contentStr +=
                                '<td>未开启</td>'
