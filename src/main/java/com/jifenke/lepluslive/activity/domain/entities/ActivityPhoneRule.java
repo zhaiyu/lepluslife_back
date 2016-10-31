@@ -40,9 +40,9 @@ public class ActivityPhoneRule {
 
   private Integer totalLimit = 0;  //累计购买限制  0=无限制
 
-  private Integer limitType = 1;  //分类限购(和totalLimit联合限制，无冲突)  1=每日限购|2=每周限购|3=每月限购
+  private Integer limitType = 1;  //分类限购(和totalLimit联合限制，无冲突) 0=无分类限制|1=每日限购|2=每周限购|3=每月限购
 
-  private Integer limit = 0;  //分类限购数量   0=无限制
+  private Integer buyLimit = 0;  //分类限购数量   0=无限制
 
   private Integer rebateType = 0;  //红包返利方式    0=固定返利|1=随机返利
 
@@ -131,12 +131,12 @@ public class ActivityPhoneRule {
     this.limitType = limitType;
   }
 
-  public Integer getLimit() {
-    return limit;
+  public Integer getBuyLimit() {
+    return buyLimit;
   }
 
-  public void setLimit(Integer limit) {
-    this.limit = limit;
+  public void setBuyLimit(Integer buyLimit) {
+    this.buyLimit = buyLimit;
   }
 
   public Integer getRebateType() {

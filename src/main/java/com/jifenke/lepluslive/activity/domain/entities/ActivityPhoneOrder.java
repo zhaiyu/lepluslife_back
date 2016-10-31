@@ -1,6 +1,7 @@
 package com.jifenke.lepluslive.activity.domain.entities;
 
 import com.jifenke.lepluslive.global.util.MvUtil;
+import com.jifenke.lepluslive.order.domain.entities.PayOrigin;
 import com.jifenke.lepluslive.user.domain.entities.LeJiaUser;
 
 import org.hibernate.annotations.GenericGenerator;
@@ -27,7 +28,9 @@ public class ActivityPhoneOrder {
 
   private String orderSid = MvUtil.getOrderNumber(); //自己的订单编号
 
-  private String orderId;   //第三方支付平台的订单编号
+  private String orderId;   //第三方充值平台的订单编号
+
+  private Integer cheap = 0;  //该订单是否是特惠订单
 
   private Integer state = 0;  //订单状态  0=待支付|1=已支付待充值|2=已充值|3=已支付充值失败
 
@@ -38,6 +41,9 @@ public class ActivityPhoneOrder {
 
   @ManyToOne
   private ActivityPhoneRule phoneRule;
+
+  @ManyToOne
+  private PayOrigin payOrigin;    //支付方式及订单来源
 
   private String phone;  //实际充值手机号
 
@@ -137,6 +143,14 @@ public class ActivityPhoneOrder {
     return trueScoreB;
   }
 
+  public PayOrigin getPayOrigin() {
+    return payOrigin;
+  }
+
+  public void setPayOrigin(PayOrigin payOrigin) {
+    this.payOrigin = payOrigin;
+  }
+
   public void setTrueScoreB(Integer trueScoreB) {
     this.trueScoreB = trueScoreB;
   }
@@ -163,6 +177,14 @@ public class ActivityPhoneOrder {
 
   public void setCreateDate(Date createDate) {
     this.createDate = createDate;
+  }
+
+  public Integer getCheap() {
+    return cheap;
+  }
+
+  public void setCheap(Integer cheap) {
+    this.cheap = cheap;
   }
 
   public Date getPayDate() {
