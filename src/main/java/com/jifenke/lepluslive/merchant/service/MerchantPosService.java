@@ -112,14 +112,14 @@ public class MerchantPosService {
       existMerchantPos.setPosId(merchantPos.getPosId());
       existMerchantPos.setCeil(merchantPos.getCeil());
       existMerchantPos.setAliCommission(merchantPos.getAliCommission());
-      existMerchantPos.setAliProcedureFee(merchantPos.getAliProcedureFee());
+      existMerchantPos.setAliUserCommission(merchantPos.getAliUserCommission());
       existMerchantPos.setWxCommission(merchantPos.getWxCommission());
-      existMerchantPos.setWxProcedureFee(merchantPos.getWxProcedureFee());
+      existMerchantPos.setWxUserCommission(merchantPos.getWxUserCommission());
       existMerchantPos.setCreditCardCommission(merchantPos.getCreditCardCommission());
       existMerchantPos.setDebitCardCommission(merchantPos.getDebitCardCommission());
       existMerchantPos.setScoreARebate(merchantPos.getScoreARebate());
       existMerchantPos.setScoreBRebate(merchantPos.getScoreBRebate());
-      existMerchantPos.setBankCommission(merchantPos.getBankCommission());
+      existMerchantPos.setLjCommission(merchantPos.getLjCommission());
       existMerchantPos.setUserScoreARebate(merchantPos.getUserScoreARebate());
       existMerchantPos.setUserScoreBRebate(merchantPos.getUserScoreBRebate());
     }
