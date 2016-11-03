@@ -4,11 +4,14 @@ import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
 import com.jifenke.lepluslive.merchant.service.MerchantService;
 import com.jifenke.lepluslive.order.domain.criteria.FinancialCriteria;
 import com.jifenke.lepluslive.order.domain.criteria.OLOrderCriteria;
+import com.jifenke.lepluslive.order.domain.entities.FinancialRevise;
 import com.jifenke.lepluslive.order.domain.entities.FinancialStatistic;
 import com.jifenke.lepluslive.order.domain.entities.OffLineOrder;
 import com.jifenke.lepluslive.order.domain.entities.PayWay;
+import com.jifenke.lepluslive.order.repository.FinancialReviseRepository;
 import com.jifenke.lepluslive.order.repository.FinancialStatisticRepository;
 import com.jifenke.lepluslive.order.repository.OffLineOrderRepository;
+import com.jifenke.lepluslive.order.repository.PosOrderRepository;
 import com.jifenke.lepluslive.user.domain.entities.LeJiaUser;
 
 import org.springframework.data.domain.Page;
@@ -19,10 +22,14 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Optional;
 
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -43,6 +50,15 @@ public class OffLineOrderService {
 
   @Inject
   private FinancialStatisticRepository financialStatisticRepository;
+
+  @Inject
+  private PosOrderRepository posOrderRepository;
+
+  @Inject
+  private FinancialReviseRepository financialReviseRepository;
+
+  @Inject
+  private EntityManager entityManager;
 
   public Page findOrderByPage(OLOrderCriteria orderCriteria, Integer limit) {
     Sort sort = new Sort(Sort.Direction.DESC, "createdDate");
@@ -120,7 +136,44 @@ public class OffLineOrderService {
   }
 
   public List<Object[]> countTransferMoney(Date start, Date end) {
-    return offLineOrderRepository.countTransferMoney(start, end);
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+//    String starts = sdf.format(start);
+//    String ends = sdf.format(end);
+    String starts = "2016-10-18 00:32:16";
+    String ends = "2016-11-18 23:32:16";
+    StringBuffer sql = new StringBuffer();
+    sql.append(
+        "select * from (select merchant_id id,sum(case when pay_way_id in (1,2)  then transfer_money else 0 end) wx,sum(case when pay_way_id in (3,4)  then transfer_money else 0 end)");
+    sql.append(
+        "app,sum(case when pay_way_id in (1,2)  then transfer_money_from_true_pay else 0 end)wx_true,sum(case when pay_way_id in (3,4)  then transfer_money_from_true_pay else 0");
+    sql.append(" end)app_true from off_line_order where state = 1 and complete_date between '");
+    sql.append(starts);
+    sql.append("' and '");
+    sql.append(ends);
+    sql.append("' group by merchant_id )off_line_order left join (");
+    sql.append(
+        "select merchant_id sid,sum(transfer_money)pos,sum(transfer_by_bank)pos_true from pos_order where state = 1 and complete_date between '");
+    sql.append(starts);
+    sql.append("' and '");
+    sql.append(ends);
+    sql.append(
+        "'group by merchant_id  ) pos_order on off_line_order.id = pos_order.sid union select * from (select merchant_id id,sum(case when pay_way_id in (1,2)  then");
+    sql.append(
+        " transfer_money else 0 end) wx,sum(case when pay_way_id in (3,4)  then transfer_money else 0 end) app,sum(case when pay_way_id in (1,2)  then transfer_money_from_true_pay ");
+    sql.append(
+        "else 0 end)wx_true,sum(case when pay_way_id in (3,4)  then transfer_money_from_true_pay else 0 end)app_true from off_line_order where state = 1 and complete_date between '");
+    sql.append(starts);
+    sql.append("' and '");
+    sql.append(ends);
+    sql.append("' group by merchant_id )off_line_order right join (");
+    sql.append(
+        "select merchant_id sid,sum(transfer_money)pos,sum(transfer_by_bank)pos_true from pos_order where state = 1 and complete_date between '");
+    sql.append(starts);
+    sql.append("' and '");
+    sql.append(ends);
+    sql.append("' group by merchant_id ) pos_order on off_line_order.id = pos_order.sid");
+    List<Object[]> resultList = entityManager.createNativeQuery(sql.toString()).getResultList();
+    return resultList;
   }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
@@ -198,11 +251,42 @@ public class OffLineOrderService {
     financialStatisticRepository.save(financialStatistic);
   }
 
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
   public List<FinancialStatistic> findAllNonTransferFinancialStatistic() {
     return financialStatisticRepository.findAllByState(0);
   }
+
   @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
   public OffLineOrder findOneByOrderSid(String orderSid) {
     return offLineOrderRepository.findOneByOrderSid(orderSid);
+  }
+
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+  public Optional<FinancialStatistic> findFinancialByMerchantAndDate(Merchant merchant, Date end) {
+    return financialStatisticRepository.findByMerchantAndBalanceDate(merchant, end);
+  }
+
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  public void createFinancialRevise(FinancialStatistic financialStatistic, Merchant merchant) {
+    Calendar calendar = Calendar.getInstance();
+    calendar.setTime(new Date());
+    calendar.add(Calendar.DAY_OF_MONTH, -1);
+    calendar.set(Calendar.HOUR_OF_DAY, 0);
+    calendar.set(Calendar.MINUTE, 0);
+    calendar.set(Calendar.SECOND, 0);
+
+    Date start = calendar.getTime();
+    calendar.add(Calendar.DAY_OF_MONTH, 1);
+    calendar.add(Calendar.SECOND, -1);
+
+    Date end = calendar.getTime();
+    FinancialRevise financialRevise = new FinancialRevise();
+    financialRevise.setFinancialStatistic(financialStatistic);
+    Object[]
+        object =
+        posOrderRepository.countPosTransferMoneyByMerchant(merchant.getId(), start, end);
+    financialRevise.setRevisePosTransfer(Long.parseLong(object[0].toString()));
+    financialRevise.setRevisePosTransTruePay(Long.parseLong(object[1].toString()));
+    financialReviseRepository.save(financialRevise);
   }
 }

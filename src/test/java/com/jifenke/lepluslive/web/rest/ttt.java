@@ -11,6 +11,8 @@ import com.jifenke.lepluslive.merchant.domain.entities.MerchantInfo;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantUser;
 import com.jifenke.lepluslive.merchant.repository.MerchantRepository;
 import com.jifenke.lepluslive.merchant.service.MerchantService;
+import com.jifenke.lepluslive.order.service.FinanicalStatisticService;
+import com.jifenke.lepluslive.order.service.OffLineOrderService;
 import com.jifenke.lepluslive.partner.domain.entities.PartnerInfo;
 import com.jifenke.lepluslive.partner.domain.entities.PartnerScoreLog;
 import com.jifenke.lepluslive.partner.domain.entities.PartnerWallet;
@@ -32,6 +34,9 @@ import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
 import java.io.IOException;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.List;
 
 import javax.inject.Inject;
 
@@ -76,13 +81,10 @@ public class ttt {
   private PartnerRepository partnerRepository;
 
   @Inject
-  private PartnerScoreLogRepository partnerScoreLogRepository;
+  private OffLineOrderService offLineOrderService;
 
   @Inject
-  private PartnerInfoRepository partnerInfoRepository;
-
-  @Inject
-  private FileImageService fileImageService;
+  private FinanicalStatisticService finanicalStatisticService;
 
   //添加所有红包账户
   @Test
@@ -93,67 +95,27 @@ public class ttt {
 
   @Test
   public void tttt() {
-//    partnerRepository.findAll().forEach(partner -> {
-//      PartnerWallet partnerWallet = partnerWalletRepository.findByPartner(partner);
-//      PartnerInfo partnerInfo = partnerInfoRepository.findByPartner(partner);
-//      byte[]
-//          bytes =
-//          new byte[0];
-//      byte[]
-//          bytes2 =
-//          new byte[0];
-//      try {
-//        bytes = barcodeService.qrCode(Constants.PARTNER_URL + partner.getPartnerSid(),
-//                                      BarcodeConfig.QRCode.defaultConfig());
-//        bytes2 =
-//            barcodeService
-//                .qrCode(Constants.PARTNER_HB_URL + partner.getPartnerSid(),          // 海报二维码
-//                        BarcodeConfig.QRCode.defaultConfig());
-//      } catch (InterruptedException e) {
-//        e.printStackTrace();
-//      } catch (IOException e) {
-//        e.printStackTrace();
-//      }
-//      String filePath = MvUtil.getFilePath(Constants.BAR_CODE_EXT);
-//      String
-//          filePath2 =
-//          MvUtil.getFilePath(Constants.BAR_CODE_EXT);                                // 地址
-//      partnerInfo.setQrCodeUrl(barCodeRootUrl + "/" + filePath);
-//      partnerInfo.setHbQrCodeUrl(barCodeRootUrl + "/" + filePath2);
-//      partnerInfoRepository.save(partnerInfo);
-//      final byte[] finalBytes = bytes;
-//      final byte[] finalBytes2 = bytes2;
-//      fileImageService.SaveBarCode(finalBytes, filePath);
-//      fileImageService.SaveBarCode(finalBytes2, filePath2);
-//    });
+    Calendar calendar = Calendar.getInstance();
+    calendar.setTime(new Date());
+    calendar.add(Calendar.DAY_OF_MONTH, -1);
+    calendar.set(Calendar.HOUR_OF_DAY, 0);
+    calendar.set(Calendar.MINUTE, 0);
+    calendar.set(Calendar.SECOND, 0);
+
+    Date start = calendar.getTime();
+    calendar.add(Calendar.DAY_OF_MONTH, 1);
+    calendar.add(Calendar.SECOND, -1);
+
+    Date end = calendar.getTime();
+
+    List<Object[]> objects = offLineOrderService.countTransferMoney(start, end);
+
+    for (Object[] object : objects) {
+      finanicalStatisticService.createFinancialstatistic(object, end);
+    }
   }
 
-////  public static void main(String[] args) {
-////    int x[][] = new int[9][9];
-////    for(int i=0;i<9;i++){
-////      for(int y=0;y<9;y++){
-////        x[i][y]=new Random().nextInt(2);
-////      }
-////    }
-////    Scanner input = new Scanner(System.in);
-////    int a = input.nextInt();
-////    int b = input.nextInt();
-////    int n = input.nextInt();
-////
-////    for(int z=1;z<n;z++){
-////      int m = x[a][b];
-////      int a1 = x[a-1][b];
-////      int a2 = x[a+1][b];
-////      int a3 = x[a][b+1];
-////      int a4 = x[a][b-1];
-////
-////
-////
-////    }
-//
-//
-//
-//  }
+
 
 
 }

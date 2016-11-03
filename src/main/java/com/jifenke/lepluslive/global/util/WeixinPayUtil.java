@@ -19,6 +19,8 @@ import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.util.Calendar;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -33,7 +35,7 @@ public class WeixinPayUtil {
   public static AccessToken getAccessToken(Long wxId) {
     String
         getUrl =
-        "http://www.lepluslife.com:8081/accessToken/"+wxId;
+        "http://www.lepluslife.com:8081/accessToken/" + wxId;
     CloseableHttpClient httpclient = HttpClients.createDefault();
     HttpGet httpGet = new HttpGet(getUrl);
     httpGet.addHeader("Content-Type", "application/json;charset=utf8mb4");
@@ -111,5 +113,4 @@ public class WeixinPayUtil {
 
     return sb.toString();
   }
-
 }

@@ -7,8 +7,10 @@ import com.jifenke.lepluslive.merchant.service.MerchantPosService;
 import com.jifenke.lepluslive.order.domain.criteria.OLOrderCriteria;
 import com.jifenke.lepluslive.order.domain.criteria.PosOrderCriteria;
 import com.jifenke.lepluslive.order.domain.entities.PosDailyBill;
+import com.jifenke.lepluslive.order.domain.entities.PosErrorLog;
 import com.jifenke.lepluslive.order.domain.entities.PosOrder;
 import com.jifenke.lepluslive.order.repository.PosDailyBillRepository;
+import com.jifenke.lepluslive.order.repository.PosErrorLogRepository;
 import com.jifenke.lepluslive.order.repository.PosOrderRepository;
 import com.jifenke.lepluslive.user.domain.entities.LeJiaUser;
 
@@ -25,6 +27,7 @@ import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.Map;
 
 import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -47,6 +50,10 @@ public class PosOrderService {
 
   @Inject
   private MerchantPosService merchantPosService;
+
+  @Inject
+  private PosErrorLogRepository posErrorLogRepository;
+
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
   public Page findOrderByPage(PosOrderCriteria posOrderCriteria, int limit) {
@@ -122,29 +129,41 @@ public class PosOrderService {
   }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-  public boolean checkOrder(String posId, String orderSid, String paidMoney, String transferMoney,
-                            String paidResult, String completeDate) throws ParseException {
+  public Merchant checkOrder(String posId, String orderSid, String paidMoney, String transferMoney,
+                             String paidResult, String completeDate, PosDailyBill posDailyBill)
+      throws ParseException {
+    Merchant merchant = null;
     PosOrder posOrder = posOrderRepository.findByOrderSid(orderSid);
     BigDecimal truePay = new BigDecimal(paidMoney).multiply(new BigDecimal(100));
+    SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    Date date = simpleDateFormat.parse(completeDate);
     Long
         truePayCommission =
         truePay.subtract(new BigDecimal(transferMoney).multiply(new BigDecimal(100))).longValue();
     if (posOrder != null) {//订单存在
-
       if (posOrder.getState() == 1 && posOrder.getTruePay() == truePay.longValue()
           && truePayCommission
           .equals(posOrder.getTruePayCommission())) {
-        return true;
+        return merchant;
       } else {
         posOrder.setTruePay(truePay.longValue());
         posOrder.setTruePayCommission(truePayCommission);
         posOrder.setState(1);
         posOrderRepository.save(posOrder);
-        return false;
+        //记录差错日志
+        PosErrorLog posErrorLog = new PosErrorLog();
+        posErrorLog.setCreateDate(date);
+        posErrorLog.setOrderSid(orderSid);
+        posErrorLog.setLocalState(posOrder.getState());
+        posErrorLog.setLocalCommission(posOrder.getTruePayCommission());
+        posErrorLog.setLocalTruePay(posOrder.getTruePay());
+        posErrorLog.setRemoteCommission(truePayCommission);
+        posErrorLog.setRemoteTruePay(truePay.longValue());
+        posErrorLog.setPosDailyBill(posDailyBill);
+        posErrorLogRepository.save(posErrorLog);
+        return posOrder.getMerchant();
       }
     } else {//订单不存在
-      SimpleDateFormat simpleDateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-      Date date = simpleDateFormat.parse(completeDate);
       posOrder.setTruePay(truePay.longValue());
       posOrder.setTruePayCommission(truePayCommission);
       posOrder.setTotalPrice(truePay.longValue());
@@ -157,12 +176,21 @@ public class PosOrderService {
       posOrder.setCompleteDate(date);
       posOrder.setState(1);
       MerchantPos merchantPos = merchantPosService.findPosByPosId(posId);
-      Merchant merchant = merchantPos.getMerchant();
+      merchant = merchantPos.getMerchant();
       posOrder.setMerchant(merchant);
       posOrder.setMerchantPos(merchantPos);
       posOrderRepository.save(posOrder);
-      return false;
+      PosErrorLog posErrorLog = new PosErrorLog();
+      posErrorLog.setCreateDate(date);
+      posErrorLog.setOrderSid(orderSid);
+      posErrorLog.setLocalState(2);
+      posErrorLog.setLocalCommission(posOrder.getTruePayCommission());
+      posErrorLog.setLocalTruePay(posOrder.getTruePay());
+      posErrorLog.setRemoteCommission(truePayCommission);
+      posErrorLog.setRemoteTruePay(truePay.longValue());
+      posErrorLog.setPosDailyBill(posDailyBill);
+      posErrorLogRepository.save(posErrorLog);
+      return merchant;
     }
-
   }
 }

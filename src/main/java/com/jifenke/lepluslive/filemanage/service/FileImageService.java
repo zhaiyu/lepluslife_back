@@ -75,12 +75,13 @@ public class FileImageService {
   }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-  public void saveExcel(MultipartFile file, String name) throws Exception {
+  public PosDailyBill saveExcel(MultipartFile file, String name) throws Exception {
     PosDailyBill posDailyBill = new PosDailyBill();
     posDailyBill.setCreateDate(new Date());
     posDailyBill.setUrl(Constants.POS_BILL_URL + name);
     posDailyBill.setFilename(name);
     saveImage(file, name);
     posOrderService.savePosDailyBill(posDailyBill);
+    return posDailyBill;
   }
 }

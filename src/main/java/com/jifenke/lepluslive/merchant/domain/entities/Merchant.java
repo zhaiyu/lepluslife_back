@@ -389,4 +389,27 @@ public class Merchant {
   public void setMerchantInfo(MerchantInfo merchantInfo) {
     this.merchantInfo = merchantInfo;
   }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof Merchant)) {
+      return false;
+    }
+
+    Merchant merchant = (Merchant) o;
+
+    if (!id.equals(merchant.id)) {
+      return false;
+    }
+
+    return true;
+  }
+
+  @Override
+  public int hashCode() {
+    return id.hashCode();
+  }
 }

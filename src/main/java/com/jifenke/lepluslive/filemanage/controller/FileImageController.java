@@ -4,6 +4,10 @@ import com.jifenke.lepluslive.filemanage.service.FileImageService;
 import com.jifenke.lepluslive.global.util.ImageLoad;
 import com.jifenke.lepluslive.global.util.LejiaResult;
 import com.jifenke.lepluslive.global.util.MvUtil;
+import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
+import com.jifenke.lepluslive.order.domain.entities.FinancialStatistic;
+import com.jifenke.lepluslive.order.domain.entities.PosDailyBill;
+import com.jifenke.lepluslive.order.service.OffLineOrderService;
 import com.jifenke.lepluslive.order.service.PosOrderService;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
@@ -32,6 +36,11 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.HashSet;
+import java.util.Optional;
+import java.util.Set;
 
 import javax.imageio.ImageIO;
 import javax.inject.Inject;
@@ -52,6 +61,9 @@ public class FileImageController {
 
   @Inject
   private PosOrderService posOrderService;
+
+  @Inject
+  private OffLineOrderService offLineOrderService;
 
   @RequestMapping(value = "/file/saveImage")
   public
@@ -115,8 +127,9 @@ public class FileImageController {
                                       @RequestParam String verify) {
     String name = file.getOriginalFilename();
     try {
-      fileImageService.saveExcel(file, name);
+      PosDailyBill posDailyBill = fileImageService.saveExcel(file, name);
       HSSFWorkbook hssfWorkbook = new HSSFWorkbook(file.getInputStream());
+      Set<Merchant> set = new HashSet<Merchant>();
       for (int numSheet = 0; numSheet < hssfWorkbook.getNumberOfSheets(); numSheet++) {
         HSSFSheet hssfSheet = hssfWorkbook.getSheetAt(numSheet);
         if (hssfSheet == null) {
@@ -131,10 +144,33 @@ public class FileImageController {
             String transferMoney = getValue(hssfRow.getCell(8));
             String paidResult = getValue(hssfRow.getCell(9));
             String completeDate = getValue(hssfRow.getCell(11));
-            posOrderService
-                .checkOrder(posId, orderSid, paidMoney, transferMoney, paidResult, completeDate);
+            Merchant merchant = posOrderService
+                .checkOrder(posId, orderSid, paidMoney, transferMoney, paidResult, completeDate,
+                            posDailyBill);
+            if (merchant != null) {
+              set.add(merchant);
+            }
           }
         }
+      }
+      if (set.size() != 0) {//代表有冲突订单，对有冲突订单对商户生成对账单差错单
+        Calendar calendar = Calendar.getInstance();
+        calendar.setTime(new Date());
+        calendar.add(Calendar.DAY_OF_MONTH, -1);
+        calendar.set(Calendar.HOUR_OF_DAY, 0);
+        calendar.set(Calendar.MINUTE, 0);
+        calendar.set(Calendar.SECOND, 0);
+        calendar.add(Calendar.DAY_OF_MONTH, 1);
+        calendar.add(Calendar.SECOND, -1);
+        Date end = calendar.getTime();
+        set.forEach(merchant -> {
+          Optional<FinancialStatistic>
+              optional =
+              offLineOrderService.findFinancialByMerchantAndDate(merchant, end);
+          if(optional.isPresent()){
+            offLineOrderService.createFinancialRevise(optional.get(),merchant);
+          }
+        });
       }
     } catch (Exception e) {
       LOG.error("文件上传失败" + e.getMessage());
