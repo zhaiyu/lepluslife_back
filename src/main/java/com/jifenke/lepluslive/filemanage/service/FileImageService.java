@@ -4,6 +4,7 @@ import com.aliyun.oss.OSSClient;
 import com.aliyun.oss.model.ObjectMetadata;
 import com.aliyun.oss.model.PutObjectResult;
 import com.jifenke.lepluslive.global.config.Constants;
+import com.jifenke.lepluslive.global.util.ImageLoad;
 import com.jifenke.lepluslive.order.domain.entities.PosDailyBill;
 import com.jifenke.lepluslive.order.service.PosOrderService;
 
@@ -16,9 +17,12 @@ import org.springframework.web.multipart.MultipartFile;
 import java.io.ByteArrayInputStream;
 import java.io.IOException;
 import java.io.InputStream;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
 import java.util.Date;
 
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * Created by wcg on 16/3/10.
@@ -83,5 +87,35 @@ public class FileImageService {
     saveImage(file, name);
     posOrderService.savePosDailyBill(posDailyBill);
     return posDailyBill;
+  }
+
+  /**
+   * 下载远程文件
+   * @param url
+   */
+  public void downloadExcel(String filename,String url,HttpServletResponse response) {
+    response.setContentType("application/vnd.ms-excel");
+    response.setHeader("Content-disposition", "attachment;filename=" + filename);
+    OutputStream outputStream = null;
+    InputStream inputStream = null;
+    try {
+      outputStream = response.getOutputStream();
+      inputStream  = ImageLoad.returnStream(url);
+      int len = 0;
+      byte [] buf = new byte[1024];
+      while ((len=inputStream.read(buf,0,1024))!=-1) {
+        outputStream.write(buf);
+      }
+    } catch (IOException e) {
+      e.printStackTrace();
+    } finally {
+      try {
+        outputStream.flush();
+        outputStream.close();
+        inputStream.close();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
   }
 }
