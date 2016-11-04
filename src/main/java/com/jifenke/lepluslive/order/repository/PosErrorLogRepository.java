@@ -10,6 +10,6 @@ import java.util.List;
 /**
  * Created by wcg on 2016/10/31.
  */
-public interface PosErrorLogRepository extends JpaRepository<PosErrorLog, Long> {
+public interface PosErrorLogRepository extends JpaRepository<PosErrorLog,Long> {
     List<PosErrorLog> findByPosDailyBill(PosDailyBill posDailyBill);
 }
