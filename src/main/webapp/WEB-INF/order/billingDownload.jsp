@@ -80,7 +80,7 @@
 <script>
    var offset=1;
    var totalPage=0;
-   var totalCount=0
+   var totalCount=0;
    var orderContent = document.getElementById("orderContent");
    $(function(){
        initTotalCount();
@@ -96,6 +96,7 @@
            async: false,
            success:function(count) {
                totalCount = count.data;
+               $("#totalElements").text(totalCount);
            }
        });
    }

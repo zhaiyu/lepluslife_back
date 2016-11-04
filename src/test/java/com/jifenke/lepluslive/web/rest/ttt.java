@@ -1,24 +1,16 @@
 package com.jifenke.lepluslive.web.rest;
 
 import com.jifenke.lepluslive.Application;
-import com.jifenke.lepluslive.barcode.BarcodeConfig;
 import com.jifenke.lepluslive.barcode.service.BarcodeService;
-import com.jifenke.lepluslive.filemanage.service.FileImageService;
 import com.jifenke.lepluslive.global.config.Constants;
-import com.jifenke.lepluslive.global.util.MvUtil;
-import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
-import com.jifenke.lepluslive.merchant.domain.entities.MerchantInfo;
-import com.jifenke.lepluslive.merchant.domain.entities.MerchantUser;
 import com.jifenke.lepluslive.merchant.repository.MerchantRepository;
 import com.jifenke.lepluslive.merchant.service.MerchantService;
+import com.jifenke.lepluslive.order.domain.entities.PosDailyBill;
+import com.jifenke.lepluslive.order.domain.entities.PosErrorLog;
 import com.jifenke.lepluslive.order.service.FinanicalStatisticService;
 import com.jifenke.lepluslive.order.service.OffLineOrderService;
-import com.jifenke.lepluslive.partner.domain.entities.PartnerInfo;
-import com.jifenke.lepluslive.partner.domain.entities.PartnerScoreLog;
-import com.jifenke.lepluslive.partner.domain.entities.PartnerWallet;
-import com.jifenke.lepluslive.partner.repository.PartnerInfoRepository;
+import com.jifenke.lepluslive.order.service.PosOrderService;
 import com.jifenke.lepluslive.partner.repository.PartnerRepository;
-import com.jifenke.lepluslive.partner.repository.PartnerScoreLogRepository;
 import com.jifenke.lepluslive.partner.repository.PartnerWalletRepository;
 import com.jifenke.lepluslive.score.repository.ScoreARepository;
 import com.jifenke.lepluslive.scoreAAccount.service.ScoreAAccountService;
@@ -33,7 +25,6 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import java.io.IOException;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -116,6 +107,41 @@ public class ttt {
   }
 
 
+  @Inject
+  private PosOrderService posOrderService;
 
+  @Test
+  public void testBill() {
+    List<PosDailyBill> erroPosDailyBill = posOrderService.findErrorPosDailyBill(1, 3);
+    /*for (PosDailyBill posDailyBill : erroPosDailyBill) {
+      System.out.println(posDailyBill.getFilename());
+    }*/
+    System.out.println(erroPosDailyBill);
+  }
 
+  @Test
+  public void testErrlog() {
+    List<PosDailyBill> erroPosDailyBill = posOrderService.findErrorPosDailyBill(1, 3);
+    List<List<PosErrorLog>> posErrorLogByBill = posOrderService.findPosErrorLogByBill(erroPosDailyBill);
+    for (List<PosErrorLog> posErrorLog : posErrorLogByBill) {
+      System.out.println(posErrorLog.size());
+    }
+  }
+
+  @Test
+  public void testDouble() {
+    System.out.println((5/2.0));
+    System.out.println((5/2));
+    System.out.println((5.0/2));
+    System.out.println((5.0/2.0));
+    System.out.println(Math.ceil(5/2.0));
+    System.out.println(new Double(Math.ceil(5/2.0)).intValue());
+  }
+
+  @Test
+  public void testPage() {
+    Long count = posOrderService.countErroPosDailyBill();
+    Integer pageCount = posOrderService.pageCountErroPosDailyBill(3);
+    System.out.println(count  + "---------"  + pageCount);
+  }
 }
