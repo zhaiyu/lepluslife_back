@@ -1,15 +1,20 @@
 package com.jifenke.lepluslive.product.controller;
 
 import com.jifenke.lepluslive.global.util.MvUtil;
+import com.jifenke.lepluslive.product.controller.dto.LimitProductDto;
 import com.jifenke.lepluslive.product.controller.dto.ProductDto;
 import com.jifenke.lepluslive.product.domain.entities.Product;
 import com.jifenke.lepluslive.product.domain.entities.ProductCriteria;
+import com.jifenke.lepluslive.product.domain.entities.ProductDetail;
+import com.jifenke.lepluslive.product.domain.entities.ProductSpec;
 import com.jifenke.lepluslive.product.domain.entities.ProductType;
+import com.jifenke.lepluslive.product.domain.entities.ScrollPicture;
 import com.jifenke.lepluslive.product.service.ProductService;
 import com.jifenke.lepluslive.global.util.LejiaResult;
 import com.jifenke.lepluslive.global.util.PaginationUtil;
 import com.jifenke.lepluslive.product.service.ProductSpecService;
 import com.jifenke.lepluslive.product.service.ScrollPictureService;
+import com.jifenke.lepluslive.weixin.service.CategoryService;
 
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
@@ -24,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.List;
+import java.util.Map;
 
 import javax.inject.Inject;
 
@@ -43,88 +49,85 @@ public class ProductController {
   @Inject
   private ProductSpecService productSpecService;
 
-  //分页
+  @Inject
+  private CategoryService categoryService;
+
+  /**
+   * 普通商品列表页   16/11/03
+   */
   @RequestMapping(value = "/product", method = RequestMethod.GET)
-  public ModelAndView findPageProduct(
-      @RequestParam(value = "page", required = false) Integer offset,
-      @RequestParam(value = "productType", required = false) Integer productType,
-      @RequestParam(required = false) Integer state,
-      Model model) {
-    //拼接查询条件
-    ProductCriteria productCriteria = new ProductCriteria();
-    productCriteria.setType(1);
-    if (offset == null) {
-      offset = 1;
-    }
-    if (state == null) {
-      state = 1;
-    }
+  public ModelAndView findPageProduct(Model model) {
+
     List<ProductType> productTypes = productService.findAllProductType();
-    productCriteria.setState(state);
-    if (productType != null) {
-      for (ProductType type : productTypes) {
-        if (type.getId() == productType) {
-          productCriteria.setProductType(type);
-        }
-      }
-    }
-
-    Page
-        page =
-        productService.findProductsByPage(offset, productCriteria);
-    model.addAttribute("products", page.getContent());
-    model.addAttribute("pages", page.getTotalPages());
-    model.addAttribute("productCriteria", productCriteria);
-    model.addAttribute("currentPage", offset);
-    model.addAttribute("productTypes",productTypes );
-    return MvUtil.go("/product/productList");
+    model.addAttribute("productTypes", productTypes);
+    model.addAttribute("markList", categoryService.findAllByCategory(1));
+    return MvUtil.go("/product/common/index");
   }
 
-  @RequestMapping(value = "/product/create")
-  public ModelAndView goCreateProductPage(Model model) {
-    model.addAttribute("sid", productService.getTotalCount());
-    model.addAttribute("productTypes", productService.findAllProductType());
-    return MvUtil.go("/product/productCreate");
-  }
-
-  @RequestMapping(value = "/product", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-  public LejiaResult createProduct(@RequestBody ProductDto productDto) {
-    try {
-      productService.editProduct(productDto);
-      return new LejiaResult().ok();
-    } catch (Exception e) {
-      return new LejiaResult(500, "创建商品失败", null);
-    }
+  /**
+   * 分页获取普通商品列表  16/11/03
+   */
+  @RequestMapping(value = "/product/ajaxList", method = RequestMethod.POST)
+  public LejiaResult ajaxList(@RequestBody ProductCriteria criteria) {
+    return LejiaResult.ok(productService.findCommonProductByPage(criteria));
   }
 
   @RequestMapping(value = "/product/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
   public LejiaResult deleteProduct(@PathVariable Long id) {
     try {
       productService.deleteProduct(id);
-      return new LejiaResult().ok();
+      return LejiaResult.ok();
     } catch (Exception e) {
       return new LejiaResult(500, "删除商品失败", null);
     }
   }
 
   @RequestMapping(value = "/product/edit", method = RequestMethod.GET)
-  public ModelAndView goEditProductPage(@RequestParam Long id, Model model) {
-    Product product = productService.findOneProduct(id);
-    model.addAttribute("product", product);
+  public ModelAndView goEditProductPage(@RequestParam(required = false) Long id, Model model) {
+
+    Product product = null;
+    List<ProductDetail> detailList = null;
+    List<ScrollPicture> scrollPictureList = null;
+    if (id != null) {
+      product = productService.findOneProduct(id);
+    } else {
+      model.addAttribute("sid", productService.getTotalCount());
+    }
+    if (product != null) {
+      model.addAttribute("product", product);
+      detailList = productService.findAllProductDetailsByProduct(product);
+      scrollPictureList = scrollPictureService.findAllScorllPicture(product);
+      model.addAttribute("detailList", detailList);
+      if (detailList == null) {
+        model.addAttribute("detailSize", 1);
+      } else {
+        model.addAttribute("detailSize", detailList.size());
+      }
+      model.addAttribute("scrollList", scrollPictureList);
+      if (scrollPictureList == null) {
+        model.addAttribute("scrollSize", 1);
+      } else {
+        model.addAttribute("scrollSize", scrollPictureList.size());
+      }
+    }
     model.addAttribute("productTypes", productService.findAllProductType());
-    model.addAttribute("productSpecs", productSpecService.findProductSpecsByProduct(product));
-    return MvUtil.go("/product/productCreate");
+    model.addAttribute("markList", categoryService.findAllByCategory(1));
+
+    return MvUtil.go("/product/common/productCreate");
   }
 
-  @RequestMapping(value = "/product", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
-  public LejiaResult editProduct(@RequestBody ProductDto productDto) {
+  /**
+   * 普通商品保存 16/11/03
+   */
+  @RequestMapping(value = "/product/save", method = RequestMethod.POST)
+  public LejiaResult ajaxSave(@RequestBody LimitProductDto productDto) {
     try {
-      productService.editProduct(productDto);
-      return new LejiaResult().ok();
+      productService.saveCommonProduct(productDto);
     } catch (Exception e) {
       e.printStackTrace();
-      return new LejiaResult(500, "修改商品失败", null);
+      return LejiaResult.build(303, "保存异常");
     }
+    return LejiaResult.ok();
   }
 
   @RequestMapping(value = "/product/putOn/{id}")
@@ -159,19 +162,24 @@ public class ProductController {
     productService.addProductType(productType);
   }
 
-  @RequestMapping(value = "/product/pictureManage", method = RequestMethod.GET)
-  public ModelAndView goPictureManagePage(@RequestParam Long id, Model model) {
+  /**
+   * 普通商品规格管理页面  16/11/03
+   *
+   * @param id 商品ID
+   */
+  @RequestMapping(value = "/product/specManage", method = RequestMethod.GET)
+  public ModelAndView goSpecManagePage(@RequestParam Long id, Model model) {
     Product product = productService.findOneProduct(id);
     model.addAttribute("product", product);
-    model.addAttribute("productDetails", productService.findAllProductDetailsByProduct(product));
-    model.addAttribute("scrollPictures", scrollPictureService.findAllScorllPicture(product));
-    model.addAttribute("productSpecs",productSpecService.findProductSpecsByProduct(product));
-    return MvUtil.go("/product/pictureManage");
+    model.addAttribute("productSpecs", productSpecService.findProductSpecsByProduct(product));
+    return MvUtil.go("/product/common/productSpec");
   }
 
   @RequestMapping(value = "/product/qrCode", method = RequestMethod.GET)
-  public @ResponseBody LejiaResult productQrCode(@RequestParam Long id){
-      return LejiaResult.build(200,productService.qrCodeManage(id));
+  public
+  @ResponseBody
+  LejiaResult productQrCode(@RequestParam Long id) {
+    return LejiaResult.build(200, productService.qrCodeManage(id));
   }
 
 

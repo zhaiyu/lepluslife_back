@@ -1,6 +1,9 @@
 package com.jifenke.lepluslive.product.domain.entities;
 
+import com.jifenke.lepluslive.weixin.domain.entities.Category;
+
 import java.io.Serializable;
+import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
@@ -9,6 +12,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.JoinColumn;
+import javax.persistence.ManyToOne;
 import javax.persistence.OneToOne;
 import javax.persistence.Table;
 import javax.validation.constraints.NotNull;
@@ -23,6 +27,10 @@ public class Product implements Serializable {
   @Id
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
+
+  private Date createDate = new Date();  //创建时间
+
+  private Date lastUpdate;   //最后修改时间
 
   private Long sid;
 
@@ -49,10 +57,10 @@ public class Product implements Serializable {
   private Integer customSale = 0;  //自定义起始销售量
 
   @Column(name = "points_count")
-  private Long pointsCount = 0L;   // 该商品的所有订单使用的积分加和
+  private Long pointsCount = 0L;   // 该商品的所有订单使用的积分加和  不再使用
 
   @Column(name = "packet_count")
-  private Long packetCount = 0L; //该商品的所有订单发放的红包加和
+  private Long packetCount = 0L; //该商品的所有订单发放的红包加和    不再使用
 
   private String description;
 
@@ -62,11 +70,20 @@ public class Product implements Serializable {
 
   private String qrCodePicture;
 
-  private Integer postage = 0;   //该商品所需邮费
+  private Integer postage = 0;   //该商品所需邮费 0=包邮
+
+  private Integer freePrice = 0;  //不包邮时，满此价格包邮，针对普通商品
 
   private Integer buyLimit = 1;  //每个用户限购数量 0=无限制
 
   private Integer hotStyle = 0;  //1=爆款
+
+  @OneToOne(fetch = FetchType.EAGER)
+  @JoinColumn(name = "product_type_id")
+  private ProductType productType;
+
+  @ManyToOne
+  private Category mark; //商品角标  为null时无角标
 
   public String getQrCodePicture() {
     return qrCodePicture;
@@ -76,12 +93,24 @@ public class Product implements Serializable {
     this.qrCodePicture = qrCodePicture;
   }
 
-  @OneToOne(fetch = FetchType.EAGER)
-  @JoinColumn(name = "product_type_id")
-  private ProductType productType;
-
   public String getThumb() {
     return thumb;
+  }
+
+  public Date getLastUpdate() {
+    return lastUpdate;
+  }
+
+  public void setLastUpdate(Date lastUpdate) {
+    this.lastUpdate = lastUpdate;
+  }
+
+  public Date getCreateDate() {
+    return createDate;
+  }
+
+  public void setCreateDate(Date createDate) {
+    this.createDate = createDate;
   }
 
   public void setThumb(String thumb) {
@@ -164,6 +193,14 @@ public class Product implements Serializable {
     return pointsCount;
   }
 
+  public Category getMark() {
+    return mark;
+  }
+
+  public void setMark(Category mark) {
+    this.mark = mark;
+  }
+
   public void setPointsCount(Long pointsCount) {
     this.pointsCount = pointsCount;
   }
@@ -174,6 +211,14 @@ public class Product implements Serializable {
 
   public void setPacketCount(Long packetCount) {
     this.packetCount = packetCount;
+  }
+
+  public Integer getFreePrice() {
+    return freePrice;
+  }
+
+  public void setFreePrice(Integer freePrice) {
+    this.freePrice = freePrice;
   }
 
   public Integer getType() {

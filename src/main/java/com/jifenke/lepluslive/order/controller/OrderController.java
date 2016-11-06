@@ -131,9 +131,12 @@ public class OrderController {
   public ModelAndView showExpress(@PathVariable Long id, Model model) {
 
     OnLineOrder order = orderService.findOnLineOrderById(id);
-
+    ExpressInfo expressInfo = null;
     //调接口获取物流信息，存入数据库
-    ExpressInfo expressInfo = expressInfoService.findExpressAndSave(order);
+    if (order.getExpressNumber() != null && !"".equals(order.getExpressNumber())) {
+      expressInfo = expressInfoService.findExpressAndSave(order);
+    }
+
     if (expressInfo != null) {
       List<ExpressDto>
           expressDtoList =

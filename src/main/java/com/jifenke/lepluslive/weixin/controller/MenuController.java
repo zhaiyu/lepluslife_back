@@ -3,23 +3,18 @@ package com.jifenke.lepluslive.weixin.controller;
 import com.jifenke.lepluslive.global.util.JsonUtils;
 import com.jifenke.lepluslive.global.util.LejiaResult;
 import com.jifenke.lepluslive.global.util.MvUtil;
-import com.jifenke.lepluslive.topic.domain.entities.Topic;
 import com.jifenke.lepluslive.weixin.domain.entities.Menu;
 import com.jifenke.lepluslive.weixin.service.MenuService;
 
-import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -48,7 +43,7 @@ public class MenuController {
     model.addAttribute("menuList", menuList);
     model.addAttribute("parentMenuList", parentMenuList);
     model.addAttribute("menuJson", JsonUtils.objectToJson(menuList));
-    model.addAttribute("parentMenuJson", JsonUtils.objectToJson(parentMenuList));
+//    model.addAttribute("parentMenuJson", JsonUtils.objectToJson(parentMenuList));
 
     return MvUtil.go("/weixin/menuList");
   }

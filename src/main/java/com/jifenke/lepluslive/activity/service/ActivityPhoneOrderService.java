@@ -81,6 +81,28 @@ public class ActivityPhoneOrderService {
   }
 
   /**
+   * 每一种话费产品的数据统计  16/11/04
+   */
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+  public Map ruleCount() {
+
+    List<Object[]> list = repository.ruleCount();
+    Map<Object, Object> map = new HashMap<>();
+
+    for (Object[] o : list) {
+      Map<Object, Object> result = new HashMap<>();
+      result.put("totalWorth", o[1]);
+      result.put("totalPrice", o[2]);
+      result.put("totalScore", o[3]);
+      result.put("totalNumber", o[4]);
+      result.put("totalUser", o[5]);
+      result.put("totalBack", o[6]);
+      map.put(o[0], result);
+    }
+    return map;
+  }
+
+  /**
    * 按条件查询话费订单列表  16/10/27
    */
   @Transactional(propagation = Propagation.REQUIRED, readOnly = true)

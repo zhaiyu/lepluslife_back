@@ -131,6 +131,16 @@ public class ActivityPhoneController {
   }
 
   /**
+   * 查询某个话费产品  16/11/04
+   *
+   * @param id 话费产品ID
+   */
+  @RequestMapping(value = "/findRule/{id}", method = RequestMethod.GET)
+  public LejiaResult findRule(@PathVariable Long id) {
+    return LejiaResult.ok(phoneRuleService.findById(id));
+  }
+
+  /**
    * 查询话费产品列表(一次全部取出)  16/10/27
    *
    * @param state 话费产品状态  0=下线|1=上线|-1=全部
@@ -138,7 +148,12 @@ public class ActivityPhoneController {
   @RequestMapping(value = "/ruleList", method = RequestMethod.GET)
   public LejiaResult ruleList(@RequestParam Integer state) {
 
-    return LejiaResult.ok(phoneRuleService.findListByState(state));
+    Map map = phoneOrderService.ruleCount();
+    Map<Object, Object> result = new HashMap<>();
+    result.put("countList", map);
+    result.put("ruleList", phoneRuleService.findListByState(state));
+
+    return LejiaResult.ok(result);
   }
 
   /**

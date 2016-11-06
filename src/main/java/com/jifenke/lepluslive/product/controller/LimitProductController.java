@@ -47,9 +47,6 @@ public class LimitProductController {
   @Inject
   private ProductSpecService productSpecService;
 
-  @Inject
-  private ProductDetailService productDetailService;
-
   /**
    * 爆品页面 16/09/18
    *

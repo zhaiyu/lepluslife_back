@@ -24,6 +24,12 @@ public interface ActivityPhoneOrderRepository extends JpaRepository<ActivityPhon
   List<Object[]> orderCount();
 
   /**
+   * 每一种话费产品的数据统计  16/11/04
+   */
+  @Query(value = "SELECT phone_rule_id,SUM(worth) AS totalWorth,SUM(true_price) AS totalPrice,SUM(true_scoreb) AS totalScore,COUNT(*) AS totalNumber,COUNT(DISTINCT(le_jia_user_id)) AS totalUser,SUM(pay_back_score) AS totalBack FROM activity_phone_order WHERE pay_state = 1 GROUP BY phone_rule_id", nativeQuery = true)
+  List<Object[]> ruleCount();
+
+  /**
    * 今日已使用话费池  16/10/27
    */
   @Query(value = "SELECT SUM(worth) FROM activity_phone_order WHERE pay_state = 1 AND pay_date BETWEEN DATE_FORMAT(NOW(),'%Y-%m-%d') AND DATE_ADD(DATE_FORMAT(NOW(),'%Y-%m-%d'),INTERVAL 1 DAY)", nativeQuery = true)

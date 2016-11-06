@@ -18,12 +18,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import sun.rmi.runtime.Log;
-
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStreamReader;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -43,25 +42,31 @@ public class ExpressInfoService {
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public ExpressInfo findExpressAndSave(OnLineOrder order) {
-
-    //查询数据库是否已保存
-    ExpressInfo expressInfo = expressInfoRepository.findOneByOnLineOrder(order);
-
-    if (expressInfo != null && (3 == expressInfo.getStatus())) {
-      return expressInfo;
-    }
     Date date = new Date();
-    if (expressInfo != null && ((date.getTime() - expressInfo.getFreshDate().getTime())
-                                < 7200000)) {
-      return expressInfo;
+    //查询数据库是否已保存
+    List<ExpressInfo> infoList = expressInfoRepository.findByOnLineOrder(order);
+    ExpressInfo expressInfo = null;
+    if (infoList != null && infoList.size() > 0) {
+      expressInfo = infoList.get(0);
+    }
+
+    if (expressInfo != null) {
+      if (order.getExpressNumber().equals(expressInfo.getExpressNumber())) {
+        if (3 == expressInfo.getStatus()
+            || (date.getTime() - expressInfo.getFreshDate().getTime()) < 7200000) {
+          return expressInfo;
+        }
+      } else {
+        expressInfo.setExpressNumber(order.getExpressNumber());
+        expressInfo.setExpressCompany(order.getExpressCompany());
+      }
     }
 
     Map<String, Object> map = getExpressInfo(order.getExpressNumber());
     if (!"0".equals("" + map.get("status"))) {
       return null;
     }
-    JSONObject jasonObject = JSONObject.fromObject(map.get("result"));
-    Map mapList = (Map) jasonObject;
+    Map mapList =  JSONObject.fromObject(map.get("result"));
     if (expressInfo == null) {
       expressInfo = new ExpressInfo();
       expressInfo.setOnLineOrder(order);
@@ -73,7 +78,6 @@ public class ExpressInfoService {
     expressInfo.setStatus(status);
     expressInfo.setContent(mapList.get("list").toString());
     expressInfo.setFreshDate(date);
-
     expressInfoRepository.save(expressInfo);
 
     return expressInfo;

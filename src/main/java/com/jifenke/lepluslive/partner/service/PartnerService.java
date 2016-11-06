@@ -17,6 +17,7 @@ import com.jifenke.lepluslive.partner.domain.entities.PartnerManagerWalletLog;
 import com.jifenke.lepluslive.partner.domain.entities.PartnerScoreLog;
 import com.jifenke.lepluslive.partner.domain.entities.PartnerWallet;
 import com.jifenke.lepluslive.partner.domain.entities.PartnerWalletLog;
+import com.jifenke.lepluslive.partner.domain.entities.PartnerWalletOnline;
 import com.jifenke.lepluslive.partner.repository.PartnerInfoRepository;
 import com.jifenke.lepluslive.partner.repository.PartnerManagerRepository;
 import com.jifenke.lepluslive.partner.repository.PartnerManagerWalletLogRepository;
@@ -24,6 +25,7 @@ import com.jifenke.lepluslive.partner.repository.PartnerManagerWalletRepository;
 import com.jifenke.lepluslive.partner.repository.PartnerRepository;
 import com.jifenke.lepluslive.partner.repository.PartnerScoreLogRepository;
 import com.jifenke.lepluslive.partner.repository.PartnerWalletLogRepository;
+import com.jifenke.lepluslive.partner.repository.PartnerWalletOnlineRepository;
 import com.jifenke.lepluslive.partner.repository.PartnerWalletRepository;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -62,6 +64,9 @@ public class PartnerService {
 
   @Inject
   private PartnerWalletRepository partnerWalletRepository;
+
+  @Inject
+  private PartnerWalletOnlineRepository walletOnlineRepository;
 
   @Inject
   private PartnerWalletLogRepository partnerWalletLogRepository;
@@ -137,6 +142,10 @@ public class PartnerService {
     partnerWallet.setTotalScoreA(500000L);
     partnerWallet.setTotalScoreB(14000L);
     partnerWalletRepository.save(partnerWallet);
+    //创建线上钱包
+    PartnerWalletOnline walletOnline = new PartnerWalletOnline();
+    walletOnline.setPartner(partner);
+    walletOnlineRepository.save(walletOnline);
     PartnerScoreLog partnerScoreLog = new PartnerScoreLog();
     partnerScoreLog.setDescription("关注送红包");
     partnerScoreLog.setType(1);

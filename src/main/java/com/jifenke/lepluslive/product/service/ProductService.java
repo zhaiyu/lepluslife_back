@@ -32,6 +32,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -77,15 +78,81 @@ public class ProductService {
   @Inject
   private ScrollPictureRepository scrollPictureRepository;
 
-
+  /**
+   * 普通商品分页条件查询  16/11/03
+   *
+   * @param criteria 查询条件
+   */
   @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-  public Page findProductsByPage(Integer offset, ProductCriteria productCriteria) {
+  public Map findCommonProductByPage(ProductCriteria criteria) {
+    String order = "id";
+    Sort sort = null;
+    if (criteria.getOrderBy() != null) {
+      switch (criteria.getOrderBy()) {
+        case 1:
+          order = "createDate";
+          break;
+        case 2:
+          order = "sid";
+          break;
+        case 3:
+          order = "minPrice";
+          break;
+        case 4:
+          order = "minScore";
+          break;
+        case 5:
+          order = "saleNumber";
+          break;
+        case 6:
+          order = "lastUpdate";
+          break;
+        default:
+          break;
+      }
+    }
+
+    if (criteria.getDesc() == null || criteria.getDesc() == 1) {
+      sort = new Sort(Sort.Direction.DESC, order);
+    } else {
+      sort = new Sort(Sort.Direction.ASC, order);
+    }
     Page<Product>
         page =
-        productRepository.findAll(getWhereClause(productCriteria),
-                                  new PageRequest(offset - 1, 10,
-                                                  new Sort(Sort.Direction.ASC, "sid")));
-    return page;
+        productRepository.findAll(getWhereClause(criteria),
+                                  new PageRequest(criteria.getOffset() - 1, 10, sort));
+    List<Product> list = page.getContent();
+    Map<String, Object> result = new HashMap<>();
+    List<Map> productList = new ArrayList<>();
+    result.put("totalPages", page.getTotalPages());
+    result.put("totalElements", page.getTotalElements());
+    for (Product product : list) {
+      Map<String, Object> pro = new HashMap<>();
+      pro.put("typeName", product.getProductType().getType());
+      pro.put("sid", product.getSid());
+      pro.put("id", product.getId());
+      pro.put("name", product.getName());
+      pro.put("thumb", product.getThumb());
+      pro.put("picture", product.getPicture());
+      pro.put("minPrice", product.getMinPrice());
+      pro.put("minScore", product.getMinScore());
+      pro.put("price", product.getPrice());
+      pro.put("state", product.getState());
+      pro.put("saleNumber", product.getSaleNumber());
+
+      //库存
+      List<ProductSpec> specList = productSpecService.findProductSpecsByProduct(product);
+      int repository = 0;
+      for (ProductSpec spec : specList) {
+        if (spec.getState() == 1) {
+          repository += spec.getRepository();
+        }
+      }
+      pro.put("repository", repository);
+      productList.add(pro);
+    }
+    result.put("productList", productList);
+    return result;
   }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
@@ -175,20 +242,9 @@ public class ProductService {
   }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-  public ProductType findOneProductType(Integer id) {
-    return productTypeRepository.findOne(id);
-  }
-
-  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
   public List<ProductDetail> findAllProductDetailsByProduct(Product product) {
     return productDetailRepository.findAllByProduct(product);
   }
-
-//  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-//  public List<ProductSpec> findProductSpecsByProduct(Product product) {
-//    return productSpecRepository.findAllByProduct(product);
-//  }
-
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public void orderCancle(List<OrderDetail> orderDetails) {
@@ -232,7 +288,9 @@ public class ProductService {
       List<ProductSpec> specList = productSpecService.findProductSpecsByProduct(product);
       int repository = 0;
       for (ProductSpec spec : specList) {
-        repository += spec.getRepository();
+        if (spec.getState() == 1) {
+          repository += spec.getRepository();
+        }
       }
       pro.put("repository", repository);
       productList.add(pro);
@@ -255,6 +313,36 @@ public class ProductService {
         if (productCriteria.getProductType() != null) {
           predicate.getExpressions().add(
               cb.equal(r.<ProductType>get("productType"), productCriteria.getProductType()));
+        }
+        if (productCriteria.getStartDate() != null && (!""
+            .equals(productCriteria.getStartDate()))) { //创建时间
+          predicate.getExpressions().add(
+              cb.between(r.get("createDate"), new Date(productCriteria.getStartDate()),
+                         new Date(productCriteria.getEndDate())));
+        }
+        if (productCriteria.getMark() != null) {
+          predicate.getExpressions().add(
+              cb.equal(r.get("mark").get("id"), productCriteria.getMark()));
+        }
+        if (productCriteria.getMinTruePrice() != null) {
+          predicate.getExpressions().add(
+              cb.greaterThanOrEqualTo(r.get("minPrice"), productCriteria.getMinTruePrice()));
+        }
+        if (productCriteria.getMaxTruePrice() != null) {
+          predicate.getExpressions().add(
+              cb.lessThanOrEqualTo(r.get("minPrice"), productCriteria.getMaxTruePrice()));
+        }
+        if (productCriteria.getName() != null && (!""
+            .equals(productCriteria.getName()))) {
+          predicate.getExpressions().add(
+              cb.like(r.get("name"), "%" + productCriteria.getName() + "%"));
+        }
+        if (productCriteria.getPostage() != null) {
+          if (productCriteria.getPostage() == 0) { //包邮
+            predicate.getExpressions().add(cb.equal(r.get("postage"), 0));
+          } else {
+            predicate.getExpressions().add(cb.notEqual(r.get("postage"), 0));
+          }
         }
         return predicate;
       }
@@ -332,7 +420,7 @@ public class ProductService {
   }
 
   /**
-   * 保存秒死商品 16/09/19
+   * 保存秒杀商品 16/09/19
    */
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public void saveLimitProduct(LimitProductDto limitProductDto) throws Exception {
@@ -399,6 +487,8 @@ public class ProductService {
 
           DBSpec.setProduct(DBProduct);
           DBSpec.setPicture("2");
+          DBSpec.setToPartner(spec.getToPartner());
+          DBSpec.setToMerchant(spec.getToMerchant());
           DBSpec.setPrice(spec.getPrice());
           DBSpec.setMinPrice(spec.getMinPrice());
           DBSpec.setMinScore(spec.getMinScore());
@@ -446,4 +536,103 @@ public class ProductService {
       throw new Exception();
     }
   }
+
+  /**
+   * 保存普通商品 16/11/03
+   */
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  public void saveCommonProduct(LimitProductDto limitProductDto) throws Exception {
+
+    Product product = limitProductDto.getProduct();
+
+    List<ProductDetail> detailList = limitProductDto.getProductDetailList();
+    List<ScrollPicture> scrollList = limitProductDto.getScrollPictureList();
+    List<ProductDetail> delDetailList = limitProductDto.getDelDetailList();
+    List<ScrollPicture> delScrollList = limitProductDto.getDelScrollList();
+    try {
+      Product DBProduct = null;
+      if (product.getId() == null) {
+        DBProduct = new Product();
+      } else {
+        DBProduct = productRepository.findOne(product.getId());
+        if (DBProduct == null) {
+          throw new RuntimeException();
+        }
+      }
+      DBProduct.setSid(product.getSid());
+      DBProduct.setProductType(product.getProductType());
+      DBProduct.setMark(product.getMark());
+      DBProduct.setState(1);
+      DBProduct.setType(1);
+      DBProduct.setMinPrice(product.getMinPrice());
+      DBProduct.setMinScore(product.getMinScore());
+      DBProduct.setName(product.getName());
+      DBProduct.setPrice(product.getPrice());
+      DBProduct.setPostage(product.getPostage());
+      DBProduct.setFreePrice(product.getFreePrice());
+      DBProduct.setCustomSale(product.getCustomSale());
+      DBProduct.setPicture(product.getPicture());
+      DBProduct.setThumb(product.getThumb());
+      productRepository.save(DBProduct);
+
+      if (delDetailList != null && delDetailList.size() > 0) {
+        for (ProductDetail detail : delDetailList) {
+          productDetailRepository.delete(detail);
+        }
+      }
+      if (delScrollList != null && delScrollList.size() > 0) {
+        for (ScrollPicture scroll : delScrollList) {
+          scrollPictureRepository.delete(scroll);
+        }
+      }
+
+      if (detailList != null && detailList.size() > 0) {
+        for (ProductDetail detail : detailList) {
+          ProductDetail DBDetail = null;
+          if (detail.getId() == null) {
+            DBDetail = new ProductDetail();
+          } else {
+            DBDetail = productDetailRepository.findOne(detail.getId());
+            if (DBDetail == null) {
+              throw new RuntimeException();
+            }
+          }
+          DBDetail.setProduct(DBProduct);
+          DBDetail.setPicture(detail.getPicture());
+          DBDetail.setSid(detail.getSid());
+          productDetailRepository.save(DBDetail);
+        }
+      }
+      if (scrollList != null && scrollList.size() > 0) {
+        for (ScrollPicture scroll : scrollList) {
+          ScrollPicture DBScroll = null;
+          if (scroll.getId() == null) {
+            DBScroll = new ScrollPicture();
+          } else {
+            DBScroll = scrollPictureRepository.findOne(scroll.getId());
+            if (DBScroll == null) {
+              throw new RuntimeException();
+            }
+          }
+          DBScroll.setProduct(DBProduct);
+          DBScroll.setSid(scroll.getSid());
+          DBScroll.setPicture(scroll.getPicture());
+          scrollPictureRepository.save(DBScroll);
+        }
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new Exception();
+    }
+  }
+
+  //  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+//  public ProductType findOneProductType(Integer id) {
+//    return productTypeRepository.findOne(id);
+//  }
+
+//  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+//  public List<ProductSpec> findProductSpecsByProduct(Product product) {
+//    return productSpecRepository.findAllByProduct(product);
+//  }
 }

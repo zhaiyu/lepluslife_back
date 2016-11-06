@@ -113,4 +113,6 @@ public class ActivityPhoneRuleService {
     return repository.findByStateOrderByLastUpdateDesc(state);
   }
 
+
+
 }
