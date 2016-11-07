@@ -124,7 +124,7 @@
                         <button type="button" class="btn btn-primary btn-create" style="margin:10px;">返回商户管理</button>
                     </div>
                     <div class="col-md-4 text-center">
-                        <h2>POS机管理<font size="3" color="red">(已认证)</font></h2>
+                        <h2><font color="#a52a2a">${merchantName}</font> - POS机管理<font size="3" color="red">(已认证)</font></h2>
                     </div>
                 </div>
                 <hr>
@@ -512,7 +512,7 @@
                         </div>
                     </div>
                 </div>
-                <div>
+                <%--<div>
                     <div>导流订单参数</div>
                     <div>
                         <div><span>红包比</span><input type="number" class="form-control"  name="scoreARebate" /><span style="margin-right: 5%;">%</span><span>积分比</span><input type="number" class="form-control"  name="scoreBRebate"/><span>%</span></div>
@@ -523,7 +523,7 @@
                     <div>
                         <div><span>红包比</span><input type="number" class="form-control"  name="userScoreARebate"/><span style="margin-right: 5%;">%</span><span>积分比</span><input type="number" class="form-control"  name="userScoreBRebate"/><span>%</span></div>
                     </div>
-                </div>
+                </div>--%>
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
@@ -668,10 +668,10 @@
         $("input[name=wxCommission]").val('');
         $("input[name=wxUserCommission]").val('');
         $("input[name=aliUserCommission]").val('');
-        $("input[name=scoreARebate]").val('');
+     /* $("input[name=scoreARebate]").val('');
         $("input[name=scoreBRebate]").val('');
         $("input[name=userScoreARebate]").val('');
-        $("input[name=userScoreBRebate]").val('');
+        $("input[name=userScoreBRebate]").val('');*/
     }
 
     //  保存机具信息
@@ -699,17 +699,17 @@
             return;
         }
 
-        if($("input[name=ceil]").val()!=null&&$("input[name=ceil]").val()!='') {
+        /*if($("input[name=scoreARebate]").val()!=null&&$("input[name=scoreARebate]").val()!='') {
             merchantPos.scoreARebate = $("input[name=scoreARebate]").val();
         }else {
             return;
         }
-        if($("input[name=ceil]").val()!=null&&$("input[name=ceil]").val()!='') {
+        if($("input[name=scoreBRebate]").val()!=null&&$("input[name=scoreBRebate]").val()!='') {
             merchantPos.scoreBRebate = $("input[name=scoreBRebate]").val();
         }else {
             return;
-        }
-        if($("input[name=userScoreARebate]").val()!=null&&$("input[name=userScoreARebate]").val()!='') {
+        }*/
+        /*if($("input[name=userScoreARebate]").val()!=null&&$("input[name=userScoreARebate]").val()!='') {
             merchantPos.userScoreARebate = $("input[name=userScoreARebate]").val();
         }else {
             return;
@@ -718,7 +718,7 @@
             merchantPos.userScoreBRebate = $("input[name=userScoreBRebate]").val();
         }else {
             return;
-        }
+        }*/
         merchantPos.ljCommission = $("input[name=ljCommission]").val();
         merchantPos.id = $("input[name=id]").val();
         //  表单提交
@@ -753,10 +753,10 @@
             $("input[name=wxCommission]").val(pos.wxCommission);
             $("input[name=wxUserCommission]").val(pos.wxUserCommission);
             $("input[name=aliUserCommission]").val(pos.aliUserCommission);
-            $("input[name=scoreARebate]").val(pos.scoreARebate);
+         /* $("input[name=scoreARebate]").val(pos.scoreARebate);
             $("input[name=scoreBRebate]").val(pos.scoreBRebate);
             $("input[name=userScoreARebate]").val(pos.userScoreARebate);
-            $("input[name=userScoreBRebate]").val(pos.userScoreBRebate);
+            $("input[name=userScoreBRebate]").val(pos.userScoreBRebate);*/
         },"json");
     }
 
