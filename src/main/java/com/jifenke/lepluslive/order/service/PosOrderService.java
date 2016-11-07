@@ -26,7 +26,9 @@ import org.springframework.transaction.annotation.Transactional;
 import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -193,4 +195,47 @@ public class PosOrderService {
       return merchant;
     }
   }
+
+  /**
+   *  分页查找 订单文件(有错误记录)
+   */
+  @Transactional(propagation = Propagation.REQUIRED,readOnly = true)
+  public List<PosDailyBill> findErrorPosDailyBill(Integer offset, Integer pageSize) {
+    Integer startIndex = (offset-1) * pageSize;
+    return  posDailyBillRepository.findErrorBillByPage(startIndex,pageSize);
+  }
+  /**
+   *  分页查找 订单文件-总记录数  (有错误记录)
+   */
+  @Transactional(propagation = Propagation.REQUIRED,readOnly = true)
+  public Long countErroPosDailyBill() {
+    return  posDailyBillRepository.countErrorBill();
+  }
+
+  /**
+   *  分页查找 订单文件-总页数  (有错误记录)
+   */
+  @Transactional(propagation = Propagation.REQUIRED,readOnly = true)
+  public Integer pageCountErroPosDailyBill(Integer pageSize) {
+    Long countErrorBill = posDailyBillRepository.countErrorBill();
+    Integer pageCount = new Double(Math.ceil((countErrorBill/(pageSize*1.0)))).intValue();
+    return  pageCount;
+  }
+
+
+  /***
+   *  根据订单文件查找相应的错误记录
+   * @param dailyBills
+   * @return
+   */
+  @Transactional(propagation = Propagation.REQUIRED,readOnly = true)
+  public List<List<PosErrorLog>> findPosErrorLogByBill(List<PosDailyBill> dailyBills) {
+    List<List<PosErrorLog>> errlogsList  =  new ArrayList<>();
+    for (PosDailyBill dailyBill : dailyBills) {
+      List<PosErrorLog> errorLogs = posErrorLogRepository.findByPosDailyBill(dailyBill);
+      errlogsList.add(errorLogs);
+    }
+    return errlogsList;
+  }
+
 }
