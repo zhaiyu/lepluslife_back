@@ -86,7 +86,7 @@ public class Merchant {
 
   private BigDecimal scoreARebate; //返a积分比 单位百分比
 
-  private BigDecimal scoreBRebate;
+  private BigDecimal scoreBRebate; //普通订单返B积分策略
 
   private String contact; //联系人
 
