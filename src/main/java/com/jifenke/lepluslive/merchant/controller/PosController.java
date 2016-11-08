@@ -53,10 +53,15 @@ public class PosController {
       merchantPosDto.setPosId(merchantPos.getPosId());
       merchantPosDto.setPsamCard(merchantPos.getPsamCard());
       merchantPosDto.setMerchant(merchantPos.getMerchant());
-//      merchantPosDto.setPosMerchantNo(merchantPos.getPosMerchantNo());
-//      merchantPosDto.setPhoneNumber(merchantPos.getPhoneNumber());
-//      merchantPosDto.setCreatedDate(merchantPos.getCreatedDate());
+      merchantPosDto.setCreatedDate(merchantPos.getCreatedDate());
       merchantPosDto.setLjCommission(merchantPos.getLjCommission());
+      merchantPosDto.setCreditCardCommission(merchantPos.getCreditCardCommission());
+      merchantPosDto.setDebitCardCommission(merchantPos.getDebitCardCommission());
+      merchantPosDto.setAliCommission(merchantPos.getAliCommission());
+      merchantPosDto.setAliUserCommission(merchantPos.getAliUserCommission());
+      merchantPosDto.setWxCommission(merchantPos.getWxCommission());
+      merchantPosDto.setCeil(merchantPos.getCeil());
+      merchantPosDto.setWxUserCommission(merchantPos.getWxUserCommission());
       return merchantPosService.countPosOrderFlow(merchantPosDto);
     }).collect(Collectors.toList());
     Map results = new HashMap<>();

@@ -277,7 +277,7 @@
                    '<td><span>未绑定手机号</span><br><span>('
                    + content[i].offLineOrder.leJiaUser.userSid + ')</span></td>'
                  }
-                 contentStr += '<td>' + content[i].offLineOrder.totalPrice / 100 + '</td>'
+                 //  contentStr += '<td>' + content[i].offLineOrder.totalPrice / 100 + '</td>'
                  contentStr += '<td>' + content[i].shareMoney / 100 + '</td>'
                  contentStr += '<td>' + content[i].offLineOrder.merchant.name+ '</td>'
                  contentStr +=

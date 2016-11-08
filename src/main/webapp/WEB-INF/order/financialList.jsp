@@ -90,8 +90,8 @@
                            onclick="searchFinancialByState(0)">待转账</a></li>
                     <li class="active"><a href="#tab2" data-toggle="tab"
                                           onclick="searchFinancialByState(1)">转账记录</a></li>
-                    <li class="active"><a href="#tab2" data-toggle="tab"
-                                          onclick="searchFinancialByState(3)">结算单差错记录</a></li>
+                    <%--<li class="active"><a href="#tab2" data-toggle="tab"
+                                           onclick="searchFinancialByState(3)">结算单差错记录</a></li>--%>
                     <li class="active"><a href="#tab2" data-toggle="tab"
                                           onclick="searchFinancialByState(2)">挂账记录</a></li>
                 </ul>
@@ -321,13 +321,32 @@
                            } else {
                                contentStr += '<td>T+2</td>'
                            }
-                           contentStr += '<td>' + content[i].merchant.payee + '</td>';
                            contentStr +=
-                           '<td width="150px"><span>' + content[i].transferPrice / 100
+                                   '<td width="150px"><span>' + content[i].transferPrice / 100
+                                   + '</span><br><span  width="150px">(¥'
+                                   + content[i].transferFromTruePay / 100 + '微信 ¥'
+                                   + (content[i].transferPrice - content[i].transferFromTruePay) / 100
+                                   + '红包)</span></td>';
+
+                           contentStr +=
+                           '<td width="150px"><span>' + content[i].appTransfer / 100
                            + '</span><br><span  width="150px">(¥'
-                           + content[i].transferFromTruePay / 100 + '微信 ¥'
-                           + (content[i].transferPrice - content[i].transferFromTruePay) / 100
+                           + content[i].appTransFromTruePay / 100 + '微信 ¥'
+                           + (content[i].appTransfer - content[i].appTransFromTruePay) / 100
                            + '红包)</span></td>';
+                           if(content[i].posTransfer!=null&&content[i].posTransFromTruePay!=null) {
+                               contentStr+=
+                                       '<td>'+(content[i].posTransfer - content[i].posTransFromTruePay)/100
+                                       +'</td>';
+                           }else {
+                               contentStr+='<td>0</td>';
+                           }
+                           if(content[i].posTransfer!=null&&content[i].posTransFromTruePay!=null) {
+                               contentStr+="<td>"+(content[i].transferPrice+content[i].appTransfer+content[i].posTransfer-content[i].posTransFromTruePay)/100+"</td>";
+                           }else {
+                               contentStr+="<td>"+(content[i].transferPrice+content[i].appTransfer+0)/100+'</td>';
+                           }
+
                            if (content[i].state == 0) {
                                contentStr +=
                                '<td><input type="hidden" class="id-hidden" value="' + content[i].id
