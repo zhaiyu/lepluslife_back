@@ -409,6 +409,7 @@ public class MerchantService {
       merchantInfo.setFeature(info.getFeature());
       merchantInfo.setReason(info.getReason());
       merchantInfo.setVipPicture(info.getVipPicture());
+      merchantInfo.setDoorPicture(info.getDoorPicture());
       merchantInfoRepository.save(merchantInfo);
     } else {
       merchantInfoRepository.save(info);

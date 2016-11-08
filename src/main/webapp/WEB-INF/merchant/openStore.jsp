@@ -182,7 +182,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="merchantPic" class="col-sm-2 control-label">商品图片<span
+                        <label for="merchantPic" class="col-sm-2 control-label">列表页小图<span
                                 class="spanColor">*</span></label>
 
                         <div class="col-sm-4">
@@ -190,6 +190,19 @@
                                 <img src="${merchant.picture}" alt="..." id="merchantPicture">
                             </div>
                             <input type="file" class="form-control" id="merchantPic" name="file"
+                                   data-url="/manage/file/saveImage">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="merchantPic" class="col-sm-2 control-label">列表页大图(710*360)<span
+                                class="spanColor">*</span></label>
+
+                        <div class="col-sm-4">
+                            <div class="thumbnail">
+                                <img src="${merchant.merchantInfo.doorPicture}" alt="..."
+                                     id="doorPicture">
+                            </div>
+                            <input type="file" class="form-control" id="doorPic" name="file"
                                    data-url="/manage/file/saveImage">
                         </div>
                     </div>
@@ -354,6 +367,20 @@
                                                                         + resp.data);
                                          }
                                      });
+        $('#doorPic').fileupload({
+                                     dataType: 'json',
+                                     maxFileSize: 5000000,
+                                     acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+                                     add: function (e, data) {
+                                         data.submit();
+                                     },
+                                     done: function (e, data) {
+                                         var resp = data.result;
+                                         $('#doorPicture').attr('src',
+                                                                '${ossImageReadRoot}/'
+                                                                + resp.data);
+                                     }
+                                 });
         $('#vipPic').fileupload({
                                     dataType: 'json',
                                     maxFileSize: 5000000,
@@ -397,6 +424,7 @@
         });
         merchantInfo.feature = feature.substr(0, feature.length - 1);
         merchantInfo.vipPicture = $("#vipPicture").attr("src");
+        merchantInfo.doorPicture = $("#doorPicture").attr("src");
         $('input[name="reasonsList"]').each(function () {
             if ($(this).val() == null || $(this).val() == '') {
                 alert("推荐理由不能为空");
