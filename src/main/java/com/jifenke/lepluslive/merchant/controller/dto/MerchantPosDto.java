@@ -59,6 +59,16 @@ public class MerchantPosDto {
 
   private Long importOrderFlow;
 
+
+  private BigDecimal debitCardCommission; //借记卡非会员佣金比
+
+  private BigDecimal creditCardCommission; //贷记卡非会员佣金比
+
+  private BigDecimal wxUserCommission;//微信会员佣金比
+
+  private BigDecimal aliUserCommission; //支付宝会员佣金比
+
+
   public Long getNormalOrderFlow() {
     return normalOrderFlow;
   }
@@ -225,5 +235,37 @@ public class MerchantPosDto {
 
   public void setCreatedDate(Date createdDate) {
     this.createdDate = createdDate;
+  }
+
+  public BigDecimal getDebitCardCommission() {
+    return debitCardCommission;
+  }
+
+  public void setDebitCardCommission(BigDecimal debitCardCommission) {
+    this.debitCardCommission = debitCardCommission;
+  }
+
+  public BigDecimal getCreditCardCommission() {
+    return creditCardCommission;
+  }
+
+  public void setCreditCardCommission(BigDecimal creditCardCommission) {
+    this.creditCardCommission = creditCardCommission;
+  }
+
+  public BigDecimal getWxUserCommission() {
+    return wxUserCommission;
+  }
+
+  public void setWxUserCommission(BigDecimal wxUserCommission) {
+    this.wxUserCommission = wxUserCommission;
+  }
+
+  public BigDecimal getAliUserCommission() {
+    return aliUserCommission;
+  }
+
+  public void setAliUserCommission(BigDecimal aliUserCommission) {
+    this.aliUserCommission = aliUserCommission;
   }
 }

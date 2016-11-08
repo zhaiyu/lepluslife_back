@@ -27,7 +27,75 @@
 
     #myTab {
         margin-bottom: 10px;
-    }</style>
+    }
+    /*新增*/
+    /*弹窗页面CSS*/
+    .w-addPOS {
+        width: 95%;
+        margin: 0px auto;
+        padding:10px 0;
+    }
+    .w-addPOS > div > div:first-child {
+        float: left;
+        width: 20%;
+        margin-right: 10%;
+        margin-top: 10px;
+        text-align: right;
+        font-size: 14px;
+    }
+    .w-addPOS > div > div:last-child {
+        float: left;
+        width: 70%;
+    }
+    .w-addPOS > div{
+        margin: 20px 0;
+    }
+    .w-addPOS > div > div > div,.w-addPOS > div > div > div > div{
+        margin: 5px 0;
+    }
+    .w-addPOS input {
+        display: inline;
+    }
+    .w-addPOS > div > div:last-child input[type=number] {
+        width: 30%;
+        margin:0 1%;
+    }
+    .w-b {
+        margin: 0 !important;
+    }
+    .w-b > div {
+        float: left;
+        width: 10%;
+        padding:1%;
+        color: #333;
+        text-align: center;
+        border:1px solid #ddd;
+        cursor: pointer;
+        -webkit-border-radius: 5px 0 0 5px;
+        -moz-border-radius: 5px 0 0 5px;
+        border-radius: 5px 0 0 5px;
+    }
+    .w-b > div:first-child {
+        border-right: 0;
+    }
+    .w-b > div:last-child {
+        border-left: 0;
+        -webkit-border-radius:0 5px 5px 0;
+        -moz-border-radius:0 5px 5px 0;
+        border-radius:0 5px 5px 0;
+    }
+    .w-bActive {
+        background-color: #337ab7;
+        border:1px solid #337ab7 !important;
+        color: #FFFFFF !important;
+    }
+
+    .w-addPOS > div:after,.w-b:after {
+        content: '\20';
+        display: block;
+        clear: both;
+    }
+    </style>
     <script type="text/javascript" src="${resourceUrl}/js/jquery-2.0.3.min.js"></script>
 </head>
 
@@ -71,21 +139,19 @@
                         </select>
                     </div>
                     <div class="form-group col-md-1">
-                        <button class="btn btn-primary" style="margin-top: 24px" onclick="searchOrderByCriteria()">查询</button>
+                        <button class="btn btn-primary" style="margin-top: 24px" onclick="searchPosByCriteria()">查询</button>
                     </div>
                 </div>
                 <table class="table table-bordered table-hover">
                     <thead>
                     <tr class="active">
-                        <th>终端号</th>
-                        <th>PSAM卡号</th>
-                        <th>乐加商户</th>
-                        <th>POS商户号</th>
-                        <th>POS注册手机号</th>
+                        <th>商户ID</th>
+                        <th>商户名称</th>
+                        <th>设备号</th>
                         <th>添加时间</th>
-                        <th>佣金状态</th>
-                        <th>普通订单流水</th>
-                        <th>导流订单流水</th>
+                        <th>银行卡</th>
+                        <th>微信</th>
+                        <th>支付宝</th>
                         <th>操作</th>
                     </tr>
                     </thead>
@@ -176,6 +242,126 @@
                         data-dismiss="modal">确认
                 </button>
             </div>
+        </div>
+    </div>
+</div>
+
+
+
+
+<!--编辑提示框-->
+<div class="modal" id="createWarn">
+    <div class="modal-dialog modal-lg">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">添加POS机具</h4>
+            </div>
+            <div class="w-addPOS">
+                <div>
+                    <div style="margin-top: 0;">乐加商户</div>
+                    <div>${merchantName}</div>
+                </div>
+                <div>
+                    <div>设备号</div>
+                    <div><input name="id" type="hidden"/><input id="sbh" type="text" class="form-control" name="posId"><input name="merchantId" type="hidden"/></div>
+                </div>
+                <div>
+                    <div>银行卡费率</div>
+                    <div>
+                        <div><span>借记卡</span><input type="number" class="form-control" name="debitCardCommission"/><span style="margin-right: 5%;">%</span><input type="number" class="form-control" name="ceil"/><span>元封顶</span></div>
+                        <div><span>信用卡</span><input type="number" class="form-control" name="creditCardCommission"/><span style="margin-right: 5%;">%</span></div>
+                        <div><input type="checkbox"><span>开通佣金</span><input type="number" class="form-control" name="ljCommission"/><span>%</span></div>
+                    </div>
+                </div>
+                <div>
+                    <div>微信收款</div>
+                    <div>
+                        <div class="w-b">
+                            <div class="w-bActive">未开通</div>
+                            <div>已开通</div>
+                        </div>
+                        <div>
+                            <div>
+                                <span>普通手续费</span><input type="number" class="form-control" name="wxUserCommission"/><span>%</span>
+                            </div>
+                            <div>
+                                <input type="checkbox"><span>开通佣金</span><input type="number" class="form-control"  name="wxCommission"/><span>%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div>
+                    <div>支付宝收款</div>
+                    <div>
+                        <div class="w-b">
+                            <div class="w-bActive">未开通</div>
+                            <div>已开通</div>
+                        </div>
+                        <div>
+                            <div>
+                                <span>普通手续费</span><input type="number" class="form-control"  name="aliUserCommission" /><span>%</span>
+                            </div>
+                            <div>
+                                <input type="checkbox" checked="checked" ><span>开通佣金</span><input type="number" class="form-control" name="aliCommission"/><span>%</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" id="w-check" >确认</button>
+            </div>
+            <script>
+                $(".w-b").next().hide();
+                $("#createWarn input").addClass("ing");
+                $("#sbh").removeClass("ing");
+                $("#createWarn input").focus(function () {
+                    $(this).css("background-color","#FFF");
+                });
+                $(".w-b > div").click(function () {
+                    $(this).parent().children().removeClass("w-bActive");
+                    $(this).addClass("w-bActive");
+                    var tabText = $(this).html();
+                    switch (tabText){
+                        case "未开通":
+                            $(this).parent(".w-b").next().hide();
+                            break;
+                        case "已开通":
+                            $(this).parent(".w-b").next().show();
+                            break;
+                    }
+                });
+                $("input[type=number]").blur(function () {
+                    var val = $(this).val();
+                    val = Math.round(val*100)/100;
+                    $(this).val(val);
+                    $(this).removeClass("ing");
+                });
+                $("input[type=checkbox]").next().next().attr("disabled","disabled");
+                if($("input[type=checkbox]").is(':checked')) {
+                    $("input[checked=checked]").next().next().removeAttr("disabled");
+                    $("input[checked=checked]").next().next().removeClass("ing");
+                }
+                $("input[type=checkbox]").click(function () {
+                    if($(this).is(':checked')){
+                        $(this).next().next().removeAttr("disabled");
+                        $(this).removeClass("ing")
+                    }else{
+                        $(this).next().next().attr("disabled","disabled");
+                        $(this).addClass("ing")
+                    }
+                });
+                $("#w-check").click(function () {
+                    $("#createWarn .ing").css("background-color","rgba(255,0,0,0.3)");
+                    if($("#sbh").val() == ""){
+                        $("#sbh").css("background-color","rgba(255,0,0,0.3)")
+                        return;
+                    }
+                    saveMerchantPos();              //  保存
+                });
+            </script>
         </div>
     </div>
 </div>
@@ -275,15 +461,15 @@
         }
         if (/(E+)/.test(fmt)) {
             fmt =
-            fmt.replace(RegExp.$1,
-                        ((RegExp.$1.length > 1) ? (RegExp.$1.length > 2 ? "\u661f\u671f" : "\u5468")
-                                : "") + week[this.getDay() + ""]);
+                    fmt.replace(RegExp.$1,
+                            ((RegExp.$1.length > 1) ? (RegExp.$1.length > 2 ? "\u661f\u671f" : "\u5468")
+                                    : "") + week[this.getDay() + ""]);
         }
         for (var k in o) {
             if (new RegExp("(" + k + ")").test(fmt)) {
                 fmt =
-                fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr((""
-                                                                                                 + o[k]).length)));
+                        fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr((""
+                        + o[k]).length)));
             }
         }
         return fmt;
@@ -299,6 +485,7 @@
                    success: function (data) {
                        var page = data.data;
                        var content = page.content;
+                       console.log(JSON.stringify(content));
                        var totalPage = page.totalPages;
                        $("#totalElements").html(page.totalElements);
                        if (totalPage == 0) {
@@ -306,36 +493,39 @@
                        }
                        initPage(posCriteria.offset, totalPage);
                        for (i = 0; i < content.length; i++) {
-                           var contentStr = '<tr><td>' + content[i].posId + '</td>';
-                           contentStr += '<td>' + content[i].psamCard + '</td>';
-
-                           contentStr +=
-                           '<td><span>' + content[i].merchant.name + '</span><br><span>('
-                           + content[i].merchant.merchantSid + ')</span></td>'
-                           contentStr += '<td>' + content[i].posMerchantNo + '</td>';
-                           contentStr += '<td>' + content[i].phoneNumber + '</td>';
-                           contentStr +=
-                           '<td>'
-                           + new Date(content[i].createdDate).format('yyyy-MM-dd HH:mm:ss')
-                           + '</td>';
-                           if (content[i].ljCommission != null) {
-                               contentStr += '<td>已开通(' + content[i].ljCommission + '%)</td>';
-                           } else {
-                               contentStr += '<td>未开通</td>';
+                           var contentStr = '<tr><td>' + content[i].merchant.id + '</td>';
+                           contentStr += '<td>' + content[i].merchant.name + '</td>';
+                           contentStr += '<td>' + content[i].posId + '</td>';
+                           contentStr += '<td><h5>' + new Date(content[i].createdDate).format("yyyy-MM-dd") +'</h5><h5'
+                                       + new Date(content[i].createdDate).format("HH:mm:ss") +'</h5></td>';
+                           // 银行卡
+                           contentStr +='<td><h5>（非会员）</h5><h5>&nbsp;&nbsp;借记卡'+ content[i].debitCardCommission +'&nbsp; 封顶 '+content[i].ceil+'</h5>'
+                                        +'<h5>&nbsp;&nbsp;贷记卡 '+content[i].creditCardCommission+'% &nbsp;';
+                           if(content[i].ljCommission!=null) {
+                               contentStr +='佣金'+content[i].ljCommission;
+                           }else {
+                               contentStr += '佣金 未开通';
                            }
-                           contentStr += '<td>' + content[i].normalOrderFlow / 100 + '</td>';
-                           contentStr += '<td>' + content[i].importOrderFlow / 100 + '</td>';
-                           if (content[i].ljCommission == null) {
-                               contentStr +=
-                               '<td><input type="hidden" class="id-hidden" value="'
-                               + content[i].posId
-                               + '"><input type="button" class="btn btn-xs btn-primary openCommission" data-toggle="modal" data-target="#openCommissionWarn" value="开通佣金"></td></tr>';
-                           } else {
-                               contentStr +=
-                               '<td><input type="hidden" class="id-hidden" value="'
-                               + content[i].posId
-                               + '"><input type="button" class="btn btn-xs btn-primary changeCommission" data-toggle="modal" data-target="#modifyCommissionWarn"value="修改佣金"></td></tr>';
+                           contentStr +='</h5></td>';
+                           //  微信
+                           if(content[i].wxCommission==null&&content[i].wxUserCommission==null) {
+                               contentStr+='<td>未开通</td>';
+                           }else if(content[i].wxCommission==null&&content[i].wxUserCommission!=null) {
+                               alert(content[i].wxCommission);
+                               contentStr+='<td><h5>手续费：'+content[i].wxUserCommission +'%  </h5><h5>佣金： 未开通 </h5></td>';
+                           }else {
+                                contentStr+='<td><h5>手续费：'+content[i].wxUserCommission+'% </h5><h5>佣金： '+content[i].wxCommission+' %  </h5></td>';
                            }
+                           //  支付宝
+                           if(content[i].aliCommission==null&&content[i].aliUserCommission==null) {
+                               contentStr+='<td>未开通</td>';
+                           }else if(content[i].aliCommission==null&&content[i].aliUserCommission!=null) {
+                               contentStr+='<td><h5>手续费：'+content[i].aliUserCommission +'%  </h5><h5>佣金： 未开通 </h5></td>';
+                           }else {
+                               contentStr+='<td><h5>手续费：'+content[i].aliUserCommission+'% </h5><h5>佣金： '+content[i].aliCommission+' %  </h5></td>';
+                           }
+                           //  操作
+                           contentStr+='<td><button type="button" class="btn btn-default createWarn" onclick="editPos('+content[i].id+')">编辑</button></td>';
                            posContent.innerHTML += contentStr;
                        }
                        $(".openCommission").each(function (i) {
@@ -396,7 +586,7 @@
                                          }
                                      });
     }
-    function searchOrderByCriteria() {
+    function searchPosByCriteria() {
         posCriteria.offset = 1;
         var dateStr = $('#date-end span').text().split("-");
         if (dateStr != null && dateStr != '') {
@@ -423,6 +613,83 @@
         }
 
         getPosByAjax(posCriteria);
+    }
+    function resetAll() {
+        $("input[name=id]").val('');
+        $("input[name=merchantId]").val('');
+        $("input[name=posId]").val('');
+        $("input[name=creditCardCommission]").val('');
+        $("input[name=debitCardCommission]").val('');
+        $("input[name=ljCommission]").val('');
+        $("input[name=ceil]").val('');
+        $("input[name=wxCommission]").val('');
+        $("input[name=aliCommission]").val('');
+        $("input[name=wxCommission]").val('');
+        $("input[name=wxUserCommission]").val('');
+        $("input[name=aliUserCommission]").val('');
+    }
+    //  编辑机具信息
+    function editPos(id) {
+        resetAll();                                                         //  清空上一次信息
+        $.get("/manage/pos/getById/"+id,function(pos){                      //  查询并进行数据回显
+            $("input[name=id]").val(pos.id);
+            $("input[name=merchantId]").val(pos.merchant.id);
+            $("input[name=posId]").val(pos.posId);
+            $("input[name=creditCardCommission]").val(pos.creditCardCommission);
+            $("input[name=debitCardCommission]").val(pos.debitCardCommission);
+            $("input[name=ljCommission]").val(pos.ljCommission);
+            $("input[name=ceil]").val(pos.ceil);
+            $("input[name=wxCommission]").val(pos.wxCommission);
+            $("input[name=aliCommission]").val(pos.aliCommission);
+            $("input[name=wxCommission]").val(pos.wxCommission);
+            $("input[name=wxUserCommission]").val(pos.wxUserCommission);
+            $("input[name=aliUserCommission]").val(pos.aliUserCommission);
+            $("#createWarn").modal();
+        },"json");
+    }
+    //  保存机具信息
+    function saveMerchantPos() {
+        var merchantPos = {};
+        //  校验
+        if($("input[name=posId]").val()!=null&&$("input[name=posId]").val()!='') {
+            merchantPos.posId = $("input[name=posId]").val();
+        }else {
+            return;
+        }
+        if($("input[name=debitCardCommission]").val()!=null&&$("input[name=debitCardCommission]").val()!='') {
+            merchantPos.debitCardCommission = $("input[name=debitCardCommission]").val();
+        }else {
+            return;
+        }
+        if($("input[name=creditCardCommission]").val()!=null&&$("input[name=creditCardCommission]").val()!='') {
+            merchantPos.creditCardCommission = $("input[name=creditCardCommission]").val();
+        }else {
+            return;
+        }
+        if($("input[name=ceil]").val()!=null&&$("input[name=ceil]").val()!='') {
+            merchantPos.ceil = $("input[name=ceil]").val();
+        }else {
+            return;
+        }
+        merchantPos.ljCommission = $("input[name=ljCommission]").val();
+        merchantPos.id = $("input[name=id]").val();
+        //  表单提交
+        merchantPos.wxCommission = $("input[name=wxCommission]").val();
+        merchantPos.aliCommission = $("input[name=aliCommission]").val();
+        merchantPos.wxUserCommission = $("input[name=wxUserCommission]").val();
+        merchantPos.aliUserCommission = $("input[name=aliUserCommission]").val()
+        var merchantId = $("input[name=merchantId]").val();
+        merchantPos.merchant={id:merchantId};
+        $.ajax({
+            type:"post",
+            url:"/manage/pos/save_pos",
+            contentType:"application/json",
+            data:JSON.stringify(merchantPos),
+            success:function(data){
+                alert(data.msg);
+                location.href="/manage/pos";
+            }
+        });
     }
 </script>
 

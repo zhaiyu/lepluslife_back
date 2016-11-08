@@ -69,7 +69,7 @@
 
                         <div class="col-sm-4">
                             <input type="text" class="form-control" id="partnerName"
-                                   value="${partner.partnerName}">
+                                   value="${partnerInfo.partner.partnerName}">
                         </div>
                     </div>
                     <div class="form-group">
@@ -77,7 +77,7 @@
 
                         <div class="col-sm-4">
                             <input type="text" class="form-control" id="partnerPhone"
-                                   value="${partner.phoneNumber}">
+                                   value="${partnerInfo.partner.phoneNumber}">
                         </div>
                     </div>
                     <div class="form-group">
@@ -85,7 +85,7 @@
 
                         <div class="col-sm-4">
                             <input type="text" class="form-control" id="merchantLimit"
-                                   value="${partner.merchantLimit}">
+                                   value="${partnerInfo.partner.merchantLimit}">
                         </div>
                     </div>
                     <div class="form-group">
@@ -93,7 +93,7 @@
 
                         <div class="col-sm-4">
                             <input type="text" class="form-control" id="userLimit"
-                                   value="${partner.userLimit}">
+                                   value="${partnerInfo.partner.userLimit}">
                         </div>
                     </div>
                     <div class="form-group">
@@ -112,6 +112,26 @@
                                     <input type="radio" name="optionsRadios" id="optionsRadios2"
                                            value="1">
                                     支付宝结算
+                                </label>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="cooperate-style" class="col-sm-2 control-label">邀请礼包设置</label>
+
+                        <div class="col-sm-4">
+                            <div class="radio-inline">
+                                <label>
+                                    <input type="radio" name="optionsRadios2" id="optionsRadios3"
+                                           value="1" checked>
+                                    开启
+                                </label>
+                            </div>
+                            <div class="radio-inline">
+                                <label>
+                                    <input type="radio" name="optionsRadios2" id="optionsRadios4"
+                                           value="0">
+                                    关闭
                                 </label>
                             </div>
                         </div>
@@ -159,13 +179,33 @@
                         <label class="col-sm-2 control-label">每日发福利次数</label>
 
                         <div class="col-sm-4">
-                            <input type="text" onkeyup="this.value=this.value.replace(/\D/g,'')" class="form-control" id="benefitTime"
-                                   value="${partner.benefitTime}">
+                            <input type="text" onkeyup="this.value=this.value.replace(/\D/g,'')"
+                                   class="form-control" id="benefitTime"
+                                   value="${partnerInfo.partner.benefitTime}">
+                        </div>
+                    </div>
+                    <div class="form-group" id="benefitScoreA-parent">
+                        <label class="col-sm-2 control-label">发放的红包</label>
+
+                        <div class="col-sm-4">
+                            <input type="text" onkeyup="this.value=this.value.replace(/\D/g,'')"
+                                   class="form-control" id="benefitScoreA"
+                                    >
+                        </div>
+                    </div>
+                    <div class="form-group" id="benefitScoreB-parent">
+                        <label class="col-sm-2 control-label">发放的积分</label>
+
+                        <div class="col-sm-4">
+                            <input type="text" onkeyup="this.value=this.value.replace(/\D/g,'')"
+                                   class="form-control" id="benefitScoreB"
+                                    >
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="col-sm-offset-2 col-sm-4">
-                            <button type="button" class="btn btn-primary" onclick="submitPartner()">
+                            <button type="button" class="btn btn-primary" id="subPartner"
+                                    >
                                 提交
                             </button>
                             <a type="button" class="btn btn-primary btn-return" style="margin:10px;"
@@ -182,21 +222,28 @@
 </div>
 <script src="${resourceUrl}/js/bootstrap.min.js"></script>
 <script>
+    if (${partnerInfo!=null}) {
+        $("#benefitScoreA-parent").css("display", "none");
+        $("#benefitScoreB-parent").css("display", "none");
+    }
     $("#partnerManager").find("option[value='${partner.partnerManager.id}']").attr("selected",
                                                                                    true);
-    if (${partner!=null}) {
-        if ('${partner.bankName}' == '支付宝') {
+    if (${partnerInfo!=null}) {
+        if ('${partnerInfo.partner.bankName}' == '支付宝') {
             $('.bank').css({display: "none"});
             $('.zhifubao').css({display: "block"});
             $('#optionsRadios2').prop("checked", true);
-            $("#alipayNumber").val('${partner.bankNumber}');
-            $("#alipayPayee").val('${partner.payee}');
+            $("#alipayNumber").val('${partnerInfo.partner.bankNumber}');
+            $("#alipayPayee").val('${partnerInfo.partner.payee}');
         } else {
             $('.bank').css({display: "block"});
             $('.zhifubao').css({display: "none"});
-            $("#bankNumber").val('${partner.bankNumber}');
-            $("#bankName").val('${partner.bankName}');
-            $("#bankPayee").val('${partner.payee}');
+            $("#bankNumber").val('${partnerInfo.partner.bankNumber}');
+            $("#bankName").val('${partnerInfo.partner.bankName}');
+            $("#bankPayee").val('${partnerInfo.partner.payee}');
+        }
+        if(${partnerInfo.inviteLimit==0}){
+            $('#optionsRadios4').prop("checked", true);
         }
     } else {
         $('.zhifubao').css({display: "none"});
@@ -209,32 +256,50 @@
         $('.bank').css({display: "none"});
         $('.zhifubao').css({display: "block"});
     })
+
     function submitPartner() {
+        $("#subPartner").unbind("click");
         var partner = {};
         var partnerManager = {};
         partnerManager.id = $("#partnerManager").val();
         partner.partnerManager = partnerManager;
-        if($("#partnerName").val()==null||$("#partnerName").val()==""){
+        if ($("#partnerName").val() == null || $("#partnerName").val() == "") {
             alert("请输入合伙人姓名");
+            $("#subPartner").bind("click", function () {
+                submitPartner()
+            });
             return;
         }
-        if($("#partnerPhone").val()==null||$("#partnerPhone").val()==""){
+        if ($("#partnerPhone").val() == null || $("#partnerPhone").val() == "") {
             alert("请输入合伙人电话");
+            $("#subPartner").bind("click", function () {
+                submitPartner()
+            });
             return;
         }
-        if($("#merchantLimit").val()==null||$("#merchantLimit").val()==""){
+        if ($("#merchantLimit").val() == null || $("#merchantLimit").val() == "") {
             alert("请输入商户限制");
+            $("#subPartner").bind("click", function () {
+                submitPartner()
+            });
             return;
         }
-        if($("#userLimit").val()==null||$("#userLimit").val()==""){
+        if ($("#userLimit").val() == null || $("#userLimit").val() == "") {
             alert("请输入会员限制");
+            $("#subPartner").bind("click", function () {
+                submitPartner()
+            });
             return;
         }
-        if($("#benefitTime").val()==null||$("#benefitTime").val()==""){
+        if ($("#benefitTime").val() == null || $("#benefitTime").val() == "") {
             alert("请输入每日发放限制");
+            $("#subPartner").bind("click", function () {
+                submitPartner()
+            });
             return;
         }
         partner.partnerName = $("#partnerName").val();
+
         partner.name = $("#partnerName").val();
         partner.phoneNumber = $("#partnerPhone").val();
         partner.merchantLimit = $("#merchantLimit").val();
@@ -250,44 +315,62 @@
             partner.payee = $("#alipayPayee").val();
             partner.bankName = '支付宝';
         }
-        if(partner.payee==null||partner.payee==""){
+        if (partner.payee == null || partner.payee == "") {
             alert("请输入收款人");
+            $("#subPartner").bind("click", function () {
+                submitPartner()
+            });
             return;
         }
-        if(partner.bankNumber==null||partner.bankNumber==""){
+        if (partner.bankNumber == null || partner.bankNumber == "") {
             alert("请输入银行卡号");
+            $("#subPartner").bind("click", function () {
+                submitPartner()
+            });
             return;
         }
-        if(partner.bankName==null||partner.bankName==""){
+        if (partner.bankName == null || partner.bankName == "") {
             alert("请输入银行");
+            $("#subPartner").bind("click", function () {
+                submitPartner()
+            });
             return;
         }
-        if (${partner!=null}) {
-            partner.id = '${partner.id}';
+        var partnerDto = {};
+        partnerDto.partner = partner;
+        partnerDto.inviteLimit = $("input[name='optionsRadios2']:checked").val();
+        if (${partnerInfo!=null}) {
+            partner.id = '${partnerInfo.partner.id}';
+            partnerDto.partner = partner;
             $.ajax({
                        type: "put",
                        url: "/manage/partner",
                        contentType: "application/json",
-                       data: JSON.stringify(partner),
+                       data: JSON.stringify(partnerDto),
                        success: function (data) {
                            alert(data.msg);
-                               location.href = "/manage/partner";
+                           location.href = "/manage/partner";
                        }
                    });
-        }else{
+        } else {
+            partnerDto.scoreA = $("#benefitScoreA").val();
+            partnerDto.scoreB = $("#benefitScoreB").val();
             $.ajax({
                        type: "post",
                        url: "/manage/partner",
                        contentType: "application/json",
-                       data: JSON.stringify(partner),
+                       data: JSON.stringify(partnerDto),
                        success: function (data) {
                            alert(data.msg);
-                               location.href = "/manage/partner";
+                           location.href = "/manage/partner";
                        }
                    });
         }
 
     }
+    $("#subPartner").bind("click", function () {
+        submitPartner()
+    });
 </script>
 </body>
 </html>

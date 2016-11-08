@@ -9,6 +9,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.inject.Inject;
@@ -27,14 +28,27 @@ public class FinanicalStatisticService {
   private FinancialStatisticRepository financialStatisticRepository;
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-  public void createFinancialstatistic(Object[] object,Date date) {
-    Merchant merchant = merchantService.findMerchantById(Long.parseLong(object[0].toString()));
+  public void createFinancialstatistic(Object[] object, Date date) {
+    Merchant
+        merchant =
+        merchantService.findMerchantById(object[0] == null ? Long.parseLong(object[5].toString())
+                                                           : Long.parseLong(object[0].toString()));
     if (merchant != null) {
       FinancialStatistic financialStatistic = new FinancialStatistic();
       financialStatistic.setMerchant(merchant);
       financialStatistic.setBalanceDate(date);
-      financialStatistic.setTransferPrice(Long.parseLong(object[1].toString()));
-      financialStatistic.setTransferFromTruePay(Long.parseLong(object[2].toString()));
+      financialStatistic
+          .setTransferPrice(object[1] == null ? 0 : ((BigDecimal) object[1]).longValue());
+      financialStatistic
+          .setTransferFromTruePay(object[3] == null ? 0 : ((BigDecimal) object[3]).longValue());
+      financialStatistic.setAppTransfer(
+          object[2] == null ? 0 : ((BigDecimal) object[2]).longValue());
+      financialStatistic
+          .setAppTransFromTruePay(object[4] == null ? 0 : ((BigDecimal) object[4]).longValue());
+      financialStatistic.setPosTransfer(
+          object[6] == null ? 0 : ((BigDecimal) object[6]).longValue());
+      financialStatistic
+          .setPosTransFromTruePay(object[7] == null ? 0 : ((BigDecimal) object[7]).longValue());
       financialStatisticRepository.save(financialStatistic);
     }
   }

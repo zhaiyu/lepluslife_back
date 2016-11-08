@@ -86,7 +86,7 @@ public class Merchant {
 
   private BigDecimal scoreARebate; //返a积分比 单位百分比
 
-  private BigDecimal scoreBRebate;
+  private BigDecimal scoreBRebate; //普通订单返B积分策略
 
   private String contact; //联系人
 
@@ -388,5 +388,28 @@ public class Merchant {
 
   public void setMerchantInfo(MerchantInfo merchantInfo) {
     this.merchantInfo = merchantInfo;
+  }
+
+  @Override
+  public boolean equals(Object o) {
+    if (this == o) {
+      return true;
+    }
+    if (!(o instanceof Merchant)) {
+      return false;
+    }
+
+    Merchant merchant = (Merchant) o;
+
+    if (!id.equals(merchant.id)) {
+      return false;
+    }
+
+    return true;
+  }
+
+  @Override
+  public int hashCode() {
+    return id.hashCode();
   }
 }

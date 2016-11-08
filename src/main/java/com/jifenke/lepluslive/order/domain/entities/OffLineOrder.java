@@ -69,6 +69,16 @@ public class OffLineOrder {
 
   private String lepayCode;
 
+  private Long truePayCommission;//实际支付手续费
+
+  public Long getTruePayCommission() {
+    return truePayCommission;
+  }
+
+  public void setTruePayCommission(Long truePayCommission) {
+    this.truePayCommission = truePayCommission;
+  }
+
   public Long getTransferMoneyFromTruePay() {
     return transferMoneyFromTruePay;
   }

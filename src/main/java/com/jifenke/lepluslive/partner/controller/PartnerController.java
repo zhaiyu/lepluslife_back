@@ -2,6 +2,7 @@ package com.jifenke.lepluslive.partner.controller;
 
 import com.jifenke.lepluslive.global.util.LejiaResult;
 import com.jifenke.lepluslive.global.util.MvUtil;
+import com.jifenke.lepluslive.partner.controller.dto.PartnerDto;
 import com.jifenke.lepluslive.partner.domain.entities.Partner;
 import com.jifenke.lepluslive.partner.service.PartnerService;
 
@@ -32,7 +33,7 @@ public class PartnerController {
   }
 
   @RequestMapping(value = "/partner/editUser")
-  public LejiaResult editPartnerPassword(@RequestBody Partner partner,Model model) {
+  public LejiaResult editPartnerPassword(@RequestBody Partner partner, Model model) {
     model.addAttribute("partners", partnerService.findAll());
     partnerService.editPartnerPassword(partner);
     return LejiaResult.ok();
@@ -41,21 +42,22 @@ public class PartnerController {
   @RequestMapping(value = "/partner/edit", method = RequestMethod.GET)
   public ModelAndView goCreatePartnertPage(Long id, Model model) {
     if (id != null) {
-      model.addAttribute("partner", partnerService.findPartnerById(id));
+      model.addAttribute("partnerInfo", partnerService
+          .findPartnerInfoByPartner(partnerService.findPartnerById(id)));
     }
     model.addAttribute("partnerManagers", partnerService.findAllPartnerManager());
     return MvUtil.go("/partner/createPartner");
   }
 
   @RequestMapping(value = "/partner", method = RequestMethod.POST)
-  public LejiaResult createPartner(@RequestBody Partner partner) {
-    partnerService.createPartner(partner);
+  public LejiaResult createPartner(@RequestBody PartnerDto partnerDto) {
+    partnerService.createPartner(partnerDto);
     return LejiaResult.ok();
   }
 
   @RequestMapping(value = "/partner", method = RequestMethod.PUT)
-    public LejiaResult editPartner(@RequestBody Partner partner) {
-    partnerService.editPartner(partner);
+  public LejiaResult editPartner(@RequestBody PartnerDto partnerDto) {
+    partnerService.editPartner(partnerDto);
     return LejiaResult.ok();
   }
 

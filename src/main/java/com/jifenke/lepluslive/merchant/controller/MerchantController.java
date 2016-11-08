@@ -10,10 +10,7 @@ import com.jifenke.lepluslive.merchant.domain.entities.BankName;
 import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantBank;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantUser;
-import com.jifenke.lepluslive.merchant.service.BankNameService;
-import com.jifenke.lepluslive.merchant.service.CityService;
-import com.jifenke.lepluslive.merchant.service.MerchantService;
-import com.jifenke.lepluslive.merchant.service.MerchantWeiXinUserService;
+import com.jifenke.lepluslive.merchant.service.*;
 import com.jifenke.lepluslive.partner.domain.entities.Partner;
 import com.jifenke.lepluslive.partner.service.PartnerService;
 
@@ -68,6 +65,9 @@ public class MerchantController {
   @Inject
   private BankNameService bankNameService;
 
+  @Inject
+  private MerchantPosService merchantPosService;
+
   @RequestMapping(value = "/merchant", method = RequestMethod.GET)
   public ModelAndView goShowMerchantPage(Model model) {
     model.addAttribute("merchantTypes", merchantService.findAllMerchantTypes());
@@ -86,9 +86,12 @@ public class MerchantController {
     //获取每个合伙人的锁定会员数
     List<Merchant> merchants = page.getContent();
     List<Integer> binds = merchantService.findBindLeJiaUsers(merchants);
+    //获取每个商户的pos机数量
+    List<Long> posCounts = merchantPosService.countPosByMerchants(merchants);
     List<Object> list = new ArrayList<>();
     list.add(page);
     list.add(binds);
+    list.add(posCounts);
     return LejiaResult.ok(list);
   }
 
@@ -247,10 +250,12 @@ public class MerchantController {
 
   @RequestMapping(value = "/merchant/pos_manage/{id}", method = RequestMethod.GET)
   public ModelAndView posManage(@PathVariable Long id, Model model) {
-    List list = merchantService.findAllPosByMerchant(merchantService.findMerchantById(id));
+    Merchant merchant = merchantService.findMerchantById(id);
+    List list = merchantService.findAllPosByMerchant(merchant);
     model.addAttribute(list);
     model.addAttribute("posList",list);
     model.addAttribute("merchantId",id);
+    model.addAttribute("merchantName",merchant.getName());
     return MvUtil.go("/merchant/merchantPosManage");
   }
 

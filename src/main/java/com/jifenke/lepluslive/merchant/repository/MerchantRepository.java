@@ -1,6 +1,7 @@
 package com.jifenke.lepluslive.merchant.repository;
 
 import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
+import com.jifenke.lepluslive.partner.domain.entities.Partner;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -31,4 +32,6 @@ public interface MerchantRepository extends JpaRepository<Merchant,Long>{
   Page findAll(Specification<Merchant> whereClause, Pageable pageable);
 
   Optional<Merchant> findByMerchantSid(String merchantSid);
+
+  Merchant findByPartnerAndPartnership(Partner origin, int i);
 }

@@ -79,7 +79,6 @@
                             <option value="5">红包</option>
                         </select>
                     </div>
-
                 </div>
                 <div class="row" style="margin-bottom: 30px">
                     <div class="form-group col-md-2">
@@ -109,6 +108,10 @@
                                           onclick="searchOrderByState(1)">已支付</a></li>
                     <li><a href="#tab3" data-toggle="tab" onclick="searchOrderByState(0)">未支付</a>
                     </li>
+                    <li><a href="#tab3" data-toggle="tab">现金记账</a>
+                    </li>
+                    <li style="float: right"><button type="button" class="btn btn-primary createLocation" onclick="reconciliationDifferences();">对账差错记录</button></li>
+                    <li style="float: right;margin-right: 10px;"><button type="button" class="btn btn-primary createLocation" onclick="billingDownload();">掌富对账单下载</button></li>
                 </ul>
                 <div id="myTabContent" class="tab-content">
                     <div class="tab-pane fade in active" id="tab1">
@@ -467,6 +470,12 @@
     }
 
 
+    function billingDownload() {
+        location.href="/manage/billingDownload"
+    }
+    function reconciliationDifferences() {
+        location.href="/manage/reconciliationDifferences"
+    }
 </script>
 
 

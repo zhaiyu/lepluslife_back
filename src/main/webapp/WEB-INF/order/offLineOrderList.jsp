@@ -102,6 +102,14 @@
                         </select>
                     </div>
                     <div class="form-group col-md-3">
+                        <label for="pay-style">订单来源</label>
+                        <select class="form-control" id="order-source">
+                            <option value="0">全部</option>
+                            <option value="1">APP</option>
+                            <option value="2">公众号</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-3">
                         <button class="btn btn-primary" style="margin-top: 24px"
                                 onclick="searchOrderByCriteria()">查询
                         </button>
