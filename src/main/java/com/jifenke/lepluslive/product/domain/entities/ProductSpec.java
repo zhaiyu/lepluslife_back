@@ -52,6 +52,10 @@ public class ProductSpec {
 
   private Integer state = 1;
 
+  private Long toMerchant = 0L; //绑定商户返佣金额
+
+  private Long toPartner = 0L;  //绑定合伙人返佣金额
+
   public Long getVersion() {
     return version;
   }
@@ -138,5 +142,21 @@ public class ProductSpec {
 
   public void setRepository(Integer repository) {
     this.repository = repository;
+  }
+
+  public Long getToMerchant() {
+    return toMerchant;
+  }
+
+  public void setToMerchant(Long toMerchant) {
+    this.toMerchant = toMerchant;
+  }
+
+  public Long getToPartner() {
+    return toPartner;
+  }
+
+  public void setToPartner(Long toPartner) {
+    this.toPartner = toPartner;
   }
 }

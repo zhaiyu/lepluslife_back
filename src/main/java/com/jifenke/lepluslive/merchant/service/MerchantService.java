@@ -14,6 +14,7 @@ import com.jifenke.lepluslive.merchant.domain.entities.MerchantPos;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantType;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantUser;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantWallet;
+import com.jifenke.lepluslive.merchant.domain.entities.MerchantWalletOnline;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantWeiXinUser;
 import com.jifenke.lepluslive.merchant.repository.MerchantInfoRepository;
 import com.jifenke.lepluslive.merchant.repository.MerchantPosRepository;
@@ -21,6 +22,7 @@ import com.jifenke.lepluslive.merchant.repository.MerchantProtocolRepository;
 import com.jifenke.lepluslive.merchant.repository.MerchantRepository;
 import com.jifenke.lepluslive.merchant.repository.MerchantTypeRepository;
 import com.jifenke.lepluslive.merchant.repository.MerchantUserRepository;
+import com.jifenke.lepluslive.merchant.repository.MerchantWalletOnlineRepository;
 import com.jifenke.lepluslive.merchant.repository.MerchantWalletRepository;
 import com.jifenke.lepluslive.order.domain.entities.FinancialStatistic;
 import com.jifenke.lepluslive.partner.domain.entities.Partner;
@@ -105,6 +107,9 @@ public class MerchantService {
   @Inject
   private WeiXinQrCodeRepository weiXinQrCodeRepository;
 
+  @Inject
+  private MerchantWalletOnlineRepository walletOnlineRepository;
+
   @Value("${bucket.ossBarCodeReadRoot}")
   private String barCodeRootUrl;
 
@@ -173,12 +178,15 @@ public class MerchantService {
     registerOrigin.setMerchant(merchant);
     MerchantWallet merchantWallet = new MerchantWallet();
     merchantWallet.setMerchant(merchant);
+    MerchantWalletOnline walletOnline = new MerchantWalletOnline();
+    walletOnline.setMerchant(merchant);
     merchant.getMerchantProtocols().stream().map(merchantProtocol -> {
       merchantProtocol.setMerchant(merchant);
       merchantProtocolRepository.save(merchantProtocol);
       return merchantProtocol;
     }).collect(Collectors.toList());
     merchantWalletRepository.save(merchantWallet);
+    walletOnlineRepository.save(walletOnline);
     registerOriginRepository.save(registerOrigin);
   }
 
@@ -402,6 +410,7 @@ public class MerchantService {
       merchantInfo.setFeature(info.getFeature());
       merchantInfo.setReason(info.getReason());
       merchantInfo.setVipPicture(info.getVipPicture());
+      merchantInfo.setDoorPicture(info.getDoorPicture());
       merchantInfoRepository.save(merchantInfo);
     } else {
       merchantInfoRepository.save(info);

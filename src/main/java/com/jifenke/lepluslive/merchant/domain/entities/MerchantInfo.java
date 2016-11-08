@@ -46,6 +46,8 @@ public class MerchantInfo {
 
   private String description; //服务说明，多条以“+=”分隔
 
+  private String doorPicture;  //商家列表页新版大图
+
   public Long getId() {
     return id;
   }
@@ -156,5 +158,13 @@ public class MerchantInfo {
 
   public void setDescription(String description) {
     this.description = description;
+  }
+
+  public String getDoorPicture() {
+    return doorPicture;
+  }
+
+  public void setDoorPicture(String doorPicture) {
+    this.doorPicture = doorPicture;
   }
 }

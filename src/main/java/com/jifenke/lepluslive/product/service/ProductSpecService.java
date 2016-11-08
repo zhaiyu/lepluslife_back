@@ -65,6 +65,9 @@ public class ProductSpecService {
     origin.setRepository(productSpec.getRepository());
     origin.setPrice(productSpec.getPrice());
     origin.setMinPrice(productSpec.getMinPrice());
+    origin.setMinScore(productSpec.getMinScore());
+    origin.setToMerchant(productSpec.getToMerchant());
+    origin.setToPartner(productSpec.getToPartner());
     origin.setPicture(productSpec.getPicture());
     origin.setProduct(productSpec.getProduct());
 

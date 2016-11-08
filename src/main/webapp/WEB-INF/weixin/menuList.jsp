@@ -239,7 +239,8 @@
             $('#dlgEditModel').modal('show');
         });
         $('#btnGenerateMenu').on('click', function () {
-            var weixinBody = buildWeixinBody($.parseJSON('${menuJson}'));
+        //    var weixinBody = buildWeixinBody($.parseJSON('${menuJson}'));
+            var weixinBody = buildWeixinBody(eval('${menuJson}'));
             var errText = checkLimit(weixinBody);
             if (errText) {
                 alert(errText);
@@ -306,8 +307,8 @@
 
     function edit(menuId) {
         reset();
-        //var d = grid.ajax.json().data;
-        var d = $.parseJSON('${menuJson}');
+//        var d = $.parseJSON('${menuJson}');
+        var d = eval('${menuJson}');
         $('input[name=menuId]').val(menuId);
         //                    取出menu数据
         var menu = null;
@@ -341,7 +342,8 @@
 
     function deleteMenu(menuId) {
 
-        var d = $.parseJSON('${menuJson}');
+       // var d = $.parseJSON('${menuJson}');
+        var d = eval('${menuJson}');
 //                    判断是否有下级菜单，如果有，则不允许删除
         var hasChildren = false;
         for (var i = 0; i < d.length; i++) {

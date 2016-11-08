@@ -10,7 +10,6 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 
 import javax.inject.Inject;
@@ -26,24 +25,15 @@ public class ProductSpecController {
   private ProductSpecService productSpecService;
 
   @RequestMapping("/productSpec/{id}")
-  public
-  @ResponseBody
-  ProductSpec findProductSpecById(@PathVariable Integer id) {
+  public ProductSpec findProductSpecById(@PathVariable Integer id) {
     return productSpecService.findProductSpecById(id);
   }
 
-  @RequestMapping(value = "/productSpec", method = RequestMethod.PUT)
-  public
-  @ResponseBody
-  LejiaResult editProductSpec(@RequestBody ProductSpec productSpec) {
-    productSpecService.editProductSpec(productSpec);
-    return LejiaResult.build(200, "修改成功");
-  }
-
+  /**
+   * 新增或修改商品规格
+   */
   @RequestMapping(value = "/productSpec", method = RequestMethod.POST)
-  public
-  @ResponseBody
-  LejiaResult createProductSpec(@RequestBody ProductSpec productSpec) {
+  public LejiaResult createProductSpec(@RequestBody ProductSpec productSpec) {
     productSpecService.editProductSpec(productSpec);
     return LejiaResult.build(200, "保存成功");
   }

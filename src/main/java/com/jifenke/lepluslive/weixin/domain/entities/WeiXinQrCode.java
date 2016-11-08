@@ -26,6 +26,7 @@ public class WeiXinQrCode {
   private String ticket;      //获取的二维码ticket，凭借此ticket可以在有效时间内换取二维码
 
   //1=商户永久二维码(merchantInfo表)|2=活动二维码(ActivityCodeBurse表)
+  //3=手机充值二维码（只有一个）
   private Integer type;
 
   public Integer getId() {

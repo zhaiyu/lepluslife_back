@@ -1,14 +1,14 @@
 <%--
   Created by IntelliJ IDEA.
   User: zhangwen
-  Date: 16/8/29
-  Time: 上午10:02
-  To change this template use File | Settings | File Templates.
+  Date: 16/11/01
+  Time: 上午9:49
+  新建或修改普通商品
 --%>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@include file="../commen.jsp" %>
+<%@include file="../../commen.jsp" %>
 <!DOCTYPE>
 <html>
 <head>
@@ -131,25 +131,61 @@
 </style>
 <body>
 <div id="topIframe">
-    <%@include file="../common/top.jsp" %>
+    <%@include file="../../common/top.jsp" %>
 </div>
 <div id="content">
     <div id="leftIframe">
-        <%@include file="../common/left.jsp" %>
+        <%@include file="../../common/left.jsp" %>
     </div>
     <div class="m-right">
         <p style="padding-top: 20px">
-            <button onclick="javascript:history.go(-1);">返回限量秒杀</button>
-            创建秒杀商品
+            <button onclick="javascript:history.go(-1);">返回商品列表</button>
+            创建商品
         </p>
         <input id="productId" type="hidden" value="${product.id}"/>
+
+        <div>
+            <div>商品序号</div>
+            <c:if test="${product==null}">
+                <input type="number" id="productNum"
+                       value="${sid+1}">
+            </c:if>
+            <c:if test="${product!=null}">
+                <input type="number" id="productNum"
+                       value="${product.sid}">
+            </c:if>
+        </div>
+
+        <div>
+            <div>商品分类</div>
+            <div style="width: 40%">
+                <select id="productType" name="productType" style="width: 20%">
+                    <option value="0">请选择</option>
+                    <c:forEach var="productType" items="${productTypes}">
+                        <option value="${productType.id}">${productType.type}</option>
+                    </c:forEach>
+                </select>
+            </div>
+        </div>
+
+        <div>
+            <div>商品角标</div>
+            <div style="width: 40%">
+                <select id="mark" name="mark" style="width: 20%">
+                    <option value="0">--无--</option>
+                    <c:forEach var="mark" items="${markList}">
+                        <option value="${mark.id}">${mark.value}</option>
+                    </c:forEach>
+                </select>
+            </div>
+        </div>
 
         <div>
             <div>商品名称</div>
             <input type="text" id="name" class="check" value="${product.name}"/>
         </div>
         <div>
-            <div>商品图片(宽高比:336*210)</div>
+            <div>商品图片</div>
             <div class="col-sm-6">
                 <div>
                     <!--<div class="thumbnail">-->
@@ -161,92 +197,69 @@
             </div>
         </div>
         <div>
-            <div>个人兑换限制</div>
-            <div class="limited">
-                <c:if test="${product.buyLimit == 0}">
-                    <div>
-                        <input type="radio" name="limited" value="1"><span>有限制</span>
-
-                        <div>
-                            <span>每人可兑换</span><input name="buyLimit"
-                                                     value="">
-                        </div>
-                    </div>
-                    <div><input type="radio" name="limited" value="0" checked="checked"
-                                class="checked"><span>无限制，可随意领取</span>
-                    </div>
-                </c:if>
-                <c:if test="${product.buyLimit != 0}">
-                    <div>
-                        <input type="radio" name="limited" value="1"
-                               checked="checked" class="checked"><span>有限制</span>
-
-                        <div>
-                            <span>每人可兑换</span><input name="buyLimit"
-                                                     value="${product.buyLimit}">
-                        </div>
-                    </div>
-                    <div><input type="radio" name="limited" value="0"><span>无限制，可随意领取</span></div>
-                </c:if>
+            <div>缩略图片</div>
+            <div class="col-sm-6">
+                <div>
+                    <!--<div class="thumbnail">-->
+                    <img style="width: 100%" src="${product.thumb}" alt="..." id="thumb">
+                    <!--</div>-->
+                    <input type="file" class="form-control" id="thumbPicture" name="file"
+                           data-url="/manage/file/saveImage"/>
+                </div>
             </div>
         </div>
         <div>
-            <div>
-                规格
-            </div>
-            <div class="specifications">
-                <c:forEach items="${specList}" var="spec" step="1" varStatus="specNumber">
-                    <div id="specifications${specNumber.count}">
-                        <input type="hidden" value="${spec.id}"/>
-                        名称：<input type="text" placeholder="请输入规格名称" value="${spec.specDetail}"/>
-                        库存：<input type="number" placeholder="库存" value="${spec.repository}"/>
-                        <span>积分：</span>
-                        <input type="number" placeholder="所需积分"
-                               value="${spec.minScore}"/><span>支付价：</span>
-                        <input type="number" placeholder="需支付的金额" onblur="noNumbers(event,2)"
-                               value="${spec.minPrice/100}"/>
-                        <span>市场价：</span>
-                        <input type="number" placeholder="市场价" onblur="noNumbers(event,2)"
-                               value="${spec.price/100}"/>
-                        <br>
-                        <span>商户返佣金额：</span>
-                        <input type="number" placeholder="商户返佣金额" onblur="noNumbers(event,2)"
-                               value="${spec.toMerchant/100}"/>
-                        <span>合伙人返佣金额：</span>
-                        <input type="number" placeholder="合伙人返佣金额" onblur="noNumbers(event,2)"
-                               value="${spec.toPartner/100}"/>
-                        <button onclick="delSpec('specifications${specNumber.count}');"
-                                style="margin: 0">删除
-                        </button>
+            <div>邮费</div>
+            <div class="limited">
+                <c:if test="${product.postage != 0}">
+                    <div>
+                        <input type="radio" name="postage" value="1"
+                               checked="checked"><span>不包邮</span>
+
+                        <div>
+                            <span>邮费</span> <input name="postagePrice"
+                                                   value="${product.postage/100}"><span><br/><br/>满多少包邮</span><input
+                                name="freePrice"
+                                value="${product.freePrice/100}">
+                        </div>
                     </div>
-                </c:forEach>
-            </div>
-            <div style="margin: 10px 0 0 10%">
-                <button onclick="addGG('specifications');">添加规格</button>
+                    <div><input type="radio" name="postage" value="0"
+                                class="checked"><span>包邮</span>
+                    </div>
+                </c:if>
+                <c:if test="${product.postage == 0}">
+                    <div>
+                        <input type="radio" name="postage" value="1"><span>不包邮</span>
+
+                        <div>
+                            <span>邮费</span> <input name="postagePrice"
+                                                   value=""><span><br/><br/>满多少包邮</span><input
+                                name="freePrice" value="">
+                        </div>
+                    </div>
+                    <div><input type="radio" name="postage" value="0" checked="checked"
+                                class="checked"><span>包邮</span>
+                    </div>
+                </c:if>
             </div>
         </div>
+
         <div>
             <div>价格(展示用)</div>
             <div class="w-prace">
                 <span>所需积分：</span>
                 <input type="number" placeholder="所需积分" onblur="noNumbers(event,0)"
                        id="productMinScore"
-                       value="${product.minScore}"/><span>  实际价格(支付用)：</span>
+                       value="${product.minScore}"/><span> 最低价格：</span>
                 <input type="number" placeholder="需支付的金额" onblur="noNumbers(event,2)"
                        id="productMinPrice"
                        value="${product.minPrice/100}"/>
-                <span>  市场价(展示用)：</span>
+                <span> 市场价(展示用)：</span>
                 <input type="number" placeholder="市场价" onblur="noNumbers(event,2)" id="productPrice"
                        value="${product.price/100}"/>
             </div>
         </div>
-        <div class="yf">
-            <div>邮费</div>
-            <div class="youfei">
-                <input placeholder="请输入邮费金额" id="hasPointLimit" name="hasPointLimit"
-                       value="${product.postage/100}"/>
-            </div>
-        </div>
+
         <div>
             <div>初始销量(展示用)</div>
             <div class="youfei">
@@ -310,7 +323,7 @@
     </div>
 </div>
 <div id="bottomIframe">
-    <%@include file="../common/bottom.jsp" %>
+    <%@include file="../../common/bottom.jsp" %>
 </div>
 
 <script src="${resourceUrl}/js/bootstrap.min.js"></script>
@@ -319,13 +332,18 @@
 <script src="${resourceUrl}/js/global/plugins/bootstrap-touchspin/bootstrap.touchspin.js"
         type="text/javascript"></script>
 <script>
-    console.log("${specList}");
+
     var delSpecList = [], delScrollList = [], delDetailList = [];
     $(function () {
-        $("input[name=limited]").click(function (e) {
-            $("input[name=limited]").removeClass("checked");
-            $(this).attr("class", "checked");
-        });
+        // $("input[name=limited]").click(function (e) {
+        // $("input[name=limited]").removeClass("checked");
+        // $(this).attr("class", "checked");
+        // });
+        $("#productType option[value=${product.productType.id}]").attr("selected", true);
+        if (${product.mark != null}) {
+            $("#mark option[value=${product.mark.id}]").attr("selected", true);
+        }
+
         $('input[name=noPointLimit]').TouchSpin({
                                                     min: 1,
                                                     max: 10000,
@@ -334,14 +352,14 @@
                                                     maxboostedstep: 100,
                                                     prefix: ''
                                                 });
-        $('input[name=buyLimit]').TouchSpin({
-                                                min: 1,
-                                                max: 100,
-                                                step: 1,
-                                                decimals: 0, //精度
-                                                maxboostedstep: 100,
-                                                prefix: ''
-                                            });
+        // $('input[name=buyLimit]').TouchSpin({
+        // min: 1,
+        // max: 100,
+        // step: 1,
+        // decimals: 0, //精度
+        // maxboostedstep: 100,
+        // prefix: ''
+        // });
         $('input[name=hasPointLimit]').TouchSpin({
                                                      min: 0,
                                                      max: 10000,
@@ -350,6 +368,22 @@
                                                      maxboostedstep: 100,
                                                      prefix: '￥'
                                                  });
+        $('input[name=freePrice]').TouchSpin({
+                                                 min: 0,
+                                                 max: 10000,
+                                                 step: 0.01,
+                                                 decimals: 2, //精度
+                                                 maxboostedstep: 100,
+                                                 prefix: '￥'
+                                             });
+        $('input[name=postagePrice]').TouchSpin({
+                                                    min: 0,
+                                                    max: 10000,
+                                                    step: 0.01,
+                                                    decimals: 2, //精度
+                                                    maxboostedstep: 100,
+                                                    prefix: '￥'
+                                                });
         $('#productPicture').fileupload({
                                             dataType: 'json',
                                             maxFileSize: 5000000,
@@ -364,6 +398,20 @@
                                                                    + resp.data);
                                             }
                                         });
+        $('#thumbPicture').fileupload({
+                                          dataType: 'json',
+                                          maxFileSize: 5000000,
+                                          acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+                                          add: function (e, data) {
+                                              data.submit();
+                                          },
+                                          done: function (e, data) {
+                                              var resp = data.result;
+                                              $('#thumb').attr('src',
+                                                               '${ossImageReadRoot}/'
+                                                               + resp.data);
+                                          }
+                                      });
     });
     function noNumbers(e, len) {
         var val = e.currentTarget.value;
@@ -413,22 +461,34 @@
     };
 </script>
 <script>
-    $("#allCheck").click(function (e) {
-        if (this.checked) {
-            $("#w-tab :checkbox").attr("checked", true);
-        } else {
-            $("#w-tab :checkbox").attr("checked", false);
-        }
-    });
+
     $("#save").click(function () {
-        var product = {}, productSpecList = [], scrollPictureList = [], productDetailList = [], goOn = 0;
-//        var valArr = new Array;
-//        $("#w-tab :checkbox[checked]").each(function (i) {
-//            valArr[i] = $(this).attr("id");
-//        });
-//        var vals = valArr.join(',');//转换为逗号隔开的字符串
-//        alert(vals);
+        var product = {}, productType = {}, mark = {}, scrollPictureList = [], productDetailList = [], goOn = 0;
+
         product.id = $("#productId").val();
+        //商品序号
+        if ($("#productNum").val() == "") {
+            alert("请输入商品序号");
+            $("#productNum").focus();
+            return
+        }
+        product.sid = $("#productNum").val();
+        //商品分类
+        var typeId = $("#productType").val();
+        if (typeId == 0) {
+            alert("请选择商品分类");
+            $("#productType").focus();
+            return
+        }
+        productType.id = typeId;
+        product.productType = productType;
+        //商品角标
+        var markId = $("#mark").val();
+        if (markId != 0) {
+            mark.id = markId;
+            product.mark = mark;
+        }
+
         //商品名称
         if ($("#name").val() == "") {
             alert("请输入商品名称");
@@ -442,79 +502,38 @@
             return
         }
         product.picture = $("#picture").attr("src");
-        //兑换限制
-        var limitCheck = $(".checked").val();
-        if (limitCheck == null) {
-            alert("请选择兑换限制");
+        //商品缩略图片
+        if ($("#thumb").attr("src") == "") {
+            alert("请上传缩略图片");
             return
-        } else if (limitCheck == 0) {
-            product.buyLimit = limitCheck;
-        } else if (limitCheck == 1) {
-            var buyLimit = $("input[name=buyLimit]").val();
-            if (buyLimit == "") {
-                alert("请输入限购数量");
-                $("input[name=buyLimit]").focus();
+        }
+        product.thumb = $("#thumb").attr("src");
+        //邮费
+        var postage = $("input[name='postage']:checked").val();
+        if (postage == null) {
+            alert("请选择是否包邮");
+            return
+        } else if (postage == 0) {
+            product.postage = postage;
+            product.freePrice = 0;
+        } else if (postage == 1) {
+            var postagePrice = $("input[name=postagePrice]").val();
+            var freePrice = $("input[name=freePrice]").val();
+            if (postagePrice == "") {
+                alert("请输入邮费");
+                $("input[name=postagePrice]").focus();
                 return
             } else {
-                product.buyLimit = buyLimit;
+                product.postage = postagePrice * 100;
+            }
+            if (freePrice == "") {
+                alert("请输入满包邮");
+                $("input[name=freePrice]").focus();
+                return
+            } else {
+                product.freePrice = freePrice * 100;
             }
         }
-        //规格
-        var specList = $(".specifications > div");
-        if (specList.length < 1) {
-            alert("请至少添加一种规格");
-            return
-        }
-        specList.each(function () {
-            var thisId = $(this).attr('id');
-            var thisSpecList = $("#" + thisId + " > input");
-            var productSpec = {};
-            productSpec.id = $(thisSpecList[0]).val();
-            if ($(thisSpecList[1]).val() == "") {
-                alert("请输入规格名称");
-                goOn = 1;
-                $(thisSpecList[1]).focus();
-                return false;
-            }
-            productSpec.specDetail = $(thisSpecList[1]).val();
-            if ($(thisSpecList[2]).val() == "") {
-                alert("请输入库存");
-                goOn = 1;
-                $(thisSpecList[2]).focus();
-                return false;
-            }
-            productSpec.repository = $(thisSpecList[2]).val();
-            if ($(thisSpecList[3]).val() == "") {
-                alert("请输入该规格所需积分");
-                goOn = 1;
-                $(thisSpecList[3]).focus();
-                return false;
-            }
-            productSpec.minScore = $(thisSpecList[3]).val();
-            if ($(thisSpecList[4]).val() == "") {
-                alert("请输入该规格所需支付价");
-                goOn = 1;
-                $(thisSpecList[4]).focus();
-                return false;
-            }
-            productSpec.minPrice = $(thisSpecList[4]).val() * 100;
-            if ($(thisSpecList[5]).val() == "") {
-                alert("请输入该规格市场价");
-                goOn = 1;
-                $(thisSpecList[5]).focus();
-                return false;
-            }
-            productSpec.price = $(thisSpecList[5]).val() * 100;
-            productSpec.toMerchant = $(thisSpecList[6]).val() * 100;
-            productSpec.toPartner = $(thisSpecList[7]).val() * 100;
-            //  productSpec.product = product;
-            productSpecList.push(productSpec);
-        });
-        if (goOn == 1) {
-            return
-        }
-        console.log(productSpecList);
-        console.log('------------');
         //展示用价格
         if ($("#productMinScore").val() == "") {
             alert("请输入最低积分");
@@ -534,13 +553,6 @@
             return
         }
         product.price = $("#productPrice").val() * 100;
-        //邮费
-        if ($("#hasPointLimit").val() == "") {
-            alert("请输入邮费");
-            $("#hasPointLimit").focus();
-            return
-        }
-        product.postage = $("#hasPointLimit").val() * 100;
         //自定义初始销量
         if ($("#customSale").val() == "") {
             alert("请输入初始销量");
@@ -566,14 +578,12 @@
             }
             scrollPicture.picture = scrollUrl;
             scrollPicture.sid = scrollSid++;
-            //  scrollPicture.product = product;
+            // scrollPicture.product = product;
             scrollPictureList.push(scrollPicture);
         });
         if (goOn == 1) {
             return
         }
-        console.log(scrollPictureList);
-        console.log('--------------');
         //详情图
         var detailList = $(".information > div");
         if (detailList.length < 1) {
@@ -598,25 +608,21 @@
         if (goOn == 1) {
             return
         }
-        console.log(productDetailList);
-        console.log('--------------');
         var productDto = {};
         productDto.product = product;
-        productDto.productSpecList = productSpecList;
         productDto.scrollPictureList = scrollPictureList;
         productDto.productDetailList = productDetailList;
         productDto.delScrollList = delScrollList;
         productDto.delDetailList = delDetailList;
-        productDto.delSpecList = delSpecList;
 
         $.ajax({
                    type: "post",
-                   url: "/manage/limit/save",
+                   url: "/manage/product/save",
                    contentType: "application/json",
                    data: JSON.stringify(productDto),
                    success: function (data) {
                        if (data.status == 200) {
-                           location.href = "/manage/limit?type=1"
+                           location.href = "/manage/product"
                        } else {
                            alert("保存异常");
                        }
@@ -731,73 +737,6 @@
             productDetail.id = detailId;
             delDetailList.push(productDetail);
             console.log(delDetailList);
-        }
-        $("#" + id).remove();
-    }
-</script>
-<script>
-    var specSize = '${specSize}';
-    function addGG(id) {
-        specSize++;
-        $("." + id).append(
-                $("<div></div>").attr("id", "specifications" + specSize).attr("style",
-                                                                              "margin:10px 0;").append(
-                        $("<input>").attr("type", "hidden").attr("value", "")
-                ).append(
-                        $("<span></span>").html("名称："),
-                        $("<input>").attr("type", "text").attr("placeholder", "请输入规格名称")
-                ).append(
-                        $("<span></span>").html("库存："),
-                        $("<input>").attr("type", "number").attr("style",
-                                                                 "margin:0 1% 0 0;").attr("placeholder",
-                                                                                          "库存")
-                ).append(
-                        $("<span></span>").html("积分：")
-                ).append(
-                        $("<input>").attr("type", "number").attr("style",
-                                                                 "margin:0 1% 0 0;").attr("placeholder",
-                                                                                          "所需积分")
-                ).append(
-                        $("<span></span>").html("支付价：")
-                ).append(
-                        $("<input>").attr("type", "number").attr("onblur",
-                                                                 "noNumbers(event,2)").attr("style",
-                                                                                            "margin:0 1% 0 1%;").attr("placeholder",
-                                                                                                                      "需支付的金额")
-                ).append(
-                        $("<span></span>").html("市场价：")
-                ).append(
-                        $("<input>").attr("type", "number").attr("onblur",
-                                                                 "noNumbers(event,2)").attr("placeholder",
-                                                                                            "市场价")
-                ).append(
-                        $("<br>")
-                ).append(
-                        $("<span></span>").html("商户返佣金额：")
-                ).append(
-                        $("<input>").attr("type", "number").attr("onblur",
-                                                                 "noNumbers(event,2)").attr("placeholder",
-                                                                                            "商户返佣金额")
-                ).append(
-                        $("<span></span>").html("合伙人返佣金额：")
-                ).append(
-                        $("<input>").attr("type", "number").attr("onblur",
-                                                                 "noNumbers(event,2)").attr("placeholder",
-                                                                                            "合伙人返佣金额")
-                ).append(
-                        $("<button></button>").attr("onclick",
-                                                    "delSpec('specifications" + specSize
-                                                    + "');").html("删除")
-                )
-        );
-    }
-    function delSpec(id) {
-        var specId = $("#" + id).find("input").eq(0).val();
-        if (specId != "") { //添加需要删除的规格(数据库中已存在)
-            var productSpec = {};
-            productSpec.id = specId;
-            delSpecList.push(productSpec);
-            console.log(delSpecList);
         }
         $("#" + id).remove();
     }
