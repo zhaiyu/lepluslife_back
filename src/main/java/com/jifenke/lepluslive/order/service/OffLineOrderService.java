@@ -138,10 +138,10 @@ public class OffLineOrderService {
 
   public List<Object[]> countTransferMoney(Date start, Date end) {
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-//    String starts = sdf.format(start);
-//    String ends = sdf.format(end);
-    String starts = "2016-10-18 00:32:16";
-    String ends = "2016-11-18 23:32:16";
+    String starts = sdf.format(start);
+    String ends = sdf.format(end);
+//    String starts = "2016-10-18 00:32:16";
+//    String ends = "2016-11-18 23:32:16";
     StringBuffer sql = new StringBuffer();
     sql.append(
         "select * from (select merchant_id id,sum(case when pay_way_id in (1,2)  then transfer_money else 0 end) wx,sum(case when pay_way_id in (3,4)  then transfer_money else 0 end)");
