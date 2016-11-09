@@ -511,7 +511,6 @@
                            if(content[i].wxCommission==null&&content[i].wxUserCommission==null) {
                                contentStr+='<td>未开通</td>';
                            }else if(content[i].wxCommission==null&&content[i].wxUserCommission!=null) {
-                               alert(content[i].wxCommission);
                                contentStr+='<td><h5>手续费：'+content[i].wxUserCommission +'%  </h5><h5>佣金： 未开通 </h5></td>';
                            }else {
                                 contentStr+='<td><h5>手续费：'+content[i].wxUserCommission+'% </h5><h5>佣金： '+content[i].wxCommission+' %  </h5></td>';

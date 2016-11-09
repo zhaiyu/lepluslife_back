@@ -131,13 +131,19 @@
         <div>
             <label>合约类型&nbsp</label>
             <input type="radio" class="radio" id="normal" name="type" value="0"/><span>普通商户</span>
-            <input type="text" class="money pt" disabled="disabled" placeholder="输入手续费"/>%
             <input type="radio" class="radio" id="partner" name="type" value="1"/><span>联盟商户</span>
             <%--<input type="text" class="money lm" disabled="disabled" placeholder="输入佣金比"/>%--%>
             <%--<input type="text" class="money lm" disabled="disabled" placeholder="输入红包比"/>%--%>
             <%--<input type="text" class="money lm" disabled="disabled" placeholder="输入手续费"/>%--%>
+            <div class="pt">
+                    <label>手续费</label>
+                    <input type="text" class="money pt" disabled="disabled" placeholder="输入手续费" name="pt-ljCommission"/>%
+                    <label>积分返利点</label>
+                    <input type="text" id="fl" value="${merchant.scoreBRebate}" class="money check"
+                           placeholder="按交易额百分比，返给用户" name="pt-scoreBRebate"/>&nbsp%
+            </div>
             <div class="lianmeng">
-                <div>
+                <%--<div>
                     <span>导流订单参数</span><input type="text" class="money lm"
                                               placeholder="输入佣金比">%<input type="text"
                                                                           class="money lm"
@@ -149,6 +155,29 @@
                 <div>
                     <span>会员订单参数</span><input type="text" class="money lm" placeholder="输入佣金比">%
                     <p style="font-size: 12px">会员订单佣金扣除微信手续费后全部以红包形式发放</p>
+                </div>--%>
+                    <style>
+                        .lianmeng .form-control {
+                            width: 20%;
+                            display: inline;
+                        }
+                    </style>
+                <div>
+                    <span>普通订单费率</span><input type="text" class="form-control" name="lm-ljBrokerage" /><span>%</span><span>积分返点</span><input type="text" class="form-control" name="lm-scoreBRebate"/><span>%</span>
+                </div>
+                <div>
+                    <span>导流订单费率</span><input type="text" class="form-control" name="lm-ljCommission"/><span>%</span><span>红包比例</span><input type="text" class="form-control" name="lm-scoreARebate"/><span>%</span><span>积分返点</span><input type="text" class="form-control" name="lm-importScoreBScale"/><span>%</span><br>
+                </div>
+                <div>
+                    <span>会员订单费率：</span><input type="radio" style="width: auto !important;" name="hydd" checked="checked" value="0"/><span>佣金费率</span><input type="radio" style="width: auto !important;" name="hydd" value="1"/><span>普通费率</span>
+                    <div class="yj">
+                        <div>
+                            <input type="radio" style="width: auto !important;" name="policy" value="0"/><span>成本差全数发放</span><span>（佣金和微信手续费成本的差额，将全部用来发放红包）</span><span>积分返点</span><input type="number" name="lm-userScoreBScaleB" class="form-control" /><span>%</span>
+                        </div>
+                        <div>
+                            <input type="radio" style="width: auto !important;" name="policy" value="1" checked="checked" /><span>按比例发放</span><span>红包比例</span><input type="number" name="lm-userScoreAScale" class="form-control" /><span>%</span><span>积分返点</span><input type="number" name="lm-userScoreBScale" class="form-control" /><span>%</span><br>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -156,11 +185,6 @@
             <label for="lock">锁定上限&nbsp</label>
             <input type="text" id="lock" value="${merchant.userLimit}" class="check"
                    placeholder="请输入锁定会员的名额上限，不能低于当前已锁定会员"/>
-        </div>
-        <div>
-            <label>积分返利点</label>
-            <input type="text" id="fl" value="${merchant.scoreBRebate}" class="money check"
-                   placeholder="按照交易金额的百分之多少，返还给用户积分"/>&nbsp%
         </div>
         <div>
             <label>红包收取权限</label>
@@ -272,7 +296,7 @@
 </div>
 <input type="hidden" id="merchantId" value="${merchant.id}"/>
 <input type="hidden" id="merchantBankId" value="${merchant.merchantBank.id}"/>
-
+<input type="hidden" id="merchantRebatePolicyId" value="${merchantRebatePolicy.id}"/>
 <div id="bottomIframe">
     <%@include file="../common/bottom.jsp" %>
 </div>
@@ -374,14 +398,18 @@
         if (${merchant.partnership==1}) {
             $('#partner').prop("checked", true);
 //            $(".changeDisplay").css("display", 'block');
-            $(".lm").eq(0).val(${merchant.ljCommission});
-            $(".lm").eq(1).val(${merchant.scoreARebate});
-            $(".lm").eq(2).val(${merchant.ljBrokerage});
-            $(".lm").eq(3).val(${merchant.memberCommission});
+             $("input[name=lm-ljBrokerage]").val(${merchant.ljBrokerage});                       // 普通订单费率
+             $("input[name=lm-scoreBRebate]").val(${merchant.scoreBRebate});                     // 普通订单积分返点
+             $("input[name=lm-ljCommission]").val(${merchant.ljCommission});                     // 导流订单费率
+             $("input[name=lm-scoreARebate]").val(${merchant.scoreARebate});                         // 导流订单红包
+             $("input[name=lm-importScoreBScale]").val(${merchantRebatePolicy.importScoreBScale});   // 导流订单积分返点
+             $("input[name=lm-userScoreBScaleB]").val(${merchantRebatePolicy.userScoreBScaleB});      // 会员发放红包 【全额】
+             $("input[name=lm-userScoreAScale]").val(${merchantRebatePolicy.userScoreAScale});        // 会员发放红包 【比例】
+             $("input[name=lm-userScoreBScale]").val(${merchantRebatePolicy.userScoreBScale});        // 会员发放红包 【比例】
         }
         if (${merchant.partnership==0}) {
-            $('#normal').prop("checked", true);
-            $(".pt").val(${merchant.ljCommission});
+            $("input[name=pt-ljCommission]").val(${merchant.ljCommission});
+            $("input[name=pt-scoreBRebate]").val(${merchant.scoreBRebate})
         }
 
         var val = $('input:radio[name="type"]:checked').val();
@@ -614,6 +642,7 @@
         var merchant = {};
         var partner = {};
         var salesStaff = {};
+        var merchantRebatePolicy={};
 
         salesStaff.id = $("#sales").val();
         if(salesStaff.id=="nullValue"){
@@ -646,41 +675,94 @@
             return;
         }
         if (value == 0) {
+            // 置空
+            merchant.ljBrokerage = null;
+            merchant.scoreBRebate = null;
+            merchant.ljCommission = null;
+            merchantRebatePolicy.importScoreBScale = null;
+            merchantRebatePolicy.scoreARebate =  null;
+            merchantRebatePolicy.userScoreBScaleB = null;
+            merchantRebatePolicy.userScoreAScale = null;
+            merchantRebatePolicy.userScoreBScale = null;
+            merchant.memberCommission = null;
+            // 设置
             merchant.partnership = 0;
-            if ($(".pt").val() > 100 || $(".pt").val() == "" || $(".pt").val() == null) {
-                alert("请输入正确的手续费")
+            if ($("input[name=pt-ljCommission]").val() > 100 || $("input[name=pt-ljCommission]").val() == "" || $("input[name=pt-ljCommission]").val() == null) {
+                alert("请输入正确的手续费");
                 return;
             }
-            merchant.ljCommission = $(".pt").val();
-            merchant.scoreARebate = 0;
+            merchant.ljCommission = $("input[name=pt-ljCommission]").val();
+            if ($("input[name=pt-scoreBRebate]").val() > 100 || $("input[name=pt-scoreBRebate]").val() == "" || $("input[name=pt-scoreBRebate]").val() == null) {
+                alert("请选择积分返利比");
+                return;
+            }
+            merchant.scoreBRebate = $("input[name=pt-scoreBRebate]").val();
+            merchantRebatePolicy.rebateFlag = 2;
         }
         if (value == 1) {
+            //  置空
+            merchant.scoreBRebate = null;
+            merchant.ljCommission = null;
+            //  设置
             merchant.partnership = 1;
-            if ($(".lm").eq(0).val() > 100 || $(".lm").eq(0).val() == null || $(".lm").eq(0).val()
-                                                                              == "") {
-                alert("请输入正确的佣金")
+            if ($("input[name=lm-ljBrokerage]").val() > 100 || $("input[name=lm-ljBrokerage]").val() == null || $("input[name=lm-ljBrokerage]").val() == "") {
+                alert("请输入普通订单费率")
                 return;
             }
-            if ($(".lm").eq(1).val() > 100 || $(".lm").eq(1).val() == null || $(".lm").eq(1).val()
-                                                                              == "") {
-                alert("请输入正确的红包率")
+            if ($("input[name=lm-scoreBRebate]").val() > 100 || $("input[name=lm-scoreBRebate]").val() == null || $("input[name=lm-scoreBRebate]").val() == "") {
+                alert("请输入普通订单积分返点")
                 return;
             }
-            if ($(".lm").eq(2).val() > 100 || $(".lm").eq(2).val() == null || $(".lm").eq(2).val()
-                                                                              == "") {
-                alert("请输入正确的手续费")
+            if ($("input[name=lm-importScoreBScale]").val() > 100 || $("input[name=lm-importScoreBScale]").val() == null || $("input[name=lm-importScoreBScale]").val() == "") {
+                alert("请输入导流订单积分")
                 return;
             }
-            merchant.ljCommission = $(".lm").eq(0).val();
+            if ($("input[name=lm-scoreARebate]").val() > 100 || $("input[name=lm-scoreARebate]").val() == null || $("input[name=lm-scoreARebate]").val() == "") {
+                alert("请输入导流订单红包")
+                return;
+            }
+            var hydd = $("input[name='hydd']:checked").val();
+            if(hydd==0) {                       //  会员订单费率： 佣金费率
+                merchant.memberCommission = $("input[name=lm-ljCommission]").val();                  // 会员订单费率
+            }
+            if(hydd==1) {                       //  会员订单费率： 普通费率
+                merchant.memberCommission = $("input[name=lm-ljBrokerage]").val();
+            }
+            var policy = $("input[name='policy']:checked").val();
+            if(policy==0) {                     //   成本差全额
+                    if ($("input[name=lm-userScoreBScaleB]").val() > 100 || $("input[name=lm-userScoreBScaleB]").val() == null || $("input[name=lm-userScoreBScaleB]").val() == "") {
+                        alert("请输入全额发放积分返点")
+                        return;
+                    }
+                    merchantRebatePolicy.rebateFlag = 1;
+                    merchantRebatePolicy.userScoreBScaleB = null;
+            }
+            if(policy==1) {                     //   比例发放
+                if ($("input[name=lm-userScoreAScale]").val() > 100 || $("input[name=lm-userScoreAScale]").val() == null || $("input[name=lm-userScoreAScale]").val() == "") {
+                    alert("请输入比例发放红包")
+                    return;
+                }
+                if ($("input[name=lm-userScoreBScale]").val() > 100 || $("input[name=lm-userScoreBScale]").val() == null || $("input[name=lm-userScoreBScale]").val() == "") {
+                    alert("请输入比例发放积分")
+                    return;
+                }
+                merchantRebatePolicy.rebateFlag = 0;
+                merchantRebatePolicy.userScoreAScale = null;
+                merchantRebatePolicy.userScoreBScale = null;
+            }
+            merchant.ljBrokerage = $("input[name=lm-ljBrokerage]").val();                       // 普通订单费率
+            merchant.scoreBRebate = $("input[name=lm-scoreBRebate]").val();                     // 普通订单积分返点
+            merchant.ljCommission = $("input[name=lm-ljCommission]").val();                     // 导流订单费率
+            merchant.scoreARebate =  $("input[name=lm-scoreARebate]").val();                         // 导流订单红包
+            merchantRebatePolicy.importScoreBScale =  $("input[name=lm-importScoreBScale]").val();   // 导流订单积分返点
+            merchantRebatePolicy.userScoreBScaleB = $("input[name=lm-userScoreBScaleB]").val();      // 会员发放红包 【全额】
+            merchantRebatePolicy.userScoreAScale = $("input[name=lm-userScoreAScale]").val();        // 会员发放红包 【比例】
+            merchantRebatePolicy.userScoreBScale = $("input[name=lm-userScoreBScale]").val();        // 会员发放红包 【比例】
+            /*merchant.ljCommission = $(".lm").eq(0).val();
             merchant.scoreARebate = $(".lm").eq(1).val();
             merchant.ljBrokerage = $(".lm").eq(2).val();
-            merchant.memberCommission = $(".lm").eq(3).val();
+            merchant.memberCommission = $(".lm").eq(3).val();*/
         }
-        if ($("#fl").val() == "" || $("#fl").val() == null) {
-            alert("请选择积分返利比");
-            return;
-        }
-        merchant.scoreBRebate = $("#fl").val();
         merchant.userLimit = $("#lock").val();
         merchant.receiptAuth = $("input[name='type1']:checked").val();
         var merchantBank = {};
@@ -703,6 +785,7 @@
             merchant.cycle = $("#cardzhouqi").val()
         }
         merchant.id = $("#merchantId").val();
+        merchantRebatePolicy.id = $("#merchantRebatePolicyId").val();
         if (merchantBank.bankName == "" || merchantBank.bankNumber == null) {
             alert("请输入结算人 / 开户支行");
             return;
@@ -720,12 +803,15 @@
         });
         merchant.merchantProtocols = merchantProtocals;
         $("#enter").unbind("click");
+        var merchantDto = {};
+        merchantDto.merchant=merchant;
+        merchantDto.merchantRebatePolicy=merchantRebatePolicy;
         if (merchant.id == null || merchant.id == "") {
             $.ajax({
                        type: "post",
                        url: "/manage/merchant",
                        contentType: "application/json",
-                       data: JSON.stringify(merchant),
+                       data: JSON.stringify(merchantDto),
                        success: function (data) {
                            alert(data.data);
                            setTimeout(function () {
@@ -738,7 +824,7 @@
                        type: "put",
                        url: "/manage/merchant",
                        contentType: "application/json",
-                       data: JSON.stringify(merchant),
+                       data: JSON.stringify(merchantDto),
                        success: function (data) {
                            alert(data.data);
                            setTimeout(function () {
