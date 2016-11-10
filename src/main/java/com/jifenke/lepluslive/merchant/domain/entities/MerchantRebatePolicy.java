@@ -21,16 +21,15 @@ public class MerchantRebatePolicy {
 
   private Long merchantId;
 
-  private Integer rebateFlag; //是否开启会员订单
+  private Integer rebateFlag; //是否开启会员订单scoreBRebate     0-不开启（按比例）  1-开启（全部） 2-不开启
 
-  private BigDecimal importScoreBScale;//导流订单发放积分策略
+  private BigDecimal importScoreBScale;//导流订单发放积分策略    【导流订单积分】
 
-  private BigDecimal userScoreBScale;//会员订单按比例发放积分策略返积分比
+  private BigDecimal userScoreBScale;//会员订单按比例发放积分策略返积分比  【会员订单-比例-积分】
 
-  private BigDecimal userScoreBScaleB;//会员订单全额发放积分策略返积分比
+  private BigDecimal userScoreBScaleB;//会员订单全额发放积分策略返积分比   【会员订单-全额-积分】
 
-
-  private BigDecimal userScoreAScale;//会员订单按比例发放积分策略返红包比
+  private BigDecimal userScoreAScale;//会员订单按比例发放积分策略返红包比  【会员订单-比例-红包】
 
   private Integer stageOne;//0%~20%
 
