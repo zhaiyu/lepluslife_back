@@ -169,13 +169,13 @@
                     <span>导流订单费率</span><input type="text" class="form-control" name="lm-ljCommission"/><span>%</span><span>红包比例</span><input type="text" class="form-control" name="lm-scoreARebate"/><span>%</span><span>积分返点</span><input type="text" class="form-control" name="lm-importScoreBScale"/><span>%</span><br>
                 </div>
                 <div>
-                    <span>会员订单费率：</span><input type="radio" style="width: auto !important;" name="hydd" checked="checked" value="0"/><span>佣金费率</span><input type="radio" style="width: auto !important;" name="hydd" value="1"/><span>普通费率</span>
+                    <span>会员订单费率：</span><input type="radio" style="width: auto !important;" name="hydd" checked="checked" id="yj-hydd" value="0"/><span>佣金费率</span><input type="radio" style="width: auto !important;" name="hydd" id="pt-hydd" value="1"/><span>普通费率</span>
                     <div class="yj">
                         <div>
-                            <input type="radio" style="width: auto !important;" name="policy" value="0"/><span>成本差全数发放</span><span>（佣金和微信手续费成本的差额，将全部用来发放红包）</span><span>积分返点</span><input type="number" name="lm-userScoreBScaleB" class="form-control" /><span>%</span>
+                            <input type="radio" style="width: auto !important;" name="policy" id="q-policy" value="1"/><span>成本差全数发放</span><span>（佣金和微信手续费成本的差额，将全部用来发放红包）</span><span>积分返点</span><input type="number" name="lm-userScoreBScaleB" class="form-control" /><span>%</span>
                         </div>
                         <div>
-                            <input type="radio" style="width: auto !important;" name="policy" value="1" checked="checked" /><span>按比例发放</span><span>红包比例</span><input type="number" name="lm-userScoreAScale" class="form-control" /><span>%</span><span>积分返点</span><input type="number" name="lm-userScoreBScale" class="form-control" /><span>%</span><br>
+                            <input type="radio" style="width: auto !important;" name="policy" id="b-policy" value="0" checked="checked" /><span>按比例发放</span><span>红包比例</span><input type="number" name="lm-userScoreAScale" class="form-control" /><span>%</span><span>积分返点</span><input type="number" name="lm-userScoreBScale" class="form-control" /><span>%</span><br>
                         </div>
                     </div>
                 </div>
@@ -406,6 +406,21 @@
              $("input[name=lm-userScoreBScaleB]").val(${merchantRebatePolicy.userScoreBScaleB});      // 会员发放红包 【全额】
              $("input[name=lm-userScoreAScale]").val(${merchantRebatePolicy.userScoreAScale});        // 会员发放红包 【比例】
              $("input[name=lm-userScoreBScale]").val(${merchantRebatePolicy.userScoreBScale});        // 会员发放红包 【比例】
+             var policy = ${merchantRebatePolicy.rebateFlag};
+             if(policy==0) {
+                 $("#b-policy").attr("checked",true);
+             }
+             if(policy==1) {
+                 $("#q-policy").attr("checked",true);
+             }
+             var memberCommission = ${merchant.memberCommission};
+             var ljCommission = ${merchant.ljCommission};               // 佣金费率
+             var ljBrokerage = ${merchant.ljBrokerage};                 // 普通费率
+             if(memberCommission===ljCommission) {
+                 $("#yj-hydd").attr("checked",true);
+             }else {
+                 $("#pt-hydd").attr("checked",true);
+             }
         }
         if (${merchant.partnership==0}) {
             $("input[name=pt-ljCommission]").val(${merchant.ljCommission});
@@ -729,15 +744,17 @@
                 merchant.memberCommission = $("input[name=lm-ljBrokerage]").val();
             }
             var policy = $("input[name='policy']:checked").val();
-            if(policy==0) {                     //   成本差全额
+            if(policy==1) {                     //   成本差全额
                     if ($("input[name=lm-userScoreBScaleB]").val() > 100 || $("input[name=lm-userScoreBScaleB]").val() == null || $("input[name=lm-userScoreBScaleB]").val() == "") {
                         alert("请输入全额发放积分返点")
                         return;
                     }
                     merchantRebatePolicy.rebateFlag = 1;
-                    merchantRebatePolicy.userScoreBScaleB = null;
+                    merchantRebatePolicy.userScoreAScale = null;
+                    merchantRebatePolicy.userScoreBScale = null;
+                    merchantRebatePolicy.userScoreBScaleB = $("input[name=lm-userScoreBScaleB]").val();      // 会员发放红包 【全额】
             }
-            if(policy==1) {                     //   比例发放
+            if(policy==0) {                     //   比例发放
                 if ($("input[name=lm-userScoreAScale]").val() > 100 || $("input[name=lm-userScoreAScale]").val() == null || $("input[name=lm-userScoreAScale]").val() == "") {
                     alert("请输入比例发放红包")
                     return;
@@ -747,21 +764,15 @@
                     return;
                 }
                 merchantRebatePolicy.rebateFlag = 0;
-                merchantRebatePolicy.userScoreAScale = null;
-                merchantRebatePolicy.userScoreBScale = null;
+                merchantRebatePolicy.userScoreBScaleB = null;
+                merchantRebatePolicy.userScoreAScale = $("input[name=lm-userScoreAScale]").val();        // 会员发放红包 【比例】
+                merchantRebatePolicy.userScoreBScale = $("input[name=lm-userScoreBScale]").val();        // 会员发放红包 【比例】
             }
             merchant.ljBrokerage = $("input[name=lm-ljBrokerage]").val();                       // 普通订单费率
             merchant.scoreBRebate = $("input[name=lm-scoreBRebate]").val();                     // 普通订单积分返点
             merchant.ljCommission = $("input[name=lm-ljCommission]").val();                     // 导流订单费率
             merchant.scoreARebate =  $("input[name=lm-scoreARebate]").val();                         // 导流订单红包
             merchantRebatePolicy.importScoreBScale =  $("input[name=lm-importScoreBScale]").val();   // 导流订单积分返点
-            merchantRebatePolicy.userScoreBScaleB = $("input[name=lm-userScoreBScaleB]").val();      // 会员发放红包 【全额】
-            merchantRebatePolicy.userScoreAScale = $("input[name=lm-userScoreAScale]").val();        // 会员发放红包 【比例】
-            merchantRebatePolicy.userScoreBScale = $("input[name=lm-userScoreBScale]").val();        // 会员发放红包 【比例】
-            /*merchant.ljCommission = $(".lm").eq(0).val();
-            merchant.scoreARebate = $(".lm").eq(1).val();
-            merchant.ljBrokerage = $(".lm").eq(2).val();
-            merchant.memberCommission = $(".lm").eq(3).val();*/
         }
         merchant.userLimit = $("#lock").val();
         merchant.receiptAuth = $("input[name='type1']:checked").val();
