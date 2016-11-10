@@ -80,4 +80,10 @@ public class MvUtil {
 //    }
 //  }
 
+  //短信随机号
+  public static String getShortMessageSceneNumber() {
+    String randomStr = RandomStringUtils.random(5, "1234567890");
+    return new SimpleDateFormat("yyMMddHHmmss").format(new Date()) + randomStr;
+  }
+
 }

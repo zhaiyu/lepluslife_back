@@ -89,4 +89,11 @@ public interface LeJiaUserRepository extends JpaRepository<LeJiaUser, Long> {
    */
   @Query(value = "SELECT COUNT(*) FROM le_jia_user WHERE le_jia_user.bind_merchant_id = ?1 AND bind_merchant_date BETWEEN ?2 AND  ?3 ", nativeQuery = true)
   Integer countByBindMerchantAndDate(Long merchantId,String startDate,String endDate);
+
+  @Query(value = "SELECT * from  le_jia_user where phone_number=?1", nativeQuery = true)
+  LeJiaUser findUserByPhoneNumber(String phoneNumber);
+
+
+  @Query(value = "SELECT * from  le_jia_user where user_sid=?1", nativeQuery = true)
+  LeJiaUser findUserBySid(String sid);
 }
