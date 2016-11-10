@@ -15,11 +15,9 @@
         margin-top: 10px;
         margin-left: 10%;
     }
-
     .lianmeng > div {
         margin: 5px 0;
     }
-
     .lianmeng input {
         width: 30%;
         margin: 0 5px;
@@ -71,14 +69,14 @@
 
         <div>
             <label for="sales">所属销售</label>
-             <c:if test="${salesStaff ==null}">
-            <select name="name" id="sales" class="check">
-                <option value="nullValue"></option>
-                <c:forEach items="${sales}" var="saleStaff">
-                    <option value="${saleStaff.id}">${saleStaff.name}</option>
-                </c:forEach>
-            </select>
-             </c:if>
+            <c:if test="${salesStaff ==null}">
+                <select name="name" id="sales" class="check">
+                    <option value="nullValue"></option>
+                    <c:forEach items="${sales}" var="saleStaff">
+                        <option value="${saleStaff.id}">${saleStaff.name}</option>
+                    </c:forEach>
+                </select>
+            </c:if>
             <c:if test="${salesStaff !=null}">
                 <select name="name" id="sales" class="check">
                     <option value="nullValue"></option>
@@ -132,36 +130,20 @@
             <label>合约类型&nbsp</label>
             <input type="radio" class="radio" id="normal" name="type" value="0"/><span>普通商户</span>
             <input type="radio" class="radio" id="partner" name="type" value="1"/><span>联盟商户</span>
-            <%--<input type="text" class="money lm" disabled="disabled" placeholder="输入佣金比"/>%--%>
-            <%--<input type="text" class="money lm" disabled="disabled" placeholder="输入红包比"/>%--%>
-            <%--<input type="text" class="money lm" disabled="disabled" placeholder="输入手续费"/>%--%>
-            <div class="pt">
-                    <label>手续费</label>
-                    <input type="text" class="money pt" disabled="disabled" placeholder="输入手续费" name="pt-ljCommission"/>%
-                    <label>积分返利点</label>
-                    <input type="text" id="fl" value="${merchant.scoreBRebate}" class="money check"
-                           placeholder="按交易额百分比，返给用户" name="pt-scoreBRebate"/>&nbsp%
+            <div class="pt" style="margin-left: 10%">
+                <label>手续费</label>
+                <input type="text" class="money pt"  placeholder="输入手续费" name="pt-ljCommission"/>%
+                <label>积分返利点</label>
+                <input type="text" id="fl" value="${merchant.scoreBRebate}" class="money check"
+                       placeholder="按交易额百分比，返给用户" name="pt-scoreBRebate"/>&nbsp%
             </div>
             <div class="lianmeng">
-                <%--<div>
-                    <span>导流订单参数</span><input type="text" class="money lm"
-                                              placeholder="输入佣金比">%<input type="text"
-                                                                          class="money lm"
-                                                                          placeholder="输入红包比">%
-                </div>
-                <div>
-                    <span>普通订单参数</span><input type="text" class="money lm" placeholder="输入手续费">%
-                </div>
-                <div>
-                    <span>会员订单参数</span><input type="text" class="money lm" placeholder="输入佣金比">%
-                    <p style="font-size: 12px">会员订单佣金扣除微信手续费后全部以红包形式发放</p>
-                </div>--%>
-                    <style>
-                        .lianmeng .form-control {
-                            width: 20%;
-                            display: inline;
-                        }
-                    </style>
+                <style>
+                    .lianmeng .form-control {
+                        width: 20%;
+                        display: inline;
+                    }
+                </style>
                 <div>
                     <span>普通订单费率</span><input type="text" class="form-control" name="lm-ljBrokerage" /><span>%</span><span>积分返点</span><input type="text" class="form-control" name="lm-scoreBRebate"/><span>%</span>
                 </div>
@@ -306,144 +288,171 @@
     $(".lianmeng").hide();
     if (${merchant!=null}) {
         $.ajax({
-                   type: 'GET',
-                   url: '/manage/city/ajax',
-                   async: false,
-                   dataType: 'json',
-                   success: function (data) {
-                       console.log(data[0]);
-                       var dataStr1 = '',
-                               dataStr2 = '';
-                       $.each(data, function (i) {
-                           dataStr1 +=
-                           '<option value="' + data[i].id + '">' + data[i].name + '</option>';
-                           if (data[i].id == '${merchant.city.id}') {
-                               $.each(data[i].areas, function (j) {
-                                   dataStr2 +=
-                                   '<option value="' + data[i].areas[j].id + '">'
-                                   + data[i].areas[j].name
-                                   + '</option>';
-                               });
-                           }
-                       });
-                       $('#locationCity').empty().append(dataStr1);
-                       $('#locationArea').empty().append(dataStr2);
-                   },
-                   error: function (jqXHR) {
-                       alert('发生错误：' + jqXHR.status);
-                   }
-               });
+            type: 'GET',
+            url: '/manage/city/ajax',
+            async: false,
+            dataType: 'json',
+            success: function (data) {
+                console.log(data[0]);
+                var dataStr1 = '',
+                        dataStr2 = '';
+                $.each(data, function (i) {
+                    dataStr1 +=
+                            '<option value="' + data[i].id + '">' + data[i].name + '</option>';
+                    if (data[i].id == '${merchant.city.id}') {
+                        $.each(data[i].areas, function (j) {
+                            dataStr2 +=
+                                    '<option value="' + data[i].areas[j].id + '">'
+                                    + data[i].areas[j].name
+                                    + '</option>';
+                        });
+                    }
+                });
+                $('#locationCity').empty().append(dataStr1);
+                $('#locationArea').empty().append(dataStr2);
+            },
+            error: function (jqXHR) {
+                alert('发生错误：' + jqXHR.status);
+            }
+        });
         $("#locationCity option[value=${merchant.city.id}]").attr("selected", true);
         $("#locationArea option[value=${merchant.area.id}]").attr("selected", true);
     } else {
         $.ajax({
-                   type: 'GET',
-                   url: '/manage/city/ajax',
-                   async: false,
-                   dataType: 'json',
-                   success: function (data) {
-                       console.log(data[0]);
-                       var dataStr1 = '',
-                               dataStr2 = '';
-                       $.each(data, function (i) {
-                           dataStr1 +=
-                           '<option value="' + data[i].id + '">' + data[i].name + '</option>';
-                       });
-                       $.each(data[0].areas, function (j) {
-                           dataStr2 +=
-                           '<option value="' + data[0].areas[j].id + '">' + data[0].areas[j].name
-                           + '</option>';
-                       });
-                       $('#locationCity').empty().append(dataStr1);
-                       $('#locationArea').empty().append(dataStr2);
-                   },
-                   error: function (jqXHR) {
-                       alert('发生错误：' + jqXHR.status);
-                   }
-               });
+            type: 'GET',
+            url: '/manage/city/ajax',
+            async: false,
+            dataType: 'json',
+            success: function (data) {
+                console.log(data[0]);
+                var dataStr1 = '',
+                        dataStr2 = '';
+                $.each(data, function (i) {
+                    dataStr1 +=
+                            '<option value="' + data[i].id + '">' + data[i].name + '</option>';
+                });
+                $.each(data[0].areas, function (j) {
+                    dataStr2 +=
+                            '<option value="' + data[0].areas[j].id + '">' + data[0].areas[j].name
+                            + '</option>';
+                });
+                $('#locationCity').empty().append(dataStr1);
+                $('#locationArea').empty().append(dataStr2);
+            },
+            error: function (jqXHR) {
+                alert('发生错误：' + jqXHR.status);
+            }
+        });
     }
     $("#merchantType option[value=${merchant.merchantType.id}]").attr("selected", true);
     $('#locationCity').change(function () {
         var val = $(this).val();
         $.ajax({
-                   type: 'GET',
-                   url: '/manage/city/ajax',
-                   async: false,
-                   dataType: 'json',
-                   success: function (data) {
-                       $.each(data, function (i) {
-                           if (data[i].id == val) {
-                               var dataStr = '';
-                               $.each(data[i].areas, function (j) {
-                                   dataStr +=
-                                   '<option value="' + data[i].areas[j].id + '">'
-                                   + data[i].areas[j].name + '</option>';
-                               });
-                               $('#locationArea').empty().append(dataStr);
-                           }
-                       });
-                   },
-                   error: function (jqXHR) {
-                       alert('发生错误：' + jqXHR.status);
-                   }
-               });
+            type: 'GET',
+            url: '/manage/city/ajax',
+            async: false,
+            dataType: 'json',
+            success: function (data) {
+                $.each(data, function (i) {
+                    if (data[i].id == val) {
+                        var dataStr = '';
+                        $.each(data[i].areas, function (j) {
+                            dataStr +=
+                                    '<option value="' + data[i].areas[j].id + '">'
+                                    + data[i].areas[j].name + '</option>';
+                        });
+                        $('#locationArea').empty().append(dataStr);
+                    }
+                });
+            },
+            error: function (jqXHR) {
+                alert('发生错误：' + jqXHR.status);
+            }
+        });
     })
-
     var fnMyFunc1;
     $(function () {
         $("#partners").find("option[value='${merchant.partner.id}']").attr("selected", true);
         $("#sales").find("option[value='${merchant.salesStaff.id}']").attr("selected", true);
         initProtocol();
-
         if (${merchant.partnership==1}) {
             $('#partner').prop("checked", true);
 //            $(".changeDisplay").css("display", 'block');
-             $("input[name=lm-ljBrokerage]").val(${merchant.ljBrokerage});                       // 普通订单费率
-             $("input[name=lm-scoreBRebate]").val(${merchant.scoreBRebate});                     // 普通订单积分返点
-             $("input[name=lm-ljCommission]").val(${merchant.ljCommission});                     // 导流订单费率
-             $("input[name=lm-scoreARebate]").val(${merchant.scoreARebate});                         // 导流订单红包
-             $("input[name=lm-importScoreBScale]").val(${merchantRebatePolicy.importScoreBScale});   // 导流订单积分返点
-             $("input[name=lm-userScoreBScaleB]").val(${merchantRebatePolicy.userScoreBScaleB});      // 会员发放红包 【全额】
-             $("input[name=lm-userScoreAScale]").val(${merchantRebatePolicy.userScoreAScale});        // 会员发放红包 【比例】
-             $("input[name=lm-userScoreBScale]").val(${merchantRebatePolicy.userScoreBScale});        // 会员发放红包 【比例】
-             var policy = ${merchantRebatePolicy.rebateFlag};
-             if(policy==0) {
-                 $("#b-policy").attr("checked",true);
-             }
-             if(policy==1) {
-                 $("#q-policy").attr("checked",true);
-             }
-             var memberCommission = ${merchant.memberCommission};
-             var ljCommission = ${merchant.ljCommission};               // 佣金费率
-             var ljBrokerage = ${merchant.ljBrokerage};                 // 普通费率
-             if(memberCommission===ljCommission) {
-                 $("#yj-hydd").attr("checked",true);
-             }else {
-                 $("#pt-hydd").attr("checked",true);
-             }
+            $("input[name=lm-ljBrokerage]").val(${merchant.ljBrokerage});                       // 普通订单费率
+            $("input[name=lm-scoreBRebate]").val(${merchant.scoreBRebate});                     // 普通订单积分返点
+            $("input[name=lm-ljCommission]").val(${merchant.ljCommission});                     // 导流订单费率
+            $("input[name=lm-scoreARebate]").val(${merchant.scoreARebate});                         // 导流订单红包
+            $("input[name=lm-importScoreBScale]").val(${merchantRebatePolicy.importScoreBScale});   // 导流订单积分返点
+            $("input[name=lm-userScoreBScaleB]").val(${merchantRebatePolicy.userScoreBScaleB});      // 会员发放红包 【全额】
+            $("input[name=lm-userScoreAScale]").val(${merchantRebatePolicy.userScoreAScale});        // 会员发放红包 【比例】
+            $("input[name=lm-userScoreBScale]").val(${merchantRebatePolicy.userScoreBScale});        // 会员发放红包 【比例】
+
+            if(${merchantRebatePolicy.rebateFlag==0}) {
+                $("#b-policy").attr("checked",true);
+                $("#b-policy").nextAll().removeAttr("disabled");
+            }
+            if(${merchantRebatePolicy.rebateFlag==1}) {
+                $("#q-policy").attr("checked",true);
+                $("#q-policy").nextAll().removeAttr("disabled");
+            }
+            if(${merchant.memberCommission==merchant.ljCommission}) {
+                $("#yj-hydd").attr("checked",true);
+            }else {
+                $("#pt-hydd").attr("checked",true);
+            }
         }
         if (${merchant.partnership==0}) {
+            $('#normal').prop("checked", true);
             $("input[name=pt-ljCommission]").val(${merchant.ljCommission});
             $("input[name=pt-scoreBRebate]").val(${merchant.scoreBRebate})
         }
-
         var val = $('input:radio[name="type"]:checked').val();
         if (val == 0) {
             $(".pt").removeAttr("disabled");
             $(".lm").attr("disabled", "disabled");
             $(".lianmeng").hide();
+            $(".pt").show();
         }
         if (val == 1) {
             $(".pt").attr("disabled", "disabled");
             $(".lm").removeAttr("disabled");
             $(".lianmeng").show();
+            $(".pt").hide();
         }
-
+        $("input[name=type]").click(function () {
+            var cVal = $(this).next().html();
+            console.log(cVal);
+            switch (cVal){
+                case "普通商户":
+                    $(".pt").show();
+                    $(".lianmeng").hide();
+                    break;
+                case "联盟商户":
+                    $(".pt").hide();
+                    $(".lianmeng").show();
+            }
+        });
+        /*$("input[name=hydd]").click(function () {
+         var hVal = $(this).next().html();
+         switch (hVal){
+         case "佣金费率":
+         $(".yj").show();
+         break;
+         case "普通费率":
+         $(".yj").hide();
+         break;
+         }
+         });*/
+        $(".yj input[type=number]").attr("disabled","disabled");
+        $("input[name=policy]").click(function () {
+            $(".yj input[type=number]").attr("disabled","disabled");
+            $(this).nextAll().removeAttr("disabled");
+            $(this).parent().siblings().children("input").val("");
+        });
         if (${merchant.receiptAuth==1}) {
             $('#close').prop("checked", true);
 //            $(".changeDisplay").css("display", 'block');
         }
-
         if (${merchant.merchantBank!=null}) {
             if (${merchant.merchantBank.bankName=="支付宝"}) {
                 $('#alipay').prop("checked", true);
@@ -457,7 +466,6 @@
                 $("#bank").val("${merchant.merchantBank.bankName}");
                 $("#cardzhouqi").find("option[value='${merchant.cycle}']").attr("selected", true);
             }
-
             var val = $('input:radio[name="pay"]:checked').val();
             if (val == 0) {
                 $(".cardpay").addClass("dis");
@@ -468,7 +476,6 @@
                 $(".zfbpay").addClass("dis");
             }
         }
-
         var fnMyFunc1;
         $("input[type=radio]").bind("click", fnMyFunc1 = function () {
             var val = $('input:radio[name="type"]:checked').val();
@@ -497,7 +504,6 @@
                 $(".zfbpay").addClass("dis");
             }
         });
-
         $("#selBankName").bind('change',function(){
             var $selBankName = $("#selBankName");
             if($selBankName.val()!=null && $selBankName.val()!='') {
@@ -508,7 +514,6 @@
 </script>
 <script type="text/javascript">
     function setImagePreview(docObj, avalue) {
-
         var imgObjPreview = document.getElementById(avalue);
         if (docObj.files && docObj.files[0]) {
             imgObjPreview.style.display = 'block';
@@ -524,9 +529,9 @@
             localImagId.style.height = "180px";
             try {
                 localImagId.style.filter =
-                "progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod=scale)";
+                        "progid:DXImageTransform.Microsoft.AlphaImageLoader(sizingMethod=scale)";
                 localImagId.filters.item("DXImageTransform.Microsoft.AlphaImageLoader").src =
-                imgSrc;
+                        imgSrc;
             }
             catch (e) {
                 alert("您上传的图片格式不正确，请重新选择!");
@@ -552,17 +557,17 @@
                 ).append(
                         $("<div></div>").append(
                                 $("<input class='picture' />").attr("type", "file").attr("data-url",
-                                                                                         "/manage/file/saveImage").attr("id",
-                                                                                                                        "doc"
-                                                                                                                        + num).attr("name",
-                                                                                                                                    "file").css("width",
-                                                                                                                                                "110"
-                                                                                                                                                + "px")
+                                        "/manage/file/saveImage").attr("id",
+                                        "doc"
+                                        + num).attr("name",
+                                        "file").css("width",
+                                        "110"
+                                        + "px")
                                 //.attr("onchange","javascript:setImagePreview(this,'preview" + num + "');")
                         ).append(
                                 $("<button></button>").attr("onclick", "deleteImg(" + addi
-                                                                       + ");").css("background-color",
-                                                                                   "red").html("X")
+                                        + ");").css("background-color",
+                                        "red").html("X")
                         ).append(
                                 $("<div></div>").append(
                                         $("<button class='downLoad'></button>").html("下载协议")
@@ -575,25 +580,23 @@
         addi++;
         initProtocol();
     });
-
     function initProtocol() {
         $('.picture').each(function () {
             $(this).fileupload({
-                                   dataType: 'json',
-                                   maxFileSize: 5000000,
-                                   acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
-                                   add: function (e, data) {
-                                       data.submit();
-                                   },
-                                   done: function (e, data) {
-                                       var resp = data.result;
-                                       $(this).parent().parent().find(".fileimg").attr('src',
-                                                                                       '${ossImageReadRoot}/'
-                                                                                       + resp.data);
-                                   }
-                               });
+                dataType: 'json',
+                maxFileSize: 5000000,
+                acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+                add: function (e, data) {
+                    data.submit();
+                },
+                done: function (e, data) {
+                    var resp = data.result;
+                    $(this).parent().parent().find(".fileimg").attr('src',
+                            '${ossImageReadRoot}/'
+                            + resp.data);
+                }
+            });
         })
-
         $('.downLoad').each(function () {
             $(this).bind("click", function () {
                 var url = $(this).parent().parent().parent().find(".fileimg").attr('src');
@@ -605,7 +608,6 @@
             });
         })
     }
-
     function post(URL, PARAMS) {
         var temp = document.createElement("form");
         temp.action = URL;
@@ -624,14 +626,12 @@
     }
     function deleteImg(Obj) {
         $("#" + Obj).remove();
-
     }
 </script>
 <script>
     $("#enter").click(function () {
         submitMerchant();
     });
-
     function submitMerchant() {
         if ($("#partner").val() == "") {
             $("#partner").css("background-color", "red");
@@ -653,12 +653,10 @@
             $("#lock").css("background-color", "red");
             return;
         }
-
         var merchant = {};
         var partner = {};
         var salesStaff = {};
         var merchantRebatePolicy={};
-
         salesStaff.id = $("#sales").val();
         if(salesStaff.id=="nullValue"){
             merchant.salesStaff = null;
@@ -745,14 +743,14 @@
             }
             var policy = $("input[name='policy']:checked").val();
             if(policy==1) {                     //   成本差全额
-                    if ($("input[name=lm-userScoreBScaleB]").val() > 100 || $("input[name=lm-userScoreBScaleB]").val() == null || $("input[name=lm-userScoreBScaleB]").val() == "") {
-                        alert("请输入全额发放积分返点")
-                        return;
-                    }
-                    merchantRebatePolicy.rebateFlag = 1;
-                    merchantRebatePolicy.userScoreAScale = null;
-                    merchantRebatePolicy.userScoreBScale = null;
-                    merchantRebatePolicy.userScoreBScaleB = $("input[name=lm-userScoreBScaleB]").val();      // 会员发放红包 【全额】
+                if ($("input[name=lm-userScoreBScaleB]").val() > 100 || $("input[name=lm-userScoreBScaleB]").val() == null || $("input[name=lm-userScoreBScaleB]").val() == "") {
+                    alert("请输入全额发放积分返点")
+                    return;
+                }
+                merchantRebatePolicy.rebateFlag = 1;
+                merchantRebatePolicy.userScoreAScale = null;
+                merchantRebatePolicy.userScoreBScale = null;
+                merchantRebatePolicy.userScoreBScaleB = $("input[name=lm-userScoreBScaleB]").val();      // 会员发放红包 【全额】
             }
             if(policy==0) {                     //   比例发放
                 if ($("input[name=lm-userScoreAScale]").val() > 100 || $("input[name=lm-userScoreAScale]").val() == null || $("input[name=lm-userScoreAScale]").val() == "") {
@@ -819,42 +817,39 @@
         merchantDto.merchantRebatePolicy=merchantRebatePolicy;
         if (merchant.id == null || merchant.id == "") {
             $.ajax({
-                       type: "post",
-                       url: "/manage/merchant",
-                       contentType: "application/json",
-                       data: JSON.stringify(merchantDto),
-                       success: function (data) {
-                           alert(data.data);
-                           setTimeout(function () {
-                               location.href = "/manage/merchant";
-                           }, 0);
-                       }
-                   });
+                type: "post",
+                url: "/manage/merchant",
+                contentType: "application/json",
+                data: JSON.stringify(merchantDto),
+                success: function (data) {
+                    alert(data.data);
+                    setTimeout(function () {
+                        location.href = "/manage/merchant";
+                    }, 0);
+                }
+            });
         } else {
             $.ajax({
-                       type: "put",
-                       url: "/manage/merchant",
-                       contentType: "application/json",
-                       data: JSON.stringify(merchantDto),
-                       success: function (data) {
-                           alert(data.data);
-                           setTimeout(function () {
-                               location.href = "/manage/merchant";
-                           }, 0);
-                       }
-                   });
+                type: "put",
+                url: "/manage/merchant",
+                contentType: "application/json",
+                data: JSON.stringify(merchantDto),
+                success: function (data) {
+                    alert(data.data);
+                    setTimeout(function () {
+                        location.href = "/manage/merchant";
+                    }, 0);
+                }
+            });
         }
     }
 </script>
 <script>
     $(function () {
-
         $(".money").keyup(function () {
             this.value = this.value.replace(/[^\d.]/g, "");
             this.value = this.value.replace(/^\./g, "");  //验证第一个字符是数字而不是.
-
             this.value = this.value.replace(/\.{2,}/g, "."); //只保留第一个. 清除多余的.
-
             this.value = this.value.replace(".", "$#$").replace(/\./g, "").replace("$#$", ".");
             this.value = this.value.replace(/^(\-)*(\d+)\.(\d\d).*$/, '$1$2.$3');
             // this.value = this.value.replace(/^\d+(?=\.{0,1}\d+$|$)/ , '').replace(/(\d{4})(?=\d)/g, "$1 ");
@@ -865,5 +860,3 @@
     }
 </script>
 </html>
-
-
