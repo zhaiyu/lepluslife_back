@@ -130,6 +130,7 @@
                         <label>乐加商户</label>
                         <input type="text" id="merchant-name" class="form-control" placeholder="请输入商户名称或ID查询">
                     </div>
+<%--
                     <div class="form-group col-md-2">
                         <label>佣金状态</label>
                         <select class="form-control" id="commission-state">
@@ -138,6 +139,7 @@
                             <option value="0">未开通</option>
                         </select>
                     </div>
+--%>
                     <div class="form-group col-md-1">
                         <button class="btn btn-primary" style="margin-top: 24px" onclick="searchPosByCriteria()">查询</button>
                     </div>
@@ -605,11 +607,11 @@
             posCriteria.merchant = null;
         }
 
-        if ($("#commission-state").val() != "" && $("#commission-state").val() != null) {
+        /*if ($("#commission-state").val() != "" && $("#commission-state").val() != null) {
             posCriteria.state = $("#commission-state").val();
         } else {
             posCriteria.state = null;
-        }
+        }*/
 
         getPosByAjax(posCriteria);
     }

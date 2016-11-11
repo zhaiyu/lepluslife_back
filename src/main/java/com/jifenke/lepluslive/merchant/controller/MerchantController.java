@@ -123,7 +123,7 @@ public class MerchantController {
   public LejiaResult createMerchant(@RequestBody MerchantDto merchantDto) {
     Merchant merchant = merchantDto.getMerchant();
     merchantService.createMerchant(merchant);
-    MerchantRebatePolicy policy = new MerchantRebatePolicy();
+    MerchantRebatePolicy policy = merchantDto.getMerchantRebatePolicy();
     policy.setMerchantId(merchant.getId());
     merchantReBatePolicyService.saveMerchantRebatePolicy(policy);
     return LejiaResult.ok("添加商户成功");
