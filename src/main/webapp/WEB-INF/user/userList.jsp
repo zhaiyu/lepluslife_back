@@ -31,6 +31,11 @@
             width: 60px;
         }
 
+        textarea {
+            resize: none;
+            width: 400px;
+            height: 300px;
+        }
     </style>
 
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
@@ -196,6 +201,124 @@
 <div id="bottomIframe">
     <%@include file="../common/bottom.jsp" %>
 </div>
+<div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel"
+     aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span
+                        aria-hidden="true">&times;</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title" id="myModalLabel">发短信</h4>
+            </div>
+            <div class="modal-body">
+
+                <table>
+                    <tr>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><span>发送对象:</span></td>
+                        <td>
+                            <div id="dxUserImage"></div>
+                        </td>
+                        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                        <td>
+                            <div id="dxUserName"></div>
+                        </td>
+                        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                        <td>
+                            <div>
+                                <span id="userPhoneNumber"></span>
+                            </div>
+                            <div id="showPhoneNumber">
+
+                            </div>
+                        </td>
+                    </tr>
+                </table>
+                <table>
+                    <tr>
+
+                    </tr>
+                    <tr>
+                        <td><br></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><span>发送内容:</span></td>
+                        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                        <td><span>签名</span></td>
+                        <td>&nbsp;&nbsp;&nbsp;&nbsp;</td>
+                        <td><span>【乐加生活】</span></td>
+                    </tr>
+                </table>
+                <table>
+                    <tr>
+                        <td><textarea id="shortMessage"></textarea></td>
+                    </tr>
+                    <tr>
+                        <td><span>退订回复T</span></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><br></td>
+                    </tr>
+                    <tr>
+                        <td></td>
+                    </tr>
+                    <tr>
+                        <td><span><span id="wordCount"></span>个字<br>
+                        短短信:短信内容70字(含),按70字一条计费.<br>
+                        长短信:短信内容70字以上,最大1000字,按67字一条计费.
+
+                    </span></td>
+                    </tr>
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" onclick="sendMessage()">确认</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="myModalThree" tabindex="-1" role="dialog"
+     aria-labelledby="myModalLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"
+                        aria-hidden="true">×
+                </button>
+
+            </div>
+            <div class="modal-body">
+                <table>
+                    <tr>
+                        <span id="messageState"></span>
+                    </tr>
+
+                </table>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary"
+                        data-dismiss="modal">关闭
+                </button>
+
+                <button type="button" class="btn btn-primary" onclick="serchSendRecord()">
+                    查看发送记录
+                </button>
+            </div>
+        </div>
+        <!-- /.modal-content -->
+    </div>
+    <!-- /.modal-dialog -->
+</div>
 <script src="${resourceUrl}/js/bootstrap.min.js"></script>
 <script src="${resourceUrl}/js/daterangepicker.js"></script>
 <script src="${resourceUrl}/js/moment.min.js"></script>
@@ -260,7 +383,6 @@
         userCriteria.offset = 1;
         getUserByAjax(userCriteria);
     });
-
     function getUserByAjax(criteria) {
         criteria.userSid = $("#userSid").val();
         if (search == 1) {
@@ -350,23 +472,59 @@
                                '<td><span>' + content[i].scoreB + '</span></td>';
                                contentStr +=
                                '<td><span>' + content[i].massRemain + '</span></td>';
-                               contentStr +=
-                               '<td><input type="hidden" class="id-hidden" value="'
-                               + content[i].id
-                               + '"><button class="btn btn-primary changeOrderToPaid">交易记录</button>'
-                               +
-                               '<button class="btn btn-primary scoreDetail">账户明细</button></td></tr>';
-
+                               if (content[i].phoneNumber == null) {
+                                   contentStr +=
+                                   '<td><input type="hidden" class="id-hidden" value="'
+                                   + content[i].id
+                                   + '"><button class="btn btn-primary changeOrderToPaid">交易记录</button>'
+                                   +
+                                   '<button class="btn btn-primary scoreDetail">账户明细</button>'
+                                   +
+                                   '<button typeof="hiden" class="btn btn-primary sendShortMessages" style="VISIBILITY: hidden">发短信</button></td></tr>';
+                               } else {
+                                   contentStr +=
+                                   '<td><input type="hidden" class="id-hidden" value="'
+                                   + content[i].id
+                                   + '"><button class="btn btn-primary changeOrderToPaid">交易记录</button>'
+                                   +
+                                   '<button class="btn btn-primary scoreDetail" >账户明细</button>'
+                                   +
+                                   '<button class="btn btn-primary sendShortMessages">发短信</button></td></tr>';
+                               }
                                userContent.innerHTML += contentStr;
                            }
-
                            $(".scoreDetail").each(function (i) {
                                $(".scoreDetail").eq(i).bind("click", function () {
                                    var id = $(this).parent().find(".id-hidden").val();
                                    location.href = "/manage/score/list/" + id;
                                });
                            });
-
+                           $(".sendShortMessages").each(function (i) {
+                               $(".sendShortMessages").eq(i).bind("click", function () {
+                                   var id = $(this).parent().find(".id-hidden").val();
+                                   $('#shortMessage').val('');
+                                   $('#dxUserImage').empty();
+                                   $('#dxUserName').empty();
+                                   $('#showPhoneNumber').empty();
+                                   $('#userPhoneNumber').val('');
+                                   $('#myModal').modal({show: true});
+                                   var image = $('#dxUserImage');
+                                   var userName = $('#dxUserName');
+                                   var userPhoneNumber = $('#userPhoneNumber');
+                                   var showPhoneNumber = $('#showPhoneNumber');
+                                   image.append('<img src="' + content[i].headImageUrl
+                                                + '" alt="...">');
+                                   userName.append('<span>' + content[i].nickname + '</span>');
+                                   showPhoneNumber.append('<span>' + content[i].phoneNumber
+                                                          + '</span>');
+                                   userPhoneNumber.val(content[i].phoneNumber);
+                                   $("#shortMessage").keydown(function () {
+                                       var wordCount = $("#shortMessage").val().length + 12;
+                                       var count = $('#wordCount');
+                                       count.text(wordCount);
+                                   })
+                               });
+                           });
                        }
                    });
         }
@@ -385,7 +543,6 @@
                                          }
                                      });
     }
-
     Date.prototype.format = function (fmt) {
         var o = {
             "M+": this.getMonth() + 1, //月份
@@ -424,7 +581,6 @@
         }
         return fmt;
     }
-
     function searchUserByCriteria(i) {
         userCriteria.offset = 1;
         search = i;
@@ -476,26 +632,51 @@
         } else {
             userCriteria.massRemain = null;
         }
-
         if ($("#city").val() != 0) {
             userCriteria.city = $("#city").val();
         } else {
             userCriteria.city = null;
         }
-
         if ($("#province").val() != 0) {
             userCriteria.province = $("#province").val();
         } else {
             userCriteria.province = null;
         }
-
         getUserByAjax(userCriteria);
     }
-
     function sendMassToAll() {
         location.href = "/manage/weixin/news/allList";
     }
-
+    function sendMessage() {
+        var messageContent = $('#shortMessage').val();
+        messageContent = '【乐加生活】' + messageContent + '退订回复T';
+        var phoneNumber = $('#userPhoneNumber').val();
+        $.ajax({
+                   type: "post",
+                   url: "/manage/sendMessage",
+                   async: false,
+                   data: JSON.stringify({messageContent: messageContent, phoneNumber: phoneNumber}),
+                   contentType: "application/json",
+                   success: function (data) {
+                       $("#myModal").modal('hide');
+                       $('#myModalThree').modal({
+                                                    show: true,
+                                                    backdrop: 'static'
+                                                });
+                       var messageState = $("#messageState")
+                       if (data.data.state == "退订") {
+                           messageState.text("信息提交失败,用户已经退订了.");
+                       }if (data.data.state == "失败") {
+                           messageState.text("信息提交失败,您可以进入发送记录里查看发送状态.");
+                       } if (data.data.state == "成功") {
+                           messageState.text("信息提交成功,您可以进入发送记录里查看发送状态.");
+                       }
+                   }
+               });
+    }
+    function serchSendRecord() {
+        location.href = "/manage/shortMessagesListPage";
+    }
 </script>
 </body>
 </html>
