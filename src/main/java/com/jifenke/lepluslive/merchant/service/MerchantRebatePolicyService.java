@@ -19,6 +19,11 @@ public class MerchantRebatePolicyService {
 
     @Transactional(propagation = Propagation.REQUIRED,readOnly = false)
     public void saveMerchantRebatePolicy(MerchantRebatePolicy merchantRebatePolicy) {
+        // 默认值：日后需改动
+        merchantRebatePolicy.setStageOne(10);
+        merchantRebatePolicy.setStageTwo(80);
+        merchantRebatePolicy.setStageThree(6);
+        merchantRebatePolicy.setStageFour(3);
         merchantRebatePolicyRepository.save(merchantRebatePolicy);
     }
 
