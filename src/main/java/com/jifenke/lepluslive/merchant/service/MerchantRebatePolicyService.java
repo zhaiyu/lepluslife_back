@@ -33,14 +33,7 @@ public class MerchantRebatePolicyService {
             merchantRebatePolicy.setUserScoreAScale(new BigDecimal(0));
         }
         if(merchantRebatePolicy.getRebateFlag()==2) {
-            merchantRebatePolicy.setImportScoreBScale(new BigDecimal(0));
-            merchantRebatePolicy.setUserScoreBScaleB(new BigDecimal(0));
-            merchantRebatePolicy.setUserScoreBScale(new BigDecimal(0));
-            merchantRebatePolicy.setUserScoreAScale(new BigDecimal(0));
-            merchantRebatePolicy.setStageOne(0);
-            merchantRebatePolicy.setStageTwo(0);
-            merchantRebatePolicy.setStageThree(0);
-            merchantRebatePolicy.setStageFour(0);
+            policyReset(merchantRebatePolicy);
         }
         merchantRebatePolicyRepository.save(merchantRebatePolicy);
     }
@@ -53,11 +46,32 @@ public class MerchantRebatePolicyService {
     @Transactional(propagation = Propagation.REQUIRED,readOnly = false)
     public void editMerchantRebatePolicy(MerchantRebatePolicy merchantRebatePolicy) {
         MerchantRebatePolicy rebatePolicy = merchantRebatePolicyRepository.findOne(merchantRebatePolicy.getId());
-        rebatePolicy.setUserScoreAScale(merchantRebatePolicy.getUserScoreAScale());
-        rebatePolicy.setUserScoreBScale(merchantRebatePolicy.getUserScoreBScale());
-        rebatePolicy.setUserScoreBScaleB(merchantRebatePolicy.getUserScoreBScaleB());
         rebatePolicy.setImportScoreBScale(merchantRebatePolicy.getImportScoreBScale());
         rebatePolicy.setRebateFlag(merchantRebatePolicy.getRebateFlag());
+        if(merchantRebatePolicy.getRebateFlag()==0) {
+            merchantRebatePolicy.setUserScoreBScaleB(new BigDecimal(0));
+            rebatePolicy.setUserScoreAScale(merchantRebatePolicy.getUserScoreAScale());
+            rebatePolicy.setUserScoreBScale(merchantRebatePolicy.getUserScoreBScale());
+        }
+        if(merchantRebatePolicy.getRebateFlag()==1) {
+            rebatePolicy.setUserScoreBScaleB(merchantRebatePolicy.getUserScoreBScaleB());
+            merchantRebatePolicy.setUserScoreBScale(new BigDecimal(0));
+            merchantRebatePolicy.setUserScoreAScale(new BigDecimal(0));
+        }
+        if(merchantRebatePolicy.getRebateFlag()==2) {
+            policyReset(rebatePolicy);
+        }
         merchantRebatePolicyRepository.save(rebatePolicy);
+    }
+
+    public void policyReset(MerchantRebatePolicy rebatePolicy) {
+        rebatePolicy.setImportScoreBScale(new BigDecimal(0));
+        rebatePolicy.setUserScoreBScaleB(new BigDecimal(0));
+        rebatePolicy.setUserScoreBScale(new BigDecimal(0));
+        rebatePolicy.setUserScoreAScale(new BigDecimal(0));
+        rebatePolicy.setStageOne(0);
+        rebatePolicy.setStageTwo(0);
+        rebatePolicy.setStageThree(0);
+        rebatePolicy.setStageFour(0);
     }
 }
