@@ -481,7 +481,7 @@
                 <div>
                     <div>微信收款</div>
                     <div>
-                        <div class="w-b">
+                        <div class="w-b wx">
                             <div class="w-bActive">未开通</div>
                             <div>已开通</div>
                         </div>
@@ -498,7 +498,7 @@
                 <div>
                     <div>支付宝收款</div>
                     <div>
-                        <div class="w-b">
+                        <div class="w-b zfb">
                             <div class="w-bActive">未开通</div>
                             <div>已开通</div>
                         </div>
@@ -753,6 +753,24 @@
             $("input[name=wxCommission]").val(pos.wxCommission);
             $("input[name=wxUserCommission]").val(pos.wxUserCommission);
             $("input[name=aliUserCommission]").val(pos.aliUserCommission);
+            if(pos.wxCommission==null&&pos.wxUserCommission==null){
+                $(".wx > div").removeClass("w-bActive");
+                $(".wx > div:first-child").addClass("w-bActive");
+                $(".wx").next().hide();
+            }else {
+                $(".wx > div").removeClass("w-bActive");
+                $(".wx > div:last-child").addClass("w-bActive");
+                $(".wx").next().show();
+            }
+            if(pos.aliCommission==null&&pos.aliUserCommission==null){
+                $(".zfb > div").removeClass("w-bActive");
+                $(".zfb > div:first-child").addClass("w-bActive");
+                $(".zfb").next().hide();
+            }else {
+                $(".zfb > div").removeClass("w-bActive");
+                $(".zfb > div:last-child").addClass("w-bActive");
+                $(".zfb").next().show();
+            }
          /* $("input[name=scoreARebate]").val(pos.scoreARebate);
             $("input[name=scoreBRebate]").val(pos.scoreBRebate);
             $("input[name=userScoreARebate]").val(pos.userScoreARebate);

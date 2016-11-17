@@ -91,8 +91,12 @@ public class ShiroConfig {
     shiroFilterFactoryBean.setSuccessUrl("/manage/index");
     shiroFilterFactoryBean.setUnauthorizedUrl("/manage/403");
     Map<String, String> filterChainDefinitionMap = new LinkedHashMap<String, String>();
+    filterChainDefinitionMap.put("/manage/file/pos_excel_handle","anon");
     // anon：它对应的过滤器里面是空的,什么都没做
+    filterChainDefinitionMap.put("/manage/automaticSendShortMessage", "anon");
+    filterChainDefinitionMap.put("/manage/shortMessage/statusReport", "anon");//anon 可以理解为不拦截
     filterChainDefinitionMap.put("/**", "authc");//anon 可以理解为不拦截
+
 
     shiroFilterFactoryBean.setFilterChainDefinitionMap(filterChainDefinitionMap);
     return shiroFilterFactoryBean;

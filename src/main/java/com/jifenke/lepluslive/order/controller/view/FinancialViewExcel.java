@@ -54,9 +54,16 @@ public class FinancialViewExcel extends AbstractExcelView {
     excelHeader.createCell(4).setCellValue("绑定银行卡");
     excelHeader.createCell(5).setCellValue("开户行");
     excelHeader.createCell(6).setCellValue("收款人");
-    excelHeader.createCell(7).setCellValue("待转账金额");
-    excelHeader.createCell(8).setCellValue("微信转账金额");
-    excelHeader.createCell(9).setCellValue("红包转账金额");
+    excelHeader.createCell(7).setCellValue("扫码待转账金额");
+    excelHeader.createCell(8).setCellValue("扫码微信转账金额");
+    excelHeader.createCell(9).setCellValue("扫码红包转账金额");
+    excelHeader.createCell(10).setCellValue("app待转账金额");
+    excelHeader.createCell(11).setCellValue("app微信转账金额");
+    excelHeader.createCell(12).setCellValue("app红包转账金额");
+    excelHeader.createCell(13).setCellValue("pos待转账金额");
+    excelHeader.createCell(14).setCellValue("pos掌富转账金额");
+    excelHeader.createCell(15).setCellValue("pos红包转账金额");
+    excelHeader.createCell(16).setCellValue("总转账金额");
   }
 
   public void setExcelRows(HSSFSheet excelSheet, List<FinancialStatistic> financialList) {
@@ -82,6 +89,23 @@ public class FinancialViewExcel extends AbstractExcelView {
       excelRow.createCell(9)
           .setCellValue(
               (financialStatistic.getTransferPrice() - financialStatistic.getTransferFromTruePay())
+              / 100.0);
+      excelRow.createCell(10).setCellValue(financialStatistic.getAppTransfer() / 100.0);
+      excelRow.createCell(11).setCellValue(financialStatistic.getAppTransFromTruePay() / 100.0);
+      excelRow.createCell(12)
+          .setCellValue(
+              (financialStatistic.getAppTransfer() - financialStatistic.getAppTransFromTruePay())
+              / 100.0);
+      excelRow.createCell(13).setCellValue(financialStatistic.getPosTransfer() / 100.0);
+      excelRow.createCell(14).setCellValue(financialStatistic.getPosTransFromTruePay() / 100.0);
+      excelRow.createCell(15)
+          .setCellValue(
+              (financialStatistic.getPosTransfer() - financialStatistic.getPosTransFromTruePay())
+              / 100.0);
+      excelRow.createCell(16)
+          .setCellValue(
+              (financialStatistic.getTransferPrice() + financialStatistic.getAppTransfer()
+               + financialStatistic.getPosTransfer())
               / 100.0);
 
     }

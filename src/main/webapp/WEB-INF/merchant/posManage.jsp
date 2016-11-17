@@ -130,6 +130,7 @@
                         <label>乐加商户</label>
                         <input type="text" id="merchant-name" class="form-control" placeholder="请输入商户名称或ID查询">
                     </div>
+<%--
                     <div class="form-group col-md-2">
                         <label>佣金状态</label>
                         <select class="form-control" id="commission-state">
@@ -138,6 +139,7 @@
                             <option value="0">未开通</option>
                         </select>
                     </div>
+--%>
                     <div class="form-group col-md-1">
                         <button class="btn btn-primary" style="margin-top: 24px" onclick="searchPosByCriteria()">查询</button>
                     </div>
@@ -511,7 +513,6 @@
                            if(content[i].wxCommission==null&&content[i].wxUserCommission==null) {
                                contentStr+='<td>未开通</td>';
                            }else if(content[i].wxCommission==null&&content[i].wxUserCommission!=null) {
-                               alert(content[i].wxCommission);
                                contentStr+='<td><h5>手续费：'+content[i].wxUserCommission +'%  </h5><h5>佣金： 未开通 </h5></td>';
                            }else {
                                 contentStr+='<td><h5>手续费：'+content[i].wxUserCommission+'% </h5><h5>佣金： '+content[i].wxCommission+' %  </h5></td>';
@@ -606,11 +607,11 @@
             posCriteria.merchant = null;
         }
 
-        if ($("#commission-state").val() != "" && $("#commission-state").val() != null) {
+        /*if ($("#commission-state").val() != "" && $("#commission-state").val() != null) {
             posCriteria.state = $("#commission-state").val();
         } else {
             posCriteria.state = null;
-        }
+        }*/
 
         getPosByAjax(posCriteria);
     }

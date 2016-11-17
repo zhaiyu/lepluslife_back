@@ -282,6 +282,13 @@
                 <a href='/manage/transactionAnalysisPage'>交易分析</a>
             </div>
         </li>
+        <li><h4 class="M6"><span></span>短信平台</h4>
+
+            <div class="list-item none none10">
+                <a href='/manage/shortMessage/shortMessageBillboards'>短信看板</a>
+                <a href='/manage/shortMessagesListPage'>发送记录</a>
+            </div>
+        </li>
     </ul>
 </div>
 <script>navList(12);</script>
@@ -331,6 +338,10 @@
                                                         != -1|| url.indexOf("/manage/scoreAAccountPage") != -1||url.indexOf("/manage/transactionAnalysisPage") != -1) {
             $(".none9").parent('li').addClass('selected');
             $(".none9").slideDown(300);
+        }
+        if (url.indexOf("/manage/shortMessage/shortMessageBillboards") != -1 || url.indexOf("/manage/shortMessagesListPage")!= -1) {
+            $(".none10").parent('li').addClass('selected');
+            $(".none10").slideDown(300);
         }
     })
 </script>

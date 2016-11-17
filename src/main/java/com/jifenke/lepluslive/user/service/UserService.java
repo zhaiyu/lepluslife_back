@@ -176,5 +176,14 @@ public class UserService {
       }
     };
   }
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+  public LeJiaUser findUserByPhoneNumber(String phoneNumber) {
+    return leJiaUserRepository.findUserByPhoneNumber(phoneNumber);
+  }
 
+
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+  public LeJiaUser findUserBySid(String sid) {
+    return leJiaUserRepository.findUserBySid(sid);
+  }
 }

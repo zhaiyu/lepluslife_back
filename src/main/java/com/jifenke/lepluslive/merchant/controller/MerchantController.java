@@ -2,16 +2,11 @@ package com.jifenke.lepluslive.merchant.controller;
 
 import com.jifenke.lepluslive.global.util.LejiaResult;
 import com.jifenke.lepluslive.global.util.MvUtil;
-import com.jifenke.lepluslive.global.util.PaginationUtil;
-import com.jifenke.lepluslive.global.util.ParseUtil;
+import com.jifenke.lepluslive.merchant.controller.dto.MerchantDto;
 import com.jifenke.lepluslive.merchant.controller.view.MerchantViewExcel;
 import com.jifenke.lepluslive.merchant.domain.criteria.MerchantCriteria;
-import com.jifenke.lepluslive.merchant.domain.entities.BankName;
-import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
-import com.jifenke.lepluslive.merchant.domain.entities.MerchantBank;
-import com.jifenke.lepluslive.merchant.domain.entities.MerchantUser;
+import com.jifenke.lepluslive.merchant.domain.entities.*;
 import com.jifenke.lepluslive.merchant.service.*;
-import com.jifenke.lepluslive.partner.domain.entities.Partner;
 import com.jifenke.lepluslive.partner.service.PartnerService;
 
 import com.jifenke.lepluslive.sales.domain.entities.SalesStaff;
@@ -68,6 +63,9 @@ public class MerchantController {
   @Inject
   private MerchantPosService merchantPosService;
 
+  @Inject
+  private MerchantRebatePolicyService merchantReBatePolicyService;
+
   @RequestMapping(value = "/merchant", method = RequestMethod.GET)
   public ModelAndView goShowMerchantPage(Model model) {
     model.addAttribute("merchantTypes", merchantService.findAllMerchantTypes());
@@ -111,6 +109,7 @@ public class MerchantController {
     model.addAttribute("merchant", merchantService.findMerchantById(id));
     model.addAttribute("merchantTypes", merchantService.findAllMerchantTypes());
     model.addAttribute("partners", partnerService.findAllParter());
+    model.addAttribute("merchantRebatePolicy", merchantReBatePolicyService.findByMerchant(id));
     Merchant merchant=merchantService.findMerchantById(id);
     SalesStaff salesStaff=merchant.getSalesStaff();
     model.addAttribute("salesStaff",salesStaff);
@@ -121,16 +120,19 @@ public class MerchantController {
   }
 
   @RequestMapping(value = "/merchant", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-  public LejiaResult createMerchant(@RequestBody Merchant merchant) {
+  public LejiaResult createMerchant(@RequestBody MerchantDto merchantDto) {
+    Merchant merchant = merchantDto.getMerchant();
     merchantService.createMerchant(merchant);
-
+    MerchantRebatePolicy policy = merchantDto.getMerchantRebatePolicy();
+    policy.setMerchantId(merchant.getId());
+    merchantReBatePolicyService.saveMerchantRebatePolicy(policy);
     return LejiaResult.ok("添加商户成功");
   }
 
-  @RequestMapping(value = "/merchant", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
-  public LejiaResult eidtMerchant(@RequestBody Merchant merchant) {
-    merchantService.editMerchant(merchant);
-
+  @RequestMapping(value = "/merchant", method = RequestMethod.PUT)
+  public LejiaResult eidtMerchant(@RequestBody MerchantDto merchantDto) {
+    merchantService.editMerchant(merchantDto.getMerchant());
+    merchantReBatePolicyService.editMerchantRebatePolicy(merchantDto.getMerchantRebatePolicy());
     return LejiaResult.ok("修改商户成功");
   }
 
