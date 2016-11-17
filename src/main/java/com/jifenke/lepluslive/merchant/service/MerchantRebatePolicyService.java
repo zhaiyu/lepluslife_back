@@ -7,6 +7,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
+import java.math.BigDecimal;
 
 /**
  * Created by xf on 16-11-9.
@@ -24,6 +25,23 @@ public class MerchantRebatePolicyService {
         merchantRebatePolicy.setStageTwo(80);
         merchantRebatePolicy.setStageThree(6);
         merchantRebatePolicy.setStageFour(3);
+        if(merchantRebatePolicy.getRebateFlag()==0) {
+            merchantRebatePolicy.setUserScoreBScaleB(new BigDecimal(0));
+        }
+        if(merchantRebatePolicy.getRebateFlag()==1) {
+            merchantRebatePolicy.setUserScoreBScale(new BigDecimal(0));
+            merchantRebatePolicy.setUserScoreAScale(new BigDecimal(0));
+        }
+        if(merchantRebatePolicy.getRebateFlag()==2) {
+            merchantRebatePolicy.setImportScoreBScale(new BigDecimal(0));
+            merchantRebatePolicy.setUserScoreBScaleB(new BigDecimal(0));
+            merchantRebatePolicy.setUserScoreBScale(new BigDecimal(0));
+            merchantRebatePolicy.setUserScoreAScale(new BigDecimal(0));
+            merchantRebatePolicy.setStageOne(0);
+            merchantRebatePolicy.setStageTwo(0);
+            merchantRebatePolicy.setStageThree(0);
+            merchantRebatePolicy.setStageFour(0);
+        }
         merchantRebatePolicyRepository.save(merchantRebatePolicy);
     }
 

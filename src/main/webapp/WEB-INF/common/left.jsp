@@ -196,7 +196,7 @@
                 <shiro:hasPermission name="merchant:query">
                     <a href="/manage/merchant">商户管理</a>
                 </shiro:hasPermission>
-
+                <a href="/manage/merchantUser/list">账号管理</a>
                 <a href="/manage/pos">pos管理</a>
             </div>
         </li>
