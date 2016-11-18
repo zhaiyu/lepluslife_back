@@ -57,6 +57,9 @@ public class MerchantUserController {
     @RequestMapping(value="/merchantUser/find_page",method = RequestMethod.POST)
     @ResponseBody
     public LejiaResult findByCriteria(@RequestBody  MerchantUserCriteria merchantUserCriteria) {
+        if(merchantUserCriteria.getType()==null) {
+            merchantUserCriteria.setType(8);               // 默认搜索商户账号
+        }
         Page page = merchantUserService.findByCriteria(merchantUserCriteria,10);
         return LejiaResult.ok(page);
     }

@@ -100,6 +100,9 @@ public class MerchantUserService {
                 if (merchantUserCriteria.getCity() != null) {
                     predicate.getExpressions().add(cb.equal(root.get("city"), merchantUserCriteria.getCity()));
                 }
+                if(merchantUserCriteria.getType()!=null) {
+                    predicate.getExpressions().add(cb.equal(root.get("type"),merchantUserCriteria.getType()));
+                }
                 return predicate;
             }
         };

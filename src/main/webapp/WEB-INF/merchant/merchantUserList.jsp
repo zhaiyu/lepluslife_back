@@ -129,7 +129,7 @@
                             </tr>
                             </thead>
                             <tbody id="tablePage">
-                            <tr>
+                            <%--<tr>
                                 <td>25441</td><td>北京</td><td>棉花糖KTV</td><td>曹广言</td>
                                 <td>13513988158</td><td>4（佣金3  非佣金1）</td><td><span>2016.6.5  14:25</span></td>
                                 <td>3422</td><td>¥368</td><td>¥368</td>
@@ -138,7 +138,7 @@
                                     <button type="button" class="btn btn-default createLocation">账号管理</button>
                                     <button type="button" class="btn btn-default deleteWarn" data-target="#deleteWarn">编辑</button>
                                 </td>
-                            </tr>
+                            </tr>--%>
                             </tbody>
                         </table>
                     </div>
@@ -459,30 +459,30 @@
                         var contentStr = '<tr><td>' + content[i].id + '</td>';
                         if(content[i].city!=null) {
                             contentStr += '<td>' + content[i].city.name + '</td>';
-                        }else if(content[i].merchant!=null) {
-                            contentStr += '<td>'+ content[i].merchant.city.name+'</td>';
+                        }else{
+                            contentStr += '<td></td>';
                         }
                         if(content[i].merchantName!=null) {
                             contentStr += '<td>' + content[i].merchantName + '</td>';
-                        }else if(content[i].merchant!=null){
-                            contentStr += '<td>' + content[i].merchant.name + '</td>';
+                        }else{
+                            contentStr += '<td></td>';
                         }
                         if(content[i].linkMan!=null) {
                             contentStr += '<td>' + content[i].linkMan + '</td>';
-                        }else if(content[i].merchant!=null) {
-                            contentStr += '<td>' + content[i].merchant.contact + '</td>';
+                        }else {
+                            contentStr += '<td></td>';
                         }
                         if(content[i].phoneNum!=null) {
                             contentStr += '<td>' + content[i].phoneNum + '</td>';
-                        }else if(content[i].merchant!=null) {
-                            contentStr += '<td>' + content[i].merchant.phoneNumber + '</td>';
+                        }else {
+                            contentStr += '<td></td>';
                         }
                         contentStr += '<td> - </td>';
                         if(content[i].createdDate!=null) {
                             contentStr += '<td><h5>' + new Date(content[i].createdDate).format("yyyy-MM-dd") +'</h5><h5'
                                     + new Date(content[i].createdDate).format("HH:mm:ss") +'</h5></td>';
-                        }else if(content[i].merchant!=null){
-                            contentStr += '<td>' + content[i].merchant.createdDate + '</td>';
+                        }else {
+                            contentStr += '<td></td>';
                         }
 
                         contentStr += '<td> - </td>';
