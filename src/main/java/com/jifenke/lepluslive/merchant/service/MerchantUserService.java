@@ -88,10 +88,10 @@ public class MerchantUserService {
             public Predicate toPredicate(Root<MerchantUser> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 Predicate predicate = cb.conjunction();
                 if (merchantUserCriteria.getLinkMan() != null) {
-                    predicate.getExpressions().add(cb.like(root.get("linkMan"), merchantUserCriteria.getLinkMan()));
+                    predicate.getExpressions().add(cb.like(root.get("linkMan"),"%"+merchantUserCriteria.getLinkMan()+"%"));
                 }
                 if (merchantUserCriteria.getPhoneNum() != null) {
-                    predicate.getExpressions().add(cb.like(root.get("phoneNum"), merchantUserCriteria.getPhoneNum()));
+                    predicate.getExpressions().add(cb.like(root.get("phoneNum"), "%"+merchantUserCriteria.getPhoneNum()+"%"));
                 }
                 if (merchantUserCriteria.getStartDate() != null && merchantUserCriteria.getEndDate() != null) {
                     predicate.getExpressions().add(cb.greaterThanOrEqualTo(root.get("createdDate"), new Date(merchantUserCriteria.getStartDate())));
@@ -102,6 +102,9 @@ public class MerchantUserService {
                 }
                 if(merchantUserCriteria.getType()!=null) {
                     predicate.getExpressions().add(cb.equal(root.get("type"),merchantUserCriteria.getType()));
+                }
+                if(merchantUserCriteria.getKeyword()!=null) {
+                    predicate.getExpressions().add(cb.like(root.get("name"),"%"+merchantUserCriteria.getKeyword()+"%"));
                 }
                 return predicate;
             }

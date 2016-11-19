@@ -93,7 +93,7 @@
                     <div class="form-group col-md-2">
                         <label>所在城市</label>
                         <select class="form-control" id="stay-city">
-                            <option>所在城市（全部）</option>
+                            <option value="">所在城市（全部）</option>
                             <c:forEach items="${citys}" var="city">
                                 <option value="${city.id}">${city.name}</option>
                             </c:forEach>

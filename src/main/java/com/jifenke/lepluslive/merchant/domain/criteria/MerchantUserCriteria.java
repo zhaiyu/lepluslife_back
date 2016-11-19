@@ -76,4 +76,14 @@ public class MerchantUserCriteria {
     public void setType(Integer type) {
         this.type = type;
     }
+
+    private String keyword;
+
+    public String getKeyword() {
+        return keyword;
+    }
+
+    public void setKeyword(String keyword) {
+        this.keyword = keyword;
+    }
 }

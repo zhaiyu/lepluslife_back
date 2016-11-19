@@ -327,15 +327,21 @@
                            contentStr +=
                            '<td><span>' + content[i].merchant.name + '</span><br><span>('
                            + content[i].merchant.merchantSid + ')</span></td>'
-                           if (content[i].leJiaUser.phoneNumber != null) {
+                           if(content[i].LejiaUser!=null) {
+                               if (content[i].leJiaUser.phoneNumber != null) {
+                                   contentStr +=
+                                           '<td><span>' + content[i].leJiaUser.phoneNumber
+                                           + '</span><br><span>('
+                                           + content[i].leJiaUser.userSid + ')</span></td>'
+                               } else {
+                                   contentStr +=
+                                           '<td><span>未绑定手机号</span><br><span>('
+                                           + content[i].leJiaUser.userSid + ')</span></td>'
+                               }
+                           //  content[i].leJiaUser 为空,所以暂时用 “匿名” 表示
+                           }else {
                                contentStr +=
-                               '<td><span>' + content[i].leJiaUser.phoneNumber
-                               + '</span><br><span>('
-                               + content[i].leJiaUser.userSid + ')</span></td>'
-                           } else {
-                               contentStr +=
-                               '<td><span>未绑定手机号</span><br><span>('
-                               + content[i].leJiaUser.userSid + ')</span></td>'
+                                       '<td>匿名</td>'
                            }
                            if (content[i].state == 1) {
                                if (content[i].tradeFlag == 0) {

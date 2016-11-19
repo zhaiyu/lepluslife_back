@@ -2,6 +2,7 @@ package com.jifenke.lepluslive.merchant.controller;
 
 import com.jifenke.lepluslive.global.util.LejiaResult;
 import com.jifenke.lepluslive.global.util.MvUtil;
+import com.jifenke.lepluslive.merchant.domain.criteria.MerchantCriteria;
 import com.jifenke.lepluslive.merchant.domain.criteria.MerchantUserCriteria;
 import com.jifenke.lepluslive.merchant.domain.entities.City;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantUser;
@@ -60,6 +61,15 @@ public class MerchantUserController {
         if(merchantUserCriteria.getType()==null) {
             merchantUserCriteria.setType(8);               // 默认搜索商户账号
         }
+        Page page = merchantUserService.findByCriteria(merchantUserCriteria,10);
+        return LejiaResult.ok(page);
+    }
+
+    @RequestMapping(value="/merchantUser/ambiguitySearch",method = RequestMethod.GET)
+    @ResponseBody
+    public LejiaResult findByKeyWord(String keyword) {
+        MerchantUserCriteria merchantUserCriteria = new MerchantUserCriteria();
+        merchantUserCriteria.setKeyword(keyword);
         Page page = merchantUserService.findByCriteria(merchantUserCriteria,10);
         return LejiaResult.ok(page);
     }
