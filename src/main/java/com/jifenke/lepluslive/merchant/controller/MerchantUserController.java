@@ -2,6 +2,7 @@ package com.jifenke.lepluslive.merchant.controller;
 
 import com.jifenke.lepluslive.global.util.LejiaResult;
 import com.jifenke.lepluslive.global.util.MvUtil;
+import com.jifenke.lepluslive.merchant.domain.criteria.MerchantCriteria;
 import com.jifenke.lepluslive.merchant.domain.criteria.MerchantUserCriteria;
 import com.jifenke.lepluslive.merchant.domain.entities.City;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantUser;
@@ -35,6 +36,20 @@ public class MerchantUserController {
         return MvUtil.go("/merchant/merchantUserList");
     }
 
+    @RequestMapping(value = "/merchantUser/edit/{id}",method = RequestMethod.GET)
+    @ResponseBody
+    public LejiaResult loadEditPage(@PathVariable Long id) {
+        MerchantUser merchantUser = merchantUserService.findById(id);
+        return LejiaResult.ok(merchantUser);
+    }
+
+    @RequestMapping(value="/merchantUser/edit",method = RequestMethod.PUT)
+    @ResponseBody
+    public LejiaResult saveEdit(@RequestBody MerchantUser merchantUser) {
+        merchantUserService.updateMerchantUser(merchantUser);
+        return LejiaResult.ok("商户信息修改成功！");
+    }
+
 
     @RequestMapping(value = "/merchantUser/create",method = RequestMethod.POST)
     @ResponseBody
@@ -57,6 +72,18 @@ public class MerchantUserController {
     @RequestMapping(value="/merchantUser/find_page",method = RequestMethod.POST)
     @ResponseBody
     public LejiaResult findByCriteria(@RequestBody  MerchantUserCriteria merchantUserCriteria) {
+        if(merchantUserCriteria.getType()==null) {
+            merchantUserCriteria.setType(8);               // 默认搜索商户账号
+        }
+        Page page = merchantUserService.findByCriteria(merchantUserCriteria,10);
+        return LejiaResult.ok(page);
+    }
+
+    @RequestMapping(value="/merchantUser/ambiguitySearch",method = RequestMethod.GET)
+    @ResponseBody
+    public LejiaResult findByKeyWord(String keyword) {
+        MerchantUserCriteria merchantUserCriteria = new MerchantUserCriteria();
+        merchantUserCriteria.setKeyword(keyword);
         Page page = merchantUserService.findByCriteria(merchantUserCriteria,10);
         return LejiaResult.ok(page);
     }

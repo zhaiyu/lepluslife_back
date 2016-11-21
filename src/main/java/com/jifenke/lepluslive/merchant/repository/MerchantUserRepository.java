@@ -26,4 +26,7 @@ public interface MerchantUserRepository extends JpaRepository<MerchantUser, Long
   List<MerchantUser> findByName(String name);
 
   Page findAll(Specification<MerchantUser> specification, Pageable pageRequest);
+
+  @Query(value="SELECT * FROM merchant_user where type =?1 ",nativeQuery = true)
+  List<MerchantUser> findMerchantUserByType(Integer type);
 }

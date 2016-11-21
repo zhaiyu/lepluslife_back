@@ -66,6 +66,9 @@ public class MerchantController {
   @Inject
   private MerchantRebatePolicyService merchantReBatePolicyService;
 
+  @Inject
+  private MerchantUserService merchantUserService;
+
   @RequestMapping(value = "/merchant", method = RequestMethod.GET)
   public ModelAndView goShowMerchantPage(Model model) {
     model.addAttribute("merchantTypes", merchantService.findAllMerchantTypes());
@@ -96,6 +99,7 @@ public class MerchantController {
 
   @RequestMapping(value = "/merchant/edit", method = RequestMethod.GET)
   public ModelAndView goCreateMerchantPage(Model model) {
+    model.addAttribute("merchantUsers",merchantUserService.findAllManager());
     model.addAttribute("merchantTypes", merchantService.findAllMerchantTypes());
     model.addAttribute("partners", partnerService.findAllParter());
     List<SalesStaff> salesStaffList = salesService.findAllSaleStaff();
@@ -108,6 +112,7 @@ public class MerchantController {
   public ModelAndView goEditMerchantPage(@PathVariable Long id, Model model) {
     model.addAttribute("merchant", merchantService.findMerchantById(id));
     model.addAttribute("merchantTypes", merchantService.findAllMerchantTypes());
+    model.addAttribute("merchantUsers", merchantUserService.findAllManager());
     model.addAttribute("partners", partnerService.findAllParter());
     model.addAttribute("merchantRebatePolicy", merchantReBatePolicyService.findByMerchant(id));
     Merchant merchant=merchantService.findMerchantById(id);

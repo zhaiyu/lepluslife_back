@@ -177,7 +177,7 @@
                 <div id="myTabContent" class="tab-content">
                     <div class="tab-pane fade in active" id="lunbotu">
                         <button type="button" class="btn btn-primary createLocation"
-                                style="margin:10px 0;" onclick="createMerchant()">新增商户
+                                style="margin:10px 0;" onclick="createMerchant()">新增门店
                         </button>
                         <table class="table table-bordered table-hover">
                             <thead>

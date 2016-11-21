@@ -194,9 +194,9 @@
         <li><h4 class="M2"><span></span>乐+商户</h4> </shiro:hasPermission>
             <div class="list-item none none3">
                 <shiro:hasPermission name="merchant:query">
-                    <a href="/manage/merchant">商户管理</a>
+                    <a href="/manage/merchant">门店管理</a>
                 </shiro:hasPermission>
-                <a href="/manage/merchantUser/list">账号管理</a>
+                <a href="/manage/merchantUser/list">商户管理</a>
                 <a href="/manage/pos">pos管理</a>
             </div>
         </li>

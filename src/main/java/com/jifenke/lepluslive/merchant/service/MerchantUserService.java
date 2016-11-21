@@ -88,10 +88,10 @@ public class MerchantUserService {
             public Predicate toPredicate(Root<MerchantUser> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 Predicate predicate = cb.conjunction();
                 if (merchantUserCriteria.getLinkMan() != null) {
-                    predicate.getExpressions().add(cb.like(root.get("linkMan"), merchantUserCriteria.getLinkMan()));
+                    predicate.getExpressions().add(cb.like(root.get("linkMan"),"%"+merchantUserCriteria.getLinkMan()+"%"));
                 }
                 if (merchantUserCriteria.getPhoneNum() != null) {
-                    predicate.getExpressions().add(cb.like(root.get("phoneNum"), merchantUserCriteria.getPhoneNum()));
+                    predicate.getExpressions().add(cb.like(root.get("phoneNum"), "%"+merchantUserCriteria.getPhoneNum()+"%"));
                 }
                 if (merchantUserCriteria.getStartDate() != null && merchantUserCriteria.getEndDate() != null) {
                     predicate.getExpressions().add(cb.greaterThanOrEqualTo(root.get("createdDate"), new Date(merchantUserCriteria.getStartDate())));
@@ -100,10 +100,47 @@ public class MerchantUserService {
                 if (merchantUserCriteria.getCity() != null) {
                     predicate.getExpressions().add(cb.equal(root.get("city"), merchantUserCriteria.getCity()));
                 }
+                if(merchantUserCriteria.getType()!=null) {
+                    predicate.getExpressions().add(cb.equal(root.get("type"),merchantUserCriteria.getType()));
+                }
+                if(merchantUserCriteria.getKeyword()!=null) {
+                    predicate.getExpressions().add(cb.like(root.get("name"),"%"+merchantUserCriteria.getKeyword()+"%"));
+                }
                 return predicate;
             }
         };
     }
 
+    /**
+     * 查询所有商户账号（管理员）
+     */
+    @Transactional(propagation = Propagation.REQUIRED,readOnly = true)
+    public List<MerchantUser> findAllManager() {
+        return merchantUserRepository.findMerchantUserByType(8);
+    }
 
+    /**
+     * 根据id查询商户
+     */
+    @Transactional(propagation = Propagation.REQUIRED,readOnly = true)
+    public MerchantUser findById(Long id) {
+        return merchantUserRepository.findOne(id);
+    }
+
+    /**
+     *  保存修改
+     */
+    @Transactional(propagation = Propagation.REQUIRED,readOnly = false)
+    public void updateMerchantUser(MerchantUser merchantUser) {
+        MerchantUser existMerchantUser = merchantUserRepository.findOne(merchantUser.getId());
+        existMerchantUser.setName(merchantUser.getName());
+        existMerchantUser.setLinkMan(merchantUser.getLinkMan());
+        existMerchantUser.setMerchantName(merchantUser.getMerchantName());
+        existMerchantUser.setPhoneNum(merchantUser.getPhoneNum());
+        existMerchantUser.setCardNum(merchantUser.getCardNum());
+        existMerchantUser.setBankName(merchantUser.getBankName());
+        existMerchantUser.setLockLimit(merchantUser.getLockLimit());
+        existMerchantUser.setCity(merchantUser.getCity());
+        merchantUserRepository.save(existMerchantUser);
+    }
 }
