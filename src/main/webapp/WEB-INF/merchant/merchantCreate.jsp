@@ -31,7 +31,7 @@
     <title>乐+生活 后台模板管理系统</title>
     <link type="text/css" rel="stylesheet" href="${resourceUrl}/css/commonCss.css"/>
     <link type="text/css" rel="stylesheet" href="${resourceUrl}/css/openshop.css"/>
-
+    <link type="text/css" rel="stylesheet" href="${resourceUrl}/css/combo.select.css"/>
     <!-- HTML5 shim and Respond.js for IE8 support of HTML5 elements and media queries -->
     <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
     <!--[if lt IE 9]>
@@ -42,8 +42,17 @@
     <script type="text/javascript" src="${resourceUrl}/js/vendor/jquery.ui.widget.js"></script>
     <script type="text/javascript" src="${resourceUrl}/js/jquery.iframe-transport.js"></script>
     <script type="text/javascript" src="${resourceUrl}/js/jquery.fileupload.js"></script>
+    <script type="text/javascript" src="${resourceUrl}/js/jquery.combo.select.js"></script>
 </head>
-
+<style>
+    .combo-select {
+        width: 70% !important;
+        border:0 !important;
+    }
+    .combo-select input {
+        width: 100% !important;
+    }
+</style>
 <body>
 <div id="topIframe">
     <%@include file="../common/top.jsp" %>
@@ -58,6 +67,15 @@
             新建商户
         </p>
         <div>
+            <label for="merchantUser" style="width:10%">所属商户</label>
+            <select name="name" id="merchantuser" class="check">
+                <option value="">- 请选择 -</option>
+                <c:forEach items="${merchantUsers}" var="merchantUser">
+                    <option value="${merchantUser.id}">${merchantUser.name}</option>
+                </c:forEach>
+            </select>
+        </div>
+        <div>
             <label for="partner">所属合伙人</label>
             <select name="name" id="partners" class="check">
                 <c:forEach items="${partners}" var="partner">
@@ -65,8 +83,6 @@
                 </c:forEach>
             </select>
         </div>
-
-
         <div>
             <label for="sales">所属销售</label>
             <c:if test="${salesStaff ==null}">
@@ -285,6 +301,7 @@
 </body>
 <%--<script src="js/jquery-2.0.3.min.js"></script>--%>
 <script type="text/javascript" language="javascript">
+    $('#merchantuser').comboSelect();
     $(".lianmeng").hide();
     if (${merchant!=null}) {
         $.ajax({
@@ -375,6 +392,10 @@
         $("#partners").find("option[value='${merchant.partner.id}']").attr("selected", true);
         $("#sales").find("option[value='${merchant.salesStaff.id}']").attr("selected", true);
         initProtocol();
+        if(${merchant.merchantUser!=null}) {
+            $("#merchantuser").val(${merchant.merchantUser.id});
+            $("#merchantuser").text(${merchant.merchantUser.name});
+        }
         if (${merchant.partnership==1}) {
             $('#partner').prop("checked", true);
 //            $(".changeDisplay").css("display", 'block');
@@ -676,6 +697,15 @@
             alert("请输入商户类型")
             return;
         }
+        var merchantUser = {};
+        var merchantUserId = $("#merchantuser").val();
+        if(merchantUserId!=null && merchantUserId!="") {
+            merchantUser.id = merchantUserId;
+        }else {
+            alert("请选择门店所属商户");
+            return;
+        }
+        merchant.merchantUser = merchantUser;
         merchantType.id = $("#merchantType").val();
         merchant.merchantType = merchantType;
         merchant.location = $("#address").val()

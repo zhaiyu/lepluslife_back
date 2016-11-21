@@ -492,7 +492,7 @@
                         contentStr+='<td>' +
                                      '<button type="button" class="btn btn-default createLocation">门店管理</button>'+
                                      '<button type="button" class="btn btn-default createLocation">账号管理</button>'+
-                                     '<button type="button" class="btn btn-default deleteWarn" data-target="#deleteWarn">编辑</button>' +
+                                     '<button type="button" class="btn btn-default" onclick="editUser('+content[i].id+')">编辑</button>' +
                                     '</td>';
                         contentStr+="</tr>";
                         tableContent.innerHTML += contentStr;
@@ -570,7 +570,42 @@
         }
     });
 
-    //  新建商户
+    var merchantUserId = null;
+    //  编辑时加载信息
+    function editUser(id) {
+        $.ajax({
+            url:"/manage/merchantUser/edit/"+id,
+            type:"get",
+            contentType:"application/json",
+            success: function(result) {
+                var merchantUser = result.data;
+                resetAll()
+                merchantUserId = merchantUser.id;
+                if(merchantUser.merchantName!=null)
+                $("#toggle-name").val(merchantUser.merchantName);
+                if(merchantUser.linkMan!=null)
+                $("#toggle-people").val(merchantUser.linkMan);
+                if(merchantUser.cardNum!=null)
+                $("#toggle-card").val(merchantUser.cardNum);
+                if(merchantUser.phoneNum!=null)
+                $("#toggle-phone").val(merchantUser.phoneNum);
+                if(merchantUser.bankName!=null)
+                $("#toggle-bank").val(merchantUser.bankName);
+                if(merchantUser.lockLimit!=null)
+                $("#toggle-limit").val(merchantUser.lockLimit);
+                if(merchantUser.name!=null)
+                $("#toggle-usrname").val(merchantUser.name);
+                if(merchantUser.password!=null)
+                $("#toggle-passwd").val(merchantUser.password);
+                if(merchantUser.city!=null)
+                $("#selCity").val(merchantUser.city.id);
+                $("#createWarn").modal("toggle");
+            }
+        });
+    }
+
+
+    //  保存商户
     function ceateMerchantUser() {
         var merchantUser = {};
         var merchantName = $("#toggle-name").val();
@@ -602,8 +637,10 @@
             return;
         }
         if(password==null || password==''||password.length<6||password.length>12) {
-            alert("请输入登录密码（6-12）位");
-            return;
+            if(merchantUserId==null) {
+                alert("请输入登录密码（6-12）位");
+                return;
+            }
         }
         if(cardNum==null || cardNum=='') {
             alert("请输入佣金结算卡号");
@@ -621,7 +658,7 @@
             alert("请选中所在城市");
             return;
         }
-
+        merchantUser.id = merchantUserId;
         merchantUser.merchantName = merchantName;
         merchantUser.linkMan = linkMan;
         merchantUser.name = name;
@@ -632,8 +669,13 @@
         merchantUser.bankName = bankName;
         merchantUser.lockLimit = lockLimit;
         merchantUser.city = city;
-
-        sendPostAjax("/manage/merchantUser/create",merchantUser);
+        //  修改商户信息
+        if(merchantUser.id!=null && merchantUser.id!='') {
+            sendPutAjax("/manage/merchantUser/edit",merchantUser);
+        //  保存商户信息
+        }else {
+            sendPostAjax("/manage/merchantUser/create",merchantUser);
+        }
         $("#createWarn").modal("toggle");
         resetAll();
         window.location.href = "/manage/merchantUser/list";
@@ -650,7 +692,19 @@
             }
          });
     }
-    
+
+    function sendPutAjax(url,data) {
+        $.ajax({
+            url:url,
+            type:"put",
+            contentType:"application/json",
+            data:JSON.stringify(data),
+            success: function(result) {
+                alert(result.data);
+            }
+        });
+    }
+
     function resetAll() {
         $("#toggle-name").val('');
         $("#toggle-people").val('');
@@ -659,7 +713,10 @@
         $("#toggle-bank").val('');
         $("#toggle-limit").val('');
         $("#selBankName").val('');
+        merchantUserId = null;
     }
+
+
 </script>
 <script>
     $(".w").click(function (e) {

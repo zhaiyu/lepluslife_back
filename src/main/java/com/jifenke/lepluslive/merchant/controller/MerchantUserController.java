@@ -36,6 +36,20 @@ public class MerchantUserController {
         return MvUtil.go("/merchant/merchantUserList");
     }
 
+    @RequestMapping(value = "/merchantUser/edit/{id}",method = RequestMethod.GET)
+    @ResponseBody
+    public LejiaResult loadEditPage(@PathVariable Long id) {
+        MerchantUser merchantUser = merchantUserService.findById(id);
+        return LejiaResult.ok(merchantUser);
+    }
+
+    @RequestMapping(value="/merchantUser/edit",method = RequestMethod.PUT)
+    @ResponseBody
+    public LejiaResult saveEdit(@RequestBody MerchantUser merchantUser) {
+        merchantUserService.updateMerchantUser(merchantUser);
+        return LejiaResult.ok("商户信息修改成功！");
+    }
+
 
     @RequestMapping(value = "/merchantUser/create",method = RequestMethod.POST)
     @ResponseBody

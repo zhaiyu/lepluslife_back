@@ -222,6 +222,7 @@ public class MerchantService {
     origin.setReceiptAuth(merchant.getReceiptAuth());
     origin.setPartnership(merchant.getPartnership());
     origin.setMemberCommission(merchant.getMemberCommission());
+    origin.setMerchantUser(merchant.getMerchantUser());
     long l = merchant.getId();
     origin.setSid((int) l);
     origin.setMerchantSid(sid);
@@ -323,10 +324,11 @@ public class MerchantService {
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public List<MerchantUser> findMerchantUsersByMerchant(Merchant merchant) {
     if (!merchantUserRepository.findByMerchantAndType(merchant, 1).isPresent()) {
-      MerchantUser merchantUser = new MerchantUser();
-      merchantUser.setMerchant(merchant);
-      merchantUser.setType(1);
-      merchantUserRepository.save(merchantUser);
+//      MerchantUser merchantUser = new MerchantUser();
+//      merchantUser.setMerchant(merchant);
+//      merchantUser.setType(1);
+//      merchantUserRepository.save(merchantUser);
+//      功能维护中 ...
     }
     return merchantUserRepository.findAllByMerchant(merchant);
   }

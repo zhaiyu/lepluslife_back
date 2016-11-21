@@ -412,4 +412,15 @@ public class Merchant {
   public int hashCode() {
     return id.hashCode();
   }
+
+  @ManyToOne
+  private MerchantUser merchantUser;                      //  门店所属合伙人
+
+  public MerchantUser getMerchantUser() {
+    return merchantUser;
+  }
+
+  public void setMerchantUser(MerchantUser merchantUser) {
+    this.merchantUser = merchantUser;
+  }
 }
