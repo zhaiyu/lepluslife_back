@@ -2,14 +2,12 @@ package com.jifenke.lepluslive.shortMessage.service;
 
 import com.jifenke.lepluslive.shortMessage.domain.entities.ShortMessageScene;
 import com.jifenke.lepluslive.shortMessage.repository.ShortMessageSceneRepository;
-
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.List;
-
 import javax.inject.Inject;
+import java.util.List;
 
 /**
  * Created by jfk on 2016/10/18.

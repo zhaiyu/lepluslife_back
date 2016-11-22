@@ -1,7 +1,6 @@
 package com.jifenke.lepluslive.shortMessage.repository;
 
 import com.jifenke.lepluslive.shortMessage.domain.entities.ShortMessage;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;

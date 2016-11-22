@@ -15,31 +15,17 @@ import com.jifenke.lepluslive.shortMessage.service.ShortMessageSceneService;
 import com.jifenke.lepluslive.shortMessage.service.ShortMessageService;
 import com.jifenke.lepluslive.user.domain.entities.LeJiaUser;
 import com.jifenke.lepluslive.user.service.UserService;
-
 import net.sf.json.JSONObject;
-
 import org.springframework.cloud.cloudfoundry.com.fasterxml.jackson.databind.ObjectMapper;
 import org.springframework.data.domain.Page;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.inject.Inject;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Date;
-import java.util.HashMap;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Set;
-
-import javax.inject.Inject;
+import java.util.*;
 
 
 /**
@@ -80,21 +66,7 @@ public class ShortMessageController {
     LeJiaUser leJiaUser1 = userService.findUserByPhoneNumber(phoneNumber);
     ShortMessageScene scene = shortMessageSceneService.findBySid("16110315524199857");
     Map<String, String> returnMap = new HashMap<>();
-    List<ReplyShortMessage>
-        replyShortList =
-        replyShortMessageService.findByPhoneNumber(phoneNumber);
-    boolean b = true;
-    for (int i = 0; i < replyShortList.size(); i++) {
-      String c = replyShortList.get(i).getContent();
-      ReplyShortMessage message = replyShortList.get(i);
-      String cstr = c;
-      char[] bm;
-      bm = cstr.toCharArray();
-      c = String.valueOf(bm[0]);
-      if (c.equals("t") || c.equals("T")) {
-        b = false;
-      }
-    }
+      boolean b=unsubscribe(phoneNumber,scene);
     if (b) {
       boolean bl = shortMessageService.sendOneMessage(leJiaUser1, scene, content);
 
@@ -326,6 +298,9 @@ public class ShortMessageController {
           OnLineOrder
               onLineOrder = shortMessageService.findOnLineOrderBySid(onLineOrderSid);
           user = onLineOrder.getLeJiaUser();
+          if(onLineOrder.getPayBackA()==0L){
+            shortMessageScene=shortMessageSceneService.findBySid("16110315511460726");
+          }
         }
         if (offLineOrderSid != "") {
           OffLineOrder
@@ -595,22 +570,7 @@ public class ShortMessageController {
         for (int i = 0; i < contentStrArray.length; i++) {
           contentStr = contentStr + contentStrArray[i];
         }
-        List<ReplyShortMessage>
-            replyShortList =
-            replyShortMessageService.findByPhoneNumber(user.getPhoneNumber());
-        boolean b = true;
-        for (int i = 0; i < replyShortList.size(); i++) {
-          String c = replyShortList.get(i).getContent();
-          ReplyShortMessage message = replyShortList.get(i);
-          String cstr = c;
-          char[] bm;
-          bm = cstr.toCharArray();
-          c = String.valueOf(bm[0]);
-          if (c.equals("t") || c.equals("T")) {
-            b = false;
-          }
-        }
-
+        boolean b=unsubscribe(user.getPhoneNumber(),shortMessageScene);
         if (b && b2 && shortMessageScene.isRecloser()) {
           shortMessageService.sendOneMessage(user, shortMessageScene, contentStr);
           return "ok";
@@ -625,4 +585,32 @@ public class ShortMessageController {
       return "defeat";
     }
   }
+//判断退没退订 true没退订 false退订了
+  public boolean unsubscribe(String phoneNumber,ShortMessageScene shortMessageScene) {
+      List<ReplyShortMessage>
+              replyShortList =
+              replyShortMessageService.findByPhoneNumber(phoneNumber);
+      boolean b = true;
+      for (int i = 0; i < replyShortList.size(); i++) {
+          String c = replyShortList.get(i).getContent();
+          ReplyShortMessage message = replyShortList.get(i);
+          String cstr = c;
+          char[] bm;
+          bm = cstr.toCharArray();
+          c = String.valueOf(bm[0]);
+          if (c.equals("t") || c.equals("T")) {
+              b = false;
+          }
+      }
+      if(b=false){
+         if(shortMessageScene.isUnsubscribeRecloser()==true) {
+             b=true;
+         }
+          if(shortMessageScene.isUnsubscribeRecloser()==false) {
+              b=false;
+          }
+      }
+      return b;
+  }
+
 }

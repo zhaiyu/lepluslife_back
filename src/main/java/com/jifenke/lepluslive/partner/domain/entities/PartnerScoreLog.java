@@ -5,6 +5,7 @@ import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.Table;
+import java.util.Date;
 
 /**
  * Created by wcg on 16/9/28.
@@ -23,13 +24,24 @@ public class PartnerScoreLog {
 
   private Integer type; // 0代表 积分变更 1 代表红包变更
 
-  private Integer scoreAOrigin; //红包变更来源  0 注册送红包
+  private Integer scoreAOrigin; //红包变更来源  0 注册送红包 1 送邀请会员  2 合伙人充值
 
-  private Integer scoreBOrigin;//积分变更来源 0 注册送积分
+  private Integer scoreBOrigin;//积分变更来源 0 注册送积分 1 送邀请会员    2合伙人充值
+
 
   private String description;//描述
 
   private Long number; //变更值
+
+  private Date createDate;
+
+  public Date getCreateDate() {
+    return createDate;
+  }
+
+  public void setCreateDate(Date createDate) {
+    this.createDate = createDate;
+  }
 
   public Long getId() {
     return id;
