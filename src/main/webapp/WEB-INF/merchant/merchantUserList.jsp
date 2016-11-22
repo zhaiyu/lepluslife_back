@@ -671,14 +671,33 @@
         merchantUser.city = city;
         //  修改商户信息
         if(merchantUser.id!=null && merchantUser.id!='') {
-            sendPutAjax("/manage/merchantUser/edit",merchantUser);
+//            sendPutAjax("/manage/merchantUser/edit",merchantUser);
+            $.ajax({
+                url:"/manage/merchantUser/edit",
+                type:"put",
+                contentType:"application/json",
+                data:JSON.stringify(merchantUser),
+                success: function(result) {
+                    alert(result.data);
+                    window.location.href = "/manage/merchantUser/list";
+                }
+            });
         //  保存商户信息
         }else {
-            sendPostAjax("/manage/merchantUser/create",merchantUser);
+//            sendPostAjax("/manage/merchantUser/create",merchantUser);
+            $.ajax({
+                url:"/manage/merchantUser/create",
+                type:"post",
+                contentType:"application/json",
+                data:JSON.stringify(merchantUser),
+                success: function(result) {
+                    alert(result.data);
+                    window.location.href = "/manage/merchantUser/list";
+                }
+            });
         }
         $("#createWarn").modal("toggle");
         resetAll();
-        window.location.href = "/manage/merchantUser/list";
     }
 
     function sendPostAjax(url,data) {
