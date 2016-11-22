@@ -2,7 +2,6 @@ package com.jifenke.lepluslive.shortMessage.repository;
 
 
 import com.jifenke.lepluslive.shortMessage.domain.entities.LeJiaUser_ShortMessage;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 

@@ -14,9 +14,7 @@ import com.jifenke.lepluslive.shortMessage.repository.LeJiaUser_ShortMessageRepo
 import com.jifenke.lepluslive.shortMessage.repository.ReplyShortMessageRepository;
 import com.jifenke.lepluslive.shortMessage.repository.ShortMessageRepository;
 import com.jifenke.lepluslive.user.domain.entities.LeJiaUser;
-
 import net.sf.json.JSONObject;
-
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -26,6 +24,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.inject.Inject;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
@@ -35,12 +38,6 @@ import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.List;
-
-import javax.inject.Inject;
-import javax.persistence.criteria.CriteriaBuilder;
-import javax.persistence.criteria.CriteriaQuery;
-import javax.persistence.criteria.Predicate;
-import javax.persistence.criteria.Root;
 
 /**
  * Created by lss on 2016/10/17.
@@ -208,6 +205,7 @@ public class ShortMessageService {
         user_message.setLeJiaUser_id(leJiaUser.getId());
         user_message.setShortMessage_id(shortMessage2.getId());
         user_message.setState(0);
+        user_message.setSendState(1);
         leJiaUser_ShortMessageRepository.save(user_message);
         return false;
       }

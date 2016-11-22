@@ -256,6 +256,7 @@
 
             <div class="list-item none none8">
                 <a href='/manage/withdrawBill'>提现审核</a>
+                <a href='/manage/partnerFillingBill'>充值申请</a>
             </div>
         </li>
         <shiro:hasPermission name="system_config:query">

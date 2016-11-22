@@ -2,11 +2,7 @@ package com.jifenke.lepluslive.shortMessage.domain.entities;
 
 import com.jifenke.lepluslive.global.util.MvUtil;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * Created by Administrator on 2016/10/17.
@@ -23,6 +19,8 @@ public class ShortMessageScene {
 
   private boolean recloser;  //自动开关 0 关 1开
 
+  private boolean unsubscribeRecloser;//退订用户是否继续发送 1继续发送 0不继续发送
+
   private String content;
 
   private String category;//展示用的发送场景
@@ -34,6 +32,14 @@ public class ShortMessageScene {
   private Long addedcondition1;//额外条件1 对于线下订单叫 使用超过多少钱
 
   private Long addedcondition2;//额外条件2 对于线下订单叫 使用红包超过多少钱
+
+  public boolean isUnsubscribeRecloser() {
+    return unsubscribeRecloser;
+  }
+
+  public void setUnsubscribeRecloser(boolean unsubscribeRecloser) {
+    this.unsubscribeRecloser = unsubscribeRecloser;
+  }
 
   public Long getAddedcondition1() {
     return addedcondition1;
