@@ -69,7 +69,7 @@
         <div>
             <label for="merchantUser" style="width:10%">所属商户</label>
             <select name="name" id="merchantuser" class="check">
-                <option value="">- 请选择 -</option>
+                <option value="" id="opt-mu">- 请选择 -</option>
                 <c:forEach items="${merchantUsers}" var="merchantUser">
                     <option value="${merchantUser.id}">${merchantUser.name}</option>
                 </c:forEach>
@@ -394,7 +394,8 @@
         initProtocol();
         if(${merchant.merchantUser!=null}) {
             $("#merchantuser").val(${merchant.merchantUser.id});
-            $("#merchantuser").text(${merchant.merchantUser.name});
+            var i = "${merchant.merchantUser.name}";
+            $("#merchantuser").next().next().next().val(i);
         }
         if (${merchant.partnership==1}) {
             $('#partner').prop("checked", true);
