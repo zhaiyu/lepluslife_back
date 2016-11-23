@@ -49,14 +49,14 @@ public class MerchantRebatePolicyService {
         rebatePolicy.setImportScoreBScale(merchantRebatePolicy.getImportScoreBScale());
         rebatePolicy.setRebateFlag(merchantRebatePolicy.getRebateFlag());
         if(merchantRebatePolicy.getRebateFlag()==0) {
-            merchantRebatePolicy.setUserScoreBScaleB(new BigDecimal(0));
+            rebatePolicy.setUserScoreBScaleB(new BigDecimal(0));
             rebatePolicy.setUserScoreAScale(merchantRebatePolicy.getUserScoreAScale());
             rebatePolicy.setUserScoreBScale(merchantRebatePolicy.getUserScoreBScale());
         }
         if(merchantRebatePolicy.getRebateFlag()==1) {
             rebatePolicy.setUserScoreBScaleB(merchantRebatePolicy.getUserScoreBScaleB());
             rebatePolicy.setUserScoreBScale(new BigDecimal(0));
-            merchantRebatePolicy.setUserScoreAScale(new BigDecimal(0));
+            rebatePolicy.setUserScoreAScale(new BigDecimal(0));
         }
         if(merchantRebatePolicy.getRebateFlag()==2) {
             policyReset(rebatePolicy);
