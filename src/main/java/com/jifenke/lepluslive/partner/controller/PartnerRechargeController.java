@@ -103,17 +103,21 @@ public class PartnerRechargeController {
             partnerRecharge.setRechargeState(1);
             partnerRechargeService.saveParterRecharge(partnerRecharge);
 
-            PartnerScoreLog partnerScoreLog = new PartnerScoreLog();
-            partnerScoreLog.setCreateDate(partnerRecharge.getCreateTime());
-            partnerScoreLog.setPartnerId(partnerRecharge.getPartner().getId());
-            partnerScoreLog.setDescription("合伙人充值");
             if (scorea != 0) {
+                PartnerScoreLog partnerScoreLog = new PartnerScoreLog();
+                partnerScoreLog.setCreateDate(partnerRecharge.getCreateTime());
+                partnerScoreLog.setPartnerId(partnerRecharge.getPartner().getId());
+                partnerScoreLog.setDescription("合伙人充值");
                 partnerScoreLog.setType(1);
                 partnerScoreLog.setNumber(scorea);
                 partnerScoreLog.setScoreAOrigin(2);
                 partnerScoreLogService.savePartnerScoreLog(partnerScoreLog);
             }
             if (scoreb != 0) {
+                PartnerScoreLog partnerScoreLog = new PartnerScoreLog();
+                partnerScoreLog.setCreateDate(partnerRecharge.getCreateTime());
+                partnerScoreLog.setPartnerId(partnerRecharge.getPartner().getId());
+                partnerScoreLog.setDescription("合伙人充值");
                 partnerScoreLog.setType(0);
                 partnerScoreLog.setNumber(scoreb);
                 partnerScoreLog.setScoreAOrigin(2);
