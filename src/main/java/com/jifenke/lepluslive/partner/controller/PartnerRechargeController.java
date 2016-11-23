@@ -120,7 +120,7 @@ public class PartnerRechargeController {
                 partnerScoreLog.setDescription("合伙人充值");
                 partnerScoreLog.setType(0);
                 partnerScoreLog.setNumber(scoreb);
-                partnerScoreLog.setScoreAOrigin(2);
+                partnerScoreLog.setScoreBOrigin(2);
                 partnerScoreLogService.savePartnerScoreLog(partnerScoreLog);
             }
         }
