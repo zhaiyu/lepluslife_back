@@ -1,5 +1,7 @@
 package com.jifenke.lepluslive.merchant.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -19,6 +21,7 @@ public class MerchantUser {
     private String password;
 
     @ManyToOne
+    @JsonIgnore
     private Merchant merchant;
 
     private Integer type; //9-系统管理员  8-管理员(商户)  2-子账号  【之前：0收营员 1 店主 一个商户只有一个店主】
@@ -64,7 +67,7 @@ public class MerchantUser {
     }
 
     // ---  新版本扩展属性 ---
-    @OneToOne(cascade = CascadeType.ALL)
+    @OneToOne
     private MerchantBank merchantBank;  //  银行卡号及名称
     private String merchantName;        // 商户名称
     private String linkMan;             // 商户负责人 （联系人）
