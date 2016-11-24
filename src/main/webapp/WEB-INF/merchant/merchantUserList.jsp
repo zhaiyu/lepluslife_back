@@ -361,7 +361,7 @@
     var tableContent = document.getElementById("tablePage");
     //    时间选择器
     $(document).ready(function (){
-        $('#date-end span').html(moment().subtract('hours', 1).format('YYYY/MM/DD HH:mm:ss') + ' - ' + moment().format('YYYY/MM/DD HH:mm:ss'));
+//      $('#date-end span').html(moment().subtract('hours', 1).format('YYYY/MM/DD HH:mm:ss') + ' - ' + moment().format('YYYY/MM/DD HH:mm:ss'));    设置默认查询时间为当天
         $('#date-end').daterangepicker({
             maxDate : moment(), //最大时间
             dateLimit : {
@@ -585,12 +585,12 @@
                 $("#toggle-name").val(merchantUser.merchantName);
                 if(merchantUser.linkMan!=null)
                 $("#toggle-people").val(merchantUser.linkMan);
-                if(merchantUser.cardNum!=null)
-                $("#toggle-card").val(merchantUser.cardNum);
+                if(merchantUser.merchantBank!=null)
+                $("#toggle-card").val(merchantUser.merchantBank.bankNumber);
                 if(merchantUser.phoneNum!=null)
                 $("#toggle-phone").val(merchantUser.phoneNum);
-                if(merchantUser.bankName!=null)
-                $("#toggle-bank").val(merchantUser.bankName);
+                if(merchantUser.merchantBank!=null)
+                $("#toggle-bank").val(merchantUser.merchantBank.bankName);
                 if(merchantUser.lockLimit!=null)
                 $("#toggle-limit").val(merchantUser.lockLimit);
                 if(merchantUser.name!=null)
@@ -664,9 +664,11 @@
         merchantUser.name = name;
         merchantUser.password = password;
         merchantUser.phoneNum = phoneNum;
-        merchantUser.cardNum = cardNum;
+        var merchantBank = {};
+        merchantBank.bankNumber = cardNum;
+        merchantBank.bankName = bankName;
+        merchantUser.merchantBank = merchantBank;
         merchantUser.merchantName = merchantName;
-        merchantUser.bankName = bankName;
         merchantUser.lockLimit = lockLimit;
         merchantUser.city = city;
         //  修改商户信息

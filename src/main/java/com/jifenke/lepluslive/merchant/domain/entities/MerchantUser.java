@@ -64,11 +64,11 @@ public class MerchantUser {
     }
 
     // ---  新版本扩展属性 ---
+    @OneToOne(cascade = CascadeType.ALL)
+    private MerchantBank merchantBank;  //  银行卡号及名称
     private String merchantName;        // 商户名称
     private String linkMan;             // 商户负责人 （联系人）
     private String phoneNum;            // 联系方式
-    private String cardNum;             // 结算卡号
-    private String bankName;            // 开户行
     private Long lockLimit;             // 锁定上限
     private Date createdDate;           // 创建时间
 
@@ -89,22 +89,6 @@ public class MerchantUser {
 
     public void setPhoneNum(String phoneNum) {
         this.phoneNum = phoneNum;
-    }
-
-    public String getCardNum() {
-        return cardNum;
-    }
-
-    public void setCardNum(String cardNum) {
-        this.cardNum = cardNum;
-    }
-
-    public String getBankName() {
-        return bankName;
-    }
-
-    public void setBankName(String bankName) {
-        this.bankName = bankName;
     }
 
     public Long getLockLimit() {
@@ -137,5 +121,13 @@ public class MerchantUser {
 
     public void setMerchantName(String merchantName) {
         this.merchantName = merchantName;
+    }
+
+    public MerchantBank getMerchantBank() {
+        return merchantBank;
+    }
+
+    public void setMerchantBank(MerchantBank merchantBank) {
+        this.merchantBank = merchantBank;
     }
 }

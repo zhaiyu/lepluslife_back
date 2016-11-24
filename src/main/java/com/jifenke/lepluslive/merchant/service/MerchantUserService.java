@@ -3,8 +3,10 @@ package com.jifenke.lepluslive.merchant.service;
 import com.jifenke.lepluslive.global.util.MD5Util;
 import com.jifenke.lepluslive.merchant.domain.criteria.MerchantUserCriteria;
 import com.jifenke.lepluslive.merchant.domain.entities.City;
+import com.jifenke.lepluslive.merchant.domain.entities.MerchantBank;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantUser;
 import com.jifenke.lepluslive.merchant.repository.CityRepository;
+import com.jifenke.lepluslive.merchant.repository.MerchantBankRepository;
 import com.jifenke.lepluslive.merchant.repository.MerchantUserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -33,6 +35,8 @@ public class MerchantUserService {
     private MerchantUserRepository merchantUserRepository;
     @Inject
     private CityRepository cityRepository;
+    @Inject
+    private MerchantBankRepository merchantBankRepository;
 
     /**
      * 创建子账号
@@ -59,6 +63,8 @@ public class MerchantUserService {
         merchantUser.setCreatedDate(new Date());
         String md5pwd = MD5Util.MD5Encode(merchantUser.getPassword(), null);     // md5加密
         merchantUser.setPassword(md5pwd);
+        MerchantBank merchantBank = merchantUser.getMerchantBank();              // 保存商户银行信息
+        merchantBankRepository.save(merchantBank);
         merchantUserRepository.save(merchantUser);
     }
 
@@ -133,14 +139,17 @@ public class MerchantUserService {
     @Transactional(propagation = Propagation.REQUIRED,readOnly = false)
     public void updateMerchantUser(MerchantUser merchantUser) {
         MerchantUser existMerchantUser = merchantUserRepository.findOne(merchantUser.getId());
-        existMerchantUser.setName(merchantUser.getName());
+        existMerchantUser.setName(merchantUser.getName());                         // 更新商户信息
         existMerchantUser.setLinkMan(merchantUser.getLinkMan());
         existMerchantUser.setMerchantName(merchantUser.getMerchantName());
         existMerchantUser.setPhoneNum(merchantUser.getPhoneNum());
-        existMerchantUser.setCardNum(merchantUser.getCardNum());
-        existMerchantUser.setBankName(merchantUser.getBankName());
+        existMerchantUser.setMerchantBank(merchantUser.getMerchantBank());
         existMerchantUser.setLockLimit(merchantUser.getLockLimit());
         existMerchantUser.setCity(merchantUser.getCity());
+        MerchantBank existBank = existMerchantUser.getMerchantBank();
+        MerchantBank merchantBank = merchantUser.getMerchantBank();                 // 更新银行信息
+        existBank.setBankName(merchantBank.getBankName());
+        existBank.setBankNumber(merchantBank.getBankNumber());
         merchantUserRepository.save(existMerchantUser);
     }
 }
