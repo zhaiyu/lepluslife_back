@@ -22,7 +22,7 @@ public class MerchantUser {
 
     @ManyToOne
     @JsonIgnore
-    private Merchant merchant;
+    private Merchant merchant;   // 禁止循环引用
 
     private Integer type; //9-系统管理员  8-管理员(商户)  2-子账号  【之前：0收营员 1 店主 一个商户只有一个店主】
 
