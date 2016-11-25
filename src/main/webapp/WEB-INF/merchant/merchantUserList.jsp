@@ -103,7 +103,13 @@
                         <label for="link-man">商户联系人</label>
                         <input type="text" id="link-man" class="form-control" placeholder="商户联系人" />
                     </div>
-                    <div class="form-group col-md-2">
+                 </div>
+                 <div class="row" style="margin-top: 10px">
+                    <div class="form-group col-md-3">
+                        <label for="merchant-name">商户名称</label>
+                        <input type="text" id="merchant-name" class="form-control" placeholder="商户名称" />
+                    </div>
+                    <div class="form-group col-md-3">
                         <label for="phone-num">绑定手机号</label>
                         <input type="number" id="phone-num" class="form-control" placeholder="绑定手机号" />
                     </div>
@@ -525,6 +531,7 @@
         city.id = $("#stay-city").val();
         var $phoneNum = $("#phone-num").val();
         var $linkMan = $("#link-man").val();
+        var $merchantName = $("#merchant-name").val();
         if (city.id!="" && city.id!= null) {
             merchantUserCriteria.city = city;
         } else {
@@ -539,6 +546,11 @@
             merchantUserCriteria.linkMan = $linkMan;
         } else {
             merchantUserCriteria.linkMan = null;
+        }
+        if($merchantName!="" && $merchantName!=null) {
+            merchantUserCriteria.merchantName = $merchantName;
+        }else {
+            merchantUserCriteria.merchantName = null;
         }
         getMerchantUserByAjax(merchantUserCriteria);
     }

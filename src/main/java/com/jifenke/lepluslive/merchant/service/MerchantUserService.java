@@ -112,6 +112,9 @@ public class MerchantUserService {
                 if(merchantUserCriteria.getKeyword()!=null) {
                     predicate.getExpressions().add(cb.like(root.get("name"),"%"+merchantUserCriteria.getKeyword()+"%"));
                 }
+                if(merchantUserCriteria.getMerchantName()!=null) {
+                    predicate.getExpressions().add(cb.like(root.get("merchantName"),"%"+merchantUserCriteria.getMerchantName()+"%"));
+                }
                 return predicate;
             }
         };
