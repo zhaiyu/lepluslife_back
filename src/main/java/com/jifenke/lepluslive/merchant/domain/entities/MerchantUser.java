@@ -75,7 +75,7 @@ public class MerchantUser {
     private Long lockLimit;             // 锁定上限
     private Date createdDate;           // 创建时间
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private City city;                  // 所在城市
 
     public String getLinkMan() {
@@ -132,5 +132,13 @@ public class MerchantUser {
 
     public void setMerchantBank(MerchantBank merchantBank) {
         this.merchantBank = merchantBank;
+    }
+
+    public MerchantUser() {
+    }
+
+    public MerchantUser(Long id,String merchantName) {
+        this.id = id;
+        this.merchantName = merchantName;
     }
 }
