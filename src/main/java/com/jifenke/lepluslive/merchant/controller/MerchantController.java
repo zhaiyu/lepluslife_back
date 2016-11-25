@@ -136,8 +136,14 @@ public class MerchantController {
 
   @RequestMapping(value = "/merchant", method = RequestMethod.PUT)
   public LejiaResult eidtMerchant(@RequestBody MerchantDto merchantDto) {
-    merchantService.editMerchant(merchantDto.getMerchant());
-    merchantReBatePolicyService.editMerchantRebatePolicy(merchantDto.getMerchantRebatePolicy());
+    Merchant merchant = merchantDto.getMerchant();
+    merchantService.editMerchant(merchant);
+    MerchantRebatePolicy policy = merchantDto.getMerchantRebatePolicy();
+    if(policy.getId()==null) {
+      policy.setMerchantId(merchant.getId());
+      merchantReBatePolicyService.saveMerchantRebatePolicy(policy);
+    }
+    merchantReBatePolicyService.editMerchantRebatePolicy(policy);
     return LejiaResult.ok("修改商户成功");
   }
 

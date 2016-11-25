@@ -1,5 +1,7 @@
 package com.jifenke.lepluslive.merchant.domain.entities;
 
+import com.fasterxml.jackson.annotation.JsonIgnore;
+
 import javax.persistence.*;
 import java.util.Date;
 
@@ -19,7 +21,8 @@ public class MerchantUser {
     private String password;
 
     @ManyToOne
-    private Merchant merchant;
+    @JsonIgnore
+    private Merchant merchant;   // 禁止循环引用
 
     private Integer type; //9-系统管理员  8-管理员(商户)  2-子账号  【之前：0收营员 1 店主 一个商户只有一个店主】
 
@@ -64,15 +67,15 @@ public class MerchantUser {
     }
 
     // ---  新版本扩展属性 ---
+    @OneToOne
+    private MerchantBank merchantBank;  //  银行卡号及名称
     private String merchantName;        // 商户名称
     private String linkMan;             // 商户负责人 （联系人）
     private String phoneNum;            // 联系方式
-    private String cardNum;             // 结算卡号
-    private String bankName;            // 开户行
     private Long lockLimit;             // 锁定上限
     private Date createdDate;           // 创建时间
 
-    @ManyToOne
+    @ManyToOne(cascade = CascadeType.ALL)
     private City city;                  // 所在城市
 
     public String getLinkMan() {
@@ -89,22 +92,6 @@ public class MerchantUser {
 
     public void setPhoneNum(String phoneNum) {
         this.phoneNum = phoneNum;
-    }
-
-    public String getCardNum() {
-        return cardNum;
-    }
-
-    public void setCardNum(String cardNum) {
-        this.cardNum = cardNum;
-    }
-
-    public String getBankName() {
-        return bankName;
-    }
-
-    public void setBankName(String bankName) {
-        this.bankName = bankName;
     }
 
     public Long getLockLimit() {
@@ -136,6 +123,22 @@ public class MerchantUser {
     }
 
     public void setMerchantName(String merchantName) {
+        this.merchantName = merchantName;
+    }
+
+    public MerchantBank getMerchantBank() {
+        return merchantBank;
+    }
+
+    public void setMerchantBank(MerchantBank merchantBank) {
+        this.merchantBank = merchantBank;
+    }
+
+    public MerchantUser() {
+    }
+
+    public MerchantUser(Long id,String merchantName) {
+        this.id = id;
         this.merchantName = merchantName;
     }
 }

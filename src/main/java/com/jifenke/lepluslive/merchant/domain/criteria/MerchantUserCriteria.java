@@ -19,6 +19,8 @@ public class MerchantUserCriteria {
 
     private String phoneNum;
 
+    private String merchantName;
+
     public Integer getOffset() {
         return offset;
     }
@@ -85,5 +87,13 @@ public class MerchantUserCriteria {
 
     public void setKeyword(String keyword) {
         this.keyword = keyword;
+    }
+
+    public String getMerchantName() {
+        return merchantName;
+    }
+
+    public void setMerchantName(String merchantName) {
+        this.merchantName = merchantName;
     }
 }

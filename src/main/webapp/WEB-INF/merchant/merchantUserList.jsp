@@ -103,7 +103,13 @@
                         <label for="link-man">商户联系人</label>
                         <input type="text" id="link-man" class="form-control" placeholder="商户联系人" />
                     </div>
-                    <div class="form-group col-md-2">
+                 </div>
+                 <div class="row" style="margin-top: 10px">
+                    <div class="form-group col-md-3">
+                        <label for="merchant-name">商户名称</label>
+                        <input type="text" id="merchant-name" class="form-control" placeholder="商户名称" />
+                    </div>
+                    <div class="form-group col-md-3">
                         <label for="phone-num">绑定手机号</label>
                         <input type="number" id="phone-num" class="form-control" placeholder="绑定手机号" />
                     </div>
@@ -361,7 +367,7 @@
     var tableContent = document.getElementById("tablePage");
     //    时间选择器
     $(document).ready(function (){
-        $('#date-end span').html(moment().subtract('hours', 1).format('YYYY/MM/DD HH:mm:ss') + ' - ' + moment().format('YYYY/MM/DD HH:mm:ss'));
+//      $('#date-end span').html(moment().subtract('hours', 1).format('YYYY/MM/DD HH:mm:ss') + ' - ' + moment().format('YYYY/MM/DD HH:mm:ss'));    设置默认查询时间为当天
         $('#date-end').daterangepicker({
             maxDate : moment(), //最大时间
             dateLimit : {
@@ -525,6 +531,7 @@
         city.id = $("#stay-city").val();
         var $phoneNum = $("#phone-num").val();
         var $linkMan = $("#link-man").val();
+        var $merchantName = $("#merchant-name").val();
         if (city.id!="" && city.id!= null) {
             merchantUserCriteria.city = city;
         } else {
@@ -539,6 +546,11 @@
             merchantUserCriteria.linkMan = $linkMan;
         } else {
             merchantUserCriteria.linkMan = null;
+        }
+        if($merchantName!="" && $merchantName!=null) {
+            merchantUserCriteria.merchantName = $merchantName;
+        }else {
+            merchantUserCriteria.merchantName = null;
         }
         getMerchantUserByAjax(merchantUserCriteria);
     }
@@ -585,12 +597,12 @@
                 $("#toggle-name").val(merchantUser.merchantName);
                 if(merchantUser.linkMan!=null)
                 $("#toggle-people").val(merchantUser.linkMan);
-                if(merchantUser.cardNum!=null)
-                $("#toggle-card").val(merchantUser.cardNum);
+                if(merchantUser.merchantBank!=null)
+                $("#toggle-card").val(merchantUser.merchantBank.bankNumber);
                 if(merchantUser.phoneNum!=null)
                 $("#toggle-phone").val(merchantUser.phoneNum);
-                if(merchantUser.bankName!=null)
-                $("#toggle-bank").val(merchantUser.bankName);
+                if(merchantUser.merchantBank!=null)
+                $("#toggle-bank").val(merchantUser.merchantBank.bankName);
                 if(merchantUser.lockLimit!=null)
                 $("#toggle-limit").val(merchantUser.lockLimit);
                 if(merchantUser.name!=null)
@@ -664,21 +676,42 @@
         merchantUser.name = name;
         merchantUser.password = password;
         merchantUser.phoneNum = phoneNum;
-        merchantUser.cardNum = cardNum;
+        var merchantBank = {};
+        merchantBank.bankNumber = cardNum;
+        merchantBank.bankName = bankName;
+        merchantUser.merchantBank = merchantBank;
         merchantUser.merchantName = merchantName;
-        merchantUser.bankName = bankName;
         merchantUser.lockLimit = lockLimit;
         merchantUser.city = city;
         //  修改商户信息
         if(merchantUser.id!=null && merchantUser.id!='') {
-            sendPutAjax("/manage/merchantUser/edit",merchantUser);
+//            sendPutAjax("/manage/merchantUser/edit",merchantUser);
+            $.ajax({
+                url:"/manage/merchantUser/edit",
+                type:"put",
+                contentType:"application/json",
+                data:JSON.stringify(merchantUser),
+                success: function(result) {
+                    alert(result.data);
+                    window.location.href = "/manage/merchantUser/list";
+                }
+            });
         //  保存商户信息
         }else {
-            sendPostAjax("/manage/merchantUser/create",merchantUser);
+//            sendPostAjax("/manage/merchantUser/create",merchantUser);
+            $.ajax({
+                url:"/manage/merchantUser/create",
+                type:"post",
+                contentType:"application/json",
+                data:JSON.stringify(merchantUser),
+                success: function(result) {
+                    alert(result.data);
+                    window.location.href = "/manage/merchantUser/list";
+                }
+            });
         }
         $("#createWarn").modal("toggle");
         resetAll();
-        window.location.href = "/manage/merchantUser/list";
     }
 
     function sendPostAjax(url,data) {

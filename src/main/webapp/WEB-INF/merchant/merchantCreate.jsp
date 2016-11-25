@@ -71,7 +71,7 @@
             <select name="name" id="merchantuser" class="check">
                 <option value="">- 请选择 -</option>
                 <c:forEach items="${merchantUsers}" var="merchantUser">
-                    <option value="${merchantUser.id}">${merchantUser.name}</option>
+                    <option value="${merchantUser.id}">${merchantUser.merchantName}</option>
                 </c:forEach>
             </select>
         </div>
@@ -394,7 +394,8 @@
         initProtocol();
         if(${merchant.merchantUser!=null}) {
             $("#merchantuser").val(${merchant.merchantUser.id});
-            $("#merchantuser").text(${merchant.merchantUser.name});
+            var i = "${merchant.merchantUser.merchantName}";
+            $("#merchantuser").next().next().next().val(i);
         }
         if (${merchant.partnership==1}) {
             $('#partner').prop("checked", true);
