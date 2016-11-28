@@ -45,7 +45,7 @@ public class PartnerRechargeController {
   /**
    * 合伙人充值页
    */
-  @RequestMapping(value = "/partnerFillingBill", method = RequestMethod.GET)
+  @RequestMapping(value = "/fillingBillApply", method = RequestMethod.GET)
   public ModelAndView goPartnerEditPage(Model model) {
     return MvUtil.go("/partner/parterFillingBillPage");
   }

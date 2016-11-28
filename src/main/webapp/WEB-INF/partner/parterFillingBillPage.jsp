@@ -221,11 +221,12 @@
                     }else{
                         contentStr+='<td>' + content[i].remark + '</td>';
                     }
-                    contentStr +=
-                            '<td><input type="hidden" class="id-hidden" value="' + content[i].id+'">'+
-                            '<button class="btn btn-primary goToFilling">立即充值</button>' +
-                            '<button class="btn btn-primary rejectFilling">驳回</button>'+'</td></tr>';
-
+                    if(content[i].rechargeState=="0"){
+                        contentStr +=
+                                '<td><input type="hidden" class="id-hidden" value="' + content[i].id+'">'+
+                                '<button class="btn btn-primary goToFilling">立即充值</button>' +
+                                '<button class="btn btn-primary rejectFilling">驳回</button>'+'</td></tr>';
+                    }
                     fillingBillContent.innerHTML += contentStr;
                 }
                 $(".goToFilling").each(function (i) {
