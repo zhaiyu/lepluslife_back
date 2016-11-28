@@ -459,8 +459,11 @@
             var id = $(this).attr('id');
             merchantInfo[id] = 1;
         });
-
-        merchantInfo.star = $("#star").val();
+        var star = $("#star").val();
+        if (star == null || star == '') {
+            star = 5;
+        }
+        merchantInfo.star = star;
         merchantInfo.perSale = $("#perSale").val() * 100;
         merchant.merchantInfo = merchantInfo;
         merchant.lng = $("#lng").val();

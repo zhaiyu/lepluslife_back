@@ -29,6 +29,8 @@ public class WeiXinQrCode {
   //3=手机充值二维码（只有一个）
   private Integer type;
 
+  private String url;  //二维码对应的链接
+
   public Integer getId() {
     return id;
   }
@@ -67,5 +69,13 @@ public class WeiXinQrCode {
 
   public void setType(Integer type) {
     this.type = type;
+  }
+
+  public String getUrl() {
+    return url;
+  }
+
+  public void setUrl(String url) {
+    this.url = url;
   }
 }
