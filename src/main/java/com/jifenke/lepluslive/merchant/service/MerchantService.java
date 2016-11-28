@@ -10,7 +10,6 @@ import com.jifenke.lepluslive.merchant.domain.criteria.MerchantCriteria;
 import com.jifenke.lepluslive.merchant.domain.entities.City;
 import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantInfo;
-import com.jifenke.lepluslive.merchant.domain.entities.MerchantPos;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantType;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantUser;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantWallet;
@@ -26,7 +25,6 @@ import com.jifenke.lepluslive.merchant.repository.MerchantWalletOnlineRepository
 import com.jifenke.lepluslive.merchant.repository.MerchantWalletRepository;
 import com.jifenke.lepluslive.order.domain.entities.FinancialStatistic;
 import com.jifenke.lepluslive.partner.domain.entities.Partner;
-import com.jifenke.lepluslive.sales.domain.entities.SalesStaff;
 import com.jifenke.lepluslive.user.domain.entities.RegisterOrigin;
 import com.jifenke.lepluslive.user.repository.LeJiaUserRepository;
 import com.jifenke.lepluslive.user.repository.RegisterOriginRepository;
@@ -551,6 +549,7 @@ public class MerchantService {
             WeiXinQrCode qrCode = new WeiXinQrCode();
             qrCode.setParameter(parameter);
             qrCode.setTicket(map.get("ticket").toString());
+            qrCode.setUrl(String.valueOf(map.get("url")));
             qrCode.setType(1);
             weiXinQrCodeRepository.save(qrCode);
             merchantInfoRepository.save(info);

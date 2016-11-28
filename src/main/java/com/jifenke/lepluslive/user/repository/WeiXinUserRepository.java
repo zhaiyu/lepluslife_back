@@ -55,12 +55,12 @@ public interface WeiXinUserRepository extends JpaRepository<WeiXinUser, Long> {
   Integer countLJCommissionByMerchants(String subSource);
 
   /**
-   * 所有商户邀请会员的会员累计红包额和使用红包额 16/09/07
+   * 所有商户邀请会员的会员累计红包额和使用红包额 16/09/07 优化查询语句(11.10)
    *
    * @param subSource 关注来源
    * @return 数量
    */
-  @Query(value = "SELECT SUM(a.total_score),SUM(a.total_score-a.score) FROM wei_xin_user u,scorea a WHERE u.le_jia_user_id=a.le_jia_user_id AND sub_source LIKE ?1 AND state=1", nativeQuery = true)
+  @Query(value = "SELECT SUM(a.total_score),SUM(a.total_score - a.score) FROM scorea a INNER JOIN (SELECT le_jia_user_id FROM wei_xin_user WHERE state = 1 AND sub_source LIKE ?1) AS u USING (le_jia_user_id)", nativeQuery = true)
   List<Object[]> countScoreAByMerchants(String subSource);
 
 }
