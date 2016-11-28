@@ -581,22 +581,30 @@
 
     // 校验用户名是否重复
     $("#toggle-usrname").bind("blur",function(){
+        checkNameRepeat();
+    });
+
+    function checkNameRepeat() {
         var $usrname = $("#toggle-usrname").val();
+        var flag = false;
         if($usrname!=null && $usrname!=''){
             $.ajax({
                 url:"/manage/merchantUser/check_username",
                 type:"post",
                 contentType:"application/json",
                 data:$usrname,
+                async:false,
                 success: function(result) {
                     if(result.status!=200) {
                         alert(result.msg);
                         $("#toggle-usrname").val('');
+                        flag = true;
                     }
                 }
             });
         }
-    });
+        return flag;
+    }
 
     var merchantUserId = null;
     //  编辑时加载信息
@@ -725,6 +733,9 @@
         //  保存商户信息
         }else {
 //            sendPostAjax("/manage/merchantUser/create",merchantUser);
+            if(checkNameRepeat()) {             //  校验用户名是否重复
+                return;
+            }
             $.ajax({
                 url:"/manage/merchantUser/create",
                 type:"post",
