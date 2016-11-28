@@ -149,10 +149,12 @@ public class MerchantUserService {
         existMerchantUser.setMerchantBank(merchantUser.getMerchantBank());
         existMerchantUser.setLockLimit(merchantUser.getLockLimit());
         existMerchantUser.setCity(merchantUser.getCity());
+        existMerchantUser.setPartner(merchantUser.getPartner());
         MerchantBank existBank = existMerchantUser.getMerchantBank();
         MerchantBank merchantBank = merchantUser.getMerchantBank();                 // 更新银行信息
         existBank.setBankName(merchantBank.getBankName());
         existBank.setBankNumber(merchantBank.getBankNumber());
+        merchantBankRepository.save(existBank);
         merchantUserRepository.save(existMerchantUser);
     }
 }

@@ -1,6 +1,7 @@
 package com.jifenke.lepluslive.merchant.domain.entities;
 
 import com.fasterxml.jackson.annotation.JsonIgnore;
+import com.jifenke.lepluslive.partner.domain.entities.Partner;
 
 import javax.persistence.*;
 import java.util.Date;
@@ -75,8 +76,11 @@ public class MerchantUser {
     private Long lockLimit;             // 锁定上限
     private Date createdDate;           // 创建时间
 
-    @ManyToOne(cascade = CascadeType.ALL)
+    @ManyToOne
     private City city;                  // 所在城市
+
+    @ManyToOne
+    private Partner partner;            // 合伙人
 
     public String getLinkMan() {
         return linkMan;
@@ -140,5 +144,13 @@ public class MerchantUser {
     public MerchantUser(Long id,String merchantName) {
         this.id = id;
         this.merchantName = merchantName;
+    }
+
+    public Partner getPartner() {
+        return partner;
+    }
+
+    public void setPartner(Partner partner) {
+        this.partner = partner;
     }
 }
