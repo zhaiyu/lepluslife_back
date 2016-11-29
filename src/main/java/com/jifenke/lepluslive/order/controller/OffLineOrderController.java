@@ -231,7 +231,7 @@ public class OffLineOrderController {
     }
     keys[0] = sb.toString();
     sb.setLength(0);
-    keys[1] = sb.append(financialStatistic.getTransferPrice() / 100.0).toString();
+    keys[1] = sb.append((financialStatistic.getTransferPrice()+financialStatistic.getAppTransfer()+financialStatistic.getPosTransfer() )/ 100.0).toString();
     SimpleDateFormat dateFormat = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
 
     keys[2] = dateFormat.format(financialStatistic.getTransferDate());
