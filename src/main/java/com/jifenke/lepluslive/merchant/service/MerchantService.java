@@ -349,7 +349,9 @@ public class MerchantService {
       origin.setMerchant(findMerchantById(merchantUser.getMerchant().getId()));
       origin.setType(0);
     }
-    origin.setPassword(MD5Util.MD5Encode(merchantUser.getPassword(), "UTF-8"));
+    if(!merchantUser.getPassword().equals(origin.getPassword())) {
+      origin.setPassword(MD5Util.MD5Encode(merchantUser.getPassword(), "UTF-8"));
+    }
     origin.setName(merchantUser.getName());
     merchantUserRepository.save(origin);
   }
