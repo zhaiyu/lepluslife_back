@@ -26,6 +26,7 @@ import org.thymeleaf.util.DartUtils;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
@@ -53,78 +54,29 @@ public class OrderService {
   private static String jobGroupName = "ORDER_CONFIRM_JOBGROUP_NAME";
   private static String triggerGroupName = "ORDER_CONFIRM_TRIGGERGROUP_NAME";
 
-  public Map<String, Long> accountTurnover() {
+  public Map<String, Object> accountTurnover() {
     Long count = orderRepository.countOrder();
     Long turnover = orderRepository.countAllTurnover();
-    Long it = new Long(0);
-    //lss 2016/07/21
-    Long orderScoreb = orderRepository.sumAllScoreb();
-    Long activityScoreb = orderRepository.sumAllactivityScoreb();
-    if (orderScoreb == null) {
-      orderScoreb = it;
-    }
-    if (activityScoreb == null) {
-      activityScoreb = it;
-    }
-    Long scoreb = orderScoreb + activityScoreb;
-    Long orderRebate = orderRepository.sumAllRebate();
-    Long activityRebate = orderRepository.sumAllactivityRebate();
-    if (scoreb == null) {
-      scoreb = it;
-    }
-    if (orderRebate == null) {
-      orderRebate = it;
-    }
-    if (activityRebate == null) {
-      activityRebate = it;
-    }
-    Long rebate = orderRebate + activityRebate;
-    Long lejiaUserScoreb = orderRepository.sumAllLejiaUserScoreb();
-    Long lejiaUserRebate = orderRepository.sumAllLejiaUserRebate();
-    Long shareOrderTotal_price = orderRepository.SumShareOrderTotal_price();
-    Long shareOrderCount = orderRepository.shareOrderCount();
-    Long unionMerchantCount = orderRepository.unionMerchantCount();
+
+    Long totalB = orderRepository.sumTotalScoreB();
+    Long currB = orderRepository.sumCurrScoreb();
+    Long totalA = orderRepository.sumTotalScoreA();
+    Long currA = orderRepository.sumCurrScoreA();
+    Object[] importOrder = orderRepository.importOrderCount().get(0);//导流订单总数和总金额
+    Long share = orderRepository.totalShare(); //分润总金额
     Long membersCount = orderRepository.membersCount();
-    Long lj_commission = orderRepository.lj_commission();
-    Long wx_commission = orderRepository.wx_commission();
-    Long shareRebate = orderRepository.shareRebate();
-    if (lejiaUserScoreb == null) {
-      lejiaUserScoreb = it;
-    }
-    if (lejiaUserRebate == null) {
-      lejiaUserRebate = it;
-    }
-    if (shareOrderTotal_price == null) {
-      shareOrderTotal_price = it;
-    }
-    if (shareOrderCount == null) {
-      shareOrderCount = it;
-    }
-    if (unionMerchantCount == null) {
-      unionMerchantCount = it;
-    }
-    if (membersCount == null) {
-      membersCount = it;
-    }
-    if (lj_commission == null) {
-      lj_commission = it;
-    }
-    if (wx_commission == null) {
-      wx_commission = it;
-    }
-    if (shareRebate == null) {
-      shareRebate = it;
-    }
-    Long share = lj_commission - wx_commission - shareRebate;
-    HashMap<String, Long> map = new HashMap<>();
-    map.put("scoreb", scoreb);
-    map.put("rebate", rebate);
-    map.put("lejiaUserScoreb", lejiaUserScoreb);
-    map.put("lejiaUserRebate", lejiaUserRebate);
+
+    Long unionMerchantCount = orderRepository.unionMerchantCount();
+
+    HashMap<String, Object> map = new HashMap<>();
+    map.put("totalB", totalB);
+    map.put("totalA", totalA);
+    map.put("currB", currB);
+    map.put("currA", currA);
     map.put("orderCount", count);
     map.put("turnover", turnover);
-    map.put("shareOrderTotal_price", shareOrderTotal_price);
-    map.put("shareOrderCount", shareOrderCount);
+    map.put("importOrderTotalPrice", importOrder[1]);
+    map.put("importOrderCount", importOrder[0]);
     map.put("unionMerchantCount", unionMerchantCount);
     map.put("membersCount", membersCount);
     map.put("share", share);

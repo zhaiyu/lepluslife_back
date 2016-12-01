@@ -18,7 +18,7 @@
     <link href="${resourceUrl}/css/bootstrap.min.css" rel="stylesheet">
     <link type="text/css" rel="stylesheet" href="${resourceUrl}/css/commonCss.css"/>
     <style>
-        .main .thumbnail{
+        .main .thumbnail {
             padding: 50px 0;
         }
     </style>
@@ -34,7 +34,7 @@
         <%@include file="common/left.jsp" %>
     </div>
     <div class="m-right">
-        <div class="main" >
+        <div class="main">
             <div class="container">
                 <div class="row" style="margin-top: 100px">
                     <div class="col-xs-6 col-sm-3"></div>
@@ -43,7 +43,8 @@
                         <div class="thumbnail">
                             <div class="caption">
                                 <h4 class="text-center">导流订单数量</h4>
-                                <p class="text-center h3"> ${data['shareOrderCount']}</p>
+
+                                <p class="text-center h3"> ${data['importOrderCount']}</p>
                             </div>
                         </div>
                     </div>
@@ -52,7 +53,8 @@
                         <div class="thumbnail">
                             <div class="caption">
                                 <h4 class="text-center">导流总金额</h4>
-                                <p class="text-center h3">￥ ${data['shareOrderTotal_price']/100}</p>
+
+                                <p class="text-center h3">￥ ${data['importOrderTotalPrice']/100}</p>
                             </div>
                         </div>
                     </div>
@@ -61,6 +63,7 @@
                         <div class="thumbnail">
                             <div class="caption">
                                 <h4 class="text-center">分润总金额</h4>
+
                                 <p class="text-center h3">￥ ${data['share']/100}</p>
                             </div>
                         </div>
@@ -70,6 +73,7 @@
                         <div class="thumbnail">
                             <div class="caption">
                                 <h4 class="text-center">会员数量</h4>
+
                                 <p class="text-center h3"> ${data['membersCount']}</p>
                             </div>
                         </div>
@@ -79,6 +83,7 @@
                         <div class="thumbnail">
                             <div class="caption">
                                 <h4 class="text-center">联盟商户数量</h4>
+
                                 <p class="text-center h3"> ${data['unionMerchantCount']}</p>
                             </div>
                         </div>
@@ -88,6 +93,7 @@
                         <div class="thumbnail">
                             <div class="caption">
                                 <h4 class="text-center">总销售额</h4>
+
                                 <p class="text-center h3">￥ ${data['turnover']/100}</p>
                             </div>
                         </div>
@@ -97,6 +103,7 @@
                         <div class="thumbnail">
                             <div class="caption">
                                 <h4 class="text-center">订单量</h4>
+
                                 <p class="text-center h3">${data['orderCount']}</p>
                             </div>
                         </div>
@@ -106,7 +113,8 @@
                         <div class="thumbnail">
                             <div class="caption">
                                 <h4 class="text-center">发放积分数</h4>
-                                <p class="text-center h3">${data['scoreb']}</p>
+
+                                <p class="text-center h3">${data['totalB']}</p>
                             </div>
                         </div>
                     </div>
@@ -115,7 +123,8 @@
                         <div class="thumbnail">
                             <div class="caption">
                                 <h4 class="text-center">发放红包数</h4>
-                                <p class="text-center h3">￥${data['rebate']/100}</p>
+
+                                <p class="text-center h3">￥${data['totalA']/100}</p>
                             </div>
                         </div>
                     </div>
@@ -124,7 +133,8 @@
                         <div class="thumbnail">
                             <div class="caption">
                                 <h4 class="text-center">用户持有红包数</h4>
-                                <p class="text-center h3">￥${data['lejiaUserRebate']/100}</p>
+
+                                <p class="text-center h3">￥${data['currA']/100}</p>
                             </div>
                         </div>
                     </div>
@@ -133,7 +143,8 @@
                         <div class="thumbnail">
                             <div class="caption">
                                 <h4 class="text-center">用户持有积分数</h4>
-                                <p class="text-center h3">${data['lejiaUserScoreb']}</p>
+
+                                <p class="text-center h3">${data['currB']}</p>
                             </div>
                         </div>
                     </div>

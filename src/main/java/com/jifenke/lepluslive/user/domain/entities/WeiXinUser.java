@@ -53,7 +53,7 @@ public class WeiXinUser {
   Date lastUpdated;
   Date lastUserInfoDate;   //上次从微信服务器抓取用户信息的时间
 
-  private Integer state = 0;   //是否是会员 0=不是   1=是   0=从未关注过   1=关注   2=曾经关注现取消关注   1,2属于会员
+  private Integer state = 0;   //是否是会员 0=不是   1=是
 
   private Integer subState = 0;   //关注状态 0=从未关注过   1=关注   2=曾经关注现取消关注
 

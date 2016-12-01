@@ -8,7 +8,6 @@ import com.jifenke.lepluslive.global.util.LejiaResult;
 import com.jifenke.lepluslive.global.util.MvUtil;
 import com.jifenke.lepluslive.order.domain.entities.OrderDetail;
 import com.jifenke.lepluslive.product.controller.dto.LimitProductDto;
-import com.jifenke.lepluslive.product.controller.dto.ProductDto;
 import com.jifenke.lepluslive.product.domain.entities.Product;
 import com.jifenke.lepluslive.product.domain.entities.ProductCriteria;
 import com.jifenke.lepluslive.product.domain.entities.ProductDetail;
@@ -165,30 +164,6 @@ public class ProductService {
   @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
   public Product findOneProduct(Long id) {
     return productRepository.findOne(id);
-  }
-
-
-  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-  public void editProduct(ProductDto productDto) throws Exception {
-    Product origin = null;
-    if (productDto.getId() != null) {
-      origin = productRepository.findOne(productDto.getId());
-    } else {
-      origin = new Product();
-      origin.setState(1);
-    }
-    origin.setSid(productDto.getSid());
-    origin.setName(productDto.getName());
-    float minPrice = Float.parseFloat(productDto.getMinPrice());
-    origin.setMinPrice((long) (minPrice * 100));
-    origin.setPicture(productDto.getPicture());
-    origin.setDescription(productDto.getDescription());
-    origin.setThumb(productDto.getThumb());
-    origin.setPrice((long) (Float.parseFloat(productDto.getPrice()) * 100));
-    origin.setCustomSale(productDto.getCustomSale());
-    origin.setProductType(productDto.getProductType());
-
-    productRepository.save(origin);
   }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
@@ -567,6 +542,7 @@ public class ProductService {
       DBProduct.setMinPrice(product.getMinPrice());
       DBProduct.setMinScore(product.getMinScore());
       DBProduct.setName(product.getName());
+      DBProduct.setDescription(product.getDescription());
       DBProduct.setPrice(product.getPrice());
       DBProduct.setPostage(product.getPostage());
       DBProduct.setFreePrice(product.getFreePrice());

@@ -185,6 +185,10 @@
             <input type="text" id="name" class="check" value="${product.name}"/>
         </div>
         <div>
+            <div>商品描述(不要超过25字)</div>
+            <input type="text" id="description" class="check" value="${product.description}"/>
+        </div>
+        <div>
             <div>商品图片</div>
             <div class="col-sm-6">
                 <div>
@@ -496,6 +500,13 @@
             return
         }
         product.name = $("#name").val();
+        //商品描述
+        if ($("#description").val() == "") {
+            alert("请输入商品描述");
+            $("#description").focus();
+            return
+        }
+        product.description = $("#description").val();
         //商品图片
         if ($("#picture").attr("src") == "") {
             alert("请上传商品图片");
