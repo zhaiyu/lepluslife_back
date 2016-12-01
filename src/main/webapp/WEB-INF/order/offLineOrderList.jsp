@@ -99,6 +99,7 @@
                             <option value="3">会员订单</option>
                             <option value="4">非会员扫纯支付码</option>
                             <option value="5">会员扫纯支付码</option>
+                            <option value="6">会员订单(普通费率)</option>
                         </select>
                     </div>
                     <div class="form-group col-md-3">
@@ -300,9 +301,12 @@
                            } else if (content[i].rebateWay == 4) {
                                contentStr +=
                                '<td><span>非会员纯支付码</span></td>';
-                           } else {
+                           } else if(content[i].rebateWay == 5){
                                contentStr +=
                                '<td><span>会员纯支付码</span></td>';
+                           }else if(content[i].rebateWay == 6){
+                               contentStr +=
+                                       '<td><span>会员订单(普通费率)</span></td>';
                            }
                            if (content[i].completeDate == null) {
                                contentStr +=

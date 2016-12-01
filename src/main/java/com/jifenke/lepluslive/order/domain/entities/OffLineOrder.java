@@ -63,7 +63,7 @@ public class OffLineOrder {
 
   private Integer
       rebateWay;
-  //返利方式,如果为0 代表非会员普通订单 则只返b积分 如果为1 导流订单 2 会员普通订单 3会员订单 4 非会员扫纯支付码 5 会员扫纯支付码
+  //返利方式,如果为0 代表非会员普通订单 则只返b积分 如果为1 导流订单 2 会员普通订单 3会员订单 4 非会员扫纯支付码 5 会员扫纯支付码 6会员订单（普通费率）
 
   private Integer messageState = 0; //发送模版消息状态
 
