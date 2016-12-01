@@ -250,6 +250,8 @@ public class OrderViewExcel extends AbstractExcelView {
           break;
         case 5:
           orderType = "会员扫纯支付码";
+        case 6:
+          orderType = "会员订单(普通费率)";
           break;
       }
       excelRow.createCell(24).setCellValue(orderType);
