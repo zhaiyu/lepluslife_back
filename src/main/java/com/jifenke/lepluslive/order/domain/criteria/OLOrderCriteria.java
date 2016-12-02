@@ -29,6 +29,8 @@ public class OLOrderCriteria {
 
   private Integer rebateWay;
 
+  private Integer orderSource; //订单来源  1=APP|2=公众号
+
   public Integer getAmount() {
     return amount;
   }
@@ -51,6 +53,14 @@ public class OLOrderCriteria {
 
   public void setStartDate(String startDate) {
     this.startDate = startDate;
+  }
+
+  public Integer getOrderSource() {
+    return orderSource;
+  }
+
+  public void setOrderSource(Integer orderSource) {
+    this.orderSource = orderSource;
   }
 
   public String getEndDate() {

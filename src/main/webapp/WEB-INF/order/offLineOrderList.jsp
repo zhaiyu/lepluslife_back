@@ -25,6 +25,7 @@
         thead th, tbody td {
             text-align: center;
         }
+
         #myTab {
             margin-bottom: 10px;
         }
@@ -102,7 +103,7 @@
                         </select>
                     </div>
                     <div class="form-group col-md-3">
-                        <label for="pay-style">订单来源</label>
+                        <label for="order-source">订单来源</label>
                         <select class="form-control" id="order-source">
                             <option value="0">全部</option>
                             <option value="1">APP</option>
@@ -445,6 +446,11 @@
         } else {
             olOrderCriteria.payWay = null;
         }
+        if ($("#order-source").val() != 0) {
+            olOrderCriteria.orderSource = $("#order-source").val();
+        } else {
+            olOrderCriteria.orderSource = null;
+        }
         if ($("#customer-ID").val() != "" && $("#customer-ID").val() != null) {
             olOrderCriteria.userSid = $("#customer-ID").val();
         } else {
@@ -466,7 +472,7 @@
         } else {
             olOrderCriteria.orderSid = null;
         }
-        if ($("#remote-style").val() != "" && $("#remote-style").val() != null ) {
+        if ($("#remote-style").val() != "" && $("#remote-style").val() != null) {
             olOrderCriteria.rebateWay = $("#remote-style").val();
         } else {
             olOrderCriteria.rebateWay = null;

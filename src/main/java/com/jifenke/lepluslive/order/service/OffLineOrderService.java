@@ -24,6 +24,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
@@ -116,9 +117,26 @@ public class OffLineOrderService {
         }
 
         if (orderCriteria.getPayWay() != null) {
-          predicate.getExpressions().add(
-              cb.equal(r.<PayWay>get("payWay"),
-                       new PayWay(orderCriteria.getPayWay())));
+          if (orderCriteria.getPayWay() == 1) {//微信
+            predicate.getExpressions().add(
+                cb.or(cb.equal(r.<PayWay>get("payWay").get("id"), 1),
+                      cb.equal(r.<PayWay>get("payWay").get("id"), 3)));
+          } else { //红包
+            predicate.getExpressions().add(
+                cb.or(cb.equal(r.<PayWay>get("payWay").get("id"), 2),
+                      cb.equal(r.<PayWay>get("payWay").get("id"), 4)));
+          }
+        }
+        if (orderCriteria.getOrderSource() != null) {
+          if (orderCriteria.getOrderSource() == 1) {//APP
+            predicate.getExpressions().add(
+                cb.or(cb.equal(r.<PayWay>get("payWay").get("id"), 3),
+                      cb.equal(r.<PayWay>get("payWay").get("id"), 4)));
+          } else { //公众号
+            predicate.getExpressions().add(
+                cb.or(cb.equal(r.<PayWay>get("payWay").get("id"), 1),
+                      cb.equal(r.<PayWay>get("payWay").get("id"), 2)));
+          }
         }
         if (orderCriteria.getMerchant() != null && orderCriteria.getMerchant() != "") {
           if (orderCriteria.getMerchant().matches("^\\d{1,6}$")) {
