@@ -69,21 +69,22 @@ public class OrderViewExcel extends AbstractExcelView {
     excelHeader.createCell(13).setCellValue("佣金");
     excelHeader.createCell(14).setCellValue("商户应入账");
     //15
-    excelHeader.createCell(15).setCellValue("第三方手续费");
-    excelHeader.createCell(16).setCellValue("手续费补贴"); //
-    excelHeader.createCell(17).setCellValue("佣金纯收入"); //
-    excelHeader.createCell(18).setCellValue("会员高签收入"); //
-    excelHeader.createCell(19).setCellValue("发放红包");
-    excelHeader.createCell(20).setCellValue("分润金额");
-    excelHeader.createCell(21).setCellValue("发放积分");
-    excelHeader.createCell(22).setCellValue("状态");
-    excelHeader.createCell(23).setCellValue("订单类型");
-    excelHeader.createCell(24).setCellValue("城市");
-    excelHeader.createCell(25).setCellValue("销售姓名");
-    excelHeader.createCell(26).setCellValue("消费者类别");
-    excelHeader.createCell(27).setCellValue("交易完成日期");
-    excelHeader.createCell(28).setCellValue("商户应入账(微信渠道)");
-    excelHeader.createCell(29).setCellValue("商户应入账(红包渠道)");
+    excelHeader.createCell(15).setCellValue("乐加应入账");
+    excelHeader.createCell(16).setCellValue("第三方手续费");
+    excelHeader.createCell(17).setCellValue("手续费补贴"); //
+    excelHeader.createCell(18).setCellValue("佣金纯收入"); //
+    excelHeader.createCell(19).setCellValue("会员高签收入"); //
+    excelHeader.createCell(20).setCellValue("发放红包");
+    excelHeader.createCell(21).setCellValue("分润金额");
+    excelHeader.createCell(22).setCellValue("发放积分");
+    excelHeader.createCell(23).setCellValue("状态");
+    excelHeader.createCell(24).setCellValue("订单类型");
+    excelHeader.createCell(25).setCellValue("城市");
+    excelHeader.createCell(26).setCellValue("销售姓名");
+    excelHeader.createCell(27).setCellValue("消费者类别");
+    excelHeader.createCell(28).setCellValue("交易完成日期");
+    excelHeader.createCell(29).setCellValue("商户应入账(微信渠道)");
+    excelHeader.createCell(30).setCellValue("商户应入账(红包渠道)");
 
   }
 
@@ -154,7 +155,10 @@ public class OrderViewExcel extends AbstractExcelView {
       excelRow.createCell(13).setCellValue(order.getLjCommission() / 100.0);
       excelRow.createCell(14)
           .setCellValue(order.getTransferMoney() / 100.0);
-      excelRow.createCell(15).setCellValue(order.getWxCommission() / 100.0);
+      //乐加应入账
+      double ljIncome=Math.round((truePay-(truePay*6/1000.0))*100)/100.0;
+      excelRow.createCell(15).setCellValue(ljIncome);
+      excelRow.createCell(16).setCellValue(order.getWxCommission() / 100.0);
       //手续费补贴
 
         BigDecimal memberCommission=new BigDecimal(0);
@@ -170,18 +174,18 @@ public class OrderViewExcel extends AbstractExcelView {
       double wxCommission = order.getWxCommission().doubleValue() / 100.0;
       double commissionSubsidy = currencyCommissionCharge - wxCommission;
       if(order.getRebateWay()==1){
-        excelRow.createCell(16).setCellValue(0);
+        excelRow.createCell(17).setCellValue(0);
       } else if(order.getRebateWay()==3){
         if(a8==1){
-          excelRow.createCell(16).setCellValue(0);
+          excelRow.createCell(17).setCellValue(0);
         }else {
           commissionSubsidy =dLjCommission-scoreaCommissionCharge-wxCommission;
-          excelRow.createCell(16).setCellValue(commissionSubsidy);
+          excelRow.createCell(17).setCellValue(commissionSubsidy);
         }
 
       }else{
         commissionSubsidy =dLjCommission-scoreaCommissionCharge-wxCommission;
-        excelRow.createCell(16).setCellValue(commissionSubsidy);
+        excelRow.createCell(17).setCellValue(commissionSubsidy);
       }
       //佣金纯收入
       if (order.getRebateWay() == 1) {
@@ -192,9 +196,9 @@ public class OrderViewExcel extends AbstractExcelView {
         double b = Math.round(scoreaCommissionCharge * 100) / 100.0;
         double c = Math.round(wxCommission * 100) / 100.0;
         double d = (a * 100 - b * 100 - c * 100) / 100.0;
-        excelRow.createCell(17).setCellValue(d);
+        excelRow.createCell(18).setCellValue(d);
       } else {
-        excelRow.createCell(17).setCellValue(0);
+        excelRow.createCell(18).setCellValue(0);
       }
       //会员高签收入
       if (order.getRebateWay() == 3) {
@@ -206,26 +210,26 @@ public class OrderViewExcel extends AbstractExcelView {
         double c = Math.round(wxCommission * 100) / 100.0;
         double d = (a * 100 - b * 100 - c * 100) / 100.0;
         if (d < 0) {
-          excelRow.createCell(18).setCellValue("--");
+          excelRow.createCell(19).setCellValue("--");
         } else {
-          excelRow.createCell(18).setCellValue(d);
+          excelRow.createCell(19).setCellValue(d);
         }
 
       } else {
-        excelRow.createCell(18).setCellValue("--");
+        excelRow.createCell(19).setCellValue("--");
       }
-      excelRow.createCell(19).setCellValue(order.getRebate() / 100.0);
+      excelRow.createCell(20).setCellValue(order.getRebate() / 100.0);
       if (order.getRebateWay() != 1) {
-        excelRow.createCell(20).setCellValue(0);
+        excelRow.createCell(21).setCellValue(0);
       } else {
-        excelRow.createCell(20).setCellValue(
+        excelRow.createCell(21).setCellValue(
             (order.getLjCommission() - order.getWxCommission() - order.getRebate()) / 100.0);
       }
-      excelRow.createCell(21).setCellValue(order.getScoreB());
+      excelRow.createCell(22).setCellValue(order.getScoreB());
       if (order.getState() == 0) {
-        excelRow.createCell(22).setCellValue("未支付");
+        excelRow.createCell(23).setCellValue("未支付");
       } else {
-        excelRow.createCell(22).setCellValue("已支付");
+        excelRow.createCell(23).setCellValue("已支付");
       }
       String orderType = null;
       switch (order.getRebateWay()) {
@@ -246,45 +250,47 @@ public class OrderViewExcel extends AbstractExcelView {
           break;
         case 5:
           orderType = "会员扫纯支付码";
+        case 6:
+          orderType = "会员订单(普通费率)";
           break;
       }
-      excelRow.createCell(23).setCellValue(orderType);
+      excelRow.createCell(24).setCellValue(orderType);
       LeJiaUser leJiaUser = order.getLeJiaUser();
       if (order.getMerchant() != null && order.getMerchant().getCity() != null
           && order.getMerchant().getCity().getName() != null) {
-        excelRow.createCell(24).setCellValue(order.getMerchant().getCity().getName());
+        excelRow.createCell(25).setCellValue(order.getMerchant().getCity().getName());
       } else {
-        excelRow.createCell(24).setCellValue("----");
+        excelRow.createCell(25).setCellValue("----");
       }
       if (order.getMerchant() != null && order.getMerchant().getSalesStaff() != null
           && order.getMerchant().getSalesStaff().getName() != null) {
-        excelRow.createCell(25).setCellValue(order.getMerchant().getSalesStaff().getName());
+        excelRow.createCell(26).setCellValue(order.getMerchant().getSalesStaff().getName());
       } else {
-        excelRow.createCell(25).setCellValue("----");
+        excelRow.createCell(26).setCellValue("----");
       }
       Long leJiaUserId = leJiaUser.getId();
       int count = offLineOrderRepository.findOffLineOrderCountOfLeJiaUser(leJiaUserId);
       if (count == 0) {
-        excelRow.createCell(26).setCellValue("未消费过");
+        excelRow.createCell(27).setCellValue("未消费过");
       }
       if (count == 1) {
-        excelRow.createCell(26).setCellValue("微信新用户");
+        excelRow.createCell(27).setCellValue("微信新用户");
       }
       if (count > 1) {
-        excelRow.createCell(26).setCellValue("微信老用户");
+        excelRow.createCell(27).setCellValue("微信老用户");
       }
-      excelRow.createCell(27).setCellValue(
+      excelRow.createCell(28).setCellValue(
           order.getCompleteDate() == null ? "未完成的订单" : sdf2.format(order.getCompleteDate()));
       //商户应入账(微信渠道)
            double dtruePay = order.getTruePay().doubleValue();
            double ddtruePay=order.getTruePay().doubleValue()/100.0;
            double wxMerchantRecorded=Math.round((ddtruePay-dtruePayCommission))*100/100.0;
-      excelRow.createCell(28).setCellValue(wxMerchantRecorded);
+      excelRow.createCell(29).setCellValue(wxMerchantRecorded);
       // 商户应入账(红包渠道)
       Long transferMoney=order.getTransferMoney();
       double dtransferMoney=transferMoney.doubleValue() / 100.0;
       double scoreaMerchantRecorded=Math.round((dtransferMoney-(truePay-dtruePayCommission)))*100/100.0;
-      excelRow.createCell(29).setCellValue(scoreaMerchantRecorded);
+      excelRow.createCell(30).setCellValue(scoreaMerchantRecorded);
     }
   }
 }

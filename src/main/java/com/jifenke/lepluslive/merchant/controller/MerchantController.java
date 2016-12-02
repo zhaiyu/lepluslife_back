@@ -3,6 +3,7 @@ package com.jifenke.lepluslive.merchant.controller;
 import com.jifenke.lepluslive.global.util.LejiaResult;
 import com.jifenke.lepluslive.global.util.MvUtil;
 import com.jifenke.lepluslive.merchant.controller.dto.MerchantDto;
+import com.jifenke.lepluslive.merchant.controller.dto.MerchantUserDto;
 import com.jifenke.lepluslive.merchant.controller.view.MerchantViewExcel;
 import com.jifenke.lepluslive.merchant.domain.criteria.MerchantCriteria;
 import com.jifenke.lepluslive.merchant.domain.entities.*;
@@ -207,7 +208,10 @@ public class MerchantController {
   @RequestMapping(value = "/merchant/user", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
   public
   @ResponseBody
-  LejiaResult createMerchantUser(@RequestBody MerchantUser merchantUser) {
+  LejiaResult createMerchantUser(@RequestBody MerchantUserDto merchantUserDto) {
+    MerchantUser merchantUser = merchantUserDto.getMerchantUser();
+    Merchant merchant = merchantUserDto.getMerchant();
+    merchantUser.setMerchant(merchant);
     merchantService.editMerchantUser(merchantUser);
 
     return LejiaResult.ok("成功创建用户");
@@ -217,7 +221,10 @@ public class MerchantController {
   @RequestMapping(value = "/merchant/user", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
   public
   @ResponseBody
-  LejiaResult editMerchantUser(@RequestBody MerchantUser merchantUser) {
+  LejiaResult editMerchantUser(@RequestBody MerchantUserDto merchantUserDto) {
+    MerchantUser merchantUser = merchantUserDto.getMerchantUser();
+    Merchant merchant = merchantUserDto.getMerchant();
+    merchantUser.setMerchant(merchant);
     merchantService.editMerchantUser(merchantUser);
 
     return LejiaResult.ok("成功修改用户");

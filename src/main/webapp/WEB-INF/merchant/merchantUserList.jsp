@@ -130,7 +130,7 @@
                         <table class="table table-bordered table-hover">
                             <thead>
                             <tr class="active">
-                                <th>商户ID</th><th>所属城市</th><th>商户名称</th><th>商户联系人</th><th>商户绑定手机号</th><th>名下门店</th>
+                                <th>商户ID</th><th>所属城市</th><th>商户名称</th><th>合伙人</th></th><th>商户联系人</th><th>商户绑定手机号</th><th>名下门店</th>
                                 <th>创建时间</th><th>锁定会员</th><th>佣金余额</th><th>累计佣金收入</th><th>操作</th>
                             </tr>
                             </thead>
@@ -239,6 +239,17 @@
                         <label for="toggle-people" class="col-sm-3 control-label">商户负责人</label>
                         <div class="col-sm-8">
                             <input type="text" class="form-control" id="toggle-people" placeholder="商户负责人">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="toggle-partner" class="col-sm-3 control-label">合伙人</label>
+                        <div class="col-sm-8">
+                            <select id="toggle-partner">
+                                <option value="">- 请选择 -</option>
+                                <c:forEach items="${partners}" var="partner">
+                                    <option value="${partner.id}">${partner.name}</option>
+                                </c:forEach>
+                            </select>
                         </div>
                     </div>
                     <div class="form-group">
@@ -473,6 +484,11 @@
                         }else{
                             contentStr += '<td></td>';
                         }
+                        if(content[i].partner!=null) {
+                            contentStr += '<td>'+content[i].partner.name+'</td>';
+                        }else {
+                            contentStr += '<td></td>';
+                        }
                         if(content[i].linkMan!=null) {
                             contentStr += '<td>' + content[i].linkMan + '</td>';
                         }else {
@@ -565,22 +581,30 @@
 
     // 校验用户名是否重复
     $("#toggle-usrname").bind("blur",function(){
+        checkNameRepeat();
+    });
+
+    function checkNameRepeat() {
         var $usrname = $("#toggle-usrname").val();
+        var flag = false;
         if($usrname!=null && $usrname!=''){
             $.ajax({
                 url:"/manage/merchantUser/check_username",
                 type:"post",
                 contentType:"application/json",
                 data:$usrname,
+                async:false,
                 success: function(result) {
                     if(result.status!=200) {
                         alert(result.msg);
                         $("#toggle-usrname").val('');
+                        flag = true;
                     }
                 }
             });
         }
-    });
+        return flag;
+    }
 
     var merchantUserId = null;
     //  编辑时加载信息
@@ -611,6 +635,9 @@
                 $("#toggle-passwd").val(merchantUser.password);
                 if(merchantUser.city!=null)
                 $("#selCity").val(merchantUser.city.id);
+//                alert(merchantUser.partner.id);
+                if(merchantUser.partner!=null)
+                $("#toggle-partner").val(merchantUser.partner.id);
                 $("#createWarn").modal("toggle");
             }
         });
@@ -631,7 +658,9 @@
         var selCity = $("#selCity").val();
         var city = {};
         city.id = selCity;
-
+        var partner = {};
+        var partnerId = $("#toggle-partner").val();
+        partner.id = partnerId;
         if(merchantName==null || merchantName=='') {
             alert("请输入商户名称");
             return;
@@ -670,6 +699,10 @@
             alert("请选中所在城市");
             return;
         }
+        if(partnerId==null||partnerId=='') {
+            alert("请选择合伙人");
+            return;
+        }
         merchantUser.id = merchantUserId;
         merchantUser.merchantName = merchantName;
         merchantUser.linkMan = linkMan;
@@ -683,6 +716,7 @@
         merchantUser.merchantName = merchantName;
         merchantUser.lockLimit = lockLimit;
         merchantUser.city = city;
+        merchantUser.partner = partner;
         //  修改商户信息
         if(merchantUser.id!=null && merchantUser.id!='') {
 //            sendPutAjax("/manage/merchantUser/edit",merchantUser);
@@ -699,6 +733,9 @@
         //  保存商户信息
         }else {
 //            sendPostAjax("/manage/merchantUser/create",merchantUser);
+            if(checkNameRepeat()) {             //  校验用户名是否重复
+                return;
+            }
             $.ajax({
                 url:"/manage/merchantUser/create",
                 type:"post",
@@ -746,6 +783,8 @@
         $("#toggle-bank").val('');
         $("#toggle-limit").val('');
         $("#selBankName").val('');
+        $("#selCity").val('');
+        $("#toggle-partner").val('');
         merchantUserId = null;
     }
 

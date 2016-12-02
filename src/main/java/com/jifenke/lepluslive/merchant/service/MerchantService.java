@@ -347,7 +347,13 @@ public class MerchantService {
       origin.setMerchant(findMerchantById(merchantUser.getMerchant().getId()));
       origin.setType(0);
     }
-    origin.setPassword(MD5Util.MD5Encode(merchantUser.getPassword(), "UTF-8"));
+    if(!merchantUser.getPassword().equals(origin.getPassword())) {
+      // 编辑的时候判断密码是否修改
+      origin.setPassword(MD5Util.MD5Encode(merchantUser.getPassword(), "UTF-8"));
+    }else if(merchantUser.getId()==null) {
+      // 创建的时候直接添加
+      origin.setPassword(MD5Util.MD5Encode(merchantUser.getPassword(), "UTF-8"));
+    }
     origin.setName(merchantUser.getName());
     merchantUserRepository.save(origin);
   }

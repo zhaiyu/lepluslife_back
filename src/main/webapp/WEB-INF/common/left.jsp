@@ -256,7 +256,7 @@
 
             <div class="list-item none none8">
                 <a href='/manage/withdrawBill'>提现审核</a>
-                <a href='/manage/partnerFillingBill'>充值申请</a>
+                <a href='/manage/fillingBillApply'>充值申请</a>
             </div>
         </li>
         <shiro:hasPermission name="system_config:query">
@@ -296,7 +296,7 @@
 <script>
     $(function () {
         var url = window.location.href;
-        if (url.indexOf("withdrawBill") != -1
+        if (url.indexOf("withdrawBill") != -1||url.indexOf("fillingBillApply") != -1
         ) {
             $(".none8").parent('li').addClass('selected');
             $(".none8").slideDown(300);

@@ -89,6 +89,9 @@
                                     <c:if test="${merchantUser.type==1}">
                                         <td class="text-center">店主账号</td>
                                     </c:if>
+                                    <c:if test="${merchantUser.type==8}">
+                                        <td class="text-center">管理员账号</td>
+                                    </c:if>
                                     <c:if test="${merchantUser.name==null}">
                                         <td class="text-center">--</td>
                                         <td class="text-center">--</td>
@@ -249,17 +252,19 @@
                    }
                });
         $("#confirm-merchantUser").bind("click", function () {
+            var merchantUserDto = {};
             var merchantUser = {};
             merchantUser.id = id;
             merchantUser.name = $("#account-name").val();
             merchantUser.password = $("#account-password").val();
+            merchantUserDto.merchantUser = merchantUser;
             var merchant = {};
             merchant.id = ${merchant.id};
-            merchantUser.merchant = merchant;
+            merchantUserDto.merchant  = merchant;
             $.ajax({
                        type: "put",
                        url: "/manage/merchant/user",
-                       data: JSON.stringify(merchantUser),
+                       data: JSON.stringify(merchantUserDto),
                        contentType: "application/json",
                        success: function (data) {
                            $("#confirm-merchantUser").unbind("click");
@@ -301,16 +306,18 @@
         $("#account-name").val("");
         $("#account-password").val("");
         $("#confirm-merchantUser").bind("click", function () {
+            var merchantUserDto = {};
             var merchantUser = {};
             merchantUser.name = $("#account-name").val();
             merchantUser.password = $("#account-password").val();
             var merchant = {};
             merchant.id = ${merchant.id};
-            merchantUser.merchant = merchant;
+            merchantUserDto.merchantUser = merchantUser;
+            merchantUserDto.merchant = merchant;
             $.ajax({
                        type: "post",
                        url: "/manage/merchant/user",
-                       data: JSON.stringify(merchantUser),
+                       data: JSON.stringify(merchantUserDto),
                        contentType: "application/json",
                        success: function (data) {
                            $("#confirm-merchantUser").unbind("click");

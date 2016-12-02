@@ -8,6 +8,7 @@ import com.jifenke.lepluslive.merchant.domain.entities.City;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantUser;
 import com.jifenke.lepluslive.merchant.service.CityService;
 import com.jifenke.lepluslive.merchant.service.MerchantUserService;
+import com.jifenke.lepluslive.partner.service.PartnerService;
 import org.springframework.data.domain.Page;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
@@ -27,12 +28,15 @@ public class MerchantUserController {
     private MerchantUserService merchantUserService;
     @Inject
     private CityService cityService;
+    @Inject
+    private PartnerService partnerService;
 
 
     @RequestMapping("/merchantUser/list")
     public ModelAndView listPage(Model model) {
         List<City> allCity = cityService.findAllCity();
         model.addAttribute("citys",allCity);
+        model.addAttribute("partners",partnerService.findAllParter());
         return MvUtil.go("/merchant/merchantUserList");
     }
 
