@@ -156,7 +156,7 @@ public class OrderViewExcel extends AbstractExcelView {
       excelRow.createCell(14)
           .setCellValue(order.getTransferMoney() / 100.0);
       //乐加应入账
-      double ljIncome=Math.round((truePay-(truePay*6/1000.0))*100)/100.0;
+      double ljIncome=truePay-Math.round(((truePay*6/1000.0))*100)/100.0;
       excelRow.createCell(15).setCellValue(ljIncome);
       excelRow.createCell(16).setCellValue(order.getWxCommission() / 100.0);
       //手续费补贴
@@ -194,9 +194,9 @@ public class OrderViewExcel extends AbstractExcelView {
         double a = Math.round(dljCommission * 100) / 100.0;
 
         double b = Math.round(scoreaCommissionCharge * 100) / 100.0;
-        double c = Math.round(wxCommission * 100) / 100.0;
-        double d = (a * 100 - b * 100 - c * 100) / 100.0;
-        excelRow.createCell(18).setCellValue(d);
+        double d = (a * 100 - b * 100) / 100.0;
+         double e = d -Math.round(((truePay*6/1000.0))*100)/100.0;
+        excelRow.createCell(18).setCellValue(e);
       } else {
         excelRow.createCell(18).setCellValue(0);
       }
@@ -207,14 +207,13 @@ public class OrderViewExcel extends AbstractExcelView {
         double a = Math.round(dljCommission * 100) / 100.0;
 
         double b = Math.round(scoreaCommissionCharge * 100) / 100.0;
-        double c = Math.round(wxCommission * 100) / 100.0;
-        double d = (a * 100 - b * 100 - c * 100) / 100.0;
+        double d = (a * 100 - b * 100) / 100.0;
+        double e = d -Math.round(((truePay*6/1000.0))*100)/100.0;
         if (d < 0) {
           excelRow.createCell(19).setCellValue("--");
         } else {
-          excelRow.createCell(19).setCellValue(d);
+          excelRow.createCell(19).setCellValue(e);
         }
-
       } else {
         excelRow.createCell(19).setCellValue("--");
       }
