@@ -21,10 +21,10 @@ public class MerchantRebatePolicyService {
     @Transactional(propagation = Propagation.REQUIRED,readOnly = false)
     public void saveMerchantRebatePolicy(MerchantRebatePolicy merchantRebatePolicy) {
         // 默认值：日后需改动
-        merchantRebatePolicy.setStageOne(10);
-        merchantRebatePolicy.setStageTwo(80);
-        merchantRebatePolicy.setStageThree(6);
-        merchantRebatePolicy.setStageFour(3);
+        merchantRebatePolicy.setStageOne(0);
+        merchantRebatePolicy.setStageTwo(0);
+        merchantRebatePolicy.setStageThree(0);
+        merchantRebatePolicy.setStageFour(0);
         if(merchantRebatePolicy.getRebateFlag()==0) {
             merchantRebatePolicy.setUserScoreBScaleB(new BigDecimal(0));
         }
