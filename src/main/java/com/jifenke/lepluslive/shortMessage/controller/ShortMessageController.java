@@ -602,7 +602,7 @@ public class ShortMessageController {
               b = false;
           }
       }
-      if(b=false){
+      if(b==false){
          if(shortMessageScene.isUnsubscribeRecloser()==true) {
              b=true;
          }

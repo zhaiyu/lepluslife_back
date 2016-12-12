@@ -171,20 +171,19 @@ public class OrderViewExcel extends AbstractExcelView {
         }
         int a8= memberCommission.compareTo(ljBrokerage);
 
-      double wxCommission = order.getWxCommission().doubleValue() / 100.0;
-      double commissionSubsidy = currencyCommissionCharge - wxCommission;
+      double commissionSubsidy = currencyCommissionCharge - Math.round(((truePay*6/1000.0))*100)/100.0;
       if(order.getRebateWay()==1){
         excelRow.createCell(17).setCellValue(0);
       } else if(order.getRebateWay()==3){
         if(a8==1){
           excelRow.createCell(17).setCellValue(0);
         }else {
-          commissionSubsidy =dLjCommission-scoreaCommissionCharge-wxCommission;
+          commissionSubsidy =dLjCommission-scoreaCommissionCharge-Math.round(((truePay*6/1000.0))*100)/100.0;
           excelRow.createCell(17).setCellValue(commissionSubsidy);
         }
 
       }else{
-        commissionSubsidy =dLjCommission-scoreaCommissionCharge-wxCommission;
+        commissionSubsidy =dLjCommission-scoreaCommissionCharge-Math.round(((truePay*6/1000.0))*100)/100.0;
         excelRow.createCell(17).setCellValue(commissionSubsidy);
       }
       //佣金纯收入
