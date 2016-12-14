@@ -28,7 +28,7 @@ public class ScoreADetail {
   private String operate;
   private Date dateCreated = new Date();
 
-  private Integer origin;  //1=线上返还  2=线上消费  3=线下消费  4=线下返还
+  private Integer origin;  //1=线上返还  2=线上消费  3=线下消费  4=线下返还 14001=退款
 
   private String orderSid;  //对应的订单号
 
