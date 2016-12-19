@@ -2,6 +2,7 @@ package com.jifenke.lepluslive.user.service;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.jifenke.lepluslive.global.util.DataUtils;
+import com.jifenke.lepluslive.user.domain.entities.LeJiaUser;
 import com.jifenke.lepluslive.user.domain.entities.WeiXinUser;
 import com.jifenke.lepluslive.user.repository.WeiXinUserRepository;
 import com.jifenke.lepluslive.weixin.service.DictionaryService;
@@ -38,6 +39,11 @@ public class WeiXinUserService {
 
   @Inject
   private DictionaryService dictionaryService;
+
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+  public WeiXinUser findWeiXinUserByLeJiaUser(LeJiaUser leJiaUser) {
+    return weiXinUserRepository.findByLeJiaUser(leJiaUser);
+  }
 
   //按条件批量修改群发余额
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)

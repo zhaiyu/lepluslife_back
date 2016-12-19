@@ -5,6 +5,7 @@ import com.jifenke.lepluslive.activity.domain.criteria.PhoneOrderCriteria;
 import com.jifenke.lepluslive.activity.domain.entities.ActivityPhoneOrder;
 import com.jifenke.lepluslive.activity.repository.ActivityPhoneOrderRepository;
 import com.jifenke.lepluslive.user.service.WeiXinUserService;
+import com.jifenke.lepluslive.weixin.service.WxTemMsgService;
 
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -15,6 +16,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -53,7 +55,113 @@ public class ActivityPhoneOrderService {
   private WeiXinUserService weiXinUserService;
 
   @Inject
+  private WxTemMsgService wxTemMsgService;
+
+  @Inject
+  private RechargeService rechargeService;
+
+  @Inject
   private EntityManager em;
+
+  /**
+   * 将订单设为已充值(其他平台充值的)  16/12/09
+   *
+   * @param orderSid 自有订单号
+   */
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  public void setState(String orderSid) throws Exception {
+    ActivityPhoneOrder order = repository.findByOrderSid(orderSid);
+    try {
+      Date date = new Date();
+      order.setState(2);
+      order.setPayState(1);
+      if (order.getPayDate() == null) {
+        order.setPayDate(date);
+      }
+      order.setCompleteDate(date);
+      order.setPlatform(3);
+      repository.save(order);
+      //给用户发充值模板通知
+      String[] keys = new String[4];
+      keys[0] = order.getPhone();
+      keys[1] = order.getWorth() + ".00元";
+      keys[2] = order.getTruePrice() / 100.0 + "元+" + order.getTrueScoreB() + "积分";
+      keys[3] = new SimpleDateFormat("yyyy-MM-dd HH:mm").format(order.getPayDate());
+      wxTemMsgService.sendTemMessage(
+          weiXinUserService.findWeiXinUserByLeJiaUser(order.getLeJiaUser()).getOpenId(), 6L, keys);
+    } catch (Exception e) {
+      throw new RuntimeException();
+    }
+  }
+
+  /**
+   * 将订单重新充值  16/12/09
+   *
+   * @param orderSid 自有订单号
+   */
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  public Map recharge(String orderSid) throws Exception {
+    Map<String, Object> result = new HashMap<>();
+    //查询该笔订单是否已经充值
+    try {
+      Map map = rechargeService.status(orderSid);
+      System.out.println(map);
+      ActivityPhoneOrder order = repository.findByOrderSid(orderSid);
+      String status = map.get("status").toString();
+      Date date = new Date();
+      if ("success".equals(status)) {
+        //掉单，将订单设为已支付，并发送模板消息
+        Map map2 = (Map) map.get("data");
+        order.setState(2);
+        order.setWorth(Integer.valueOf(map2.get("card_worth").toString()));
+        order.setUsePrice(
+            new BigDecimal(map2.get("price").toString()).multiply(new BigDecimal(100)).intValue());
+        order.setOrderId(map2.get("order_id").toString());
+        order.setCompleteDate(date);
+        order.setPlatform(2);
+        repository.save(order);
+        //给用户发充值模板通知
+        String[] keys = new String[4];
+        keys[0] = order.getPhone();
+        keys[1] = order.getWorth() + ".00元";
+        keys[2] = order.getTruePrice() / 100.0 + "元+" + order.getTrueScoreB() + "积分";
+        keys[3] =
+            new SimpleDateFormat("yyyy-MM-dd HH:mm")
+                .format(order.getPayDate() == null ? date : order.getPayDate());
+        wxTemMsgService.sendTemMessage(
+            weiXinUserService.findWeiXinUserByLeJiaUser(order.getLeJiaUser()).getOpenId(), 6L,
+            keys);
+        result.put("status", 101);
+        result.put("msg", "充值回调丢失,该订单已经充值成功");
+      } else if ("recharging".equals(status) || "init".equals(status)) {
+        result.put("status", 102);
+        result.put("msg", "该订单正在充值中,请稍后查询");
+      } else if ("failure".equals(status)) {
+        //调充值接口充值
+        Map<Object, Object>
+            result2 =
+            rechargeService.submit(order.getPhone(), order.getWorth(), orderSid);
+        if (result2.get("status") == null || "failure"
+            .equalsIgnoreCase("" + result2.get("status"))) {
+          //充值失败
+          order.setState(3);
+          order.setErrorDate(new Date());
+          order.setMessage(result.get("message") == null ? "未知错误" : ("" + result.get("message")));
+          repository.save(order);
+          result.put("status", 103);
+          result.put("msg", result.get("message"));
+        } else {
+          result.put("status", 100);
+          result.put("msg", "重新充值成功，请稍后查询");
+        }
+      }
+      return result;
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new RuntimeException();
+    }
+  }
+
 
   /**
    * 话费订单数据统计  16/10/27
@@ -61,7 +169,6 @@ public class ActivityPhoneOrderService {
   @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
   public Map orderCount() {
     Map<Object, Object> result = new HashMap<>();
-    String subSource = "5%";  //关注来源
     Object[] o = repository.orderCount().get(0);
 
     result.put("totalWorth", o[0]);
@@ -70,12 +177,15 @@ public class ActivityPhoneOrderService {
     result.put("totalUser", o[3]);
     result.put("totalNumber", o[4]);
     result.put("totalBack", o[5]);
+    result.put("totalCost", o[6]);
 
-    Map map = weiXinUserService.subSourceCount(1, 1, 0, subSource);
-    result.putAll(map);
-
-    Integer todayUsedWorth = repository.todayUsedWorth();
-    result.put("todayUsedWorth", todayUsedWorth);
+    //活动带来粉丝/会员
+//    String subSource = "5%";  //关注来源
+//    Map map = weiXinUserService.subSourceCount(1, 1, 0, subSource);
+//    result.putAll(map);
+    //今日已使用的话费
+//    Integer todayUsedWorth = repository.todayUsedWorth();
+//    result.put("todayUsedWorth", todayUsedWorth);
 
     return result;
   }
@@ -119,9 +229,8 @@ public class ActivityPhoneOrderService {
       public Predicate toPredicate(Root<ActivityPhoneOrder> r, CriteriaQuery<?> q,
                                    CriteriaBuilder cb) {
         Predicate predicate = cb.conjunction();
-        if (criteria.getStatus() != null) {
-          predicate.getExpressions().add(
-              cb.equal(r.get("status"), criteria.getStatus()));
+        if (criteria.getState() != null) {
+          predicate.getExpressions().add(cb.equal(r.get("state"), criteria.getState()));
         }
         if (criteria.getStartDate() != null && !"".equals(criteria.getStartDate())) {
           predicate.getExpressions().add(
@@ -143,6 +252,9 @@ public class ActivityPhoneOrderService {
           predicate.getExpressions().add(
               cb.equal(r.get("phoneRule").get("id"), criteria.getRuleId()));
         }
+        if (criteria.getOrderId() != null && !"".equals(criteria.getOrderId())) {
+          predicate.getExpressions().add(cb.equal(r.get("orderId"), criteria.getOrderId()));
+        }
         return predicate;
       }
     };
@@ -160,7 +272,6 @@ public class ActivityPhoneOrderService {
   public Map<Object, Map<Object, Object>> orderByDayList(String begin, String end, Integer worth,
                                                          Long ruleId) {
     StringBuilder sql = new StringBuilder();
-
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     Calendar calendar = Calendar.getInstance();
     calendar.setTime(new Date());
@@ -171,8 +282,8 @@ public class ActivityPhoneOrderService {
     try {
       Date beginDate = sdf.parse(begin);
       Date endDate = sdf.parse(end);
-      int day1 = (int) (currDate.getTime() - beginDate.getTime()) / (1000 * 60 * 60 * 24) - 1;
-      int day2 = (int) (currDate.getTime() - endDate.getTime()) / (1000 * 60 * 60 * 24) - 1;
+      int day1 = (int) ((currDate.getTime() - beginDate.getTime()) / (1000 * 60 * 60 * 24) - 1);
+      int day2 = (int) ((currDate.getTime() - endDate.getTime()) / (1000 * 60 * 60 * 24) - 1);
       sql.append(
           "SELECT DATE_FORMAT(pay_date, '%Y-%m-%d') AS currDate, SUM(worth) AS totalWorth, SUM(true_scoreb) AS totalScore,");
       sql.append(
@@ -191,11 +302,14 @@ public class ActivityPhoneOrderService {
 
       Query query = em.createNativeQuery(sql.toString());
       List<Object[]> list = query.getResultList();
-
+      long j = endDate.getTime();
       Map<Object, Map<Object, Object>> result = new TreeMap<>();
+      for (long i = beginDate.getTime(); i <= j; i += 86400000) {
+        result.put(sdf.format(new Date(i)), new HashMap<>());
+      }
+
       for (Object[] o : list) {
-        Map<Object, Object> map = new HashMap<>();
-        //map.put("currDate", o[0]);
+        Map<Object, Object> map = result.get(o[0]);
         map.put("totalWorth", o[1]);
         map.put("totalScore", o[2]);
         map.put("totalPrice", o[3]);
@@ -206,7 +320,7 @@ public class ActivityPhoneOrderService {
       }
       StringBuilder sql2 = new StringBuilder();
       sql2.append(
-          "SELECT DATE_FORMAT(w.sub_date, '%Y-%m-%d'),SUM(IF(w.sub_state = 1, 1, 0)) AS subCount,SUM(IF(w.state = 1, 1, 0)) AS mCount FROM(SELECT sub_date, sub_state, state FROM wei_xin_user WHERE sub_source LIKE '4%') AS w WHERE ");
+          "SELECT DATE_FORMAT(w.sub_date, '%Y-%m-%d'),SUM(IF(w.sub_state = 1, 1, 0)) AS subCount,SUM(IF(w.state = 1, 1, 0)) AS mCount FROM(SELECT sub_date, sub_state, state FROM wei_xin_user WHERE sub_source LIKE '5%') AS w WHERE ");
       sql2.append(" w.sub_date BETWEEN DATE_SUB(DATE_FORMAT(NOW(), '%Y-%m-%d'), INTERVAL ")
           .append(day1).append(
           " DAY)AND DATE_SUB(DATE_FORMAT(NOW(), '%Y-%m-%d'), INTERVAL ");
@@ -214,16 +328,9 @@ public class ActivityPhoneOrderService {
       Query query2 = em.createNativeQuery(sql2.toString());
       List<Object[]> list2 = query2.getResultList();
       for (Object[] o : list2) {
-        if (result.containsKey(o[0])) {
-          Map<Object, Object> map = result.get(o[0]);
-          map.put("subCount", o[0]);
-          map.put("mCount", o[1]);
-        } else {
-          Map<Object, Object> map = new HashMap<>();
-          map.put("subCount", o[0]);
-          map.put("mCount", o[1]);
-          result.put(o[0], map);
-        }
+        Map<Object, Object> map = result.get(o[0]);
+        map.put("subCount", o[1]);
+        map.put("mCount", o[2]);
       }
       return result;
     } catch (ParseException e) {

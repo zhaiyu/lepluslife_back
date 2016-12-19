@@ -32,6 +32,12 @@ public final class Constants {
   public static final Integer COOKIE_DISABLE_TIME = 7200;
   public static final String POS_BILL_URL = "http://lepluslive-pos-excel.oss-cn-beijing.aliyuncs.com/";
 
+  public static final String PHONE_CHECK = "http://api.huafeiduo.com/gateway.cgi?mod=order.phone.check&";  //充值前查询是否可充接口
+  public static final String PHONE_STATUS = "http://api.huafeiduo.com/gateway.cgi?mod=order.phone.get&";  //检查是否完成了充值
+  public static final String PHONE_BALANCE = "http://api.huafeiduo.com/gateway.cgi?mod=account.balance&";  //查询账户余额接口
+  public static final String PHONE_SUBMIT = "http://api.huafeiduo.com/gateway.cgi?mod=order.phone.submit&";  //手机号充值接口
+  public static final String PHONE_NOTIFY_URL = "http://www.lepluslife.com/front/phone/afterPay";  //充值回调
+
   private Constants() {
   }
 }
