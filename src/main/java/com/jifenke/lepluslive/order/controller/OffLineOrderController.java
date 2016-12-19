@@ -222,6 +222,11 @@ public class OffLineOrderController {
 
   @RequiresPermissions("financial:transfer")
   private void changefinancialTransfer(Long id) {
+    // 如果转账单状态为已转账,结束方法
+    FinancialStatistic fs = offLineOrderService.findFinancialStatisticById(id);
+    if(fs.getState()==1) {
+      return;
+    }
     FinancialStatistic financialStatistic = offLineOrderService.changeFinancialStateToTransfer(id);
     String s = financialStatistic.getMerchant().getMerchantBank().getBankNumber();
     String[] keys = new String[4];

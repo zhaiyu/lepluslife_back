@@ -309,5 +309,9 @@ public class OffLineOrderService {
     financialReviseRepository.save(financialRevise);
   }
 
-
+  @Transactional(propagation = Propagation.REQUIRED,readOnly = true)
+  public FinancialStatistic findFinancialStatisticById(Long id) {
+    FinancialStatistic financialStatistic = financialStatisticRepository.findOne(id);
+    return financialStatistic;
+  }
 }
