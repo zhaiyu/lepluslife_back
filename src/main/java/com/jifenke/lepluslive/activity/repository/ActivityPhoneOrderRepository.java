@@ -15,12 +15,14 @@ import java.util.List;
  */
 public interface ActivityPhoneOrderRepository extends JpaRepository<ActivityPhoneOrder, String> {
 
+  ActivityPhoneOrder findByOrderSid(String orderSid);
+
   Page findAll(Specification<ActivityPhoneOrder> whereClause, Pageable pageable);
 
   /**
    * 话费订单数据统计  16/10/27
    */
-  @Query(value = "SELECT SUM(worth) AS totalWorth,SUM(true_price) AS totalPrice,SUM(true_scoreb) AS totalScore,COUNT(DISTINCT(le_jia_user_id)) AS totalUser,COUNT(*) AS totalNumber,SUM(pay_back_score) AS totalBack FROM activity_phone_order WHERE pay_state = 1", nativeQuery = true)
+  @Query(value = "SELECT SUM(worth) AS totalWorth,SUM(true_price) AS totalPrice,SUM(true_scoreb) AS totalScore,COUNT(DISTINCT(le_jia_user_id)) AS totalUser,COUNT(*) AS totalNumber,SUM(pay_back_score) AS totalBack,SUM(use_price) AS totalCost FROM activity_phone_order WHERE pay_state = 1", nativeQuery = true)
   List<Object[]> orderCount();
 
   /**

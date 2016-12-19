@@ -5,7 +5,7 @@ package com.jifenke.lepluslive.activity.domain.criteria;
  */
 public class PhoneOrderCriteria {
 
-  private Integer status; //订单状态
+  private Integer state; //订单状态
 
   //下单时间区域
   private String startDate;
@@ -19,14 +19,16 @@ public class PhoneOrderCriteria {
 
   private Long ruleId; //话费产品ID
 
+  private String orderId;  //第三方充值平台的订单编号
+
   private Integer currPage = 1;  //当前页码
 
-  public Integer getStatus() {
-    return status;
+  public Integer getState() {
+    return state;
   }
 
-  public void setStatus(Integer status) {
-    this.status = status;
+  public void setState(Integer state) {
+    this.state = state;
   }
 
   public String getStartDate() {
@@ -51,6 +53,14 @@ public class PhoneOrderCriteria {
 
   public void setPhone(String phone) {
     this.phone = phone;
+  }
+
+  public String getOrderId() {
+    return orderId;
+  }
+
+  public void setOrderId(String orderId) {
+    this.orderId = orderId;
   }
 
   public String getUserSid() {

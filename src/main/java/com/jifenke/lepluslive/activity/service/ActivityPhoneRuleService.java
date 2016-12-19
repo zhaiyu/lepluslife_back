@@ -1,19 +1,27 @@
 package com.jifenke.lepluslive.activity.service;
 
+import com.jifenke.lepluslive.activity.domain.criteria.PhoneRuleCriteria;
 import com.jifenke.lepluslive.activity.domain.entities.ActivityPhoneRule;
 import com.jifenke.lepluslive.activity.repository.ActivityPhoneRuleRepository;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 /**
  * 手机话费规则相关 Created by zhangwen on 2016/10/26.
@@ -64,6 +72,7 @@ public class ActivityPhoneRuleService {
       dbRule.setPrice(phoneRule.getPrice());
       dbRule.setScore(phoneRule.getScore());
       dbRule.setCheap(phoneRule.getCheap());
+      dbRule.setRepositoryLimit(phoneRule.getRepositoryLimit());
       dbRule.setRepository(phoneRule.getRepository());
       dbRule.setTotalLimit(phoneRule.getTotalLimit());
       dbRule.setLimitType(phoneRule.getLimitType());
@@ -106,13 +115,25 @@ public class ActivityPhoneRuleService {
    * 按条件查询话费订单列表  16/10/27
    */
   @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-  public List<ActivityPhoneRule> findListByState(Integer state) {
-    if (state == -1) {
-      return repository.findAll();
-    }
-    return repository.findByStateOrderByLastUpdateDesc(state);
+  public Page findListByCriteria(PhoneRuleCriteria criteria) {
+    Sort sort = new Sort(Sort.Direction.DESC, "lastUpdate");
+    return repository.findAll(getWhereClause(criteria),
+                              new PageRequest(criteria.getCurrPage() - 1, 10, sort));
   }
 
-
+  //封装查询条件   16/10/27
+  private Specification<ActivityPhoneRule> getWhereClause(PhoneRuleCriteria criteria) {
+    return new Specification<ActivityPhoneRule>() {
+      @Override
+      public Predicate toPredicate(Root<ActivityPhoneRule> r, CriteriaQuery<?> q,
+                                   CriteriaBuilder cb) {
+        Predicate predicate = cb.conjunction();
+        if (criteria.getState() != null) {
+          predicate.getExpressions().add(cb.equal(r.get("state"), criteria.getState()));
+        }
+        return predicate;
+      }
+    };
+  }
 
 }
