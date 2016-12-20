@@ -20,6 +20,7 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Objects;
 
 import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -55,7 +56,7 @@ public class ScoreAAccountService {
       public Predicate toPredicate(Root<ScoreAAccount> r, CriteriaQuery<?> q,
                                    CriteriaBuilder cb) {
         Predicate predicate = cb.conjunction();
-        if (scoreAAccountCriteria.getStartDate() != null && scoreAAccountCriteria.getStartDate() != "") {
+        if (scoreAAccountCriteria.getStartDate() != null && scoreAAccountCriteria.getStartDate() != ""&&scoreAAccountCriteria.getEndDate()!=null&&scoreAAccountCriteria.getEndDate()!="") {
           predicate.getExpressions().add(
               cb.between(r.get("changeDate"), new Date(scoreAAccountCriteria.getStartDate()),
                          new Date(scoreAAccountCriteria.getEndDate())));
@@ -154,18 +155,10 @@ public void addScoreAAccountData(List<String> list) {
     }
     //应结算金额
     Long settlementAmount = 0L;
-    List<Object[]> objects = scoreAAccountRepository.findSettlementAmount(dateStr2);
-    if (objects.size() == 1) {
-      Long transferPrice = 0L;
-      Long transferFromTruePay = 0L;
-      if (objects.get(0)[1] != null) {
-        transferPrice = Long.parseLong(objects.get(0)[1].toString());
-      }
-      if (objects.get(0)[2] != null) {
-        transferFromTruePay = Long.parseLong(objects.get(0)[2].toString());
-      }
-      settlementAmount = transferPrice - transferFromTruePay;
-      scoreAAccount.setSettlementAmount(settlementAmount);
+    Long  obj= scoreAAccountRepository.findSettlementAmount(dateStr2);
+    if (obj!=null) {
+        settlementAmount=obj;
+        scoreAAccount.setSettlementAmount(settlementAmount);
     } else {
       scoreAAccount.setSettlementAmount(settlementAmount);
     }
@@ -197,6 +190,16 @@ public void addScoreAAccountData(List<String> list) {
   public Long findShareMoney() {
     return  scoreAAccountRepository.findShareMoney();
   }
+
+
+
+
+
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+  public List<Object[]> findScoreaDistribution(String startDate,String endDate) {
+    return  scoreAAccountRepository.findScoreaDistribution(startDate,endDate);
+  }
+
 
 
 }

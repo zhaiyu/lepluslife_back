@@ -9,6 +9,7 @@ import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
 import java.util.List;
+import java.util.Objects;
 
 /**
  * Created by Administrator on 2016/9/12.
@@ -27,8 +28,8 @@ public interface ScoreAAccountRepository extends JpaRepository<ScoreAAccount,Lon
 
 
 
-  @Query(value = "SELECT * FROM (SELECT  DATE_FORMAT(balance_date,'%Y%m%d') days,SUM(transfer_price),SUM(transfer_from_true_pay) FROM `financial_statistic` GROUP BY days) aa WHERE days=?1 ", nativeQuery = true)
-  List<Object[]>findSettlementAmount(String o);
+  @Query(value = "SELECT SUM(true_score-lj_commission+true_pay_commission) FROM off_line_order where  DATE_FORMAT(complete_date,'%Y%m%d')=?1 and state=1", nativeQuery = true)
+  Long findSettlementAmount(String o);
 
 
 
@@ -37,7 +38,7 @@ public interface ScoreAAccountRepository extends JpaRepository<ScoreAAccount,Lon
   @Query(value = "SELECT num FROM (SELECT  DATE_FORMAT(date_created,'%Y%m%d') days,SUM(number)num FROM scorea_detail WHERE number>=0 GROUP BY days)aa WHERE days=?1", nativeQuery = true)
   Long findIssueScoreaByday(String day);
 
-  @Query(value = "SELECT num FROM (SELECT  DATE_FORMAT(date_created,'%Y%m%d') days,SUM(number)num FROM scorea_detail WHERE number<0 GROUP BY days)aa WHERE days=?1", nativeQuery = true)
+  @Query(value = "SELECT sum(true_score) from off_line_order where state=1 AND DATE_FORMAT(complete_date,'%Y%m%d')=?1", nativeQuery = true)
   Long findUseScoreaByday(String day);
 
   @Query(value = "SELECT num FROM(SELECT  DATE_FORMAT(complete_date,'%Y%m%d') days,SUM(lj_commission)num FROM off_line_order GROUP BY days)aa WHERE days=?1", nativeQuery = true)
@@ -50,7 +51,7 @@ public interface ScoreAAccountRepository extends JpaRepository<ScoreAAccount,Lon
   @Query(value = "SELECT SUM(score) FROM scorea", nativeQuery = true)
   Long findPresentHoldScorea();
 
-  @Query(value = "SELECT SUM(number) FROM scorea_detail WHERE number>0", nativeQuery = true)
+  @Query(value = "SELECT SUM(total_score) FROM scorea ", nativeQuery = true)
   Long findIssueScorea();
 
   @Query(value = "SELECT SUM(number) FROM scorea_detail WHERE number<0", nativeQuery = true)
@@ -61,5 +62,10 @@ public interface ScoreAAccountRepository extends JpaRepository<ScoreAAccount,Lon
 
   @Query(value = "SELECT SUM(share_money) FROM off_line_order_share", nativeQuery = true)
   Long findShareMoney();
+
+
+
+  @Query(value = "SELECT origin,SUM(number) from scorea_detail  WHERE number>0 AND date_created between ?1 and ?2 GROUP BY origin", nativeQuery = true)
+  List<Object[]> findScoreaDistribution(String startDate,String endDate);
 
 }
