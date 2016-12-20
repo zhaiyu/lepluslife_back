@@ -248,6 +248,7 @@
                     <shiro:hasPermission name="app_manage:query">
                         <a href='/manage/merchant/codePage'>商户邀请码</a>
                     </shiro:hasPermission>
+                    <a href='/manage/phone/index'>充话费活动</a>
                 </div>
             </li>
         </shiro:hasPermission>

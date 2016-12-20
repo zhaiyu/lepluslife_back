@@ -15,4 +15,6 @@ import java.util.List;
 public interface ActivityPhoneRuleRepository extends JpaRepository<ActivityPhoneRule, Long> {
 
   List<ActivityPhoneRule> findByStateOrderByLastUpdateDesc(Integer state);
+
+  Page findAll(Specification<ActivityPhoneRule> whereClause, Pageable pageable);
 }

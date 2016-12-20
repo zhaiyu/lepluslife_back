@@ -1,18 +1,25 @@
 package com.jifenke.lepluslive.activity.controller;
 
 import com.jifenke.lepluslive.activity.domain.criteria.PhoneOrderCriteria;
+import com.jifenke.lepluslive.activity.domain.criteria.PhoneRuleCriteria;
 import com.jifenke.lepluslive.activity.domain.entities.ActivityPhoneRule;
 import com.jifenke.lepluslive.activity.service.ActivityPhoneOrderService;
+import com.jifenke.lepluslive.activity.service.RechargeService;
 import com.jifenke.lepluslive.global.util.LejiaResult;
 import com.jifenke.lepluslive.activity.service.ActivityPhoneRuleService;
+import com.jifenke.lepluslive.global.util.MvUtil;
+import com.jifenke.lepluslive.weixin.domain.entities.Dictionary;
 import com.jifenke.lepluslive.weixin.service.DictionaryService;
 
+import org.springframework.http.MediaType;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.servlet.ModelAndView;
 
 
 import java.text.SimpleDateFormat;
@@ -38,6 +45,23 @@ public class ActivityPhoneController {
 
   @Inject
   private ActivityPhoneOrderService phoneOrderService;
+
+  @Inject
+  private RechargeService rechargeService;
+
+  @RequestMapping(value = "/index", method = RequestMethod.GET)
+  public ModelAndView index() {
+    return MvUtil.go("/activity/phone");
+  }
+
+  /**
+   * 获得当前account余额  16/12/9
+   */
+  @RequestMapping(value = "/balance", method = RequestMethod.GET)
+  public LejiaResult balance() {
+    return LejiaResult.ok(rechargeService.balance().get("data"));
+  }
+
 
   /**
    * 话费订单数据统计  16/10/27
@@ -67,9 +91,14 @@ public class ActivityPhoneController {
       return LejiaResult.ok(result);
     } else {
       if (worth != null && limit != null && update != null) {
-        SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-        String date = sdf.format(new Date());
-
+        Dictionary dictionary = dictionaryService.findDictionaryById(48L);
+        String date;
+        if (update == 1) {
+          SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+          date = sdf.format(new Date());
+        } else {
+          date = dictionary.getValue().split("_")[2];
+        }
         try {
           dictionaryService.update(48L, worth + "_" + limit + "_" + date);
           return LejiaResult.ok();
@@ -141,17 +170,17 @@ public class ActivityPhoneController {
   }
 
   /**
-   * 查询话费产品列表(一次全部取出)  16/10/27
+   * 查询话费产品列表 16/10/27
    *
-   * @param state 话费产品状态  0=下线|1=上线|-1=全部
+   * @param criteria 查询条件
    */
-  @RequestMapping(value = "/ruleList", method = RequestMethod.GET)
-  public LejiaResult ruleList(@RequestParam Integer state) {
+  @RequestMapping(value = "/ruleList", method = RequestMethod.POST)
+  public LejiaResult ruleList(@RequestBody PhoneRuleCriteria criteria) {
 
     Map map = phoneOrderService.ruleCount();
     Map<Object, Object> result = new HashMap<>();
     result.put("countList", map);
-    result.put("ruleList", phoneRuleService.findListByState(state));
+    result.put("ruleList", phoneRuleService.findListByCriteria(criteria));
 
     return LejiaResult.ok(result);
   }
@@ -164,7 +193,7 @@ public class ActivityPhoneController {
    * @param worth  面值
    * @param ruleId 规则ID
    */
-  @RequestMapping(value = "/orderByDayList", method = RequestMethod.GET)
+  @RequestMapping(value = "/orderByDayList", method = RequestMethod.POST)
   public LejiaResult orderDayList(@RequestParam String begin, @RequestParam String end,
                                   @RequestParam Integer worth,
                                   @RequestParam Long ruleId) {
@@ -172,5 +201,36 @@ public class ActivityPhoneController {
     return LejiaResult.ok(phoneOrderService.orderByDayList(begin, end, worth, ruleId));
   }
 
+
+  /**
+   * 将订单设为已充值(其他平台充值的)  16/12/09
+   *
+   * @param orderSid 自有订单号
+   */
+  @RequestMapping(value = "/setState", method = RequestMethod.POST)
+  public LejiaResult setState(@RequestParam String orderSid) {
+    try {
+      phoneOrderService.setState(orderSid);
+      return LejiaResult.ok();
+    } catch (Exception e) {
+      e.printStackTrace();
+      return LejiaResult.build(500, "server error");
+    }
+  }
+
+  /**
+   * 将订单重新充值  16/12/09
+   *
+   * @param orderSid 自有订单号
+   */
+  @RequestMapping(value = "/recharge", method = RequestMethod.POST)
+  public LejiaResult recharge(@RequestParam String orderSid) {
+    try {
+      return LejiaResult.ok(phoneOrderService.recharge(orderSid));
+    } catch (Exception e) {
+      e.printStackTrace();
+      return LejiaResult.build(500, "server error");
+    }
+  }
 
 }

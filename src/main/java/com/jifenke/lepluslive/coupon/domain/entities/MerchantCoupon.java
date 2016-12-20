@@ -37,6 +37,8 @@ public class MerchantCoupon {
 
   private String merchantName;  //商户名称
 
+  private String picture;  //优惠券图片，暂用商家小图
+
   @Column(nullable = false)
   private Date beginDate;  //有效期起始时间 例:2016/11/24 00:00:00表示生效于2016/11/24
 
@@ -98,6 +100,14 @@ public class MerchantCoupon {
 
   public void setBeginDate(Date beginDate) {
     this.beginDate = beginDate;
+  }
+
+  public String getPicture() {
+    return picture;
+  }
+
+  public void setPicture(String picture) {
+    this.picture = picture;
   }
 
   public Date getEndDate() {
