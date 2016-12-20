@@ -268,6 +268,11 @@ public class MerchantService {
                        new MerchantType(merchantCriteria.getMerchantType())));
         }
 
+        if (merchantCriteria.getPartner() != null) {
+          predicate.getExpressions().add(
+                  cb.equal(r.get("partner"),
+                          merchantCriteria.getPartner()));
+        }
         if (merchantCriteria.getMerchantName() != null
             && merchantCriteria.getMerchantName() != "") {
 
