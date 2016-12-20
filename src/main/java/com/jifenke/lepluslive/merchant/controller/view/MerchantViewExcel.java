@@ -31,7 +31,8 @@ public class MerchantViewExcel extends AbstractExcelView {
     setExcelHeader(sheet);
 
     List<Merchant> merchantList = (List<Merchant>) map.get("merchantList");
-    setExcelRows(sheet, merchantList);
+    List<Integer> binds = (List<Integer>) map.get("binds");
+    setExcelRows(sheet, merchantList,binds);
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     String filename = sdf.format(new Date()) + ".xls";//设置下载时客户端Excel的名称
     response.setContentType("application/vnd.ms-excel");
@@ -57,12 +58,14 @@ public class MerchantViewExcel extends AbstractExcelView {
     excelHeader.createCell(8).setCellValue("会员订单费率");
     excelHeader.createCell(9).setCellValue("导流订单费率");
     excelHeader.createCell(10).setCellValue("收取红包权限（1=可收取）");
+    excelHeader.createCell(11).setCellValue("锁定会员数 ");
   }
 
-  public void setExcelRows(HSSFSheet excelSheet, List<Merchant> merchantList) {
+  public void setExcelRows(HSSFSheet excelSheet, List<Merchant> merchantList, List<Integer> binds) {
     int record = 1;
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-    for (Merchant merchant : merchantList) {
+    for (int i=0;i<merchantList.size();i++) {
+      Merchant merchant=merchantList.get(i);
       HSSFRow excelRow = excelSheet.createRow(record++);
       excelRow.createCell(0).setCellValue(merchant.getName());
       excelRow.createCell(1).setCellValue(merchant.getMerchantSid());
@@ -82,6 +85,7 @@ public class MerchantViewExcel extends AbstractExcelView {
         excelRow.createCell(9).setCellValue(merchant.getLjCommission().doubleValue());
       }
       excelRow.createCell(10).setCellValue(merchant.getReceiptAuth());
+      excelRow.createCell(11).setCellValue(binds.get(i));
     }
   }
 }

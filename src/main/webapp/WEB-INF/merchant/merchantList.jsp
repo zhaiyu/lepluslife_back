@@ -163,7 +163,14 @@
                             <b class="caret"></b>
                         </div>
                     </div>
-
+                    <div class="form-group col-md-2">
+                        <label for="merchantType">所属合伙人</label>
+                        <select class="form-control" id="partner">
+                            <option value="0"></option>
+                            <c:forEach items="${partners}" var="partner">
+                                <option value="${partner.id}">${partner.name}</option>
+                            </c:forEach>
+                        </select></div>
                     <div class="form-group col-md-3">
                         <button class="btn btn-primary" style="margin-top: 24px"
                                 onclick="searchMerchantByCriteria()">筛选
@@ -592,6 +599,11 @@
             merchantCriteria.city = $("#city").val();
         } else {
             merchantCriteria.city = null;
+        }
+        if ($("#partner").val()!= 0) {
+            merchantCriteria.partner = $("#partner").val();
+        } else {
+            merchantCriteria.partner = null;
         }
 
         if ($("#receiptAuth").val() != -1) {
