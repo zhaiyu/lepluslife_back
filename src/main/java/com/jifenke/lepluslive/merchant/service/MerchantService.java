@@ -93,12 +93,11 @@ public class MerchantService {
 
   @Inject
   private MerchantWalletOnlineRepository walletOnlineRepository;
+  @Inject
+  private MerchantWalletLogRepository merchantWalletLogRepository;
 
   @Value("${bucket.ossBarCodeReadRoot}")
   private String barCodeRootUrl;
-
-  @Inject
-  private MerchantWalletLogRepository merchantWalletLogRepository;
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
   public Page findMerchantsByPage(MerchantCriteria merchantCriteria, Integer limit) {
@@ -578,20 +577,21 @@ public class MerchantService {
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public void changeMerchantWalletTotalTransferMoney(FinancialStatistic financialStatistic) {
-    //  更改商户钱包记录
-    MerchantWallet merchantWallet = findMerchantWalletByMerchant(financialStatistic.getMerchant());
-    Long totalTransferMoney =  merchantWallet.getTotalTransferMoney();
-    Long transferPrice =  financialStatistic.getTransferPrice();
-    merchantWallet.setTotalTransferMoney(totalTransferMoney+transferPrice);
-    //  生成钱包日志
-    MerchantWalletLog merchantWalletLog = new MerchantWalletLog();
-    merchantWalletLog.setType(4L);
-    merchantWalletLog.setBeforeChangeMoney(totalTransferMoney);
-    merchantWalletLog.setAfterChangeMoney(totalTransferMoney+transferPrice);
-    if(merchantWallet.getMerchant()!=null)
+     //  更改商户钱包记录
+     MerchantWallet merchantWallet = findMerchantWalletByMerchant(financialStatistic.getMerchant());
+     Long totalTransferMoney =  merchantWallet.getTotalTransferMoney();
+     Long transferPrice =  financialStatistic.getTransferPrice();
+     merchantWallet.setTotalTransferMoney(totalTransferMoney+transferPrice);
+     //  生成钱包日志
+     MerchantWalletLog merchantWalletLog = new MerchantWalletLog();
+     merchantWalletLog.setType(4L);
+     merchantWalletLog.setBeforeChangeMoney(totalTransferMoney);
+     merchantWalletLog.setAfterChangeMoney(totalTransferMoney+transferPrice);
+     merchantWalletLog.setCreateDate(new Date());
+     if(merchantWallet.getMerchant()!=null)
       merchantWalletLog.setMerchantId(merchantWallet.getMerchant().getId());
-    merchantWalletLogRepository.save(merchantWalletLog);
-    merchantWalletRepository.save(merchantWallet);
+     merchantWalletLogRepository.save(merchantWalletLog);
+     merchantWalletRepository.save(merchantWallet);
   }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
