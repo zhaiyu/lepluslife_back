@@ -57,7 +57,7 @@ public class ShareService {
               cb.like(r.get("offLineOrder").get("leJiaUser").get("userSid"),
                       "%" + shareCriteria.getUserSid() + "%"));
         }
-        if (shareCriteria.getUserSid() != null && shareCriteria.getUserSid() != "") {
+        if (shareCriteria.getUserPhone() != null && shareCriteria.getUserPhone() != "") {
           predicate.getExpressions().add(
               cb.like(r.get("offLineOrder").get("leJiaUser").get("phoneNumber"),
                       "%" + shareCriteria.getUserPhone() + "%"));
