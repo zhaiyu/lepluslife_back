@@ -48,7 +48,7 @@
           </div>
           <div class="form-group col-md-2">
             <label for="customer-ID">消费者ID</label>
-            <input type="text" class="form-control" id="customer-ID" placeholder="请输入消费者ID">
+            <input type="text" class="form-control" id="customer-ID" placeholder="请输入消费者ID">.
           </div>
           <div class="form-group col-md-2">
             <label for="customer-tel">消费者手机号</label>
