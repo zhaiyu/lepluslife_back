@@ -194,6 +194,12 @@ public class BannerController {
     int status = bannerService.editBanner(banner);
     return LejiaResult.build(status, "ok");
   }
+  //新建或修改-首页管理
+  @RequestMapping(value = "/banner/saveHomepPage", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+  public LejiaResult saveHomepPage(@RequestBody Banner banner) {
+    int status = bannerService.editBannerHomePage(banner);
+    return LejiaResult.build(status, "ok");
+  }
 
   //上架或下架
   @RequestMapping(value = "/banner/status/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -209,4 +215,14 @@ public class BannerController {
     return LejiaResult.ok("ok");
   }
 
+  @RequestMapping(value = "/banner/delete/{id}", method = RequestMethod.POST)
+  public LejiaResult deleteBanner(@PathVariable Long id) {
+    try {
+      bannerService.deleteBanner(id);
+      return LejiaResult.build(200, "删除成功");
+    } catch (Exception e) {
+      e.printStackTrace();
+      return LejiaResult.build(500, "删除失败");
+    }
+  }
 }
