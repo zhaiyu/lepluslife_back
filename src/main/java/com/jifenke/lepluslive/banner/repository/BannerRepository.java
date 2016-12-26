@@ -1,6 +1,7 @@
 package com.jifenke.lepluslive.banner.repository;
 
 import com.jifenke.lepluslive.banner.domain.entities.Banner;
+import com.jifenke.lepluslive.banner.domain.entities.BannerType;
 import com.jifenke.lepluslive.merchant.domain.entities.City;
 
 import org.springframework.data.domain.Page;
@@ -19,5 +20,7 @@ public interface BannerRepository extends JpaRepository<Banner, Long> {
   Page findAll(Specification<Banner> whereClause, Pageable pageRequest);
 
   List<Banner> findByCityOrderByCreateDateDesc(City city);
+
+  List<Banner> findBannerBySidAndBannerType(Integer sid, BannerType bannerType);
 
 }
