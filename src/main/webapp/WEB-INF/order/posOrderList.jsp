@@ -123,6 +123,7 @@
                                 <th>交易完成时间</th>
                                 <th>交易所在商户</th>
                                 <th>消费者</th>
+                                <th>POS编号</th>
                                 <th>支付方式</th>
                                 <th>订单金额</th>
                                 <th>佣金（手续费）</th>
@@ -327,7 +328,7 @@
                            contentStr +=
                            '<td><span>' + content[i].merchant.name + '</span><br><span>('
                            + content[i].merchant.merchantSid + ')</span></td>'
-                           if(content[i].LejiaUser!=null) {
+                           if(content[i].leJiaUser!=null) {
                                if (content[i].leJiaUser.phoneNumber != null) {
                                    contentStr +=
                                            '<td><span>' + content[i].leJiaUser.phoneNumber
@@ -343,6 +344,7 @@
                                contentStr +=
                                        '<td>匿名</td>'
                            }
+                           contentStr += '<td>'+(content[i].merchantPos.posId)+'</td>'
                            if (content[i].state == 1) {
                                if (content[i].tradeFlag == 0) {
                                    contentStr +=
@@ -387,7 +389,6 @@
                                contentStr +=
                                '<td>' + (content[i].ljCommission - content[i].rebate
                                          - content[i].wxCommission) / 100 + '</td>'
-
                                contentStr += '<td>已支付</td></tr>'
                            } else {
                                contentStr +=

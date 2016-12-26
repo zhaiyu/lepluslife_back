@@ -48,11 +48,11 @@
           </div>
           <div class="form-group col-md-2">
             <label for="customer-ID">消费者ID</label>
-            <input type="password" class="form-control" id="customer-ID" placeholder="请输入消费者ID">
+            <input type="text" class="form-control" id="customer-ID" placeholder="请输入消费者ID">.
           </div>
           <div class="form-group col-md-2">
             <label for="customer-tel">消费者手机号</label>
-            <input type="password" class="form-control" id="customer-tel" placeholder="请输入消费者手机号">
+            <input type="text" class="form-control" id="customer-tel" placeholder="请输入消费者手机号">
           </div>
           <div class="form-group col-md-2">
             <label for="merchant-name">商户名称</label>
@@ -200,9 +200,9 @@
       $('#date-end span').html(moment().subtract('hours', 1).format('YYYY/MM/DD HH:mm:ss') + ' - ' + moment().format('YYYY/MM/DD HH:mm:ss'));
       $('#date-end').daterangepicker({
                                        maxDate : moment(), //最大时间
-                                       dateLimit : {
-                                         days : 30
-                                       }, //起止时间的最大间隔
+//                                       dateLimit : {
+//                                         days : 30
+//                                       }, //起止时间的最大间隔
                                        showDropdowns : true,
                                        showWeekNumbers : false, //是否显示第几周
                                        timePicker : true, //是否显示小时和分钟
