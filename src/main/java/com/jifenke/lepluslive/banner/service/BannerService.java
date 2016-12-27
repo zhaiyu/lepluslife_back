@@ -225,6 +225,83 @@ public class BannerService {
     return 200;
   }
 
+  //新建或修改-首页管理
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  public int editBannerHomePage(Banner banner) {
+    Banner DBBanner = null;
+    Date date = new Date();
+    Long id = banner.getId();
+    Integer afterType = banner.getAfterType();//后置类型  1=链接  2=商品   3=商家  4=无跳转
+    try {
+
+      if (id != null) {
+        List<Banner> listb = bannerRepository.findBannerBySidAndBannerType(banner.getSid(), banner.getBannerType());
+        if (listb.size() > 1){
+          return 509;
+        }
+        DBBanner = bannerRepository.findOne(id);
+        if (DBBanner == null) {
+          return 404;
+        }
+      } else { //新建
+        List<Banner> listb = bannerRepository.findBannerBySidAndBannerType(banner.getSid(), banner.getBannerType());
+        if (listb.size() > 0){
+          return 509;
+        }
+        DBBanner = new Banner();
+        DBBanner.setBannerType(banner.getBannerType());
+        DBBanner.setCreateDate(date);
+      }
+
+      DBBanner.setSid(banner.getSid());
+      DBBanner.setPicture(banner.getPicture());
+      DBBanner.setAfterType(afterType);
+
+      if (banner.getUrl() != null) {
+        DBBanner.setUrl(banner.getUrl());
+      }
+      if (banner.getUrlTitle() != null) {
+        DBBanner.setUrlTitle(banner.getUrlTitle());
+      }
+
+      if (banner.getMerchant() != null) {
+        if (banner.getMerchant().getMerchantSid() != null) {
+          Merchant merchant = merchantService.findMerchantByMerchantSid(banner.getMerchant().getMerchantSid());
+          if (merchant == null) {
+            return 506;
+          }
+          DBBanner.setMerchant(merchant);
+        }else{
+          return 5062;
+        }
+      }
+
+      if (banner.getProduct() != null) {
+        if (banner.getProduct().getId() != null){
+          Product product = productService.findOneProduct(banner.getProduct().getId());
+          if (product == null) {
+            return 505;
+          }
+          DBBanner.setProduct(product);
+        }else {
+          return 5052;
+        }
+      }
+
+      if (banner.getTitle() != null) {
+        DBBanner.setTitle(banner.getTitle());
+      }
+
+      DBBanner.setIntroduce(banner.getIntroduce());
+      DBBanner.setLastUpDate(date);
+      bannerRepository.save(DBBanner);
+    } catch (Exception e) {
+      e.printStackTrace();
+      return 500;
+    }
+    return 200;
+  }
+
   //上架或下架
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public void changeStatus(Long id) {
@@ -249,4 +326,8 @@ public class BannerService {
     bannerRepository.save(banner);
   }
 
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  public void deleteBanner(Long id) {
+    bannerRepository.delete(id);
+  }
 }

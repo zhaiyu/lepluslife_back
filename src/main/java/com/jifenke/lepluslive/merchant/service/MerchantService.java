@@ -7,22 +7,8 @@ import com.jifenke.lepluslive.global.config.Constants;
 import com.jifenke.lepluslive.global.util.MD5Util;
 import com.jifenke.lepluslive.global.util.MvUtil;
 import com.jifenke.lepluslive.merchant.domain.criteria.MerchantCriteria;
-import com.jifenke.lepluslive.merchant.domain.entities.City;
-import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
-import com.jifenke.lepluslive.merchant.domain.entities.MerchantInfo;
-import com.jifenke.lepluslive.merchant.domain.entities.MerchantType;
-import com.jifenke.lepluslive.merchant.domain.entities.MerchantUser;
-import com.jifenke.lepluslive.merchant.domain.entities.MerchantWallet;
-import com.jifenke.lepluslive.merchant.domain.entities.MerchantWalletOnline;
-import com.jifenke.lepluslive.merchant.domain.entities.MerchantWeiXinUser;
-import com.jifenke.lepluslive.merchant.repository.MerchantInfoRepository;
-import com.jifenke.lepluslive.merchant.repository.MerchantPosRepository;
-import com.jifenke.lepluslive.merchant.repository.MerchantProtocolRepository;
-import com.jifenke.lepluslive.merchant.repository.MerchantRepository;
-import com.jifenke.lepluslive.merchant.repository.MerchantTypeRepository;
-import com.jifenke.lepluslive.merchant.repository.MerchantUserRepository;
-import com.jifenke.lepluslive.merchant.repository.MerchantWalletOnlineRepository;
-import com.jifenke.lepluslive.merchant.repository.MerchantWalletRepository;
+import com.jifenke.lepluslive.merchant.domain.entities.*;
+import com.jifenke.lepluslive.merchant.repository.*;
 import com.jifenke.lepluslive.order.domain.entities.FinancialStatistic;
 import com.jifenke.lepluslive.partner.domain.entities.Partner;
 import com.jifenke.lepluslive.user.domain.entities.RegisterOrigin;
@@ -107,6 +93,8 @@ public class MerchantService {
 
   @Inject
   private MerchantWalletOnlineRepository walletOnlineRepository;
+  @Inject
+  private MerchantWalletLogRepository merchantWalletLogRepository;
 
   @Value("${bucket.ossBarCodeReadRoot}")
   private String barCodeRootUrl;
@@ -268,6 +256,11 @@ public class MerchantService {
                        new MerchantType(merchantCriteria.getMerchantType())));
         }
 
+        if (merchantCriteria.getPartner() != null) {
+          predicate.getExpressions().add(
+                  cb.equal(r.get("partner"),
+                          merchantCriteria.getPartner()));
+        }
         if (merchantCriteria.getMerchantName() != null
             && merchantCriteria.getMerchantName() != "") {
 
@@ -584,10 +577,21 @@ public class MerchantService {
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public void changeMerchantWalletTotalTransferMoney(FinancialStatistic financialStatistic) {
-    MerchantWallet merchantWallet = findMerchantWalletByMerchant(financialStatistic.getMerchant());
-    merchantWallet.setTotalTransferMoney(
-        merchantWallet.getTotalTransferMoney() + financialStatistic.getTransferPrice());
-    merchantWalletRepository.save(merchantWallet);
+     //  更改商户钱包记录
+     MerchantWallet merchantWallet = findMerchantWalletByMerchant(financialStatistic.getMerchant());
+     Long totalTransferMoney =  merchantWallet.getTotalTransferMoney();
+     Long transferPrice =  financialStatistic.getTransferPrice();
+     merchantWallet.setTotalTransferMoney(totalTransferMoney+transferPrice);
+     //  生成钱包日志
+     MerchantWalletLog merchantWalletLog = new MerchantWalletLog();
+     merchantWalletLog.setType(4L);
+     merchantWalletLog.setBeforeChangeMoney(totalTransferMoney);
+     merchantWalletLog.setAfterChangeMoney(totalTransferMoney+transferPrice);
+     merchantWalletLog.setCreateDate(new Date());
+     if(merchantWallet.getMerchant()!=null)
+      merchantWalletLog.setMerchantId(merchantWallet.getMerchant().getId());
+     merchantWalletLogRepository.save(merchantWalletLog);
+     merchantWalletRepository.save(merchantWallet);
   }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)

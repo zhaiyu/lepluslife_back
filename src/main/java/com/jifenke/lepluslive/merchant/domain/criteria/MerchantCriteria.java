@@ -27,7 +27,17 @@ public class MerchantCriteria {
 
   private String merchantSid;
 
+  private Long partner;
+
   private Long salesStaff;
+
+  public Long getPartner() {
+    return partner;
+  }
+
+  public void setPartner(Long partner) {
+    this.partner = partner;
+  }
 
   public Long getSalesStaff() {return salesStaff;}
 
