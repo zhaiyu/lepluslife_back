@@ -26,4 +26,10 @@ public class DataUtils {
     return sdf.format(date);
   }
 
+  //格式化时间为yyyy-MM-dd HH:mm:ss
+  public static String datessTOString(Date date) {
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    return sdf.format(date);
+  }
+
 }

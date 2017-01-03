@@ -9,10 +9,12 @@ import com.jifenke.lepluslive.order.domain.entities.PosErrorLog;
 import com.jifenke.lepluslive.order.service.PosDailyBillService;
 import com.jifenke.lepluslive.order.service.PosOrderService;
 
+import net.sf.json.JSONObject;
 import org.springframework.data.domain.Page;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.*;
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
@@ -21,6 +23,8 @@ import java.util.Map;
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
+
+import static java.lang.System.out;
 
 /**
  * Created by wcg on 16/8/30.
@@ -113,5 +117,21 @@ public class PosOrderController {
         content.put("errorBills", errorBills);
         content.put("errorLogs", errorLogs);
         return new LejiaResult(content);
+    }
+
+    @RequestMapping(value = "/exportPosOrderData", method = RequestMethod.GET)
+    public void exportPosOrderData(HttpServletResponse response, String obj) {
+        PosOrderCriteria posOrderCriteria = (PosOrderCriteria) JSONObject.toBean(JSONObject.fromObject(obj), PosOrderCriteria.class);
+        response.setContentType("application/vnd.ms-excel");
+        try {
+            response.setHeader("Content-disposition", "attachment;filename=" + java.net.URLEncoder.encode("pos订单.xls", "UTF-8"));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+        try {
+            posOrderService.exportPosOrderData(response.getOutputStream(), posOrderCriteria);
+        } catch (IOException e) {
+            e.printStackTrace();
+        }
     }
 }
