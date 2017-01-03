@@ -1,20 +1,23 @@
 package com.jifenke.lepluslive.printer.controller;
 
+import com.jifenke.lepluslive.global.util.LejiaResult;
 import com.jifenke.lepluslive.global.util.MvUtil;
+import com.jifenke.lepluslive.merchant.service.MerchantService;
 import com.jifenke.lepluslive.printer.domain.MD5;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import com.jifenke.lepluslive.printer.domain.criteria.PrinterCriteria;
+import com.jifenke.lepluslive.printer.domain.entities.Printer;
+import com.jifenke.lepluslive.printer.service.PrinterService;
+import org.springframework.data.domain.Page;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
+import javax.inject.Inject;
 import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
+import java.util.*;
 
 /**
  * Created by lss on 16-11-11.
@@ -22,12 +25,23 @@ import java.util.TreeMap;
 @RestController
 @RequestMapping("/manage")
 public class PrinterController {
+
+
+    @Inject
+    private MerchantService merchantService;
+
+    @Inject
+    private PrinterService printerService;
+
+
     private static String partner="5088";//用户id
     private	static String machine_code="4004515187";//打印机终端号
     private	static String apiKey="290558c570e64b3704953bd94afe3416a5656b0e";//API密钥
     private	static String mKey="wru7zwxywwnf";//打印机密钥
-    @RequestMapping(value = "/printer", method = RequestMethod.GET)
-    public ModelAndView printer() {
+
+
+    @RequestMapping(value = "/printer233", method = RequestMethod.GET)
+    public ModelAndView printer233() {
         String merchantName="棉花糖KTV";
         String merchantShop="棉花糖KTV(朝阳路)";
         String merchantNumber="1231144243253666";
@@ -61,15 +75,11 @@ public class PrinterController {
         sb.append("     扫码进入\"乐加生活公众号\"\r\n");
         sb.append("        立即购买<FB>超值商品</FB>\r\n");
         sb.append("          1积分=1块钱\n");
-        //sb.append("<table><tr><td><center>扫码进入\"乐加生活公众号\"</center></td><td><center>立即购买<FB>超值商品</center></FB></td><td><center>1积分=1块钱</center></td></tr></table>");
-        //sb.append("\r");
         sb.append("<QR>http://weixin.qq.com/r/gD_2rnnEBiR5rT3N92qS</QR>");
 
-        //System.out.println(sb.toString());
 
         try{
             sendContent(sb.toString());//打印消息
-            //sendRequest(sb.toString());//打印消息
         }catch(Exception e){
             e.printStackTrace();
         }
@@ -105,7 +115,6 @@ public class PrinterController {
             //获取输入流
             InputStream is = conn.getInputStream();
 
-            //System.out.println(conn.getResponseCode());
             if (conn.getResponseCode() == 200) {
                 int i = -1;
                 byte[] b = new byte[1024];
@@ -146,7 +155,82 @@ public class PrinterController {
         }
         query.append(mKey);
         String encryptStr= MD5.MD5Encode(query.toString()).toUpperCase();
-        System.out.println(encryptStr);
         return encryptStr;
+    }
+
+    @RequestMapping(value = "/printer", method = RequestMethod.GET)
+    public ModelAndView printer(Model model) {
+        List<Object[]> list=merchantService.findAllMerchant();
+
+        List<Map> dataList=new ArrayList<Map>();
+        for(Object[] objects:list){
+            Map map=new HashMap();
+            map.put("id",objects[0].toString());
+            map.put("name",objects[1].toString());
+            dataList.add(map);
+        }
+        model.addAttribute("merchantList",dataList);
+
+        return MvUtil.go("/printer/printer");
+    }
+
+
+    //添加打印机
+    @RequestMapping(value = "/addPrinter", method = RequestMethod.POST)
+    public
+    @ResponseBody
+    LejiaResult addPrinter(@RequestBody Printer printer) {
+        boolean b=printerService.addPrinter(printer);
+        if(b){
+            return LejiaResult.ok();
+        }else {
+            return LejiaResult.build(500,"server error");
+        }
+    }
+
+
+    //打印机List
+    @RequestMapping(value = "/printerList", method = RequestMethod.POST)
+    public
+    @ResponseBody
+    LejiaResult printerList(@RequestBody PrinterCriteria printerCriteria) {
+        if(printerCriteria.getOffset()==null){
+            printerCriteria.setOffset(1);
+        }
+
+        Page page=printerService.findAllByPage(printerCriteria,10);
+
+
+       return LejiaResult.ok(page);
+    }
+
+    //修改状态
+    @RequestMapping(value = "/changePrinter", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    LejiaResult merchantQrCode(String printerId) {
+        printerService.changePrinter(printerId);
+        return LejiaResult.ok();
+    }
+
+    @RequestMapping(value = "/editPage", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    LejiaResult editPage(String printerId) {
+        Printer printer=printerService.findOne(printerId);
+        return LejiaResult.ok(printer);
+    }
+
+    //添加打印机
+    @RequestMapping(value = "/editPrinter", method = RequestMethod.POST)
+    public
+    @ResponseBody
+    LejiaResult editPrinter(@RequestBody Printer printer) {
+        boolean b=printerService.editPrinter(printer);
+        if(b){
+            return LejiaResult.ok();
+        }else {
+            return LejiaResult.build(500,"server error");
+        }
     }
 }
