@@ -105,7 +105,7 @@ public class FinancialViewExcel extends AbstractExcelView {
       excelRow.createCell(16)
           .setCellValue(
               (financialStatistic.getTransferPrice() + financialStatistic.getAppTransfer()
-               + financialStatistic.getPosTransfer())
+               + financialStatistic.getPosTransFromTruePay())
               / 100.0);
 
     }
