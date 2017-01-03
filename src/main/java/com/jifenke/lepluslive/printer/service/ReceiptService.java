@@ -297,7 +297,7 @@ public class ReceiptService {
             conn.setRequestMethod("POST");
             conn.setConnectTimeout(5 * 1000);
             conn.setDoOutput(true);
-            conn.setRequestProperty("Content-Type", "text/html; charset=utf-8");
+            conn.setRequestProperty("Content-Type", "text/html; charset=urlencode");
             conn.setRequestProperty("Content-Length", String.valueOf(data.length));
             //获取输出流
             OutputStream outStream = conn.getOutputStream();
