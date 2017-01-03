@@ -198,6 +198,7 @@
                     <a href="/manage/merchant">门店管理</a>
                 </shiro:hasPermission>
                 <a href="/manage/pos">pos管理</a>
+                <a href="/manage/printer">小票打印机</a>
             </div>
         </li>
         <shiro:hasPermission name="order:query">
@@ -312,7 +313,7 @@
             $(".none2").parent('li').addClass('selected');
             $(".none2").slideDown(300);
         }
-        if ((url.indexOf("/manage/merchant") != -1 || url.indexOf("merchantRec") != -1
+        if (( url.indexOf("/manage/printer")==-1|| url.indexOf("/manage/merchant") != -1 || url.indexOf("merchantRec") != -1
              || url.indexOf("/manage/pos") != -1) && url.indexOf("/manage/merchant_data") == -1) {
             $(".none3").parent('li').addClass('selected');
             $(".none3").slideDown(300);

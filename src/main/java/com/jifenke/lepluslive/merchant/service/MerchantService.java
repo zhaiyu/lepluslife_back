@@ -672,4 +672,8 @@ public class MerchantService {
     merchant.setName(origin.getPartnerName() + "(合伙人)");
     merchantRepository.save(merchant);
   }
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+  public List<Object[]> findAllMerchant() {
+    return  merchantRepository.findAllMerchant();
+  }
 }
