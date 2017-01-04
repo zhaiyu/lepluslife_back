@@ -28,6 +28,8 @@ import java.io.InputStream;
 import java.io.OutputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.net.URLDecoder;
+import java.net.URLEncoder;
 import java.text.SimpleDateFormat;
 import java.util.*;
 
@@ -258,7 +260,13 @@ public class ReceiptService {
         sb.append("        立即购买<FB>超值商品</FB>\r\n");
         sb.append("          1积分=1块钱\n");
         sb.append("<QR>http://weixin.qq.com/r/gD_2rnnEBiR5rT3N92qS</QR>");
-        return sb.toString();
+        String encode=null;
+        try {
+            encode =URLEncoder.encode(sb.toString());
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
+        return encode;
     }
 
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
@@ -290,14 +298,16 @@ public class ReceiptService {
             String time = String.valueOf(System.currentTimeMillis());
             params.put("time", time);
             String sign = signRequest(params, mKey);
-
-            byte[] data = ("partner=" + partner + "&machine_code=" + machine_code + "&content=" + content + "&sign=" + sign + "&time=" + time).getBytes();
+            String parameter="partner=" + partner + "&machine_code=" + machine_code + "&content=" + content + "&sign=" + sign + "&time=" + time;
+            String  parameter2= URLEncoder.encode(parameter, "UTF-8");
+            String  parameter3=URLDecoder.decode(parameter2, "UTF-8");
+            byte[] data = (parameter3).getBytes();
             URL url = new URL("http://open.10ss.net:8888");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setConnectTimeout(5 * 1000);
             conn.setDoOutput(true);
-            conn.setRequestProperty("Content-Type", "text/html; charset=urlencode");
+            conn.setRequestProperty("Content-Type", "text/html; charset=utf-8");
             conn.setRequestProperty("Content-Length", String.valueOf(data.length));
             //获取输出流
             OutputStream outStream = conn.getOutputStream();
