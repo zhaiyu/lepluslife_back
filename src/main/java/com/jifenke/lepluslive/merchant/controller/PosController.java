@@ -81,14 +81,8 @@ public class PosController {
   @RequestMapping(value="/pos/save_pos",method = RequestMethod.POST)
   public LejiaResult savePosMachine(@RequestBody MerchantPos merchantPos) {
     try{
-      String posId=merchantPos.getPosId();
-      MerchantPos merchantPos2=merchantPosService.findPosByPosId(posId);
-      if(merchantPos2==null){
         merchantPosService.savePosMachine(merchantPos);
         return LejiaResult.build(200,"信息保存成功!");
-      }else {
-        return LejiaResult.build(500,"信息保存失败!");
-      }
     }catch(Exception e) {
       return LejiaResult.build(500,"信息保存失败!");
     }
@@ -114,5 +108,15 @@ public class PosController {
 
   }
 
+  @RequestMapping(value="/pos/check_repeat",method = RequestMethod.GET)
+  @ResponseBody
+  public LejiaResult checkRepeat(String  posId) {
+    MerchantPos pos = merchantPosService.findPosByPosId(posId);
+    if(pos==null) {
+       return LejiaResult.ok();
+    }else {
+       return LejiaResult.build(400,"posID 已存在");
+    }
+  }
 
 }
