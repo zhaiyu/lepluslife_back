@@ -4,8 +4,10 @@ import com.jifenke.lepluslive.order.domain.entities.OffLineOrder;
 import com.jifenke.lepluslive.order.repository.OffLineOrderRepository;
 import com.jifenke.lepluslive.printer.domain.MD5;
 import com.jifenke.lepluslive.printer.domain.criteria.ReceiptCriteria;
+import com.jifenke.lepluslive.printer.domain.entities.MeasurementUrl;
 import com.jifenke.lepluslive.printer.domain.entities.Printer;
 import com.jifenke.lepluslive.printer.domain.entities.Receipt;
+import com.jifenke.lepluslive.printer.repository.MeasurementRepository;
 import com.jifenke.lepluslive.printer.repository.PrinterRepository;
 import com.jifenke.lepluslive.printer.repository.ReceiptRepository;
 import com.jifenke.lepluslive.user.domain.entities.LeJiaUser;
@@ -47,6 +49,10 @@ public class ReceiptService {
 
     @Inject
     private PrinterRepository printerRepository;
+
+
+    @Inject
+    private MeasurementRepository measurementRepository;
 
     @Value("${printer.partner}")
     private String partner;
@@ -290,6 +296,7 @@ public class ReceiptService {
 
     public JSONObject sendContent(String content,Receipt receipt){
         try {
+            MeasurementUrl measurementUrl=measurementRepository.findUrlByName("sendContentUrl");
             String machine_code = receipt.getPrinter().getMachineCode();
             String mKey = receipt.getPrinter().getmKey();
             Map<String, String> params = new HashMap<String, String>();
@@ -299,15 +306,13 @@ public class ReceiptService {
             params.put("time", time);
             String sign = signRequest(params, mKey);
             String parameter="partner=" + partner + "&machine_code=" + machine_code + "&content=" + content + "&sign=" + sign + "&time=" + time;
-            String  parameter2= URLEncoder.encode(parameter, "UTF-8");
-            String  parameter3=URLDecoder.decode(parameter2, "UTF-8");
-            byte[] data = (parameter3).getBytes();
-            URL url = new URL("http://open.10ss.net:8888");
+            byte[] data = (parameter).getBytes();
+            URL url = new URL(measurementUrl.getUrl());
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setConnectTimeout(5 * 1000);
             conn.setDoOutput(true);
-            conn.setRequestProperty("Content-Type", "text/html; charset=utf-8");
+            conn.setRequestProperty("Content-Type","application/x-www-form-urlencoded;charset=utf-8");
             conn.setRequestProperty("Content-Length", String.valueOf(data.length));
             //获取输出流
             OutputStream outStream = conn.getOutputStream();

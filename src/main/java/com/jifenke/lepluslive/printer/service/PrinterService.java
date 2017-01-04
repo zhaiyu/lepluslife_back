@@ -4,7 +4,9 @@ import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
 import com.jifenke.lepluslive.merchant.repository.MerchantRepository;
 import com.jifenke.lepluslive.printer.domain.MD5;
 import com.jifenke.lepluslive.printer.domain.criteria.PrinterCriteria;
+import com.jifenke.lepluslive.printer.domain.entities.MeasurementUrl;
 import com.jifenke.lepluslive.printer.domain.entities.Printer;
+import com.jifenke.lepluslive.printer.repository.MeasurementRepository;
 import com.jifenke.lepluslive.printer.repository.PrinterRepository;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
@@ -103,15 +105,13 @@ public class PrinterService {
     public boolean addM(Map<String,String> params,String msign){
         try{
             String parameter="partner="+partner+"&machine_code="+params.get("machine_code")+"&username="+params.get("username")+"&printname="+params.get("printname")+"&mobilephone="+params.get("mobilephone")+"&msign="+msign+"&sign="+params.get("sign");
-            String  parameter2= URLEncoder.encode(parameter, "UTF-8");
-            String  parameter3= URLDecoder.decode(parameter2, "UTF-8");
-            byte[] data = (parameter3).getBytes();
+            byte[] data = (parameter).getBytes();
             URL url = new URL("http://open.10ss.net:8888/addprint.php");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setConnectTimeout(5 * 1000);
             conn.setDoOutput(true);
-            conn.setRequestProperty("Content-Type","text/html; charset=utf-8");
+            conn.setRequestProperty("Content-Type","application/x-www-form-urlencoded;charset=utf-8");
             conn.setRequestProperty("Content-Length",String.valueOf(data.length));
             OutputStream outStream = conn.getOutputStream();
             outStream.write(data);
@@ -223,15 +223,13 @@ public class PrinterService {
     public boolean deleteM(Map<String,String> params){
         try{
             String parameter="partner="+params.get("partner")+"&machine_code="+params.get("machine_code")+"&sign="+params.get("sign");
-            String  parameter2= URLEncoder.encode(parameter, "UTF-8");
-            String  parameter3=URLDecoder.decode(parameter2, "UTF-8");
-            byte[] data = (parameter3).getBytes();
+            byte[] data = (parameter).getBytes();
             URL url = new URL("http://open.10ss.net:8888/removeprint.php");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setConnectTimeout(5 * 1000);
             conn.setDoOutput(true);
-            conn.setRequestProperty("Content-Type","text/html; charset=utf-8");
+            conn.setRequestProperty("Content-Type","application/x-www-form-urlencoded;charset=utf-8");
             conn.setRequestProperty("Content-Length",String.valueOf(data.length));
             OutputStream outStream = conn.getOutputStream();
             outStream.write(data);
