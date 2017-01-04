@@ -23,4 +23,8 @@ public interface PosOrderRepository extends JpaRepository<PosOrder, Long> {
 
   @Query(value = "select ifnull(sum(transfer_money),0),ifnull(sum(transfer_by_bank),0) from pos_order where state = 1 and merchant_id = ?1 and complete_date between ?2 and ?3 ", nativeQuery = true)
   Object[] countPosTransferMoneyByMerchant(Long id, Date start, Date end);
+  @Query(value = "select count(a.id) from pos_order a" , nativeQuery = true)
+  Integer countPosData();
+
+
 }
