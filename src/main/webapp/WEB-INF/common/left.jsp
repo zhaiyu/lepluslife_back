@@ -235,6 +235,7 @@
                 <div class="list-item none none5">
                     <shiro:hasPermission name="app_manage:query"> <a
                             href='/manage/banner?type=1'>APP推荐</a> </shiro:hasPermission>
+                    <a href='/manage/'>启动广告管理</a>
                 </div>
             </li>
         </shiro:hasPermission>
@@ -249,6 +250,11 @@
                         <a href='/manage/merchant/codePage'>商户邀请码</a>
                     </shiro:hasPermission>
                     <a href='/manage/phone/index'>充话费活动</a>
+
+                    <a href='/manage/rechargeCard/list'>充值卡</a>
+                    <%--<a href='/manage/productSecKill/overview'>秒杀概览</a>--%>
+                    <%--<a href='/manage/'>秒杀时段</a>--%>
+                    <%--<a href='/manage/'>秒杀商品</a>--%>
                 </div>
             </li>
         </shiro:hasPermission>
