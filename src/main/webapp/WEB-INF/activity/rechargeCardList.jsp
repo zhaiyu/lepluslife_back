@@ -314,13 +314,13 @@
                         var contentStr = '<tr><td>' + content[i].exchangeCode + '</td>';
 
                         if(content[i].createTime!=null) {
-                            contentStr += '<td>' + new Date(content[i].createTime).format('yyyy-MM-dd HH:mm') + '</td>';
+                            contentStr += '<td>' + new Date(content[i].createTime).format('yyyy-MM-dd HH:mm:ss') + '</td>';
                         }else{
                             contentStr += '<td></td>';
                         }
 
                         if(content[i].completeTime!=null) {
-                            contentStr += '<td>' + new Date(content[i].completeTime).format('yyyy-MM-dd HH:mm') + '</td>';
+                            contentStr += '<td>' + new Date(content[i].completeTime).format('yyyy-MM-dd HH:mm:ss') + '</td>';
                         }else{
                             contentStr += '<td></td>';
                         }
