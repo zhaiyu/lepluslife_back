@@ -287,7 +287,8 @@ public class ReceiptService {
         } catch (Exception e) {
             e.printStackTrace();
         }
-        return encode;
+       // return encode;
+        return sb.toString();
     }
 
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
