@@ -86,6 +86,7 @@ public class RechargeCardService {
         return LejiaResult.build(500, "充值记录不存在!");
       }
       rechargeCard.setRechargeStatus(rechargeStatus);
+      rechargeCard.setCompleteTime(new Date());
       rechargeCardRepository.save(rechargeCard);
       return LejiaResult.build(200, "操作成功!");
     }
