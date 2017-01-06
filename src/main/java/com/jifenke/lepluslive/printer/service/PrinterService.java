@@ -1,13 +1,26 @@
 package com.jifenke.lepluslive.printer.service;
 
+import com.google.common.collect.Lists;
 import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
 import com.jifenke.lepluslive.merchant.repository.MerchantRepository;
 import com.jifenke.lepluslive.printer.domain.MD5;
 import com.jifenke.lepluslive.printer.domain.criteria.PrinterCriteria;
 import com.jifenke.lepluslive.printer.domain.entities.MeasurementUrl;
 import com.jifenke.lepluslive.printer.domain.entities.Printer;
+import com.jifenke.lepluslive.printer.domain.entities.Receipt;
 import com.jifenke.lepluslive.printer.repository.MeasurementRepository;
 import com.jifenke.lepluslive.printer.repository.PrinterRepository;
+import net.sf.json.JSONObject;
+import org.apache.http.Consts;
+import org.apache.http.HttpEntity;
+import org.apache.http.NameValuePair;
+import org.apache.http.client.ClientProtocolException;
+import org.apache.http.client.entity.UrlEncodedFormEntity;
+import org.apache.http.client.methods.CloseableHttpResponse;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClients;
+import org.apache.http.message.BasicNameValuePair;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -22,8 +35,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.io.InputStream;
-import java.io.OutputStream;
+import java.io.*;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLDecoder;
@@ -102,42 +114,112 @@ public class PrinterService {
         return encryptStr;
     }
 
-    public boolean addM(Map<String,String> params,String msign){
-        try{
-            String parameter="partner="+partner+"&machine_code="+params.get("machine_code")+"&username="+params.get("username")+"&printname="+params.get("printname")+"&mobilephone="+params.get("mobilephone")+"&msign="+msign+"&sign="+params.get("sign");
-            byte[] data = (parameter).getBytes();
-            URL url = new URL("http://open.10ss.net:8888/addprint.php");
-            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-            conn.setRequestMethod("POST");
-            conn.setConnectTimeout(5 * 1000);
-            conn.setDoOutput(true);
-            conn.setRequestProperty("Content-Type","application/x-www-form-urlencoded;charset=utf-8");
-            conn.setRequestProperty("Content-Length",String.valueOf(data.length));
-            OutputStream outStream = conn.getOutputStream();
-            outStream.write(data);
-            outStream.flush();
-            outStream.close();
-            InputStream is = conn.getInputStream();
-            if (conn.getResponseCode() == 200) {
-                int i = -1;
-                byte[] b = new byte[1024];
-                StringBuffer result = new StringBuffer();
-                while ((i = is.read(b)) != -1) {
-                    result.append(new String(b, 0, i));
+//    public boolean addM(Map<String,String> params,String msign){
+//        try{
+//            String parameter="partner="+partner+"&machine_code="+params.get("machine_code")+"&username="+params.get("username")+"&printname="+params.get("printname")+"&mobilephone="+params.get("mobilephone")+"&msign="+msign+"&sign="+params.get("sign");
+//            byte[] data = (parameter).getBytes();
+//            URL url = new URL("http://open.10ss.net:8888/addprint.php");
+//            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+//            conn.setRequestMethod("POST");
+//            conn.setConnectTimeout(5 * 1000);
+//            conn.setDoOutput(true);
+//            conn.setRequestProperty("Content-Type","application/x-www-form-urlencoded;charset=utf-8");
+//            conn.setRequestProperty("Content-Length",String.valueOf(data.length));
+//            OutputStream outStream = conn.getOutputStream();
+//            outStream.write(data);
+//            outStream.flush();
+//            outStream.close();
+//            InputStream is = conn.getInputStream();
+//            if (conn.getResponseCode() == 200) {
+//                int i = -1;
+//                byte[] b = new byte[1024];
+//                StringBuffer result = new StringBuffer();
+//                while ((i = is.read(b)) != -1) {
+//                    result.append(new String(b, 0, i));
+//                }
+//                String sub = result.toString();
+//                if(sub.equals("1")){//数据已经发送到客户端
+//                    return true;
+//                }else{
+//                    return false;
+//                }
+//            }
+//            return true;
+//        }catch(Exception e){
+//            e.printStackTrace();
+//            return false;
+//        }
+//    }
+
+
+
+    public boolean addM(Map<String,String> params3,String msign) {
+        //创建HttpClient对象
+        CloseableHttpClient closeHttpClient = HttpClients.createDefault();
+        CloseableHttpResponse httpResponse = null;
+        //发送Post请求
+        HttpPost httpPost = new HttpPost("http://open.10ss.net:8888/addprint.php");
+        //设置Post参数
+        List<NameValuePair> params = Lists.newArrayList();
+        params.add(new BasicNameValuePair("partner",partner));
+        params.add(new BasicNameValuePair("machine_code",params3.get("machine_code")));
+        params.add(new BasicNameValuePair("username",params3.get("username")));
+        params.add(new BasicNameValuePair("printname",params3.get("printname")));
+        params.add(new BasicNameValuePair("mobilephone",params3.get("mobilephone")));
+        params.add(new BasicNameValuePair("msign",msign));
+        params.add(new BasicNameValuePair("sign",params3.get("sign")));
+        try {
+            //转换参数并设置编码格式
+            httpPost.setEntity(new UrlEncodedFormEntity(params, Consts.UTF_8));
+            //执行Post请求 得到Response对象
+            httpResponse = closeHttpClient.execute(httpPost);
+            //httpResponse.getStatusLine() 响应头信息
+            System.out.println(httpResponse.getStatusLine());
+            //返回对象 向上造型
+            HttpEntity httpEntity = httpResponse.getEntity();
+            if(httpEntity != null){
+                //响应输入流
+                InputStream is = httpEntity.getContent();
+                //转换为字符输入流
+                BufferedReader br = new BufferedReader(new InputStreamReader(is,Consts.UTF_8));
+                String line = null;
+                while((line=br.readLine())!=null){
+                    if(line.equals("1")){
+                        return true;
+                    }
+
                 }
-                String sub = result.toString();
-                if(sub.equals("1")){//数据已经发送到客户端
-                    return true;
-                }else{
-                    return false;
+                //关闭输入流
+                is.close();
+            }
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        } catch (ClientProtocolException e) {
+            e.printStackTrace();
+        } catch (IOException e) {
+            e.printStackTrace();
+        }finally{
+            if(httpResponse != null){
+                try {
+                    httpResponse.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
                 }
             }
-            return true;
-        }catch(Exception e){
-            e.printStackTrace();
-            return false;
+            if(closeHttpClient != null){
+                try {
+                    closeHttpClient.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
         }
+        return false;
     }
+
+
+
+
 
     public static Specification<Printer> getWhereClause(PrinterCriteria printerCriteria) {
         return new Specification<Printer>() {
