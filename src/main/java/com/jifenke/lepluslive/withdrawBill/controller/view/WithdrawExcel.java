@@ -75,7 +75,12 @@ public class WithdrawExcel extends AbstractExcelView {
             excelRow.createCell(5).setCellValue(offLineOrderShare.getShareMoney() / 100.0);
 
             excelRow.createCell(6).setCellValue(offLineOrderShare.getOffLineOrder().getMerchant().getName());
-            excelRow.createCell(7).setCellValue(offLineOrderShare.getTradePartner().getName());
+            if(offLineOrderShare.getTradePartner()==null){
+                excelRow.createCell(7).setCellValue("--");
+            }else {
+                excelRow.createCell(7).setCellValue(offLineOrderShare.getTradePartner().getName());
+            }
+
             excelRow.createCell(8).setCellValue(offLineOrderShare.getToTradePartner() / 100.0);
             if(offLineOrderShare.getLockMerchant()==null){
                 excelRow.createCell(9).setCellValue("--");
@@ -87,13 +92,17 @@ public class WithdrawExcel extends AbstractExcelView {
             excelRow.createCell(10).setCellValue(offLineOrderShare.getToLockMerchant() / 100.0);
             if(offLineOrderShare.getLockPartner()==null){
                 excelRow.createCell(11).setCellValue("--");
+            }else {
+                excelRow.createCell(11).setCellValue(offLineOrderShare.getLockPartner().getName());
             }
-            excelRow.createCell(11).setCellValue(offLineOrderShare.getLockPartner().getName());
+
             excelRow.createCell(12).setCellValue(offLineOrderShare.getToLockPartner() / 100.0);
             if(offLineOrderShare.getLockPartnerManager()==null){
                 excelRow.createCell(13).setCellValue("--");
+            }else{
+                excelRow.createCell(13).setCellValue(offLineOrderShare.getLockPartnerManager().getName());
             }
-            excelRow.createCell(13).setCellValue(offLineOrderShare.getLockPartnerManager().getName());
+
             excelRow.createCell(14).setCellValue(offLineOrderShare.getToLockPartnerManager() / 100.0);
             excelRow.createCell(15).setCellValue(offLineOrderShare.getToLePlusLife() / 100.0);
 
