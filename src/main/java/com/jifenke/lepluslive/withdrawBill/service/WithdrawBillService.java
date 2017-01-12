@@ -123,4 +123,21 @@ public class WithdrawBillService {
   public void saveWithdrawBill(WithdrawBill withdrawBill) {
     withdrawBillRepository.saveAndFlush(withdrawBill);
   }
+
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+  public Long findPartnerOnWithdrawalByPartnerId(Long id) {
+    return withdrawBillRepository.findPartnerOnWithdrawalByPartnerId(id);
+  }
+
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+  public Long findPartnerManagerOnWithdrawalByPartnerManagerId(Long id) {
+    return withdrawBillRepository.findPartnerManagerOnWithdrawalByPartnerManagerId(id);
+  }
+
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+  public Long findMerchantOnWithdrawalByMerchantId(Long id) {
+    return withdrawBillRepository.findMerchantOnWithdrawalByMerchantId(id);
+  }
+
+
 }
