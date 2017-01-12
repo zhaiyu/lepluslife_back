@@ -85,6 +85,10 @@ public class ShareService {
           predicate.getExpressions().add(
               cb.like(r.get("offLineOrder").get("orderSid"),  "%" +shareCriteria.getOrderSid()+ "%"));
         }
+        if (shareCriteria.getLockPartnerManager() != null && shareCriteria.getLockPartnerManager() != "") {
+          predicate.getExpressions().add(
+                  cb.like(r.get("lockPartnerManager").get("name"),  "%" +shareCriteria.getLockPartnerManager()+ "%"));
+        }
 
         return predicate;
       }

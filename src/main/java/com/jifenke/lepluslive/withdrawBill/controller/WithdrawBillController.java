@@ -7,29 +7,23 @@ import com.jifenke.lepluslive.merchant.domain.entities.MerchantWallet;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantWalletLog;
 import com.jifenke.lepluslive.merchant.service.MerchantService;
 import com.jifenke.lepluslive.merchant.service.MerchantWalletLogService;
-import com.jifenke.lepluslive.partner.domain.entities.Partner;
-import com.jifenke.lepluslive.partner.domain.entities.PartnerManager;
-import com.jifenke.lepluslive.partner.domain.entities.PartnerManagerWallet;
-import com.jifenke.lepluslive.partner.domain.entities.PartnerManagerWalletLog;
-import com.jifenke.lepluslive.partner.domain.entities.PartnerWallet;
-import com.jifenke.lepluslive.partner.domain.entities.PartnerWalletLog;
+import com.jifenke.lepluslive.order.domain.criteria.ShareCriteria;
+import com.jifenke.lepluslive.order.service.ShareService;
+import com.jifenke.lepluslive.partner.domain.entities.*;
 import com.jifenke.lepluslive.partner.service.PartnerService;
+import com.jifenke.lepluslive.withdrawBill.controller.view.WithdrawExcel;
 import com.jifenke.lepluslive.withdrawBill.domain.criteria.WithdrawBillCriteria;
 import com.jifenke.lepluslive.withdrawBill.domain.entities.WithdrawBill;
 import com.jifenke.lepluslive.withdrawBill.service.WithdrawBillService;
-
 import org.springframework.data.domain.Page;
-import org.springframework.web.bind.annotation.PathVariable;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
-import java.util.Date;
-
 import javax.inject.Inject;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.Map;
 
 /**
  * Created by lss on 2016/8/26.
@@ -49,6 +43,12 @@ public class WithdrawBillController {
 
   @Inject
   private PartnerService partnerService;
+
+    @Inject
+    private ShareService shareService;
+
+    @Inject
+    private WithdrawExcel withdrawExcel;
 
 
   @RequestMapping("/withdrawBill")
@@ -206,4 +206,70 @@ public class WithdrawBillController {
 
     return LejiaResult.ok();
   }
+
+
+    @RequestMapping(value = "/withdrawBill/shareDetailsPage", method = RequestMethod.GET)
+    public ModelAndView shareDetailsPage(Long id, Model model) {
+        WithdrawBill withdrawBill = withdrawBillService.findWithdrawBillById(id);
+        Long commissionBalance = 0l;
+        Long onWithdrawal = 0l;
+        Long totalWithdrawals = 0l;
+        Long totalMoney = 0l;
+
+        model.addAttribute("withdrawBill", withdrawBill);
+        if (withdrawBill.getBillType() == 1) {
+            model.addAttribute("title", "合伙人");
+            model.addAttribute("partner", withdrawBill.getPartner());
+            PartnerWallet partnerWallet = partnerService.findPartnerWalletByPartner(withdrawBill.getPartner());
+            commissionBalance = partnerWallet.getAvailableBalance();
+            totalWithdrawals = partnerWallet.getTotalWithdrawals();
+            totalMoney = partnerWallet.getTotalMoney();
+            Long onWithdrawal2 = withdrawBillService.findPartnerOnWithdrawalByPartnerId(withdrawBill.getPartner().getId());
+            if (onWithdrawal2 != null) {
+                onWithdrawal = onWithdrawal2;
+            }
+        }
+        if (withdrawBill.getBillType() == 0) {
+            model.addAttribute("title", "合伙人管理员");
+            model.addAttribute("partnerManager", withdrawBill.getPartnerManager());
+            PartnerManagerWallet partnerManagerWallet = partnerService.findPartnerManagerWalletByPartnerManager(withdrawBill.getPartnerManager());
+            commissionBalance = partnerManagerWallet.getAvailableBalance();
+            totalWithdrawals = partnerManagerWallet.getTotalWithdrawals();
+            totalMoney = partnerManagerWallet.getTotalMoney();
+            Long onWithdrawal2 = withdrawBillService.findPartnerManagerOnWithdrawalByPartnerManagerId(withdrawBill.getPartnerManager().getId());
+            if (onWithdrawal2 != null) {
+                onWithdrawal = onWithdrawal2;
+            }
+        }
+        if (withdrawBill.getBillType() == 2) {
+            model.addAttribute("title", "商户");
+            model.addAttribute("merchant", withdrawBill.getMerchant());
+            MerchantWallet merchantWallet = merchantService.findMerchantWalletByMerchant(withdrawBill.getMerchant());
+            commissionBalance = merchantWallet.getAvailableBalance();
+            totalWithdrawals = merchantWallet.getTotalWithdrawals();
+            totalMoney = merchantWallet.getTotalMoney();
+            Long onWithdrawal2 = withdrawBillService.findMerchantOnWithdrawalByMerchantId(withdrawBill.getMerchant().getId());
+            if (onWithdrawal2 != null) {
+                onWithdrawal = onWithdrawal2;
+            }
+        }
+        model.addAttribute("commissionBalance", commissionBalance);
+        model.addAttribute("onWithdrawal", onWithdrawal);
+        model.addAttribute("totalWithdrawals", totalWithdrawals);
+        model.addAttribute("totalMoney", totalMoney);
+        return MvUtil.go("/withdraw/shareDetailsPage");
+    }
+
+    @RequestMapping(value = "/withdrawBill/export", method = RequestMethod.POST)
+    public ModelAndView exporeExcel(ShareCriteria shareCriteria) {
+        if (shareCriteria.getOffset() == null) {
+            shareCriteria.setOffset(1);
+        }
+        Page page = shareService.findShareByPage(shareCriteria, 10000);
+        Map map = new HashMap();
+        map.put("shareList", page.getContent());
+        return new ModelAndView(withdrawExcel, map);
+    }
+
+
 }
