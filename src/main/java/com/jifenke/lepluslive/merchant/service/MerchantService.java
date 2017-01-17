@@ -25,6 +25,8 @@ import com.jifenke.lepluslive.merchant.repository.MerchantTypeRepository;
 import com.jifenke.lepluslive.merchant.repository.MerchantUserRepository;
 import com.jifenke.lepluslive.merchant.repository.MerchantWalletOnlineRepository;
 import com.jifenke.lepluslive.merchant.repository.MerchantWalletRepository;
+import com.jifenke.lepluslive.merchant.domain.entities.*;
+import com.jifenke.lepluslive.merchant.repository.*;
 import com.jifenke.lepluslive.order.domain.entities.FinancialStatistic;
 import com.jifenke.lepluslive.partner.domain.entities.Partner;
 import com.jifenke.lepluslive.user.domain.entities.RegisterOrigin;
@@ -109,6 +111,8 @@ public class MerchantService {
 
   @Inject
   private MerchantWalletOnlineRepository walletOnlineRepository;
+  @Inject
+  private MerchantWalletLogRepository merchantWalletLogRepository;
 
   @Inject
   private MerchantScanPayWayService scanPayWayService;
@@ -279,6 +283,11 @@ public class MerchantService {
                        new MerchantType(merchantCriteria.getMerchantType())));
         }
 
+        if (merchantCriteria.getPartner() != null) {
+          predicate.getExpressions().add(
+                  cb.equal(r.get("partner"),
+                          merchantCriteria.getPartner()));
+        }
         if (merchantCriteria.getMerchantName() != null
             && merchantCriteria.getMerchantName() != "") {
 
@@ -595,10 +604,21 @@ public class MerchantService {
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public void changeMerchantWalletTotalTransferMoney(FinancialStatistic financialStatistic) {
-    MerchantWallet merchantWallet = findMerchantWalletByMerchant(financialStatistic.getMerchant());
-    merchantWallet.setTotalTransferMoney(
-        merchantWallet.getTotalTransferMoney() + financialStatistic.getTransferPrice());
-    merchantWalletRepository.save(merchantWallet);
+     //  更改商户钱包记录
+     MerchantWallet merchantWallet = findMerchantWalletByMerchant(financialStatistic.getMerchant());
+     Long totalTransferMoney =  merchantWallet.getTotalTransferMoney();
+     Long transferPrice =  financialStatistic.getTransferPrice();
+     merchantWallet.setTotalTransferMoney(totalTransferMoney+transferPrice);
+     //  生成钱包日志
+     MerchantWalletLog merchantWalletLog = new MerchantWalletLog();
+     merchantWalletLog.setType(4L);
+     merchantWalletLog.setBeforeChangeMoney(totalTransferMoney);
+     merchantWalletLog.setAfterChangeMoney(totalTransferMoney+transferPrice);
+     merchantWalletLog.setCreateDate(new Date());
+     if(merchantWallet.getMerchant()!=null)
+      merchantWalletLog.setMerchantId(merchantWallet.getMerchant().getId());
+     merchantWalletLogRepository.save(merchantWalletLog);
+     merchantWalletRepository.save(merchantWallet);
   }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
@@ -771,6 +791,10 @@ public class MerchantService {
    */
   @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
   public Integer countByBindMerchant(Long merchantId) {
-    return leJiaUserRepository.countByBindMerchant(merchantId);
+    return leJiaUserRepository.countByBindMerchant(merchantId);}
+
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+  public List<Object[]> findAllMerchant() {
+    return  merchantRepository.findAllMerchant();
   }
 }

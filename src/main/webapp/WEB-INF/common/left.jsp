@@ -198,6 +198,7 @@
                     <a href="/manage/merchant">门店管理</a>
                 </shiro:hasPermission>
                 <a href="/manage/pos">pos管理</a>
+                <a href="/manage/printer">小票打印机</a>
             </div>
         </li>
         <shiro:hasPermission name="order:query">
@@ -238,6 +239,7 @@
                 <div class="list-item none none5">
                     <shiro:hasPermission name="app_manage:query"> <a
                             href='/manage/banner?type=1'>APP推荐</a> </shiro:hasPermission>
+                    <a href='/manage/'>启动广告管理</a>
                 </div>
             </li>
         </shiro:hasPermission>
@@ -252,6 +254,11 @@
                         <a href='/manage/merchant/codePage'>商户邀请码</a>
                     </shiro:hasPermission>
                     <a href='/manage/phone/index'>充话费活动</a>
+
+                    <a href='/manage/rechargeCard/list'>充值卡</a>
+                    <%--<a href='/manage/productSecKill/overview'>秒杀概览</a>--%>
+                    <%--<a href='/manage/'>秒杀时段</a>--%>
+                    <%--<a href='/manage/'>秒杀商品</a>--%>
                 </div>
             </li>
         </shiro:hasPermission>
@@ -315,7 +322,7 @@
             $(".none2").parent('li').addClass('selected');
             $(".none2").slideDown(300);
         }
-        if ((url.indexOf("/manage/merchant") != -1 || url.indexOf("merchantRec") != -1
+        if (( url.indexOf("/manage/printer")==-1|| url.indexOf("/manage/merchant") != -1 || url.indexOf("merchantRec") != -1
              || url.indexOf("/manage/pos") != -1) && url.indexOf("/manage/merchant_data") == -1) {
             $(".none3").parent('li').addClass('selected');
             $(".none3").slideDown(300);

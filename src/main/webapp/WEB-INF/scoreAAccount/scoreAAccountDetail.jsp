@@ -92,9 +92,9 @@
                 <div class="tcdPageCode" style="display: inline;">
                 </div>
                 <div style="display: inline;"> 共有 <span id="totalElements"></span> 个</div>
-                <button class="btn btn-primary pull-right" style="margin-top: 5px"
-                        onclick="exportExcel()">导出excel
-                </button>
+                <%--<button class="btn btn-primary pull-right" style="margin-top: 5px"--%>
+                        <%--onclick="exportExcel()">导出excel--%>
+                <%--</button>--%>
             </div>
         </div>
     </div>
@@ -240,9 +240,9 @@
 
                            scoreAAccountDetailContent.innerHTML += contentStr;
                        }
-                       totalDataStr='筛选条件下使用红包￥'+useScoreA+',累计发放红包￥'+issuedScoreA+',累计佣金收入￥'+commissionIncome+',分润后积分客累计收入￥'+jfkShare;
-                       totalData.innerHTML='';
-                       totalData.innerHTML+= totalDataStr;
+                       <%--totalDataStr='筛选条件下使用红包￥'+useScoreA+',累计发放红包￥'+issuedScoreA+',累计佣金收入￥'+commissionIncome+',分润后积分客累计收入￥'+jfkShare;--%>
+                       <%--totalData.innerHTML='';--%>
+                       <%--totalData.innerHTML+= totalDataStr;--%>
                    }
                });
     }

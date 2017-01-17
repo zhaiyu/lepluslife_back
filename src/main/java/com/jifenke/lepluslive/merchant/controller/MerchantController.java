@@ -85,6 +85,7 @@ public class MerchantController {
   public ModelAndView goShowMerchantPage(Model model) {
     model.addAttribute("merchantTypes", merchantService.findAllMerchantTypes());
     model.addAttribute("cities", cityService.findAllCity());
+    model.addAttribute("partners", partnerService.findAllParter());
     return MvUtil.go("/merchant/merchantList");
   }
 
@@ -322,8 +323,11 @@ public class MerchantController {
       merchantCriteria.setCity(null);
     }
     Page page = merchantService.findMerchantsByPage(merchantCriteria, 10000);
+    List<Merchant> merchants = page.getContent();
+    List<Integer> binds = merchantService.findBindLeJiaUsers(merchants);
     Map map = new HashMap();
     map.put("merchantList", page.getContent());
+    map.put("binds",binds);
     return new ModelAndView(merchantViewExcel, map);
   }
 

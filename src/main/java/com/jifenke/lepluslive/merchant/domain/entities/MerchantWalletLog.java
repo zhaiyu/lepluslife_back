@@ -28,7 +28,7 @@ public class MerchantWalletLog {
 
   private Long afterChangeMoney; //改变后的金额
 
-  private Long type; //如果为1代表线下支付订单分润 2 pos机订单分润 3 提现 4=线下订单退款
+  private Long type; //如果为1代表线下支付订单分润 2 pos机订单分润 3 提现 4 转账 5=线下订单退款
 
   private Date createDate = new Date();
 

@@ -112,6 +112,7 @@
                     </li>
                     <li style="float: right"><button type="button" class="btn btn-primary createLocation" onclick="reconciliationDifferences();">对账差错记录</button></li>
                     <li style="float: right;margin-right: 10px;"><button type="button" class="btn btn-primary createLocation" onclick="billingDownload();">掌富对账单下载</button></li>
+                    <li style="float: right;margin-right: 10px;"><button type="button" class="btn btn-primary createLocation" onclick="exportPosOrderData();">报表导出</button></li>
                 </ul>
                 <div id="myTabContent" class="tab-content">
                     <div class="tab-pane fade in active" id="tab1">
@@ -123,6 +124,7 @@
                                 <th>交易完成时间</th>
                                 <th>交易所在商户</th>
                                 <th>消费者</th>
+                                <th>POS编号</th>
                                 <th>支付方式</th>
                                 <th>订单金额</th>
                                 <th>佣金（手续费）</th>
@@ -171,6 +173,7 @@
 <script src="${resourceUrl}/js/moment.min.js"></script>
 <script src="${resourceUrl}/js/jquery.page.js"></script>
 <script>
+    var content = null;
     var posOrderCriteria = {};
     posOrderCriteria.offset = 1;
     var orderContent = document.getElementById("orderContent");
@@ -294,7 +297,7 @@
                    contentType: "application/json",
                    success: function (data) {
                        var page = data.data;
-                       var content = page.content;
+                       content = page.content;
                        var totalPage = page.totalPages;
                        $("#totalElements").html(page.totalElements);
                        if (totalPage == 0) {
@@ -327,7 +330,7 @@
                            contentStr +=
                            '<td><span>' + content[i].merchant.name + '</span><br><span>('
                            + content[i].merchant.merchantSid + ')</span></td>'
-                           if(content[i].LejiaUser!=null) {
+                           if(content[i].leJiaUser!=null) {
                                if (content[i].leJiaUser.phoneNumber != null) {
                                    contentStr +=
                                            '<td><span>' + content[i].leJiaUser.phoneNumber
@@ -343,6 +346,7 @@
                                contentStr +=
                                        '<td>匿名</td>'
                            }
+                           contentStr += '<td>'+(content[i].merchantPos.posId)+'</td>'
                            if (content[i].state == 1) {
                                if (content[i].tradeFlag == 0) {
                                    contentStr +=
@@ -387,7 +391,6 @@
                                contentStr +=
                                '<td>' + (content[i].ljCommission - content[i].rebate
                                          - content[i].wxCommission) / 100 + '</td>'
-
                                contentStr += '<td>已支付</td></tr>'
                            } else {
                                contentStr +=
@@ -431,7 +434,7 @@
         getPosOrderByAjax(posOrderCriteria);
     }
 
-    function searchOrderByCriteria() {
+    function searchOrderByCriteria(type) {
         posOrderCriteria.offset = 1;
         var dateStr = $('#date-end span').text().split("-");
         if (dateStr != null && dateStr != '') {
@@ -471,8 +474,9 @@
         } else {
             posOrderCriteria.userPhone = null;
         }
-
-        getPosOrderByAjax(posOrderCriteria);
+        if(type != 1){
+            getPosOrderByAjax(posOrderCriteria);
+        }
     }
 
 
@@ -481,6 +485,14 @@
     }
     function reconciliationDifferences() {
         location.href="/manage/reconciliationDifferences"
+    }
+    function exportPosOrderData(){
+        if(content !=null && content.length>0){
+            searchOrderByCriteria(1);
+            location.href="/manage/exportPosOrderData?obj="+JSON.stringify(posOrderCriteria).toString();
+        }else{
+            alert("无数据无法导出");
+        }
     }
 </script>
 

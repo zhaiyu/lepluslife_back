@@ -106,11 +106,12 @@ public class MerchantPosService {
   public void savePosMachine(MerchantPos merchantPos) {
     if(merchantPos.getId()==null) {
       merchantPos.setCreatedDate(new Date());
+      merchantPos.setCeil(merchantPos.getCeil()==null?0L:merchantPos.getCeil()*100);
       merchantPosRepository.save(merchantPos);
     }else {
       MerchantPos existMerchantPos = merchantPosRepository.findById(merchantPos.getId());
       existMerchantPos.setPosId(merchantPos.getPosId());
-      existMerchantPos.setCeil(merchantPos.getCeil());
+      existMerchantPos.setCeil(merchantPos.getCeil()==null?0L:merchantPos.getCeil()*100);
       existMerchantPos.setAliCommission(merchantPos.getAliCommission());
       existMerchantPos.setAliUserCommission(merchantPos.getAliUserCommission());
       existMerchantPos.setWxCommission(merchantPos.getWxCommission());

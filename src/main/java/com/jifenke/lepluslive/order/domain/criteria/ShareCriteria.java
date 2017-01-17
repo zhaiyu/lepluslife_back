@@ -21,6 +21,8 @@ public class ShareCriteria {
 
   private String tradePartner;
 
+  private String lockPartnerManager;
+
   private String orderSid;
 
   private Integer offset;
@@ -103,5 +105,13 @@ public class ShareCriteria {
 
   public void setOrderSid(String orderSid) {
     this.orderSid = orderSid;
+  }
+
+  public String getLockPartnerManager() {
+    return lockPartnerManager;
+  }
+
+  public void setLockPartnerManager(String lockPartnerManager) {
+    this.lockPartnerManager = lockPartnerManager;
   }
 }

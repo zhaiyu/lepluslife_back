@@ -383,7 +383,7 @@
                async: false,
                dataType: 'json',
                success: function (data) {
-                   console.log(data[0]);
+//                   console.log(data[0]);
                    var dataStr1 = '',
                            dataStr2 = '';
                    $.each(data, function (i) {
@@ -487,7 +487,7 @@
                    success: function (data) {
                        var page = data.data;
                        var content = page.content;
-                       console.log(JSON.stringify(content));
+//                       console.log(JSON.stringify(content));
                        var totalPage = page.totalPages;
                        $("#totalElements").html(page.totalElements);
                        if (totalPage == 0) {

@@ -31,6 +31,12 @@ public interface MerchantRepository extends JpaRepository<Merchant, Long> {
   @Query(value = "SELECT * FROM merchant WHERE sales_staff_id=?1", nativeQuery = true)
   List<Merchant> findMerchantBySaleId(String id);
 
+  @Query(value = "SELECT id,name FROM merchant WHERE partnership in (0,1)",nativeQuery = true)
+  List<Object[]> findAllMerchant();
+
+  @Query(value = "SELECT * FROM merchant WHERE id=?1",nativeQuery = true)
+  Merchant findById(String name);
+
   Page findAll(Specification<Merchant> whereClause, Pageable pageable);
 
   Optional<Merchant> findByMerchantSid(String merchantSid);

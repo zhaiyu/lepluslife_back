@@ -377,7 +377,7 @@ public class ScanCodeOrderService {
           log1.setAfterChangeMoney(m1);
           log1.setMerchantId(lockMerchant.getId());
           log1.setOrderSid(orderSid);
-          log1.setType(4L);
+          log1.setType(5L);
           merchantService.saveMerchantWallet(merchantWallet);
           merchantWalletLogService.saveMerchantWalletLog(log1);
         }

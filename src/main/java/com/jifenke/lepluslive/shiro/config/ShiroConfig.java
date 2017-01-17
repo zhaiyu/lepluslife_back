@@ -95,6 +95,8 @@ public class ShiroConfig {
     // anon：它对应的过滤器里面是空的,什么都没做
     filterChainDefinitionMap.put("/manage/automaticSendShortMessage", "anon");
     filterChainDefinitionMap.put("/manage/shortMessage/statusReport", "anon");//anon 可以理解为不拦截
+    filterChainDefinitionMap.put("/manage/addReceipt", "anon");//anon 可以理解为不拦截
+    filterChainDefinitionMap.put("/manage/receiptReturnValues", "anon");//anon 可以理解为不拦截
     filterChainDefinitionMap.put("/**", "authc");//anon 可以理解为不拦截
 
 

@@ -40,7 +40,7 @@ public class MerchantPos {
 
   private BigDecimal creditCardCommission; //贷记卡非会员佣金比
 
-  private Long ceil; //借记卡非会员封顶手续费
+  private Long ceil; //借记卡非会员封顶手续费  1:100  [数据库存储]
 
   private BigDecimal wxUserCommission;//微信会员佣金比
 
