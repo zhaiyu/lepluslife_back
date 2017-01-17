@@ -7,6 +7,24 @@ import com.jifenke.lepluslive.global.config.Constants;
 import com.jifenke.lepluslive.global.util.MD5Util;
 import com.jifenke.lepluslive.global.util.MvUtil;
 import com.jifenke.lepluslive.merchant.domain.criteria.MerchantCriteria;
+import com.jifenke.lepluslive.merchant.domain.entities.City;
+import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
+import com.jifenke.lepluslive.merchant.domain.entities.MerchantInfo;
+import com.jifenke.lepluslive.merchant.domain.entities.MerchantScanPayWay;
+import com.jifenke.lepluslive.merchant.domain.entities.MerchantSettlementStore;
+import com.jifenke.lepluslive.merchant.domain.entities.MerchantType;
+import com.jifenke.lepluslive.merchant.domain.entities.MerchantUser;
+import com.jifenke.lepluslive.merchant.domain.entities.MerchantWallet;
+import com.jifenke.lepluslive.merchant.domain.entities.MerchantWalletOnline;
+import com.jifenke.lepluslive.merchant.domain.entities.MerchantWeiXinUser;
+import com.jifenke.lepluslive.merchant.repository.MerchantInfoRepository;
+import com.jifenke.lepluslive.merchant.repository.MerchantPosRepository;
+import com.jifenke.lepluslive.merchant.repository.MerchantProtocolRepository;
+import com.jifenke.lepluslive.merchant.repository.MerchantRepository;
+import com.jifenke.lepluslive.merchant.repository.MerchantTypeRepository;
+import com.jifenke.lepluslive.merchant.repository.MerchantUserRepository;
+import com.jifenke.lepluslive.merchant.repository.MerchantWalletOnlineRepository;
+import com.jifenke.lepluslive.merchant.repository.MerchantWalletRepository;
 import com.jifenke.lepluslive.merchant.domain.entities.*;
 import com.jifenke.lepluslive.merchant.repository.*;
 import com.jifenke.lepluslive.order.domain.entities.FinancialStatistic;
@@ -95,6 +113,15 @@ public class MerchantService {
   private MerchantWalletOnlineRepository walletOnlineRepository;
   @Inject
   private MerchantWalletLogRepository merchantWalletLogRepository;
+
+  @Inject
+  private MerchantScanPayWayService scanPayWayService;
+
+  @Inject
+  private MerchantSettlementStoreService merchantSettlementStoreService;
+
+  @Inject
+  private MerchantSettlementService merchantSettlementService;
 
   @Value("${bucket.ossBarCodeReadRoot}")
   private String barCodeRootUrl;
@@ -672,6 +699,100 @@ public class MerchantService {
     merchant.setName(origin.getPartnerName() + "(合伙人)");
     merchantRepository.save(merchant);
   }
+
+  /**
+   * 查询某一商户下所有门店  2017/01/04
+   *
+   * @param id 商户ID
+   */
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  public List<Object[]> countByMerchantUser(Long id) {
+    return merchantRepository.countByMerchantUser(id);
+  }
+
+  /**
+   * 查询某一商户下所有门店的详细信息  2017/01/09
+   *
+   * @param merchantUser 商户
+   */
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  public List<Map<String, Object>> findByMerchantUser(MerchantUser merchantUser) {
+    List<Map<String, Object>> result = new ArrayList<>();
+    List<Merchant> list = merchantRepository.findByMerchantUser(merchantUser);
+    if (list != null && list.size() > 0) {
+      for (Merchant m : list) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", m.getId());
+        map.put("sid", m.getMerchantSid());
+        map.put("city", m.getCity().getName());
+        map.put("type", m.getMerchantType().getName());
+        map.put("name", m.getName());
+        map.put("merchantName",
+                m.getMerchantUser() != null ? m.getMerchantUser().getMerchantName() : "未知");
+        map.put("partner", m.getPartner() != null ? m.getPartner().getPartnerName() : "未知");
+        map.put("partnership", m.getPartnership());
+        MerchantScanPayWay scanPayWay = scanPayWayService.findByMerchantId(m.getId());
+        //商户结算类型及费率
+        if (scanPayWay != null) {
+          map.put("rate", scanPayWay.getCommission()); //佣金协议，仅仅做展示用，理论和实际一致
+          map.put("payWay", scanPayWay.getType());
+          if (scanPayWay.getType() == 0) { //富友结算
+            MerchantSettlementStore
+                store =
+                merchantSettlementStoreService.findByMerchantId(m.getId());
+            if (store != null) {
+              if (store.getCommonSettlementId() != 0) {
+                map.put("common",
+                        merchantSettlementService.findById(store.getCommonSettlementId())
+                            .getCommission());
+              }
+              if (store.getAllianceSettlementId() != 0) {
+                map.put("alliance",
+                        merchantSettlementService.findById(store.getAllianceSettlementId())
+                            .getCommission());
+              }
+            }
+          } else if (scanPayWay.getType() == 1) { //乐加结算
+            if (m.getPartnership() == 0) {
+              map.put("common", m.getLjCommission());
+            } else {
+              map.put("common", m.getLjBrokerage());
+              map.put("alliance", m.getLjCommission());
+            }
+          }
+        } else {
+          map.put("payWay", 1); //乐加结算
+          if (m.getPartnership() == 0) {
+            map.put("common", m.getLjCommission());
+          } else {
+            map.put("common", m.getLjBrokerage());
+            map.put("alliance", m.getLjCommission());
+          }
+        }
+
+        map.put("pos", merchantPosRepository.countByMerchant(m.getId())); //POS数量
+        map.put("limit", m.getUserLimit());
+        map.put("bind", countByBindMerchant(m.getId()));
+        map.put("shop", m.getState()); //乐店开启状态
+        map.put("receipt", m.getReceiptAuth()); //收款权限为1
+        map.put("createDate", m.getCreateDate());
+        result.add(map);
+      }
+    }
+
+    return result;
+  }
+
+  /**
+   * 获取某个门店绑定的会员数量 17/01/05
+   *
+   * @param merchantId 门店ID
+   * @return 数量
+   */
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+  public Integer countByBindMerchant(Long merchantId) {
+    return leJiaUserRepository.countByBindMerchant(merchantId);}
+
   @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
   public List<Object[]> findAllMerchant() {
     return  merchantRepository.findAllMerchant();

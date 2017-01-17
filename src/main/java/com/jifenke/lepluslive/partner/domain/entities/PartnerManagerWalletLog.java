@@ -29,7 +29,7 @@ public class PartnerManagerWalletLog {
 
   private Date createDate = new Date();
 
-  private Long type; //如果为1代表线下支付订单
+  private Long type; //如果为1代表线下支付订单  4=线下订单退款
 
   public Long getType() {
     return type;

@@ -29,4 +29,12 @@ public interface MerchantUserRepository extends JpaRepository<MerchantUser, Long
 
   @Query(value="SELECT new MerchantUser(id,merchantName) FROM MerchantUser mu where mu.type =?1 ")
   List<MerchantUser> findMerchantUserByType(Integer type);
+
+  /**
+   * 根据商户id获取商户名称  16/12/29
+   *
+   * @param id 商户ID
+   */
+  @Query(value = "SELECT merchant_name FROM merchant_user WHERE id = ?1", nativeQuery = true)
+  String findMerchantNameById(Long id);
 }
