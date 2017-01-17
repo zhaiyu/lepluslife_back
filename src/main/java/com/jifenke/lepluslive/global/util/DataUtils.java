@@ -27,7 +27,6 @@ public class DataUtils {
     return sdf.format(date);
   }
 
-<<<<<<< HEAD
   /**
    * 获取今日的零点零分
    */
@@ -38,12 +37,12 @@ public class DataUtils {
     calendar.set(Calendar.MINUTE, 0);
     calendar.set(Calendar.SECOND, 0);
     return calendar.getTime();
-=======
+  }
+
   //格式化时间为yyyy-MM-dd HH:mm:ss
   public static String datessTOString(Date date) {
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     return sdf.format(date);
->>>>>>> 6b99ee20955ecbc82918a0ed1d495d722a74a47d
   }
 
 }
