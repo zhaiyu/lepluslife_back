@@ -110,7 +110,7 @@
             <div class="container-fluid" style="padding-top: 20px">
                 <div class="row" style="margin-bottom: 30px">
                     <div class="form-group col-md-3">
-                        <label for="partnership">商户分类</label>
+                        <label for="partnership">门店分类</label>
                         <select class="form-control" id="partnership">
                             <option value="-1">全部分类</option>
                             <option value="0">普通商户</option>
@@ -147,10 +147,10 @@
                             <option value="1">已开启</option>
                         </select></div>
                     <div class="form-group col-md-3">
-                        <label for="merchant-name">商户名称</label>
+                        <label for="merchant-name">门店名称</label>
                         <input type="text" id="merchant-name" class="form-control"
                                placeholder="请输入商户名称"/>
-                        <label for="merchant-name">商户ID</label>
+                        <label for="merchant-name">门店ID</label>
                         <input type="text" id="merchant-id" class="form-control"
                                placeholder="请输入商户ID"/>
                     </div>
@@ -179,7 +179,7 @@
                     <div class="form-group col-md-3"></div>
                 </div>
                 <ul id="myTab" class="nav nav-tabs">
-                    <li><a href="#lunbotu" data-toggle="tab">商户管理</a></li>
+                    <li><a href="#lunbotu" data-toggle="tab">门店管理</a></li>
                 </ul>
                 <div id="myTabContent" class="tab-content">
                     <div class="tab-pane fade in active" id="lunbotu">
@@ -189,10 +189,10 @@
                         <table class="table table-bordered table-hover">
                             <thead>
                             <tr class="active">
-                                <th>商户序号</th>
-                                <th>商户所在城市</th>
+                                <th>门店序号</th>
+                                <th>门店所在城市</th>
                                 <th>分类</th>
-                                <th>商户名称</th>
+                                <th>门店名称</th>
                                 <th>所属合伙人</th>
                                 <th>锁定会员</th>
                                 <th>合约分类</th>

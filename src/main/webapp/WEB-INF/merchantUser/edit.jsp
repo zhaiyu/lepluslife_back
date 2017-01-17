@@ -26,6 +26,8 @@
           href="${resourceUrl}/merchantUser/css/merchantManagement.css"/>
     <link type="text/css" rel="stylesheet"
           href="${resourceUrl}/merchantUser/css/merchantInformation.css"/>
+    <link type="text/css" rel="stylesheet"
+          href="${resourceUrl}/merchantUser/css/create-edit-store.css"/>
 
     <script src="${resourceUrl}/js/html5shiv.min.js"></script>
     <script src="${resourceUrl}/js/respond.min.js"></script>
@@ -50,7 +52,7 @@
     </div>
     <div class="m-right">
         <div class="create_edit-title">
-            <div class="ModRadius"> < 返回商户列表</div>
+            <div class="ModRadius" onclick="back()"> < 返回商户列表</div>
             <p>商户创建/编辑</p>
         </div>
         <div class="MODInput_row merchant_information-tab6">
@@ -169,6 +171,9 @@
 </div>
 
 <script>
+    function back() {
+        window.location.href = "/manage/merchantUser/list";
+    }
     var type = 0; //卡类型
     /*****************保存商户****************************/
     function save() {
