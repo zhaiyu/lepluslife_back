@@ -7,8 +7,6 @@ import com.jifenke.lepluslive.score.repository.ScoreADetailRepository;
 import com.jifenke.lepluslive.score.repository.ScoreARepository;
 import com.jifenke.lepluslive.user.domain.entities.LeJiaUser;
 import com.jifenke.lepluslive.user.domain.entities.WeiXinUser;
-import com.jifenke.lepluslive.weixin.domain.criteria.MessageCriteria;
-import com.jifenke.lepluslive.weixin.domain.entities.WeixinMessage;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -18,7 +16,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -85,5 +82,21 @@ public class ScoreAService {
         return predicate;
       }
     };
+  }
+
+  /**
+   * 保存用户红包  2016/12/26
+   */
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  public void saveScore(ScoreA scoreA) {
+    scoreARepository.save(scoreA);
+  }
+
+  /**
+   * 保存用户红包记录  2016/12/26
+   */
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  public void saveDetail(ScoreADetail detail) {
+    scoreADetailRepository.save(detail);
   }
 }

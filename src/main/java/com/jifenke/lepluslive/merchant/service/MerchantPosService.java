@@ -150,4 +150,14 @@ public class MerchantPosService {
     }
     return null;
   }
+
+  /**
+   * 获取某个门店下的POS数量
+   *
+   * @param merchantId 门店ID
+   */
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+  public Long countByMerchant(Long merchantId) {
+    return merchantPosRepository.countByMerchant(merchantId);
+  }
 }

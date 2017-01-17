@@ -176,9 +176,9 @@
                 </ul>
                 <div id="myTabContent" class="tab-content">
                     <div class="tab-pane fade in active" id="lunbotu">
-                        <button type="button" class="btn btn-primary createLocation"
+                        <%--<button type="button" class="btn btn-primary createLocation"
                                 style="margin:10px 0;" onclick="createMerchant()">新增门店
-                        </button>
+                        </button>--%>
                         <table class="table table-bordered table-hover">
                             <thead>
                             <tr class="active">
@@ -546,9 +546,9 @@
                });
     }
 
-    function createMerchant() {
+   /* function createMerchant() {
         location.href = "/manage/merchant/edit";
-    }
+    }*/
     function initPage(page, totalPage) {
         $('.tcdPageCode').unbind();
         $(".tcdPageCode").createPage({

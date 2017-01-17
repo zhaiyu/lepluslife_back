@@ -54,6 +54,26 @@ public class SchedulerConfigration {
     return tigger;
   }
 
+  @Bean(name = "scanCodeOrderDetail")
+  public JobDetailFactoryBean scanCodeOrderDetail() {
+    JobDetailFactoryBean bean = new JobDetailFactoryBean();
+    bean.setJobClass(ScanCodeOrderJob.class);
+    bean.setDurability(false);
+    return bean;
+  }
+
+  @Bean(name = "scanCodeOrderTrigger")
+  public CronTriggerFactoryBean scanCodeCronTriggerBean() {
+    CronTriggerFactoryBean tigger = new CronTriggerFactoryBean();
+    tigger.setJobDetail(scanCodeOrderDetail().getObject());
+    try {
+      tigger.setCronExpression("0 0 3 * * ? ");//每天凌晨3点执行
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return tigger;
+  }
+
   @Bean(name = "wxRefreshDetail")
   public JobDetailFactoryBean wxRefreshDetail() {
     JobDetailFactoryBean bean = new JobDetailFactoryBean();
@@ -106,7 +126,8 @@ public class SchedulerConfigration {
       bean.setApplicationContextSchedulerContextKey("applicationContextKey");
       bean.setDataSource(dataSource);
       bean.setTriggers(cronTriggerBean().getObject(), wxCronTriggerBean().getObject(),
-                       scoreAAccountAddCronTriggerBean().getObject());
+                       scoreAAccountAddCronTriggerBean().getObject(),
+                       scanCodeCronTriggerBean().getObject());
       bean.setSchedulerName("orderConfrim");
     }
     return bean;

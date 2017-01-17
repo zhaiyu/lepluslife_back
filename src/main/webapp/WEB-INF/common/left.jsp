@@ -212,6 +212,9 @@
                             href='/manage/offLineOrder/share'>佣金分润</a> </shiro:hasPermission>
                     <a
                             href='/manage/pos_order'>pos订单</a>
+                    <a href='/manage/scanCodeOrder/goOrderPage'>富友扫码</a>
+                    <a href='/manage/refund/goRefundPage'>富友退款单</a>
+                    <a href='/manage/statement/goStatementPage'>富友结算</a>
                 </div>
             </li>
         </shiro:hasPermission>

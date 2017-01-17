@@ -96,4 +96,13 @@ public class ShareService {
     return offLineOrderShareRepository.findOneByOrderId(id);
 
   }
+
+  /**
+   * 根据富友订单查询分润单  2016/12/22
+   *
+   * @param orderId 订单ID
+   */
+  public OffLineOrderShare findByScanCodeOrder(String orderId) {
+    return offLineOrderShareRepository.findByScanCodeOrder(orderId);
+  }
 }

@@ -53,6 +53,14 @@ public class MvUtil {
     return RandomStringUtils.random(7, "1234567890");
   }
 
+  /**
+   * 生成n位随机数
+   */
+  public static String getRandomNumber(Integer number) {
+    return RandomStringUtils.random(number, "0123456789");
+
+  }
+
   //生成提现单随机号
   public static String getWithdrawBillSid() {
     String randomStr = RandomStringUtils.random(5, "1234567890");
@@ -65,6 +73,14 @@ public class MvUtil {
   public static String getRandomStr() {
     return RandomStringUtils
         .random(16, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890");
+  }
+
+  /**
+   * 生成n位随机字符串
+   */
+  public static String getRandomStr(int count) {
+    return RandomStringUtils
+        .random(count, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890");
   }
 
   /**

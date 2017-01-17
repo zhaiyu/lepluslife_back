@@ -4,6 +4,7 @@ import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantWallet;
 
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.Query;
 
 /**
  * Created by wcg on 16/5/13.
@@ -12,4 +13,11 @@ public interface MerchantWalletRepository extends JpaRepository<MerchantWallet, 
 
   MerchantWallet findByMerchant(Merchant merchant);
 
+  /**
+   * 根据门店ID获取门店钱包  17/01/03
+   *
+   * @param merchantId 门店ID
+   */
+  @Query(value = "SELECT * FROM merchant_wallet WHERE merchant_id = ?1", nativeQuery = true)
+  MerchantWallet findByMerchantId(Long merchantId);
 }

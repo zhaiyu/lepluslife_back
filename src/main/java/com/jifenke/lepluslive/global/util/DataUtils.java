@@ -1,6 +1,7 @@
 package com.jifenke.lepluslive.global.util;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 /**
@@ -24,6 +25,18 @@ public class DataUtils {
   public static String dateTOString(Date date) {
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     return sdf.format(date);
+  }
+
+  /**
+   * 获取今日的零点零分
+   */
+  public static Date getCurrDayBeginDate() {
+    Calendar calendar = Calendar.getInstance();
+    calendar.setTime(new Date());
+    calendar.set(Calendar.HOUR_OF_DAY, 0);
+    calendar.set(Calendar.MINUTE, 0);
+    calendar.set(Calendar.SECOND, 0);
+    return calendar.getTime();
   }
 
 }

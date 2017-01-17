@@ -3,8 +3,10 @@ package com.jifenke.lepluslive.merchant.service;
 import com.jifenke.lepluslive.global.util.MD5Util;
 import com.jifenke.lepluslive.merchant.domain.criteria.MerchantUserCriteria;
 import com.jifenke.lepluslive.merchant.domain.entities.City;
+import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantBank;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantUser;
+import com.jifenke.lepluslive.merchant.domain.entities.MerchantWallet;
 import com.jifenke.lepluslive.merchant.repository.CityRepository;
 import com.jifenke.lepluslive.merchant.repository.MerchantBankRepository;
 import com.jifenke.lepluslive.merchant.repository.MerchantUserRepository;
@@ -21,8 +23,12 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by xf on 16-11-16.
@@ -37,6 +43,15 @@ public class MerchantUserService {
     private CityRepository cityRepository;
     @Inject
     private MerchantBankRepository merchantBankRepository;
+
+  @Inject
+  private MerchantService merchantService;
+
+  @Inject
+  private MerchantPosService merchantPosService;
+
+  @Inject
+  private MerchantSettlementService merchantSettlementService;
 
     /**
      * 创建子账号
@@ -154,7 +169,125 @@ public class MerchantUserService {
         MerchantBank merchantBank = merchantUser.getMerchantBank();                 // 更新银行信息
         existBank.setBankName(merchantBank.getBankName());
         existBank.setBankNumber(merchantBank.getBankNumber());
+        existBank.setType(merchantBank.getType());
+        existBank.setPayee(merchantBank.getPayee());
         merchantBankRepository.save(existBank);
         merchantUserRepository.save(existMerchantUser);
     }
+
+  /**
+   * 根据商户id获取商户名称  16/12/29
+   *
+   * @param id 商户ID
+   */
+ public String findMerchantNameById(Long id){
+    return merchantUserRepository.findMerchantNameById(id);
+  }
+
+  /**
+   * 根据商户列表获取每个商户的概要信息  2017/01/04
+   * @param list 商户列表
+   * @return
+   */
+  @Transactional(propagation = Propagation.REQUIRED,readOnly = true)
+  public List<Map<String,Object>> getMerchantUserInfo(List<MerchantUser> list) {
+    List<Map<String,Object>> result = new ArrayList<>();
+    for (MerchantUser user : list){
+      Map<String,Object> map = new HashMap<>();
+      map.put("id",user.getId());
+      if(user.getCity() != null){
+        map.put("cityName",user.getCity().getName());
+      }
+      map.put("merchantName",user.getMerchantName());
+      map.put("createdDate",user.getCreatedDate());
+      //商户号数量
+      List<Object[]> settles = merchantSettlementService.countByMerchantUser(user.getId());
+      if(settles != null && settles.size() > 0){
+        map.put("total_settle",settles.get(0)[0]);
+        map.put("LM_settle",settles.get(0)[1]);
+        map.put("PT_settle",settles.get(0)[2]);
+      }
+      //名下门店
+      List<Object[]> merchants = merchantService.countByMerchantUser(user.getId());
+      if(merchants != null){
+        if(merchants.size() == 1){  //单门店
+          Long merchantId = Long.valueOf("" + merchants.get(0)[0]);
+          Merchant merchant = new Merchant();
+          merchant.setId(merchantId);
+          map.put("total_shops",1);
+          if("1".equals("" + merchants.get(0)[1])){
+            map.put("LM_shops",1);
+            map.put("PT_shops",0);
+          } else {
+            map.put("LM_shops",0);
+            map.put("PT_shops",1);
+          }
+          map.put("pos",merchantPosService.countByMerchant(merchantId));
+          MerchantWallet wallet = merchantService.findMerchantWalletByMerchant(merchant);
+          if(wallet != null){
+            map.put("availableBalance",wallet.getAvailableBalance());
+            map.put("totalMoney",wallet.getTotalMoney());
+          }
+          map.put("total_user",merchants.get(0)[2]); //锁定会员上限
+          map.put("binding_user",merchantService.countByBindMerchant(merchantId)); //已锁定会员
+        } else {  //多门店
+          map.put("total_shops",merchants.size());
+          int LM_shops = 0;
+          long total_user = 0;
+          long binding_user = 0;
+          long pos = 0;
+          long availableBalance = 0;
+          long totalMoney = 0;
+          for (Object[] o : merchants){
+            total_user += Long.valueOf("" + o[2]);
+            if("1".equals("" + o[1])){
+              LM_shops++;
+              Long merchantId = Long.valueOf("" + o[0]);
+              Merchant merchant = new Merchant();
+              merchant.setId(merchantId);
+              pos += merchantPosService.countByMerchant(merchantId);
+              MerchantWallet wallet = merchantService.findMerchantWalletByMerchant(merchant);
+              if(wallet != null){
+                availableBalance += wallet.getAvailableBalance();
+                totalMoney += wallet.getTotalMoney();
+              }
+              binding_user += merchantService.countByBindMerchant(merchantId);
+            }
+          }
+          map.put("LM_shops",LM_shops);
+          map.put("PT_shops",merchants.size() - LM_shops);
+          map.put("pos",pos);
+          map.put("availableBalance",availableBalance);
+          map.put("totalMoney",totalMoney);
+          map.put("total_user",total_user); //锁定会员上限
+          map.put("binding_user",binding_user); //已锁定会员
+        }
+      }
+      result.add(map);
+    }
+    return result;
+  }
+
+  /**
+   * 获取商户已经绑定的用户数量  2017/01/04
+   * @param merchantUserId 商户ID
+   */
+  @Transactional(propagation = Propagation.REQUIRED,readOnly = true)
+  public Integer getBindNumber(Long merchantUserId) {
+      Integer binding_user = 0;
+      //名下门店
+      List<Object[]> merchants = merchantService.countByMerchantUser(merchantUserId);
+      if(merchants != null){
+        if(merchants.size() == 1){  //单门店
+          binding_user = merchantService.countByBindMerchant(Long.valueOf("" + merchants.get(0)[0]));
+        } else {  //多门店
+          for (Object[] o : merchants){
+            if("1".equals("" + o[1])){
+              binding_user += merchantService.countByBindMerchant(Long.valueOf("" + o[0]));
+            }
+          }
+        }
+      }
+    return binding_user;
+  }
 }
