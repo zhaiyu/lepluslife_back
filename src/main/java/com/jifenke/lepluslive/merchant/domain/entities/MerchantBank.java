@@ -24,6 +24,7 @@ public class MerchantBank {
 
   private Integer type = 0;  //账户类型  0=法人私账|1=非法人私账|2=对公账号
 
+  @Column(length = 100)
   private String payee;    //收款人或账户主体
 
   public Long getId() {
