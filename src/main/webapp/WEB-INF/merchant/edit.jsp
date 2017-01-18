@@ -1170,6 +1170,7 @@
                     return;
                 }
                 merchant.ljCommission = ljCommission;
+                merchantScanPayWay.commission = ljCommission;
                 var scoreBRebate = $("input[name=pt-scoreBRebate]").val();
                 if (scoreBRebate == null || scoreBRebate == "" || scoreBRebate > 100 || scoreBRebate
                                                                                         < 0) {
@@ -1178,6 +1179,8 @@
                 }
                 merchant.scoreBRebate = scoreBRebate;
                 merchantRebatePolicy.rebateFlag = 2;
+            } else {
+                merchantScanPayWay.commission = 0;
             }
         }
         if (partnership == 1) { //佣金协议
@@ -1269,7 +1272,9 @@
         if (scanPayWay == 1) { //乐加结算
             var merchantBank = {};
             merchantBank.id = $("#merchantBankId").val();
-            merchantBank.payee = $("#payee").val();
+            var payee = $("#payee").val();
+            merchantBank.payee = payee;
+            merchant.payee = payee;
             merchantBank.bankNumber = $("#bankNumber").val();
             merchantBank.bankName = $("#bankName").val();
             if (merchantBank.bankName == "" || merchantBank.bankNumber == null) {
@@ -1280,7 +1285,7 @@
                 alert("请输入结算卡号");
                 return;
             }
-            if (merchantBank.payee == "" || merchantBank.payee == null) {
+            if (payee == null || payee == "") {
                 alert("请输入收款人/账户主体");
                 return;
             }
