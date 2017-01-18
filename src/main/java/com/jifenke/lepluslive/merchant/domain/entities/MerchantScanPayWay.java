@@ -28,7 +28,6 @@ public class MerchantScanPayWay {
 
   private Date lastUpdate;  //最后修改时间
 
-  @Column(nullable = false)
   private BigDecimal commission;   //佣金协议，仅仅做展示用，理论和实际一致
 
   @Column(nullable = false, unique = true)
