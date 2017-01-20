@@ -292,6 +292,14 @@ public class BannerService {
         DBBanner.setTitle(banner.getTitle());
       }
 
+      //保存城市
+      if (banner.getCity() != null && banner.getCity().getId() != null) {
+        DBBanner.setCity(banner.getCity());
+      }
+      if (banner.getArea() != null && banner.getArea().getId() != null) {
+        DBBanner.setArea(banner.getArea());
+      }
+
       DBBanner.setIntroduce(banner.getIntroduce());
       DBBanner.setLastUpDate(date);
       bannerRepository.save(DBBanner);

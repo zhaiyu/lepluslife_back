@@ -96,7 +96,7 @@
                         </div>
                     </div>
                     <div class="form-group col-md-2">
-                        <label for="ljUserSid">会员id</label>
+                        <label for="ljUserSid">会员Sid</label>
                         <input type="text" id="ljUserSid" class="form-control" placeholder="" />
                     </div>
                     <div class="form-group col-md-2">

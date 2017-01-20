@@ -1,5 +1,6 @@
 package com.jifenke.lepluslive.banner.domain.entities;
 
+import com.jifenke.lepluslive.merchant.domain.entities.Area;
 import com.jifenke.lepluslive.merchant.domain.entities.City;
 import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
 import com.jifenke.lepluslive.product.domain.entities.Product;
@@ -36,6 +37,8 @@ public class Banner {
 
   @ManyToOne
   private City city;
+  @ManyToOne
+  private Area area;
 
   private Date createDate;   //创建时间
 
@@ -206,5 +209,13 @@ public class Banner {
 
   public void setPicture(String picture) {
     this.picture = picture;
+  }
+
+  public Area getArea() {
+    return area;
+  }
+
+  public void setArea(Area area) {
+    this.area = area;
   }
 }
