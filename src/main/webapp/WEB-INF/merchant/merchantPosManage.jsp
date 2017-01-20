@@ -167,16 +167,16 @@
                                         <c:when test="${pos.wxCommission==null&&pos.wxUserCommission==null}">
                                             <td>未开通</td>
                                         </c:when>
-                                        <c:when test="${pos.wxCommission==null&&pos.wxUserCommission!=null}">
+                                        <c:when test="${pos.wxCommission!=null&&pos.wxUserCommission==null}">
                                             <td>
-                                                <h5>手续费：${pos.wxUserCommission} %  </h5>
+                                                <h5>手续费：${pos.wxCommission} %  </h5>
                                                 <h5>佣金： 未开通 </h5>
                                             </td>
                                         </c:when>
                                         <c:otherwise>
                                             <td>
-                                                <h5>手续费：${pos.wxUserCommission} % </h5>
-                                                <h5>佣金： ${pos.wxCommission} %  </h5>
+                                                <h5>手续费：${pos.wxCommission} % </h5>
+                                                <h5>佣金： ${pos.wxUserCommission} %  </h5>
                                             </td>
                                         </c:otherwise>
                                     </c:choose>
@@ -185,16 +185,16 @@
                                         <c:when test="${pos.aliCommission==null&&pos.aliUserCommission==null}">
                                             <td>未开通</td>
                                         </c:when>
-                                        <c:when test="${pos.aliCommission==null&&pos.aliUserCommission!=null}">
+                                        <c:when test="${pos.aliCommission!=null&&pos.aliUserCommission==null}">
                                             <td>
-                                                <h5>手续费：${pos.aliUserCommission} %  </h5>
+                                                <h5>手续费：${pos.aliCommission} %  </h5>
                                                 <h5>佣金： 未开通 </h5>
                                             </td>
                                         </c:when>
                                         <c:otherwise>
                                             <td>
-                                                <h5>手续费：${pos.aliUserCommission} %  </h5>
-                                                <h5>佣金： ${pos.aliCommission} % </h5>
+                                                <h5>手续费：${pos.aliCommission} %  </h5>
+                                                <h5>佣金： ${pos.aliUserCommission} % </h5>
                                             </td>
                                         </c:otherwise>
                                     </c:choose>
@@ -487,10 +487,10 @@
                         </div>
                         <div>
                             <div>
-                                <span>普通手续费</span><input type="number" class="form-control" name="wxUserCommission"/><span>%</span>
+                                <span>普通手续费</span><input type="number" class="form-control" name="wxCommission"/><span>%</span>
                             </div>
                             <div>
-                                <input type="checkbox"><span>开通佣金</span><input type="number" class="form-control"  name="wxCommission"/><span>%</span>
+                                <input type="checkbox" id="wxUser" onclick="isChecked('wxUserCommission','wxUser')"><span>开通佣金</span><input type="number" class="form-control"  name="wxUserCommission" id="wxUserCommission"/><span>%</span>
                             </div>
                         </div>
                     </div>
@@ -504,10 +504,10 @@
                         </div>
                         <div>
                             <div>
-                                <span>普通手续费</span><input type="number" class="form-control"  name="aliUserCommission" /><span>%</span>
+                                <span>普通手续费</span><input type="number" class="form-control"  name="aliCommission" /><span>%</span>
                             </div>
                             <div>
-                                <input type="checkbox" checked="checked" ><span>开通佣金</span><input type="number" class="form-control" name="aliCommission"/><span>%</span>
+                                <input type="checkbox" checked="checked" id="aliUser" onclick="isChecked('aliUserCommission','aliUser')"><span>开通佣金</span><input type="number" class="form-control" name="aliUserCommission" id="aliUserCommission"/><span>%</span>
                             </div>
                         </div>
                     </div>
@@ -783,10 +783,21 @@
                 $(".zfb > div:last-child").addClass("w-bActive");
                 $(".zfb").next().show();
             }
-         /* $("input[name=scoreARebate]").val(pos.scoreARebate);
-            $("input[name=scoreBRebate]").val(pos.scoreBRebate);
-            $("input[name=userScoreARebate]").val(pos.userScoreARebate);
-            $("input[name=userScoreBRebate]").val(pos.userScoreBRebate);*/
+
+            if(pos.wxUserCommission!=null) {
+                $("#wxUser").attr("checked",true);
+                $("input[name=wxUserCommission]").removeAttr("disabled");
+            }else {
+                $("#aliUser").attr("checked",false);
+                $("input[name=wxUserCommission]").attr("disabled","disabled");
+            }
+            if(pos.aliUserCommission!=null) {
+                $("#aliUser").attr("checked",true);
+                $("input[name=aliUserCommission]").removeAttr("disabled");
+            }else {
+                $("#aliUser").attr("checked",false);
+                $("input[name=aliUserCommission]").attr("disabled","disabled");
+            }
         },"json");
     }
 
@@ -909,6 +920,17 @@
                 $("#accountAuthorizationImg-img").attr("src",accountAuthorizationImg);
             }
         });
+    }
+
+    function isChecked(id,check) {
+            var inputForWrite = $("#"+id);
+            var isCheck = $(this).is(":checked");
+            if(isCheck){
+                $(this).next().removeAttr("disabled");
+            }else {
+                inputForWrite.val('');
+                $(this).next().attr("disabled","disabled");
+            }
     }
 
 

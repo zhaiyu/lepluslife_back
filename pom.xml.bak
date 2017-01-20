@@ -60,6 +60,12 @@
     </properties>
 
     <dependencies>
+        <!--富友加解密jar-->
+        <dependency>
+            <groupId>com.zhangfu</groupId>
+            <artifactId>fuiou-encrypt</artifactId>
+            <version>0.0.1</version>
+        </dependency>
         <dependency>
             <groupId>com.aliyun.oss</groupId>
             <artifactId>aliyun-sdk-oss</artifactId>
@@ -400,6 +406,16 @@
 
     <repositories>
         <repository>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>releases</id>
+            <url>http://123.57.185.8:8054/nexus/content/groups/public</url>
+        </repository>
+        <repository>
             <id>spring-milestones</id>
             <url>http://repo.spring.io/milestone</url>
         </repository>
@@ -644,8 +660,8 @@
                     <artifactId>spring-boot-starter-tomcat</artifactId>
                 </dependency>
                 <!--<dependency>-->
-                    <!--<groupId>org.springframework.boot</groupId>-->
-                    <!--<artifactId>spring-boot-starter-undertow</artifactId>-->
+                <!--<groupId>org.springframework.boot</groupId>-->
+                <!--<artifactId>spring-boot-starter-undertow</artifactId>-->
                 <!--</dependency>-->
             </dependencies>
         </profile>
@@ -736,5 +752,6 @@
             </dependencies>
         </profile>
     </profiles>
+
 
 </project>

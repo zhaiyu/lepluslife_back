@@ -60,12 +60,6 @@
     </properties>
 
     <dependencies>
-        <!--富友加解密jar-->
-        <dependency>
-            <groupId>com.zhangfu</groupId>
-            <artifactId>fuiou-encrypt</artifactId>
-            <version>0.0.1</version>
-        </dependency>
         <dependency>
             <groupId>com.aliyun.oss</groupId>
             <artifactId>aliyun-sdk-oss</artifactId>
@@ -130,6 +124,12 @@
                     <groupId>com.sun</groupId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <!--富友加解密jar-->
+        <dependency>
+            <groupId>com.zhangfu</groupId>
+            <artifactId>fuiou-encrypt</artifactId>
+            <version>0.0.1</version>
         </dependency>
         <!-- The HikariCP Java Agent is disabled by default, as it is experimental
           <dependency>
@@ -405,6 +405,16 @@
     </dependencies>
 
     <repositories>
+        <repository>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>releases</id>
+            <url>http://123.57.185.8:8054/nexus/content/groups/public</url>
+        </repository>
         <repository>
             <id>spring-milestones</id>
             <url>http://repo.spring.io/milestone</url>
