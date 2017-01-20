@@ -1,13 +1,10 @@
 package com.jifenke.lepluslive.merchant.domain.entities;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
-
+import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
@@ -21,9 +18,14 @@ public class MerchantBank {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
-  private String bankNumber;
+  private String bankNumber; //结算卡号或账户
 
-  private String bankName;
+  private String bankName; //开户支行
+
+  private Integer type = 0;  //账户类型  0=法人私账|1=非法人私账|2=对公账号
+
+  @Column(length = 100)
+  private String payee;    //收款人或账户主体
 
   public Long getId() {
     return id;
@@ -47,5 +49,21 @@ public class MerchantBank {
 
   public void setBankName(String bankName) {
     this.bankName = bankName;
+  }
+
+  public Integer getType() {
+    return type;
+  }
+
+  public void setType(Integer type) {
+    this.type = type;
+  }
+
+  public String getPayee() {
+    return payee;
+  }
+
+  public void setPayee(String payee) {
+    this.payee = payee;
   }
 }

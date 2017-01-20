@@ -112,6 +112,7 @@
                     </li>
                     <li style="float: right"><button type="button" class="btn btn-primary createLocation" onclick="reconciliationDifferences();">对账差错记录</button></li>
                     <li style="float: right;margin-right: 10px;"><button type="button" class="btn btn-primary createLocation" onclick="billingDownload();">掌富对账单下载</button></li>
+                    <li style="float: right;margin-right: 10px;"><button type="button" class="btn btn-primary createLocation" onclick="exportPosOrderData();">报表导出</button></li>
                 </ul>
                 <div id="myTabContent" class="tab-content">
                     <div class="tab-pane fade in active" id="tab1">
@@ -172,6 +173,7 @@
 <script src="${resourceUrl}/js/moment.min.js"></script>
 <script src="${resourceUrl}/js/jquery.page.js"></script>
 <script>
+    var content = null;
     var posOrderCriteria = {};
     posOrderCriteria.offset = 1;
     var orderContent = document.getElementById("orderContent");
@@ -295,7 +297,7 @@
                    contentType: "application/json",
                    success: function (data) {
                        var page = data.data;
-                       var content = page.content;
+                       content = page.content;
                        var totalPage = page.totalPages;
                        $("#totalElements").html(page.totalElements);
                        if (totalPage == 0) {
@@ -432,7 +434,7 @@
         getPosOrderByAjax(posOrderCriteria);
     }
 
-    function searchOrderByCriteria() {
+    function searchOrderByCriteria(type) {
         posOrderCriteria.offset = 1;
         var dateStr = $('#date-end span').text().split("-");
         if (dateStr != null && dateStr != '') {
@@ -472,8 +474,9 @@
         } else {
             posOrderCriteria.userPhone = null;
         }
-
-        getPosOrderByAjax(posOrderCriteria);
+        if(type != 1){
+            getPosOrderByAjax(posOrderCriteria);
+        }
     }
 
 
@@ -482,6 +485,14 @@
     }
     function reconciliationDifferences() {
         location.href="/manage/reconciliationDifferences"
+    }
+    function exportPosOrderData(){
+        if(content !=null && content.length>0){
+            searchOrderByCriteria(1);
+            location.href="/manage/exportPosOrderData?obj="+JSON.stringify(posOrderCriteria).toString();
+        }else{
+            alert("无数据无法导出");
+        }
     }
 </script>
 

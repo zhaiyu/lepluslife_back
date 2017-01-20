@@ -1,8 +1,6 @@
 package com.jifenke.lepluslive.score.service;
 
 import com.jifenke.lepluslive.score.domain.criteria.ScoreCriteria;
-import com.jifenke.lepluslive.score.domain.entities.ScoreA;
-import com.jifenke.lepluslive.score.domain.entities.ScoreADetail;
 import com.jifenke.lepluslive.score.domain.entities.ScoreB;
 import com.jifenke.lepluslive.score.domain.entities.ScoreBDetail;
 import com.jifenke.lepluslive.score.repository.ScoreBDetailRepository;
@@ -86,5 +84,21 @@ public class ScoreBService {
         return predicate;
       }
     };
+  }
+
+  /**
+   * 保存用户积分  2016/12/26
+   */
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  public void saveScore(ScoreB scoreB) {
+    scoreBRepository.save(scoreB);
+  }
+
+  /**
+   * 保存用户积分记录  2016/12/26
+   */
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  public void saveDetail(ScoreBDetail detail) {
+    scoreBDetailRepository.save(detail);
   }
 }

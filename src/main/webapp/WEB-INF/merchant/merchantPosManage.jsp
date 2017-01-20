@@ -152,7 +152,7 @@
                                     <!--银行-->
                                     <td>
                                         <h5>（非会员）</h5>
-                                        <h5>&nbsp;&nbsp;借记卡 ${pos.debitCardCommission}% &nbsp; 封顶 ${pos.ceil}</h5>
+                                        <h5>&nbsp;&nbsp;借记卡 ${pos.debitCardCommission}% &nbsp; 封顶 ${pos.ceil/100.0}</h5>
                                         <h5>&nbsp;&nbsp;贷记卡 ${pos.creditCardCommission}% &nbsp;
                                             <c:if test="${pos.ljCommission!=null}">
                                                 佣金 ${pos.ljCommission} %
@@ -468,7 +468,7 @@
                 </div>
                 <div>
                     <div>设备号</div>
-                    <div><input name="id" type="hidden"/><input id="sbh" type="text" class="form-control" name="posId"></div>
+                    <div><input name="id" type="hidden"/><input id="sbh" type="text" class="form-control" name="posId" onblur="toCheckRepeat()"></div>
                 </div>
                 <div>
                     <div>银行卡费率</div>
@@ -668,6 +668,7 @@
         $("input[name=wxCommission]").val('');
         $("input[name=wxUserCommission]").val('');
         $("input[name=aliUserCommission]").val('');
+        $("input[name=posId]").attr("readOnly",false);
      /* $("input[name=scoreARebate]").val('');
         $("input[name=scoreBRebate]").val('');
         $("input[name=userScoreARebate]").val('');
@@ -699,6 +700,16 @@
             return;
         }
 
+        // 在添加机具时候 , 校验 pos 机号
+        var check_Id = $("input[name=id]").val();
+        var flag = false;
+        if(check_Id==null||check_Id=='') {
+            flag = checkRepeat();
+        }
+        if(flag) {
+            alert("Pos ID 已存在,换个试试吧 ~");
+            return;
+        }
         /*if($("input[name=scoreARebate]").val()!=null&&$("input[name=scoreARebate]").val()!='') {
             merchantPos.scoreARebate = $("input[name=scoreARebate]").val();
         }else {
@@ -744,10 +755,11 @@
         $.get("/manage/pos/getById/"+id,function(pos){                      //  查询并进行数据回显
             $("input[name=id]").val(pos.id);
             $("input[name=posId]").val(pos.posId);
+            $("input[name=posId]").attr("readOnly",true);
             $("input[name=creditCardCommission]").val(pos.creditCardCommission);
             $("input[name=debitCardCommission]").val(pos.debitCardCommission);
             $("input[name=ljCommission]").val(pos.ljCommission);
-            $("input[name=ceil]").val(pos.ceil);
+            $("input[name=ceil]").val(pos.ceil/100.0);
             $("input[name=wxCommission]").val(pos.wxCommission);
             $("input[name=aliCommission]").val(pos.aliCommission);
             $("input[name=wxCommission]").val(pos.wxCommission);
@@ -821,6 +833,36 @@
         link.click();
     }
 
+    // 异步校验 pos ID 是否重复
+    function checkRepeat() {
+        var posId = $("input[name=posId]").val();
+        var flag = true;
+        $.ajax({
+            url:"/manage/pos/check_repeat?posId="+posId,
+            type:"get",
+            contentType:"application/json",
+            async:false,
+            success:function(result){
+                if(result.status==400) {
+                   flag = true;
+                }else {
+                   flag = false;
+                }
+            }
+        });
+        return flag;
+    }
+    function toCheckRepeat() {
+        var check_Id = $("input[name=id]").val();
+        var flag = false;
+        if(check_Id==null||check_Id=='') {
+            flag = checkRepeat();
+        }
+        if(flag) {
+            alert("Pos ID 已存在,换个试试吧 ~");
+            return;
+        }
+    }
 
     function loadPic() {
         $.ajax({
