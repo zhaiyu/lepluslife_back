@@ -239,7 +239,7 @@
                 <div class="list-item none none5">
                     <shiro:hasPermission name="app_manage:query"> <a
                             href='/manage/banner?type=1'>APP推荐</a> </shiro:hasPermission>
-                    <a href='/manage/'>启动广告管理</a>
+                    <a href='/manage/start_ad'>启动广告管理</a>
                 </div>
             </li>
         </shiro:hasPermission>
@@ -256,9 +256,6 @@
                     <a href='/manage/phone/index'>充话费活动</a>
 
                     <a href='/manage/rechargeCard/list'>充值卡</a>
-                    <%--<a href='/manage/productSecKill/overview'>秒杀概览</a>--%>
-                    <%--<a href='/manage/'>秒杀时段</a>--%>
-                    <%--<a href='/manage/'>秒杀商品</a>--%>
                 </div>
             </li>
         </shiro:hasPermission>
@@ -301,24 +298,29 @@
                 <a href='/manage/shortMessagesListPage'>发送记录</a>
             </div>
         </li>
+        <li><h4 class="M6"><span></span>运营中心</h4>
+            <div class="list-item none none11">
+
+                <a href='/manage/productSecKill/overview'>秒杀概览</a>
+                <a href='/manage/productSecKill_time'>秒杀时段</a>
+                <a href='/manage/productSecKill/editPage'>秒杀商品</a>
+            </div>
+        </li>
     </ul>
 </div>
 <script>navList(12);</script>
 <script>
     $(function () {
         var url = window.location.href;
-        if (url.indexOf("withdrawBill") != -1||url.indexOf("fillingBillApply") != -1
-        ) {
+        if (url.indexOf("withdrawBill") != -1||url.indexOf("fillingBillApply") != -1) {
             $(".none8").parent('li').addClass('selected');
             $(".none8").slideDown(300);
         }
-        if (url.indexOf("offLineOrder") != -1
-            || url.indexOf("financial") != -1 || url.indexOf("/manage/pos_order") != -1) {
+        if (url.indexOf("offLineOrder") != -1 || url.indexOf("financial") != -1 || url.indexOf("/manage/pos_order") != -1) {
             $(".none1").parent('li').addClass('selected');
             $(".none1").slideDown(300);
         }
-        if ((url.indexOf("/manage/product") != -1 || url.indexOf("/manage/order") != -1
-             || url.indexOf("/manage/topic") != -1) || url.indexOf("productRec") != -1) {
+        if ((url.indexOf("/manage/product") != -1 || url.indexOf("/manage/order") != -1 || url.indexOf("/manage/topic") != -1) || url.indexOf("productRec") != -1) {
             $(".none2").parent('li').addClass('selected');
             $(".none2").slideDown(300);
         }
@@ -354,6 +356,10 @@
         if (url.indexOf("/manage/shortMessage/shortMessageBillboards") != -1 || url.indexOf("/manage/shortMessagesListPage")!= -1) {
             $(".none10").parent('li').addClass('selected');
             $(".none10").slideDown(300);
+        }
+        if (url.indexOf("/manage/productSecKill") != -1) {
+            $(".none11").parent('li').addClass('selected');
+            $(".none11").slideDown(300);
         }
     })
 </script>
