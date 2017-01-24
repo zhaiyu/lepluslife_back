@@ -102,6 +102,7 @@
                                 <th>序号</th>
                                 <th>图片</th>
                                 <th>后置类型</th>
+                                <th>移动端类型</th>
                                 <th>对应城市</th>
                                 <th>状态</th>
                                 <th>操作</th>
@@ -175,6 +176,20 @@
                     </div>
 
                     <div class="form-group">
+                        <label for="appType" class="col-sm-3 control-label">移动端类型</label>
+                        <div class="col-sm-6" id="appType">
+                            <div>
+                                <input type="radio" name="appType" value="1" class="checkedApp" checked="true"/>
+                                <span>Android</span>
+                            </div>
+                            <div>
+                                <input type="radio" name="appType" value="2"/>
+                                <span>iOS</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
                         <label for="afterType12" class="col-sm-3 control-label">后置类型(点击图片后的跳转情况)</label>
                         <div class="col-sm-6" id="afterType12">
                             <div>
@@ -224,6 +239,11 @@
         $("input[type=radio]").removeClass("checked12");
         $(this).attr("class", "checked12");
         $(".w-input").attr("disabled", "true");
+        $(this).nextAll().removeAttr("disabled");
+    });
+    $("input[name=appType]").click(function (e) {
+        $("input[type=radio]").removeClass("checkedApp");
+        $(this).attr("class", "checkedApp");
         $(this).nextAll().removeAttr("disabled");
     });
 
@@ -309,6 +329,7 @@
                            contentStr +=
                            '<td><img style="height: 100px; width: auto;" src="' + content[i].picture
                            + '" alt="..."></td>';
+
                            if (content[i].afterType == 1) {
                                contentStr += '<td><span>H5页面</span></td>';
                            } else if (content[i].afterType == 2) {
@@ -319,6 +340,14 @@
                                contentStr += '<td><span>无跳转</span></td>';
                            } else {
                                contentStr += '<td><span>未知</span></td>';
+                           }
+
+                           if (content[i].appType == 1) {
+                               contentStr += '<td><span>android</span></td>';
+                           } else if (content[i].appType == 2) {
+                               contentStr += '<td><span>ios</span></td>';
+                           } else {
+                               contentStr += '<td><span>---</span></td>';
                            }
 
                            if (content[i].city != null) {
@@ -397,6 +426,16 @@
                                                     + ']').val(banner.id);
                                                   $("#" + picture + "").attr("src",
                                                                              banner.picture);
+
+                                                  var appType = banner.appType;
+                                                  var appTypeChecked = $('#appType input[type=radio][value='
+                                                                       + appType
+                                                                       + ']');
+                                                  $('#appType input[type=radio]').removeClass("checkedApp");
+                                                  $('#appType input[type=radio]').removeAttr("checked");
+                                                  appTypeChecked[0].checked = true;
+                                                  appTypeChecked.attr("class", "checkedApp");
+
                                                   var radioChecked = $('#' + myDiv
                                                                        + ' input[type=radio][value='
                                                                        + afterType
@@ -561,6 +600,13 @@
         var input = $(".checked12");
         var afterType = input.val();
         var afterType_val = input.next().next().val();
+
+        var appType = $(".checkedApp").val();
+        if (appType == null || appType == "") {
+            alert("请选择移动端类型");
+            return false;
+        }
+        banner.appType = appType;
 
         var urlTitle = "";
         if (afterType == 1) {

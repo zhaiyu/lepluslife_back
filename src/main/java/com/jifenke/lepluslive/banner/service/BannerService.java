@@ -299,6 +299,10 @@ public class BannerService {
       if (banner.getArea() != null && banner.getArea().getId() != null) {
         DBBanner.setArea(banner.getArea());
       }
+      //appType
+      if (banner.getAppType() != null) {
+        DBBanner.setAppType(banner.getAppType());
+      }
 
       DBBanner.setIntroduce(banner.getIntroduce());
       DBBanner.setLastUpDate(date);

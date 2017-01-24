@@ -67,6 +67,18 @@ public class Banner {
 
   private Integer price = 0;              //商品价格
 
+  private Integer appType;            //移动端类型 1Android 2iOS
+
+
+  public Integer getAppType() {
+    return appType;
+  }
+
+  public void setAppType(Integer appType) {
+    this.appType = appType;
+  }
+
+
   public Long getId() {
     return id;
   }
