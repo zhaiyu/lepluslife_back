@@ -12,11 +12,10 @@ import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
 import javax.persistence.Table;
-import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
 /**
- * 商品秒杀 信息
+ * 秒杀概览
  * Created by tqy on 2016/12/30.
  */
 @Entity
@@ -28,54 +27,29 @@ public class ProductSecKill {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Integer id;
 
-  private Integer sid = 1;              //序号
-  private Integer state = 1;            //1=上架|0=已下架
-
   @ManyToOne
-  private Product product;
+  private ProductSecKillTime productSecKillTime;  //---秒杀时段
+  @ManyToOne
+  private Product product;              //------新建秒杀商品 商品类型type=3
 
-  private Long  convertPrice;           //兑换所需价格
-  private Integer convertScore = 0;     //兑换所需积分
-  private Long  initNumber;             //初始销量
-  private Long  userLimit;              //个人兑换限制（单个用户本时段最多可购买商品数量）
-  private Integer isUserLimit = 0;      //0无限制 1有限制
+//  private Long  initNumber;             //------初始销量(展示用)
+//  private Long  convertPrice;           //兑换所需价格
+//  private Integer convertScore = 0;     //兑换所需积分
+//  private Long  userLimit;              //个人兑换限制（单个用户本时段最多可购买商品数量）
+//  private Integer isUserLimit = 0;      //0无限制 1有限制
 
-  @NotNull
-  @Column(length = 40)
-  private String secKillDate;           //秒杀日期(时段名称, 格式: 2016-12-30)
-  private Date startTime;               //开始时间
-  private Date endTime;                 //结束时间
-  private Date createTime = new Date(); //创建时间
+  private Date createTime;              //创建时间
   private Date updateTime;              //最后修改时间
 
 
   private Integer isLinkProduct = 0;    //有无关联商品 0无 1有
   @ManyToOne
-  private Product LinkProduct;          //关联商品
+  private Product linkProduct;          //关联商品
 
   @Column(length = 200)
   private String note;                  //备注
 
-//  @Version
-//  private Long version = 0L;
 
-
-
-  public Long getConvertPrice() {
-    return convertPrice;
-  }
-
-  public void setConvertPrice(Long convertPrice) {
-    this.convertPrice = convertPrice;
-  }
-
-  public Integer getConvertScore() {
-    return convertScore;
-  }
-
-  public void setConvertScore(Integer convertScore) {
-    this.convertScore = convertScore;
-  }
 
   public Date getCreateTime() {
     return createTime;
@@ -83,14 +57,6 @@ public class ProductSecKill {
 
   public void setCreateTime(Date createTime) {
     this.createTime = createTime;
-  }
-
-  public Date getEndTime() {
-    return endTime;
-  }
-
-  public void setEndTime(Date endTime) {
-    this.endTime = endTime;
   }
 
   public Integer getId() {
@@ -101,14 +67,6 @@ public class ProductSecKill {
     this.id = id;
   }
 
-  public Long getInitNumber() {
-    return initNumber;
-  }
-
-  public void setInitNumber(Long initNumber) {
-    this.initNumber = initNumber;
-  }
-
   public Integer getIsLinkProduct() {
     return isLinkProduct;
   }
@@ -117,20 +75,12 @@ public class ProductSecKill {
     this.isLinkProduct = isLinkProduct;
   }
 
-  public Integer getIsUserLimit() {
-    return isUserLimit;
-  }
-
-  public void setIsUserLimit(Integer isUserLimit) {
-    this.isUserLimit = isUserLimit;
-  }
-
   public Product getLinkProduct() {
-    return LinkProduct;
+    return linkProduct;
   }
 
   public void setLinkProduct(Product linkProduct) {
-    LinkProduct = linkProduct;
+    this.linkProduct = linkProduct;
   }
 
   public String getNote() {
@@ -149,36 +99,12 @@ public class ProductSecKill {
     this.product = product;
   }
 
-  public String getSecKillDate() {
-    return secKillDate;
+  public ProductSecKillTime getProductSecKillTime() {
+    return productSecKillTime;
   }
 
-  public void setSecKillDate(String secKillDate) {
-    this.secKillDate = secKillDate;
-  }
-
-  public Integer getSid() {
-    return sid;
-  }
-
-  public void setSid(Integer sid) {
-    this.sid = sid;
-  }
-
-  public Date getStartTime() {
-    return startTime;
-  }
-
-  public void setStartTime(Date startTime) {
-    this.startTime = startTime;
-  }
-
-  public Integer getState() {
-    return state;
-  }
-
-  public void setState(Integer state) {
-    this.state = state;
+  public void setProductSecKillTime(ProductSecKillTime productSecKillTime) {
+    this.productSecKillTime = productSecKillTime;
   }
 
   public Date getUpdateTime() {
@@ -188,21 +114,5 @@ public class ProductSecKill {
   public void setUpdateTime(Date updateTime) {
     this.updateTime = updateTime;
   }
-
-  public Long getUserLimit() {
-    return userLimit;
-  }
-
-  public void setUserLimit(Long userLimit) {
-    this.userLimit = userLimit;
-  }
-
-//  public Long getVersion() {
-//    return version;
-//  }
-//
-//  public void setVersion(Long version) {
-//    this.version = version;
-//  }
 
 }

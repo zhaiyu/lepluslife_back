@@ -92,7 +92,7 @@ public class MerchantUser {
     this.createUserId = createUserId;
   }
 
-  public String getLinkMan() {
+    public String getLinkMan() {
         return linkMan;
     }
 
@@ -163,4 +163,5 @@ public class MerchantUser {
     public void setPartner(Partner partner) {
         this.partner = partner;
     }
+
 }

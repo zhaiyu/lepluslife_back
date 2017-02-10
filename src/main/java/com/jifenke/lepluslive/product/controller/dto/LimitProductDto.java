@@ -2,6 +2,7 @@ package com.jifenke.lepluslive.product.controller.dto;
 
 import com.jifenke.lepluslive.product.domain.entities.Product;
 import com.jifenke.lepluslive.product.domain.entities.ProductDetail;
+import com.jifenke.lepluslive.product.domain.entities.ProductSecKill;
 import com.jifenke.lepluslive.product.domain.entities.ProductSpec;
 import com.jifenke.lepluslive.product.domain.entities.ScrollPicture;
 
@@ -12,6 +13,7 @@ import java.util.List;
  */
 public class LimitProductDto {
 
+  private ProductSecKill productSecKill;
   private Product product;
   private List<ScrollPicture> scrollPictureList;
   private List<ProductDetail> productDetailList;
@@ -24,13 +26,15 @@ public class LimitProductDto {
   public LimitProductDto() {
   }
 
-  public LimitProductDto(Product product,
+  public LimitProductDto(ProductSecKill productSecKill,
+                         Product product,
                          List<ScrollPicture> scrollPictureList,
                          List<ProductDetail> productDetailList,
                          List<ProductSpec> productSpecList,
                          List<ScrollPicture> delScrollList,
                          List<ProductDetail> delDetailList,
                          List<ProductSpec> delSpecList) {
+    this.productSecKill = productSecKill;
     this.product = product;
     this.scrollPictureList = scrollPictureList;
     this.productDetailList = productDetailList;
@@ -38,6 +42,14 @@ public class LimitProductDto {
     this.delScrollList = delScrollList;
     this.delDetailList = delDetailList;
     this.delSpecList = delSpecList;
+  }
+
+  public ProductSecKill getProductSecKill() {
+    return productSecKill;
+  }
+
+  public void setProductSecKill(ProductSecKill productSecKill) {
+    this.productSecKill = productSecKill;
   }
 
   public Product getProduct() {

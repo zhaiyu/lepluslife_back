@@ -62,4 +62,18 @@ public class CityService {
   public List<City> findAllCity() {
     return cityRepository.findAll();
   }
+
+  /**
+   * 查询所有省份
+   */
+  public List<Object[]> getAllProvince(){
+    return cityRepository.getAllProvince();
+  }
+  /**
+   * 根据省 查询 市
+   */
+  public List<Object[]> getCityByProvince(String province){
+    return cityRepository.getCityByProvince(province);
+  }
+
 }

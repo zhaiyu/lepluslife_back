@@ -72,6 +72,7 @@
             <artifactId>encode</artifactId>
             <version>0.0.1</version>
         </dependency>
+
         <dependency>
             <groupId>com.aliyun.oss</groupId>
             <artifactId>aliyun-sdk-oss</artifactId>
@@ -411,6 +412,16 @@
     </dependencies>
 
     <repositories>
+        <repository>
+            <releases>
+                <enabled>true</enabled>
+            </releases>
+            <snapshots>
+                <enabled>true</enabled>
+            </snapshots>
+            <id>releases</id>
+            <url>http://123.57.185.8:8054/nexus/content/groups/public</url>
+        </repository>
         <repository>
             <id>spring-milestones</id>
             <url>http://repo.spring.io/milestone</url>

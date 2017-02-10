@@ -342,7 +342,7 @@
                            contentStr += '<td>' + content[i].wxCommission / 100 + '</td>'
                            contentStr += '<td>' + content[i].rebate / 100 + '</td>';
                            var share = 0;
-                           if (content[i].rebateWay != 1) {
+                           if (content[i].rebateWay != 1 && content[i].rebateWay!=3) {
                                share = 0;
                            } else {
                                share =
