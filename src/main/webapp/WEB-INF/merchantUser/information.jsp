@@ -41,12 +41,16 @@
     <script type="text/javascript" src="${resourceUrl}/js/echarts.min.js"></script>
     <script>
         var merchantUserId = '${m.id}';
+        var merchantNum = ${merchants.size()};
         function go(index) {
             switch (index) {
                 case 1:
                     break;
                 case 2:
                     showShops();
+                    break;
+                case 3:
+                    showMerchantUserShop();
                     break;
                 case 4:
                     showSettlement();
@@ -120,6 +124,159 @@
             } else {
                 location.href = "/manage/merchant/edit/" + merchantId;
             }
+        }
+        /******************************获取账户列表信息************************************/
+        function showMerchantUserShop() {
+            var tab3_1_content = $('#tab3-1-content');
+            var tab3_2_content = $('#tab3-2-content');
+            tab3_1_content.html('');
+            tab3_2_content.html('');
+            $.ajax({
+                       type: "get",
+                       url: "/manage/merchantUser/user/" + merchantUserId,
+                       async: false,
+                       success: function (data) {
+                           var list = data.data;
+                           var merchantUsers = list.merchantUsers;
+                           var shops = list.shops;
+                           var merchantWeiXinUsers = list.merchantWeiXinUsers;
+                           var contentStr = '';
+                           for (var i = 0; i < merchantUsers.length; i++) {
+                               var m = merchantUsers[i];
+                               switch (m.type) {
+                                   case 0:
+                                       contentStr += '<tr><td>收银员</td>';
+                                       break;
+                                   case 1:
+                                       contentStr += '<tr><td>店主</td>';
+                                       break;
+                                   case 2:
+                                       contentStr += '<tr><td>子账号</td>';
+                                       break;
+                                   case 8:
+                                       contentStr += '<tr><td>管理员账号</td>';
+                                       break;
+                                   case 9:
+                                       contentStr += '<tr><td>管理员(系统)</td>';
+                                       break;
+                                   default :
+                                       contentStr += '<tr><td>未知' + m.type + '</td>';
+                               }
+                               if (shops[i].length == 1) {
+                                   contentStr += '<td>' + shops[i][0].merchant.name + '</td>';
+                               } else {
+                                   contentStr += '<td>' + shops[i].length + '个</td>';
+                               }
+                               contentStr += '<td>' + m.name + '</td>';
+                               contentStr += '<td>**************</td>';
+                               contentStr +=
+                               '<td><input type="button" class="btn btn-xs btn-primary select-btn Mod-3" value="修改" onclick="editMerchantUser(\''
+                               + m.id + '\')">';
+                               if (m.type != 8) {
+                                   contentStr +=
+                                   '<input type="button" class="btn btn-xs btn-danger select-btn Mod-3" value="删除" onclick="delMerchantUser(\''
+                                   + m.id + '\')">';
+                               }
+                               contentStr += '</td></tr>';
+                           }
+                           tab3_1_content.html(tab3_1_content.html() + contentStr);
+                           var contentStr2 = '';
+                           for (var j = 0; j < merchantWeiXinUsers.length; j++) {
+                               var w = merchantWeiXinUsers[j];
+
+                               var m2 = w.merchantUser;
+                               switch (m2.type) {
+                                   case 0:
+                                       contentStr2 += '<tr><td>收银员</td>';
+                                       break;
+                                   case 1:
+                                       contentStr2 += '<tr><td>店主</td>';
+                                       break;
+                                   case 2:
+                                       contentStr2 += '<tr><td>子账号</td>';
+                                       break;
+                                   case 8:
+                                       contentStr2 += '<tr><td>管理员账号</td>';
+                                       break;
+                                   case 9:
+                                       contentStr2 += '<tr><td>管理员(系统)</td>';
+                                       break;
+                                   default :
+                                       contentStr2 += '<tr><td>未知' + m2.type + '</td>';
+                               }
+                               contentStr2 += '<td>' + m2.name + '</td>';
+                               contentStr2 +=
+                               '<td><span><img class="merchant_information-tableImg" src="'
+                               + w.headImageUrl + '" alt=""></span><span>' + w.nickname
+                               + '</span></td>';
+                               contentStr2 +=
+                               '<td><input type="button" class="btn btn-xs btn-primary select-btn Mod-3" value="解除绑定" onclick="unbindWeixinUser(\''
+                               + w.id + '\')"></td></tr>';
+                           }
+                           tab3_2_content.html(tab3_2_content.html() + contentStr2);
+                           console.log(contentStr);
+                           console.log(contentStr2);
+                       }
+                   });
+        }
+        /******************************账号编辑 弹窗************************************/
+        function editMerchantUser(accountId) {  //新建时 accountId = -1
+            $("#account-name").val('');
+            $("#account-password").val('');
+            $("#accountId").val(accountId);
+            $.ajax({
+                       type: "get",
+                       async: false,
+                       url: "/manage/merchantUser/account?accountId=" + accountId,
+                       success: function (data) {
+                           var user = data.data.user;
+                           var shops = data.data.shops;
+                           if (user != null) {
+                               $("[name=checkbox]:checkbox").removeAttr("checked");
+                               $("#role").val('' + user.type);
+                               $("#account-name").val(user.name);
+                               $("#account-password").val(user.password);
+                               if (merchantNum == shops.length) {
+                                   $('#checkAlll').prop("checked", true);
+                                   $('#checkAlll').attr("checked", "checked");
+                               } else {
+                                   $("#checkAlll").removeAttr("checked");
+                               }
+                               for (var j = 0; j < shops.length; j++) {
+                                   $("input[type=checkbox][name=checkbox][value="
+                                     + shops[j].merchant.id + "]").prop("checked", true);
+                                   $("input[type=checkbox][name=checkbox][value="
+                                     + shops[j].merchant.id + "]").attr("checked", "checked");
+                               }
+                           }
+                       }
+                   });
+            $("#merchant_information-create").modal("toggle");
+        }
+        /******************************账号删除 弹窗************************************/
+        function delMerchantUser(accountId) {
+            $.ajax({
+                       type: "get",
+                       async: false,
+                       url: "/manage/merchantUser/account?accountId=" + accountId,
+                       success: function (data) {
+                           var user = data.data.user;
+                           var wxList = data.data.wxList;
+                           $('#delUserId').val(user.id);
+                           $('#accountName').html(user.name);
+                           if (wxList != null) {
+                               $('#bindNumber').html(wxList.length);
+                           } else {
+                               $('#bindNumber').html(0);
+                           }
+                           $("#merchant_information-del").modal("toggle");
+                       }
+                   });
+        }
+        /******************************微信账户解除绑定************************************/
+        function unbindWeixinUser(weixinUserId) {
+            $('#unbindWxId').val(weixinUserId);
+            $("#merchant_information-Unbind").modal("toggle");
         }
         /******************************获取商户号信息列表************************************/
         function showSettlement() {
@@ -202,44 +359,49 @@
                     <div class="tab-pane fade in active" id="tab1">
                         <div class="topDataShow">
                             <div>
-                                <div><img src="img/cdyh.png" alt=""></div>
+                                <div><img src="${resourceUrl}/merchantUser/img/cdyh.png" alt="">
+                                </div>
                                 <div>
                                     <p>商户锁定会员</p>
 
-                                    <p>300/5000</p>
+                                    <p><span id="binding_user"></span>/<span id="total_user"></span>
+                                    </p>
                                 </div>
                             </div>
                             <div>
-                                <div><img src="img/ljtd.png" alt=""></div>
+                                <div><img src="${resourceUrl}/merchantUser/img/ljtd.png" alt="">
+                                </div>
                                 <div>
                                     <p>名下门店(佣金/普通)</p>
 
-                                    <p>10/3</p>
+                                    <p><span id="LM_shops"></span>/<span id="PT_shops"></span></p>
                                 </div>
                             </div>
                             <div>
-                                <div><img src="img/cgff.png" alt=""></div>
+                                <div><img src="${resourceUrl}/merchantUser/img/cgff.png" alt="">
+                                </div>
                                 <div>
                                     <p>移动商户号(佣金/普通)</p>
 
-                                    <p>2/2</p>
+                                    <p><span id="LM_settle"></span>/<span id="PT_settle"></span></p>
                                 </div>
                             </div>
                             <div>
-                                <div><img src="img/tdl.png" alt=""></div>
+                                <div><img src="${resourceUrl}/merchantUser/img/tdl.png" alt="">
+                                </div>
                                 <div>
                                     <p>POS机</p>
 
-                                    <p>2</p>
+                                    <p><span id="pos"></span></p>
                                 </div>
                             </div>
                         </div>
                         <div class="merchant_information-showData ModRadius">
-                            <div>累计总流水：456元</div>
-                            <div>累计扫码流水:567元</div>
-                            <div>累计POS流水:678元</div>
-                            <div>累计收取红包:678元</div>
-                            <div>产生总佣金:678元</div>
+                            <div>累计总流水：<span id="totalMoney"></span>元</div>
+                            <div>累计扫码流水: <span id="totalScanMoney"></span>元</div>
+                            <div>累计POS流水: <span id="totalPosMoney"></span>元</div>
+                            <div>累计收取红包: <span id="totalCollectScore"></span>元</div>
+                            <div>产生总佣金: <span id="totalCommission">待定</span>元</div>
                         </div>
                         <div class="MODInput_row">
                             <div class="Mod-10" style="margin: 10px 0">
@@ -396,37 +558,10 @@
                                                     <th>操作</th>
                                                 </tr>
                                                 </thead>
-                                                <tbody>
-                                                <tr>
-                                                    <td>管理员</td>
-                                                    <td>4个</td>
-                                                    <td>caoguangyan</td>
-                                                    <td>******</td>
-                                                    <td>
-                                                        <input type="button"
-                                                               class="btn btn-xs btn-primary select-btn Mod-3"
-                                                               value="修改">
-                                                        <input type="button"
-                                                               class="btn btn-xs btn-danger select-btn Mod-3 merchant_information-del"
-                                                               value="删除">
-                                                    </td>
-                                                </tr>
+                                                <tbody id="tab3-1-content">
                                                 </tbody>
                                             </table>
                                         </div>
-                                        <nav class="pull-right">
-                                            <ul class="pagination pagination-lg">
-                                                <li><a href="#" aria-label="Previous"><span
-                                                        aria-hidden="true">«</span></a></li>
-                                                <li><a href="#" class="focusClass">1</a></li>
-                                                <li><a href="#">2</a></li>
-                                                <li><a href="#">3</a></li>
-                                                <li><a href="#">4</a></li>
-                                                <li><a href="#">5</a></li>
-                                                <li><a href="#" aria-label="Next"><span
-                                                        aria-hidden="true">»</span></a></li>
-                                            </ul>
-                                        </nav>
                                     </div>
                                 </div>
                             </div>
@@ -446,37 +581,11 @@
                                                     <th>操作</th>
                                                 </tr>
                                                 </thead>
-                                                <tbody>
-                                                <tr>
-                                                    <td>管理员</td>
-                                                    <td>cao2311</td>
-                                                    <td><span><img
-                                                            class="merchant_information-tableImg"
-                                                            src="#"
-                                                            alt=""></span><span>caoguangyan</span>
-                                                    </td>
-                                                    <td>
-                                                        <input type="button"
-                                                               class="btn btn-xs btn-primary select-btn Mod-3 merchant_information-Unbind"
-                                                               value="解除绑定">
-                                                    </td>
-                                                </tr>
+                                                <tbody id="tab3-2-content">
+
                                                 </tbody>
                                             </table>
                                         </div>
-                                        <nav class="pull-right">
-                                            <ul class="pagination pagination-lg">
-                                                <li><a href="#" aria-label="Previous"><span
-                                                        aria-hidden="true">«</span></a></li>
-                                                <li><a href="#" class="focusClass">1</a></li>
-                                                <li><a href="#">2</a></li>
-                                                <li><a href="#">3</a></li>
-                                                <li><a href="#">4</a></li>
-                                                <li><a href="#">5</a></li>
-                                                <li><a href="#" aria-label="Next"><span
-                                                        aria-hidden="true">»</span></a></li>
-                                            </ul>
-                                        </nav>
                                     </div>
                                 </div>
                             </div>
@@ -612,11 +721,14 @@
                         aria-hidden="true">×</span><span class="sr-only">Close</span></button>
                 <h4 class="modal-title">删除账号</h4>
             </div>
-            <div class="merchant_layer">
-                <p>确定要删除收银员账号<span> 213131231321 </span>码</p>
+            <input type="hidden" id="delUserId"/>
 
-                <p>删除该账号后，账号绑定的 <span>3</span> 个微信号也将自动解绑，请谨慎操作。</p>
-                <button class="ModButton ModButton_ordinary ModRadius" data-dismiss="modal">确定
+            <div class="merchant_layer">
+                <p>确定要删除账号 <span id="accountName"></span> 吗</p>
+
+                <p>删除该账号后，账号绑定的 <span id="bindNumber"></span> 个微信号也将自动解绑，请谨慎操作。</p>
+                <button class="ModButton ModButton_ordinary ModRadius" onclick="delUserSubmit()"
+                        data-dismiss="modal">确定
                 </button>
                 <button class="ModButton ModButton_worry ModRadius" data-dismiss="modal">取消</button>
             </div>
@@ -630,11 +742,14 @@
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal"><span
                         aria-hidden="true">×</span><span class="sr-only">Close</span></button>
-                <h4 class="modal-title">接触绑定</h4>
+                <h4 class="modal-title">解除绑定</h4>
             </div>
+            <input type="hidden" id="unbindWxId"/>
+
             <div class="merchant_layer">
                 <p>确定要解除绑定吗？</p>
-                <button class="ModButton ModButton_ordinary ModRadius" data-dismiss="modal">确定
+                <button class="ModButton ModButton_ordinary ModRadius"
+                        onclick="unbindWeixinUserSubmit()" data-dismiss="modal">确定
                 </button>
                 <button class="ModButton ModButton_worry ModRadius" data-dismiss="modal">取消</button>
             </div>
@@ -652,12 +767,14 @@
             </div>
             <div class="merchant_layer">
                 <div class="MODInput_row">
+                    <input type="hidden" id="accountId"/>
+
                     <div class="Mod-10">
-                        <div class="ModLabel ModRadius-left">所属合伙人</div>
+                        <div class="ModLabel ModRadius-left">账号角色</div>
                         <div class="Mod-6">
-                            <select class="hhr">
-                                <option value="1">合伙人11</option>
-                                <option value="2">合伙人2</option>
+                            <select id="role">
+                                <option value="2">子账号</option>
+                                <option value="9">系统管理员</option>
                             </select>
                         </div>
                     </div>
@@ -666,23 +783,30 @@
                         <div class="Mod-6 merchant_bigCheckBox">
                             <div class="Mod-2"><input type="checkbox"
                                                       id="checkAlll"/><span>全部门店</span></div>
+                            <c:forEach items="${merchants}" var="merchant">
+                                <div class="Mod-2">
+                                    <input type="checkbox" name="checkbox" value="${merchant.id}"/>
+                                    <span>${merchant.name}</span>
+                                </div>
+                            </c:forEach>
                         </div>
                     </div>
                     <div class="Mod-10">
                         <div class="ModLabel ModRadius-left">账号名</div>
                         <div class="Mod-6">
-                            <input class="ModRadius-right" placeholder="请输入4~16位汉字、字母或者数字">
+                            <input class="ModRadius-right" id="account-name"
+                                   placeholder="请输入4~16位汉字、字母或者数字">
                         </div>
                     </div>
                     <div class="Mod-10">
                         <div class="ModLabel ModRadius-left">密码</div>
                         <div class="Mod-6">
-                            <input class="ModRadius-right" placeholder="请输入密码">
+                            <input class="ModRadius-right" id="account-password"
+                                   placeholder="请输入密码">
                         </div>
                     </div>
                 </div>
-                <button class="ModButton ModButton_ordinary ModRadius" id="Checked"
-                        data-dismiss="modal">确定
+                <button class="ModButton ModButton_ordinary ModRadius" id="Checked">确定
                 </button>
                 <button class="ModButton ModButton_worry ModRadius" data-dismiss="modal">取消</button>
             </div>
@@ -691,6 +815,47 @@
 </div>
 
 <script>
+    //***********************保留2位小数*************************************
+    function toDecimal(x) {
+        var f = parseFloat(x);
+        if (isNaN(f)) {
+            return false;
+        }
+        var f = Math.round(x * 100) / 100;
+        var s = f.toString();
+        var rs = s.indexOf('.');
+        if (rs < 0) {
+            rs = s.length;
+            s += '.';
+        }
+        while (s.length <= rs + 2) {
+            s += '0';
+        }
+        return s;
+    }
+    /******************************商户首页上半部分数据统计************************************/
+    $(function () {
+        $.ajax({
+                   type: "get",
+                   url: "/manage/merchantUser/data/" + merchantUserId,
+                   success: function (data) {
+                       $('#binding_user').html(data.binding_user);
+                       $('#total_user').html(data.total_user);
+                       $('#LM_shops').html(data.LM_shops);
+                       $('#PT_shops').html(data.PT_shops);
+                       $('#LM_settle').html(data.LM_settle);
+                       $('#PT_settle').html(data.PT_settle);
+                       $('#pos').html(data.pos);
+                       $('#totalMoney').html(toDecimal((data.totalPrice_lj + data.totalPrice_fy
+                                                        + data.totalPrice_pos) / 100));
+                       $('#totalScanMoney').html(toDecimal((data.totalPrice_lj + data.totalPrice_fy)
+                                                           / 100));
+                       $('#totalPosMoney').html(toDecimal(data.totalPrice_pos / 100));
+                       $('#totalCollectScore').html(toDecimal((data.trueScore_lj + data.trueScore_fy
+                                                               + data.trueScore_pos) / 100));
+                   }
+               });
+    });
 
     Date.prototype.format = function (fmt) {
         var o = {
@@ -742,13 +907,17 @@
         $(".merchant_information-Unbind").click(function () {
             $("#merchant_information-Unbind").modal("toggle");
         });
-        $(".merchant_information-del").click(function () {
-            $("#merchant_information-del").modal("toggle");
-        });
+
         $(".merchant_information-save").click(function () {
             $("#merchant_information-save").modal("toggle");
         });
         $(".merchant_information-create").click(function () {
+            $("#account-name").val('');
+            $("#account-password").val('');
+            $("#accountId").val('');
+            $("[name=checkbox]:checkbox").removeAttr("checked");
+            $("#checkAlll").removeAttr("checked");
+
             $("#merchant_information-create").modal("toggle");
         });
     });
@@ -777,11 +946,6 @@
     };
     laydate(start);
     laydate(end);
-
-    //下拉模糊查询
-    $(function () {
-        $('.hhr').comboSelect();
-    });
 
     //账号管理标签切换
     $(".merchant_information-tab3Tab > div").click(function () {
@@ -862,17 +1026,6 @@
                 break;
         }
     }
-    //弹窗添加对应门店
-    for (var i = 0; i < 5; i++) {
-        $(".merchant_bigCheckBox").append(
-                $("<div></div>").attr("class", "Mod-2").append(
-                        $("<input />").attr("type", "checkbox").attr("name", "checkbox").attr("id",
-                                                                                              i)
-                ).append(
-                        $("<span></span>").html("门店1")
-                )
-        );
-    }
 
     //    全选
     $("[name=checkbox]").click(function () {
@@ -883,23 +1036,107 @@
         }
     });
     $("#checkAlll").click(function () {
-        var state = $("[name=checkbox]:checkbox").prop('checked');
-        $("[name=checkbox]:checkbox").prop('checked', !state);
+
         if ($(this).is(":checked")) {
+            $("[name=checkbox]:checkbox").prop("checked", true);
             $("[name=checkbox]:checkbox").attr("checked", "checked");
         } else {
+            $("[name=checkbox]:checkbox").prop("checked", false);
             $("[name=checkbox]:checkbox").removeAttr("checked");
         }
     });
+    /******************************账户修改或新建 提交************************************/
     $("#Checked").click(function () {
         var valArr = new Array;
+        var num = 0, selMerchantId = '';
+        var shopList = [];
+        var editId = $('#accountId').val();
+        var merchantUserDto = {};
+        var merchantUser = {};
         $("[name=checkbox]:checkbox[checked]").each(function (i) {
-            valArr[i] = $(this).attr("id");
+            valArr[i] = $(this).val();
+            var shop = {};
+            var mer = {};
+            mer.id = valArr[i];
+            shop.merchant = mer;
+            num++;
+            selMerchantId = valArr[i];
+            shopList.push(shop);
         });
-        var vals = valArr.join(',');
+        var vals = valArr.join('_');
         console.log(vals);
 
+        merchantUserDto.shopList = shopList;
+        merchantUser.id = editId;
+        merchantUser.createUserId = merchantUserId;
+        merchantUser.name = $("#account-name").val();
+        merchantUser.password = $("#account-password").val();
+        merchantUser.type = $("#role").val();
+        if ($("#role").val() == null) {
+            alert('请至少选择一个账号角色');
+            return
+        }
+        if (num < 1) {
+            alert('请至少选择一个门店');
+            return
+        }
+        if (merchantUser.name == null || merchantUser.name == '' || merchantUser.name.length < 4) {
+            alert('账号名不能低于4位');
+            return
+        }
+        if (merchantUser.password == null || merchantUser.password == ''
+            || merchantUser.password.length
+               < 4) {
+            alert('密码不能低于4位');
+            return
+        }
+        if (num == 1) {
+            var merchant = {};
+            merchant.id = selMerchantId;
+            merchantUser.merchant = merchant;
+        }
+        merchantUserDto.merchantUser = merchantUser;
+        console.log(merchantUserDto);
+        $.ajax({
+                   type: "put",
+                   url: "/manage/merchantUser/account",
+                   data: JSON.stringify(merchantUserDto),
+                   contentType: "application/json",
+                   success: function (data) {
+                       if (data.status == 200) {
+                           window.location.href =
+                           "/manage/merchantUser/info/" + merchantUserId + '?li=3';
+                       } else {
+                           alert(data.msg);
+                       }
+
+                   }
+               });
     });
+
+    /******************************账户删除 提交************************************/
+    function delUserSubmit() {
+        $.ajax({
+                   type: "delete",
+                   url: "/manage/merchantUser/delete/" + $('#delUserId').val(),
+                   success: function (data) {
+                       window.location.href =
+                       "/manage/merchantUser/info/" + merchantUserId + '?li=3';
+                   }
+               });
+    }
+    /******************************微信账户解除绑定 提交************************************/
+    function unbindWeixinUserSubmit() {
+        $.ajax({
+                   type: "post",
+                   url: "/manage/merchant/weiXinUser/" + $('#unbindWxId').val(),
+                   contentType: "application/json",
+                   success: function (data) {
+                       window.location.href =
+                       "/manage/merchantUser/info/" + merchantUserId + '?li=3';
+                   }
+               });
+    }
 </script>
 </body>
 </html>

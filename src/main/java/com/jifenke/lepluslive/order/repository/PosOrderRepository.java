@@ -26,5 +26,11 @@ public interface PosOrderRepository extends JpaRepository<PosOrder, Long> {
   @Query(value = "select count(a.id) from pos_order a" , nativeQuery = true)
   Integer countPosData();
 
-
+  /**
+   * 统计某个门店POS的累计流水和累计收取红包  2017/02/10
+   *
+   * @param merchantId 门店ID
+   */
+  @Query(value = "SELECT SUM(total_price),SUM(true_score) FROM pos_order WHERE state = 1 AND merchant_id = ?1", nativeQuery = true)
+  List<Object[]> countPriceByMerchant(Long merchantId);
 }

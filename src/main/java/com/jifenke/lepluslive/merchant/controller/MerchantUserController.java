@@ -1,16 +1,22 @@
 package com.jifenke.lepluslive.merchant.controller;
 
+import com.jifenke.lepluslive.global.util.JsonUtils;
 import com.jifenke.lepluslive.global.util.LejiaResult;
 import com.jifenke.lepluslive.global.util.MvUtil;
+import com.jifenke.lepluslive.merchant.controller.dto.MerchantUserDto;
 import com.jifenke.lepluslive.merchant.domain.criteria.MerchantUserCriteria;
 import com.jifenke.lepluslive.merchant.domain.entities.City;
+import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantUser;
 import com.jifenke.lepluslive.merchant.service.CityService;
 import com.jifenke.lepluslive.merchant.service.MerchantService;
 import com.jifenke.lepluslive.merchant.service.MerchantUserService;
+import com.jifenke.lepluslive.merchant.service.MerchantUserShopService;
+import com.jifenke.lepluslive.merchant.service.MerchantWeiXinUserService;
 import com.jifenke.lepluslive.partner.service.PartnerService;
 
 import org.springframework.data.domain.Page;
+import org.springframework.http.MediaType;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
@@ -37,6 +43,12 @@ public class MerchantUserController {
 
   @Inject
   private MerchantService merchantService;
+
+  @Inject
+  private MerchantUserShopService merchantUserShopService;
+
+  @Inject
+  private MerchantWeiXinUserService merchantWeiXinUserService;
 
 
   @RequestMapping("/merchantUser/list")
@@ -149,10 +161,21 @@ public class MerchantUserController {
                                   Model model) {
     MerchantUser merchantUser = merchantUserService.findById(id);
     model.addAttribute("m", merchantUser);
+    model.addAttribute("merchants", merchantService.countByMerchantUser(merchantUser));
     if (li != null) {
       model.addAttribute("li", li);
     }
     return MvUtil.go("/merchantUser/information");
+  }
+
+  /**
+   * 商户详细页上部分统计信息  2017/02/10
+   *
+   * @param id 商户ID
+   */
+  @RequestMapping(value = "/merchantUser/data/{id}", method = RequestMethod.GET)
+  public Map<String, Object> infoData(@PathVariable Long id) {
+    return merchantUserService.collection(id);
   }
 
   /**
@@ -164,5 +187,58 @@ public class MerchantUserController {
   public LejiaResult merchantList(@PathVariable Long id) {
     MerchantUser merchantUser = merchantUserService.findById(id);
     return LejiaResult.ok(merchantService.findByMerchantUser(merchantUser));
+  }
+
+  /**
+   * 获取商户下所有的账户和绑定微信号  2017/02/07
+   *
+   * @param id 商户ID
+   */
+  @RequestMapping(value = "/merchantUser/user/{id}", method = RequestMethod.GET)
+  public LejiaResult goMerchantUserPage(@PathVariable Long id) {
+    Map<String, Object> result = new HashMap<>();
+    List<MerchantUser>
+        merchantUsers = merchantUserService.findMerchantUsersByCreateUser(id);
+    result.put("merchantUsers", merchantUsers);
+    result.put("shops", merchantUserShopService.countByMerchantUserList(merchantUsers));
+    result.put("merchantWeiXinUsers",
+               merchantService.findmerchantWeixinUserByMerchanUsers(merchantUsers));
+    return LejiaResult.ok(result);
+  }
+
+  /**
+   * 编辑账户时获取账户信息  2017/02/08
+   *
+   * @param accountId 账户ID
+   */
+  @RequestMapping(value = "/merchantUser/account", method = RequestMethod.GET)
+  public LejiaResult editMerchantUser(@RequestParam Long accountId) {
+    Map<String, Object> result = new HashMap<>();
+    MerchantUser account = merchantUserService.findById(accountId);
+    result.put("user", account);
+    result.put("shops", merchantUserShopService.countByMerchantUser(account));
+    result.put("wxList", merchantWeiXinUserService.findMerchantWeiXinUserByMerchantUser(account));
+
+    return LejiaResult.ok(result);
+  }
+
+  /**
+   * 保存账户  2017/02/08
+   */
+  @RequestMapping(value = "/merchantUser/account", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
+  public LejiaResult saveMerchantUser(@RequestBody MerchantUserDto merchantUserDto) {
+    Map<String, String> result = merchantUserService
+        .editMerchantUser(merchantUserDto.getMerchantUser(), merchantUserDto.getShopList());
+
+    return LejiaResult.build(Integer.valueOf(result.get("status")), result.get("msg"));
+  }
+
+  /**
+   * 删除账户  2017/02/09
+   */
+  @RequestMapping(value = "/merchantUser/delete/{id}", method = RequestMethod.DELETE)
+  public LejiaResult deleteMerchantUser(@PathVariable Long id) {
+    merchantUserService.deleteMerchantUser(id);
+    return LejiaResult.ok();
   }
 }

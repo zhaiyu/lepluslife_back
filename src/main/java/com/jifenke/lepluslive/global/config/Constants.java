@@ -66,6 +66,21 @@ public final class Constants {
       FUYOU_PRI_KEY =
       "MIICdQIBADANBgkqhkiG9w0BAQEFAASCAl8wggJbAgEAAoGBAKrADjicUSALdyt/LxqFkNTury0MF92O84xdlVfvGbTyXk+PeJ3N2/LYcIH4HxfHVtEibCBCu4gTsM5hpp6tpsBfBYwnwxY0peSEOZ9EQmz3+9gCThG12m1yNjLYeraU/Gx7hqPX4/doS8urtR0Asum+FV5W3kAgjcukIsGn0kLnAgMBAAECgYAcbXMwq526Bw6lGDygXsJZIQ/bIRtMEMOth9sYU79k58EZ39oF88L9sFky2jta+x4SHXgA+vs70YNrKMjTvDd5o5aTQZpB48TKpJ8c206Up/Gm50HwWjqJHgC1tOnIWRq8qF7AU3zfKjaishz1nAt58z4PEMW+TzWHGe4v9vxz4QJBAOhlyj6QrtIuZ4dvmD/B6itvahTLQKY/WfdXRqbf8kPemxkcWscQT7+bnK+DrfDZhtRo2i7q6POvun0dIxOn3JcCQQC8F3eTzfj4HlIil9RsJjpVlg15rhc7ydQwVZRh2wZR14GV8+yGFogHh1Ba02EB+xQn03T0zoCce5BbDh2H1oYxAkAhDJi+XQT/junaMNyN9J3An4+OdXk0Kz44FolNoftp+3ZDE+008fTlYtPdgfRyk/zAqEie83k9bngu4r3iRbTxAkAfIv9fj2xUnqhYI6w9jwJ/IozuhLxB4IJo0fHzVQ+xwqwoB64y8E3qeSL7NhzL+CV5Bk9JK1otDWNzP13yG7gxAkBDabCAaVQKnhaSQCkUOE3YUFBbSNfkLElctxla/mMoxSJWU/J5ZCXQxd2LnuZmRfK5Txg0rECynJYnvbGldICp";
 
+  public static final String MSG_SENDER = "214"; //银联商务分配的渠道号
+  public static final String EVENT_NO = "666"; //银联商务活动号
+  public static final String
+      SHOP_QUERY_URL =
+      "http://dev.spserv.yxlm.chinaums.com:17201/spservice/shopquery/doShopQuery";//银商商户门店查询接口地址
+  public static final String
+      EVENT_PROCESS_URL =
+      "http://dev.spserv.yxlm.chinaums.com:17201/spservice/spevent/process";//活动注册接口地址
+  public static final String
+      BANK_SIGN_URL =
+      "http://dev.spserv.yxlm.chinaums.com:17201/spservice/spenc/doReSign";//卡号转加密接口地址
+  public static final String
+      BANK_REGISTER_URL =
+      "http://dev.spserv.yxlm.chinaums.com:17201/spservice/spmember/process";//会员注册接口地址
+
 
   private Constants() {
   }

@@ -219,7 +219,7 @@ public class MerchantService {
     origin.setLjCommission(merchant.getLjCommission());
     origin.setName(merchant.getName());
     origin.setLocation(merchant.getLocation());
-  //  origin.setPartner(merchant.getPartner());
+    //  origin.setPartner(merchant.getPartner());
     origin.setArea(merchant.getArea());
     origin.setUserLimit(merchant.getUserLimit());
     origin.setCity(merchant.getCity());
@@ -235,7 +235,7 @@ public class MerchantService {
     origin.setReceiptAuth(merchant.getReceiptAuth());
     origin.setPartnership(merchant.getPartnership());
     origin.setMemberCommission(merchant.getMemberCommission());
-   // origin.setMerchantUser(merchant.getMerchantUser());
+    // origin.setMerchantUser(merchant.getMerchantUser());
     long l = merchant.getId();
     origin.setSid((int) l);
     origin.setMerchantSid(sid);
@@ -285,8 +285,8 @@ public class MerchantService {
 
         if (merchantCriteria.getPartner() != null) {
           predicate.getExpressions().add(
-                  cb.equal(r.get("partner"),
-                          merchantCriteria.getPartner()));
+              cb.equal(r.get("partner"),
+                       merchantCriteria.getPartner()));
         }
         if (merchantCriteria.getMerchantName() != null
             && merchantCriteria.getMerchantName() != "") {
@@ -339,6 +339,9 @@ public class MerchantService {
     };
   }
 
+  /**
+   * fixme:待删除  2017/02/07
+   */
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public List<MerchantUser> findMerchantUsersByMerchant(Merchant merchant) {
     if (!merchantUserRepository.findByMerchantAndType(merchant, 1).isPresent()) {
@@ -351,6 +354,9 @@ public class MerchantService {
     return merchantUserRepository.findAllByMerchant(merchant);
   }
 
+  /**
+   * fixme:待删除  2017/02/09
+   */
   @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
   public void deleteMerchantUser(Long id) {
 
@@ -367,10 +373,10 @@ public class MerchantService {
       origin.setMerchant(findMerchantById(merchantUser.getMerchant().getId()));
       origin.setType(0);
     }
-    if(!merchantUser.getPassword().equals(origin.getPassword())) {
+    if (!merchantUser.getPassword().equals(origin.getPassword())) {
       // 编辑的时候判断密码是否修改
       origin.setPassword(MD5Util.MD5Encode(merchantUser.getPassword(), "UTF-8"));
-    }else if(merchantUser.getId()==null) {
+    } else if (merchantUser.getId() == null) {
       // 创建的时候直接添加
       origin.setPassword(MD5Util.MD5Encode(merchantUser.getPassword(), "UTF-8"));
     }
@@ -378,6 +384,9 @@ public class MerchantService {
     merchantUserRepository.save(origin);
   }
 
+  /**
+   * fixme:待删除
+   */
   @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
   public MerchantUser getMerchantUserById(Long id) {
     return merchantUserRepository.findOne(id);
@@ -604,21 +613,22 @@ public class MerchantService {
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public void changeMerchantWalletTotalTransferMoney(FinancialStatistic financialStatistic) {
-     //  更改商户钱包记录
-     MerchantWallet merchantWallet = findMerchantWalletByMerchant(financialStatistic.getMerchant());
-     Long totalTransferMoney =  merchantWallet.getTotalTransferMoney();
-     Long transferPrice =  financialStatistic.getTransferPrice();
-     merchantWallet.setTotalTransferMoney(totalTransferMoney+transferPrice);
-     //  生成钱包日志
-     MerchantWalletLog merchantWalletLog = new MerchantWalletLog();
-     merchantWalletLog.setType(4L);
-     merchantWalletLog.setBeforeChangeMoney(totalTransferMoney);
-     merchantWalletLog.setAfterChangeMoney(totalTransferMoney+transferPrice);
-     merchantWalletLog.setCreateDate(new Date());
-     if(merchantWallet.getMerchant()!=null)
+    //  更改商户钱包记录
+    MerchantWallet merchantWallet = findMerchantWalletByMerchant(financialStatistic.getMerchant());
+    Long totalTransferMoney = merchantWallet.getTotalTransferMoney();
+    Long transferPrice = financialStatistic.getTransferPrice();
+    merchantWallet.setTotalTransferMoney(totalTransferMoney + transferPrice);
+    //  生成钱包日志
+    MerchantWalletLog merchantWalletLog = new MerchantWalletLog();
+    merchantWalletLog.setType(4L);
+    merchantWalletLog.setBeforeChangeMoney(totalTransferMoney);
+    merchantWalletLog.setAfterChangeMoney(totalTransferMoney + transferPrice);
+    merchantWalletLog.setCreateDate(new Date());
+    if (merchantWallet.getMerchant() != null) {
       merchantWalletLog.setMerchantId(merchantWallet.getMerchant().getId());
-     merchantWalletLogRepository.save(merchantWalletLog);
-     merchantWalletRepository.save(merchantWallet);
+    }
+    merchantWalletLogRepository.save(merchantWalletLog);
+    merchantWalletRepository.save(merchantWallet);
   }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
@@ -701,13 +711,23 @@ public class MerchantService {
   }
 
   /**
-   * 查询某一商户下所有门店  2017/01/04
+   * 查询某一商户下所有门店(id,partnership,user_limit)  2017/01/04
    *
    * @param id 商户ID
    */
-  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
   public List<Object[]> countByMerchantUser(Long id) {
     return merchantRepository.countByMerchantUser(id);
+  }
+
+  /**
+   * 查询某一商户下所有门店  2017/01/24
+   *
+   * @param merchantUser 商户
+   */
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+  public List<Merchant> countByMerchantUser(MerchantUser merchantUser) {
+    return merchantRepository.findByMerchantUser(merchantUser);
   }
 
   /**
@@ -791,10 +811,11 @@ public class MerchantService {
    */
   @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
   public Integer countByBindMerchant(Long merchantId) {
-    return leJiaUserRepository.countByBindMerchant(merchantId);}
+    return leJiaUserRepository.countByBindMerchant(merchantId);
+  }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
   public List<Object[]> findAllMerchant() {
-    return  merchantRepository.findAllMerchant();
+    return merchantRepository.findAllMerchant();
   }
 }
