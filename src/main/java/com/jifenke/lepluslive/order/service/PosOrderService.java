@@ -34,6 +34,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -68,7 +69,7 @@ public class PosOrderService {
         Sort sort = new Sort(Sort.Direction.DESC, "createdDate");
         return posOrderRepository
                 .findAll(getWhereClause(posOrderCriteria),
-                        new PageRequest(posOrderCriteria.getOffset() - 1, limit, sort));
+                         new PageRequest(posOrderCriteria.getOffset() - 1, limit, sort));
     }
 
     public static Specification<PosOrder> getWhereClause(PosOrderCriteria orderCriteria) {
@@ -422,5 +423,25 @@ public class PosOrderService {
         }
     }
 
+  /**
+   * 统计某个门店POS的累计流水和累计收取红包  2017/02/10
+   *
+   * @param merchantId 门店ID
+   */
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+  public Map<String, Long> countPriceByMerchant(Long merchantId) {
+    List<Object[]> list = posOrderRepository.countPriceByMerchant(merchantId);
+    Map<String, Long> map = new HashMap<>();
+    Long totalPrice = 0L;
+    Long trueScore = 0L;
 
+    if (list != null && list.size() > 0) {
+      Object[] o = list.get(0);
+      totalPrice = Long.valueOf(String.valueOf(o[0] != null ? o[0] : 0));
+      trueScore = Long.valueOf(String.valueOf(o[1] != null ? o[1] : 0));
+    }
+    map.put("totalPrice_pos", totalPrice);
+    map.put("trueScore_pos", trueScore);
+    return map;
+  }
 }

@@ -35,4 +35,12 @@ public interface ScanCodeOrderRepository extends JpaRepository<ScanCodeOrder, St
    */
   @Query(value = "SELECT SUM(total_price),SUM(true_pay),SUM(true_score) FROM scan_code_order WHERE state = 1 AND merchant_num = ?1 AND complete_date >= ?2 AND complete_date < ?3", nativeQuery = true)
   List<Object[]> countByMerchantNumToday(String merchantNum, Date start, Date end);
+
+  /**
+   * 统计某个门店的累计流水和累计收取红包  2017/02/10
+   *
+   * @param merchantId 门店ID
+   */
+  @Query(value = "SELECT SUM(total_price),SUM(true_score) FROM scan_code_order WHERE state = 1 AND merchant_id = ?1", nativeQuery = true)
+  List<Object[]> countPriceByMerchant(Long merchantId);
 }

@@ -84,6 +84,14 @@ public class MerchantUser {
 
     private Long createUserId;                                                                  // 所属商户（管理员） ID
 
+  public Long getCreateUserId() {
+    return createUserId;
+  }
+
+  public void setCreateUserId(Long createUserId) {
+    this.createUserId = createUserId;
+  }
+
     public String getLinkMan() {
         return linkMan;
     }
@@ -156,11 +164,4 @@ public class MerchantUser {
         this.partner = partner;
     }
 
-    public Long getCreateUserId() {
-        return createUserId;
-    }
-
-    public void setCreateUserId(Long createUserId) {
-        this.createUserId = createUserId;
-    }
 }

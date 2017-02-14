@@ -214,7 +214,9 @@ public class MerchantController {
     return LejiaResult.ok("成功停用商户");
   }
 
-
+  /**
+   * fixme:待删除  2017/02/07 转移到merchantUserController
+   */
   @RequestMapping(value = "/merchant/user/{id}", method = RequestMethod.GET)
   public ModelAndView goMerchantUserPage(@PathVariable Long id, Model model) {
     Merchant merchant = merchantService.findMerchantById(id);
@@ -248,6 +250,9 @@ public class MerchantController {
     return MvUtil.go("/merchant/openStore");
   }
 
+  /**
+   * fixme:待删除  2017/02/09 转移到merchantUserController
+   */
   @RequestMapping(value = "/merchant/user/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
   public
   @ResponseBody
@@ -264,7 +269,9 @@ public class MerchantController {
     return LejiaResult.ok("成功解绑用户");
   }
 
-
+  /**
+   * fixme:待删除  2017/02/09
+   */
   @RequestMapping(value = "/merchant/user", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
   public
   @ResponseBody
@@ -277,7 +284,9 @@ public class MerchantController {
     return LejiaResult.ok("成功创建用户");
   }
 
-
+  /**
+   * fixme:待删除  2017/02/09
+   */
   @RequestMapping(value = "/merchant/user", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
   public
   @ResponseBody
@@ -290,6 +299,9 @@ public class MerchantController {
     return LejiaResult.ok("成功修改用户");
   }
 
+  /**
+   * fixme:待删除  2017/02/08 转移到merchantUserController
+   */
   @RequestMapping(value = "/merchant/user/{id}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
   public
   @ResponseBody
@@ -327,7 +339,7 @@ public class MerchantController {
     List<Integer> binds = merchantService.findBindLeJiaUsers(merchants);
     Map map = new HashMap();
     map.put("merchantList", page.getContent());
-    map.put("binds",binds);
+    map.put("binds", binds);
     return new ModelAndView(merchantViewExcel, map);
   }
 

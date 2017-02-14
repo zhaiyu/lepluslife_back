@@ -72,4 +72,12 @@ public interface OffLineOrderRepository extends JpaRepository<OffLineOrder, Long
 
   @Query(value = "SELECT true_price ,DATE_FORMAT(create_date,'%Y%m%d') FROM on_line_order WHERE    state NOT IN (0,4) ", nativeQuery = true)
   List<Object[]> findOnlineWxCommissionAndDate();
+
+  /**
+   * 统计某个门店的累计流水和累计收取红包  2017/02/10
+   *
+   * @param merchantId 门店ID
+   */
+  @Query(value = "SELECT SUM(total_price),SUM(true_score) FROM off_line_order WHERE state = 1 AND merchant_id = ?1", nativeQuery = true)
+  List<Object[]> countPriceByMerchant(Long merchantId);
 }
