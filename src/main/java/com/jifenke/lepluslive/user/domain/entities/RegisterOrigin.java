@@ -30,6 +30,16 @@ public class RegisterOrigin {
 
   private Integer originType; // 0 代表微信注册 1 代表app注册 2 代表商户注册
 
+  private String description; //注册描述
+
+  public String getDescription() {
+    return description;
+  }
+
+  public void setDescription(String description) {
+    this.description = description;
+  }
+
   public Long getId() {
     return id;
   }

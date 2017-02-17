@@ -56,6 +56,18 @@ public class LeJiaUser {
 
   private Date bindPartnerDate;
 
+  private Long cityId;
+
+
+  public Long getCityId() {
+    return cityId;
+  }
+
+  public void setCityId(Long cityId) {
+    this.cityId = cityId;
+  }
+
+
   public Merchant getBindMerchant() {
     return bindMerchant;
   }
