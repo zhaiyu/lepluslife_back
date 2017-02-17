@@ -27,7 +27,9 @@ import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Optional;
 
 import javax.inject.Inject;
@@ -309,9 +311,31 @@ public class OffLineOrderService {
     financialReviseRepository.save(financialRevise);
   }
 
-  @Transactional(propagation = Propagation.REQUIRED,readOnly = true)
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
   public FinancialStatistic findFinancialStatisticById(Long id) {
     FinancialStatistic financialStatistic = financialStatisticRepository.findOne(id);
     return financialStatistic;
+  }
+
+  /**
+   * 统计某个门店的累计流水和累计收取红包  2017/02/10
+   *
+   * @param merchantId 门店ID
+   */
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+  public Map<String, Long> countPriceByMerchant(Long merchantId) {
+    List<Object[]> list = offLineOrderRepository.countPriceByMerchant(merchantId);
+    Map<String, Long> map = new HashMap<>();
+    Long totalPrice = 0L;
+    Long trueScore = 0L;
+
+    if (list != null && list.size() > 0) {
+      Object[] o = list.get(0);
+      totalPrice = Long.valueOf(String.valueOf(o[0] != null ? o[0] : 0));
+      trueScore = Long.valueOf(String.valueOf(o[1] != null ? o[1] : 0));
+    }
+    map.put("totalPrice_lj", totalPrice);
+    map.put("trueScore_lj", trueScore);
+    return map;
   }
 }

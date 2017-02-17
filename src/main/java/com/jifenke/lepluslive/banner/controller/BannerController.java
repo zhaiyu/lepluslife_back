@@ -6,6 +6,7 @@ import com.jifenke.lepluslive.banner.service.BannerService;
 import com.jifenke.lepluslive.global.util.LejiaResult;
 import com.jifenke.lepluslive.global.util.MvUtil;
 import com.jifenke.lepluslive.merchant.domain.entities.City;
+import com.jifenke.lepluslive.merchant.service.AreaService;
 import com.jifenke.lepluslive.merchant.service.CityService;
 import com.jifenke.lepluslive.product.domain.entities.ProductType;
 import com.jifenke.lepluslive.product.service.ProductTypeService;
@@ -45,6 +46,8 @@ public class BannerController {
 
   @Inject
   private CityService cityService;
+  @Inject
+  private AreaService areaService;
 
   @Inject
   private ProductTypeService productTypeService;
@@ -225,4 +228,41 @@ public class BannerController {
       return LejiaResult.build(500, "删除失败");
     }
   }
+
+
+  /***************************************************** 启动广告管理 start ******************************************************/
+
+  //启动广告管理 页面
+  @RequestMapping(value = "/start_ad", method = RequestMethod.GET)
+  public ModelAndView go_start_ad(Model model) {
+    return MvUtil.go("/banner/start_ad");
+  }
+
+  //获取省份
+  @RequestMapping(value = "/start_ad/ajaxProvince", method = RequestMethod.POST)
+  @ResponseBody
+  public LejiaResult ajaxProvince() {
+    return LejiaResult.ok(cityService.getAllProvince());
+  }
+  //根据省 获取市
+  @RequestMapping(value = "/start_ad/ajaxCity", method = RequestMethod.POST)
+  @ResponseBody
+  public LejiaResult ajaxCity(String province) {
+    return LejiaResult.ok(cityService.getCityByProvince(province));
+  }
+  //根city_id 获取区县
+  @RequestMapping(value = "/start_ad/ajaxArea", method = RequestMethod.POST)
+  @ResponseBody
+  public LejiaResult ajaxArea(Long cityId) {
+    return LejiaResult.ok(areaService.getAreaByCityId(cityId));
+  }
+  //新建或修改-启动广告
+  @RequestMapping(value = "/start_ad/save_start_ad", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+  public LejiaResult save_start_ad(@RequestBody Banner banner) {
+    int status = bannerService.editBannerHomePage(banner);
+    return LejiaResult.build(status, "ok");
+  }
+
+  /***************************************************** 启动广告管理 end ******************************************************/
+
 }

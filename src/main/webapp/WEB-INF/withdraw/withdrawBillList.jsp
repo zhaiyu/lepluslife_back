@@ -392,7 +392,10 @@
                                contentStr +=
                                '<td>' + '<input type="hidden" class="id-hidden" value="'
                                + content[i].id + '" >'
-                               + '<button class="btn btn-primary reject" style="margin-top: 10px" >驳回 </button>&nbsp&nbsp&nbsp&nbsp&nbsp'
+                               + '<button class="btn btn-primary shareDetails" style="margin-top: 10px" >分润详情</button>'
+                               + '<button class="btn btn-primary reject" style="margin-top: 10px" >驳回 </button>'
+
+
                                if (content[i].billType == 0) {
                                    contentStr +=
                                    '<button class="btn btn-primary withdrawal" style="margin-top: 10px" >确认转账 </button>'
@@ -411,8 +414,15 @@
                                    + '<input type="hidden" class="name-hidden" value="'
                                    + content[i].merchant.name + '" >'
                                }
-                               contentStr += '</td>';
+
                            }
+                           else {
+                               contentStr +=
+                                       '<td>' + '<input type="hidden" class="id-hidden" value="'
+                                       + content[i].id + '" >'
+                                       + '<button class="btn btn-primary shareDetails" style="margin-top: 10px" >分润详情</button>'
+                           }
+                           contentStr += '</td>';
                            withdrawBillContent.innerHTML += contentStr;
                            //页面效果
                            $("#more").hide();
@@ -449,6 +459,19 @@
                                });
                            });
                        });
+
+
+                       $(".shareDetails").each(function (i) {
+                           $(".shareDetails").eq(i).bind("click", function () {
+                               var id = $(this).parent().find(".id-hidden").val();
+                               location.href = "/manage/withdrawBill/shareDetailsPage?id=" + id;
+                       });
+                       });
+
+
+
+
+
 
                        $(".withdrawal").each(function (i) {
                            $(".withdrawal").eq(i).bind("click", function () {

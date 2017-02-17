@@ -82,6 +82,16 @@ public class MerchantUser {
     @ManyToOne
     private Partner partner;            // 合伙人
 
+    private Long createUserId;                                                                  // 所属商户（管理员） ID
+
+  public Long getCreateUserId() {
+    return createUserId;
+  }
+
+  public void setCreateUserId(Long createUserId) {
+    this.createUserId = createUserId;
+  }
+
     public String getLinkMan() {
         return linkMan;
     }
@@ -153,4 +163,5 @@ public class MerchantUser {
     public void setPartner(Partner partner) {
         this.partner = partner;
     }
+
 }

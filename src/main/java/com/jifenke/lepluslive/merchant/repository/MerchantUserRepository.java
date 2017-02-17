@@ -27,6 +27,21 @@ public interface MerchantUserRepository extends JpaRepository<MerchantUser, Long
 
   Page findAll(Specification<MerchantUser> specification, Pageable pageRequest);
 
-  @Query(value="SELECT new MerchantUser(id,merchantName) FROM MerchantUser mu where mu.type =?1 ")
+  @Query(value = "SELECT new MerchantUser(id,merchantName) FROM MerchantUser mu where mu.type =?1 ")
   List<MerchantUser> findMerchantUserByType(Integer type);
+
+  /**
+   * 根据商户id获取商户名称  16/12/29
+   *
+   * @param id 商户ID
+   */
+  @Query(value = "SELECT merchant_name FROM merchant_user WHERE id = ?1", nativeQuery = true)
+  String findMerchantNameById(Long id);
+
+  /**
+   * 获取商户下所有的账户信息  2017/02/07
+   *
+   * @param createUserId 所属商户（管理员） ID
+   */
+  List<MerchantUser> findAllByCreateUserId(Long createUserId);
 }

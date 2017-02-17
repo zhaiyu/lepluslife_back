@@ -1,7 +1,7 @@
 package com.jifenke.lepluslive.activity.service;
 
 import com.jifenke.lepluslive.global.config.Constants;
-import com.jifenke.lepluslive.global.util.HttpUtils;
+import com.jifenke.lepluslive.global.util.HttpClientUtil;
 import com.jifenke.lepluslive.global.util.MD5Util;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -36,7 +36,7 @@ public class RechargeService {
     orderParams.put("api_key", phoneKey);
     String url = Constants.PHONE_CHECK + buildParams(orderParams);
 
-    return HttpUtils.get(url);
+    return HttpClientUtil.get(url);
   }
 
   /**
@@ -50,7 +50,7 @@ public class RechargeService {
     orderParams.put("api_key", phoneKey);
     String url = Constants.PHONE_STATUS + buildParams(orderParams);
 
-    return HttpUtils.get(url);
+    return HttpClientUtil.get(url);
   }
 
   /**
@@ -60,7 +60,7 @@ public class RechargeService {
     SortedMap<Object, Object> orderParams = new TreeMap<>();
     orderParams.put("api_key", phoneKey);
     String url = Constants.PHONE_BALANCE + buildParams(orderParams);
-    return HttpUtils.get(url);
+    return HttpClientUtil.get(url);
   }
 
   /**
@@ -78,7 +78,7 @@ public class RechargeService {
     orderParams.put("sp_order_id", orderSid);
     orderParams.put("api_key", phoneKey);
     String url = Constants.PHONE_SUBMIT + buildParams(orderParams);
-    return HttpUtils.get(url);
+    return HttpClientUtil.get(url);
   }
 
 

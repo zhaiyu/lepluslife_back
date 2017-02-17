@@ -7,6 +7,24 @@ import com.jifenke.lepluslive.global.config.Constants;
 import com.jifenke.lepluslive.global.util.MD5Util;
 import com.jifenke.lepluslive.global.util.MvUtil;
 import com.jifenke.lepluslive.merchant.domain.criteria.MerchantCriteria;
+import com.jifenke.lepluslive.merchant.domain.entities.City;
+import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
+import com.jifenke.lepluslive.merchant.domain.entities.MerchantInfo;
+import com.jifenke.lepluslive.merchant.domain.entities.MerchantScanPayWay;
+import com.jifenke.lepluslive.merchant.domain.entities.MerchantSettlementStore;
+import com.jifenke.lepluslive.merchant.domain.entities.MerchantType;
+import com.jifenke.lepluslive.merchant.domain.entities.MerchantUser;
+import com.jifenke.lepluslive.merchant.domain.entities.MerchantWallet;
+import com.jifenke.lepluslive.merchant.domain.entities.MerchantWalletOnline;
+import com.jifenke.lepluslive.merchant.domain.entities.MerchantWeiXinUser;
+import com.jifenke.lepluslive.merchant.repository.MerchantInfoRepository;
+import com.jifenke.lepluslive.merchant.repository.MerchantPosRepository;
+import com.jifenke.lepluslive.merchant.repository.MerchantProtocolRepository;
+import com.jifenke.lepluslive.merchant.repository.MerchantRepository;
+import com.jifenke.lepluslive.merchant.repository.MerchantTypeRepository;
+import com.jifenke.lepluslive.merchant.repository.MerchantUserRepository;
+import com.jifenke.lepluslive.merchant.repository.MerchantWalletOnlineRepository;
+import com.jifenke.lepluslive.merchant.repository.MerchantWalletRepository;
 import com.jifenke.lepluslive.merchant.domain.entities.*;
 import com.jifenke.lepluslive.merchant.repository.*;
 import com.jifenke.lepluslive.order.domain.entities.FinancialStatistic;
@@ -95,6 +113,15 @@ public class MerchantService {
   private MerchantWalletOnlineRepository walletOnlineRepository;
   @Inject
   private MerchantWalletLogRepository merchantWalletLogRepository;
+
+  @Inject
+  private MerchantScanPayWayService scanPayWayService;
+
+  @Inject
+  private MerchantSettlementStoreService merchantSettlementStoreService;
+
+  @Inject
+  private MerchantSettlementService merchantSettlementService;
 
   @Value("${bucket.ossBarCodeReadRoot}")
   private String barCodeRootUrl;
@@ -192,7 +219,7 @@ public class MerchantService {
     origin.setLjCommission(merchant.getLjCommission());
     origin.setName(merchant.getName());
     origin.setLocation(merchant.getLocation());
-    origin.setPartner(merchant.getPartner());
+    //  origin.setPartner(merchant.getPartner());
     origin.setArea(merchant.getArea());
     origin.setUserLimit(merchant.getUserLimit());
     origin.setCity(merchant.getCity());
@@ -208,7 +235,7 @@ public class MerchantService {
     origin.setReceiptAuth(merchant.getReceiptAuth());
     origin.setPartnership(merchant.getPartnership());
     origin.setMemberCommission(merchant.getMemberCommission());
-    origin.setMerchantUser(merchant.getMerchantUser());
+    // origin.setMerchantUser(merchant.getMerchantUser());
     long l = merchant.getId();
     origin.setSid((int) l);
     origin.setMerchantSid(sid);
@@ -258,8 +285,8 @@ public class MerchantService {
 
         if (merchantCriteria.getPartner() != null) {
           predicate.getExpressions().add(
-                  cb.equal(r.get("partner"),
-                          merchantCriteria.getPartner()));
+              cb.equal(r.get("partner"),
+                       merchantCriteria.getPartner()));
         }
         if (merchantCriteria.getMerchantName() != null
             && merchantCriteria.getMerchantName() != "") {
@@ -312,6 +339,9 @@ public class MerchantService {
     };
   }
 
+  /**
+   * fixme:待删除  2017/02/07
+   */
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public List<MerchantUser> findMerchantUsersByMerchant(Merchant merchant) {
     if (!merchantUserRepository.findByMerchantAndType(merchant, 1).isPresent()) {
@@ -324,6 +354,9 @@ public class MerchantService {
     return merchantUserRepository.findAllByMerchant(merchant);
   }
 
+  /**
+   * fixme:待删除  2017/02/09
+   */
   @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
   public void deleteMerchantUser(Long id) {
 
@@ -340,10 +373,10 @@ public class MerchantService {
       origin.setMerchant(findMerchantById(merchantUser.getMerchant().getId()));
       origin.setType(0);
     }
-    if(!merchantUser.getPassword().equals(origin.getPassword())) {
+    if (!merchantUser.getPassword().equals(origin.getPassword())) {
       // 编辑的时候判断密码是否修改
       origin.setPassword(MD5Util.MD5Encode(merchantUser.getPassword(), "UTF-8"));
-    }else if(merchantUser.getId()==null) {
+    } else if (merchantUser.getId() == null) {
       // 创建的时候直接添加
       origin.setPassword(MD5Util.MD5Encode(merchantUser.getPassword(), "UTF-8"));
     }
@@ -351,6 +384,9 @@ public class MerchantService {
     merchantUserRepository.save(origin);
   }
 
+  /**
+   * fixme:待删除
+   */
   @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
   public MerchantUser getMerchantUserById(Long id) {
     return merchantUserRepository.findOne(id);
@@ -577,21 +613,22 @@ public class MerchantService {
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public void changeMerchantWalletTotalTransferMoney(FinancialStatistic financialStatistic) {
-     //  更改商户钱包记录
-     MerchantWallet merchantWallet = findMerchantWalletByMerchant(financialStatistic.getMerchant());
-     Long totalTransferMoney =  merchantWallet.getTotalTransferMoney();
-     Long transferPrice =  financialStatistic.getTransferPrice();
-     merchantWallet.setTotalTransferMoney(totalTransferMoney+transferPrice);
-     //  生成钱包日志
-     MerchantWalletLog merchantWalletLog = new MerchantWalletLog();
-     merchantWalletLog.setType(4L);
-     merchantWalletLog.setBeforeChangeMoney(totalTransferMoney);
-     merchantWalletLog.setAfterChangeMoney(totalTransferMoney+transferPrice);
-     merchantWalletLog.setCreateDate(new Date());
-     if(merchantWallet.getMerchant()!=null)
+    //  更改商户钱包记录
+    MerchantWallet merchantWallet = findMerchantWalletByMerchant(financialStatistic.getMerchant());
+    Long totalTransferMoney = merchantWallet.getTotalTransferMoney();
+    Long transferPrice = financialStatistic.getTransferPrice();
+    merchantWallet.setTotalTransferMoney(totalTransferMoney + transferPrice);
+    //  生成钱包日志
+    MerchantWalletLog merchantWalletLog = new MerchantWalletLog();
+    merchantWalletLog.setType(4L);
+    merchantWalletLog.setBeforeChangeMoney(totalTransferMoney);
+    merchantWalletLog.setAfterChangeMoney(totalTransferMoney + transferPrice);
+    merchantWalletLog.setCreateDate(new Date());
+    if (merchantWallet.getMerchant() != null) {
       merchantWalletLog.setMerchantId(merchantWallet.getMerchant().getId());
-     merchantWalletLogRepository.save(merchantWalletLog);
-     merchantWalletRepository.save(merchantWallet);
+    }
+    merchantWalletLogRepository.save(merchantWalletLog);
+    merchantWalletRepository.save(merchantWallet);
   }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
@@ -671,5 +708,114 @@ public class MerchantService {
     Merchant merchant = merchantRepository.findByPartnerAndPartnership(origin, 2);
     merchant.setName(origin.getPartnerName() + "(合伙人)");
     merchantRepository.save(merchant);
+  }
+
+  /**
+   * 查询某一商户下所有门店(id,partnership,user_limit)  2017/01/04
+   *
+   * @param id 商户ID
+   */
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+  public List<Object[]> countByMerchantUser(Long id) {
+    return merchantRepository.countByMerchantUser(id);
+  }
+
+  /**
+   * 查询某一商户下所有门店  2017/01/24
+   *
+   * @param merchantUser 商户
+   */
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+  public List<Merchant> countByMerchantUser(MerchantUser merchantUser) {
+    return merchantRepository.findByMerchantUser(merchantUser);
+  }
+
+  /**
+   * 查询某一商户下所有门店的详细信息  2017/01/09
+   *
+   * @param merchantUser 商户
+   */
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  public List<Map<String, Object>> findByMerchantUser(MerchantUser merchantUser) {
+    List<Map<String, Object>> result = new ArrayList<>();
+    List<Merchant> list = merchantRepository.findByMerchantUser(merchantUser);
+    if (list != null && list.size() > 0) {
+      for (Merchant m : list) {
+        Map<String, Object> map = new HashMap<>();
+        map.put("id", m.getId());
+        map.put("sid", m.getMerchantSid());
+        map.put("city", m.getCity().getName());
+        map.put("type", m.getMerchantType().getName());
+        map.put("name", m.getName());
+        map.put("merchantName",
+                m.getMerchantUser() != null ? m.getMerchantUser().getMerchantName() : "未知");
+        map.put("partner", m.getPartner() != null ? m.getPartner().getPartnerName() : "未知");
+        map.put("partnership", m.getPartnership());
+        MerchantScanPayWay scanPayWay = scanPayWayService.findByMerchantId(m.getId());
+        //商户结算类型及费率
+        if (scanPayWay != null) {
+          map.put("rate", scanPayWay.getCommission()); //佣金协议，仅仅做展示用，理论和实际一致
+          map.put("payWay", scanPayWay.getType());
+          if (scanPayWay.getType() == 0) { //富友结算
+            MerchantSettlementStore
+                store =
+                merchantSettlementStoreService.findByMerchantId(m.getId());
+            if (store != null) {
+              if (store.getCommonSettlementId() != 0) {
+                map.put("common",
+                        merchantSettlementService.findById(store.getCommonSettlementId())
+                            .getCommission());
+              }
+              if (store.getAllianceSettlementId() != 0) {
+                map.put("alliance",
+                        merchantSettlementService.findById(store.getAllianceSettlementId())
+                            .getCommission());
+              }
+            }
+          } else if (scanPayWay.getType() == 1) { //乐加结算
+            if (m.getPartnership() == 0) {
+              map.put("common", m.getLjCommission());
+            } else {
+              map.put("common", m.getLjBrokerage());
+              map.put("alliance", m.getLjCommission());
+            }
+          }
+        } else {
+          map.put("payWay", 1); //乐加结算
+          if (m.getPartnership() == 0) {
+            map.put("common", m.getLjCommission());
+          } else {
+            map.put("common", m.getLjBrokerage());
+            map.put("alliance", m.getLjCommission());
+          }
+        }
+
+        map.put("pos", merchantPosRepository.countByMerchant(m.getId())); //POS数量
+        map.put("limit", m.getUserLimit());
+        map.put("bind", countByBindMerchant(m.getId()));
+        map.put("shop", m.getState()); //乐店开启状态
+        map.put("receipt", m.getReceiptAuth()); //收款权限为1
+        map.put("createDate", m.getCreateDate());
+        result.add(map);
+      }
+    }
+
+    return result;
+  }
+
+  /**
+   * 获取某个门店绑定的会员数量 17/01/05
+   *
+   * @param merchantId 门店ID
+   * @return 数量
+   */
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+  public Integer countByBindMerchant(Long merchantId) {
+    return leJiaUserRepository.countByBindMerchant(merchantId);
+  }
+
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+  public List<Object[]> findAllMerchant() {
+    return merchantRepository.findAllMerchant();
   }
 }

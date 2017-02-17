@@ -285,10 +285,10 @@
                         </div>
                         <div>
                             <div>
-                                <span>普通手续费</span><input type="number" class="form-control" name="wxUserCommission"/><span>%</span>
+                                <span>普通手续费</span><input type="number" class="form-control" name="wxCommission"/><span>%</span>
                             </div>
                             <div>
-                                <input type="checkbox"><span>开通佣金</span><input type="number" class="form-control"  name="wxCommission"/><span>%</span>
+                                <input id="wxUser" type="checkbox" onclick="isChecked('wxUserCommission','wxUser')"><span>开通佣金</span><input type="number" class="form-control"  name="wxUserCommission" id="wxUserCommission"/><span>%</span>
                             </div>
                         </div>
                     </div>
@@ -302,10 +302,10 @@
                         </div>
                         <div>
                             <div>
-                                <span>普通手续费</span><input type="number" class="form-control"  name="aliUserCommission" /><span>%</span>
+                                <span>普通手续费</span><input type="number" class="form-control"  name="aliCommission" /><span>%</span>
                             </div>
                             <div>
-                                <input type="checkbox" checked="checked" ><span>开通佣金</span><input type="number" class="form-control" name="aliCommission"/><span>%</span>
+                                <input id="aliUser" type="checkbox" onclick="isChecked('aliUserCommission','aliUser')"><span>开通佣金</span><input type="number" class="form-control" name="aliUserCommission" id="aliUserCommission"/><span>%</span>
                             </div>
                         </div>
                     </div>
@@ -383,7 +383,7 @@
                async: false,
                dataType: 'json',
                success: function (data) {
-                   console.log(data[0]);
+//                   console.log(data[0]);
                    var dataStr1 = '',
                            dataStr2 = '';
                    $.each(data, function (i) {
@@ -487,7 +487,7 @@
                    success: function (data) {
                        var page = data.data;
                        var content = page.content;
-                       console.log(JSON.stringify(content));
+//                       console.log(JSON.stringify(content));
                        var totalPage = page.totalPages;
                        $("#totalElements").html(page.totalElements);
                        if (totalPage == 0) {
@@ -512,18 +512,18 @@
                            //  微信
                            if(content[i].wxCommission==null&&content[i].wxUserCommission==null) {
                                contentStr+='<td>未开通</td>';
-                           }else if(content[i].wxCommission==null&&content[i].wxUserCommission!=null) {
-                               contentStr+='<td><h5>手续费：'+content[i].wxUserCommission +'%  </h5><h5>佣金： 未开通 </h5></td>';
+                           }else if(content[i].wxCommission!=null&&content[i].wxUserCommission==null) {
+                               contentStr+='<td><h5>手续费：'+content[i].wxCommission +'%  </h5><h5>佣金： 未开通 </h5></td>';
                            }else {
-                                contentStr+='<td><h5>手续费：'+content[i].wxUserCommission+'% </h5><h5>佣金： '+content[i].wxCommission+' %  </h5></td>';
+                                contentStr+='<td><h5>手续费：'+content[i].wxCommission+'% </h5><h5>佣金： '+content[i].wxUserCommission+' %  </h5></td>';
                            }
                            //  支付宝
                            if(content[i].aliCommission==null&&content[i].aliUserCommission==null) {
                                contentStr+='<td>未开通</td>';
-                           }else if(content[i].aliCommission==null&&content[i].aliUserCommission!=null) {
-                               contentStr+='<td><h5>手续费：'+content[i].aliUserCommission +'%  </h5><h5>佣金： 未开通 </h5></td>';
+                           }else if(content[i].aliCommission!=null&&content[i].aliUserCommission==null) {
+                               contentStr+='<td><h5>手续费：'+content[i].aliCommission +'%  </h5><h5>佣金： 未开通 </h5></td>';
                            }else {
-                               contentStr+='<td><h5>手续费：'+content[i].aliUserCommission+'% </h5><h5>佣金： '+content[i].aliCommission+' %  </h5></td>';
+                               contentStr+='<td><h5>手续费：'+content[i].aliCommission+'% </h5><h5>佣金： '+content[i].aliUserCommission+' %  </h5></td>';
                            }
                            //  操作
                            contentStr+='<td><button type="button" class="btn btn-default createWarn" onclick="editPos('+content[i].id+')">编辑</button></td>';
@@ -645,6 +645,20 @@
             $("input[name=wxCommission]").val(pos.wxCommission);
             $("input[name=wxUserCommission]").val(pos.wxUserCommission);
             $("input[name=aliUserCommission]").val(pos.aliUserCommission);
+            if(pos.wxUserCommission!=null) {
+                $("#wxUser").attr("checked",true);
+                $("input[name=wxUserCommission]").removeAttr("disabled");
+            }else {
+                $("#aliUser").attr("checked",false);
+                $("input[name=wxUserCommission]").attr("disabled","disabled");
+            }
+            if(pos.aliUserCommission!=null) {
+                $("#aliUser").attr("checked",true);
+                $("input[name=aliUserCommission]").removeAttr("disabled");
+            }else {
+                $("#aliUser").attr("checked",false);
+                $("input[name=aliUserCommission]").attr("disabled","disabled");
+            }
             $("#createWarn").modal();
         },"json");
     }
@@ -691,6 +705,17 @@
                 location.href="/manage/pos";
             }
         });
+    }
+
+    function isChecked(id,check) {
+        var inputForWrite = $("#"+id);
+        var isCheck = $(this).is(":checked");
+        if(isCheck){
+            $(this).next().removeAttr("disabled");
+        }else {
+            inputForWrite.val('');
+            $(this).next().attr("disabled","disabled");
+        }
     }
 </script>
 

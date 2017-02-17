@@ -85,6 +85,44 @@ public class Product implements Serializable {
   @ManyToOne
   private Category mark; //商品角标  为null时无角标
 
+  private Integer isBackRed;    //是否返红包 1返 0不返
+  private Integer backRedType;  //返红包类型 1比例返还 2金额返还
+  private Integer backRatio;    //返还比例
+  private Integer backMoney;    //返还金额
+
+
+  public Integer getBackMoney() {
+    return backMoney;
+  }
+
+  public void setBackMoney(Integer backMoney) {
+    this.backMoney = backMoney;
+  }
+
+  public Integer getBackRatio() {
+    return backRatio;
+  }
+
+  public void setBackRatio(Integer backRatio) {
+    this.backRatio = backRatio;
+  }
+
+  public Integer getBackRedType() {
+    return backRedType;
+  }
+
+  public void setBackRedType(Integer backRedType) {
+    this.backRedType = backRedType;
+  }
+
+  public Integer getIsBackRed() {
+    return isBackRed;
+  }
+
+  public void setIsBackRed(Integer isBackRed) {
+    this.isBackRed = isBackRed;
+  }
+
   public String getQrCodePicture() {
     return qrCodePicture;
   }

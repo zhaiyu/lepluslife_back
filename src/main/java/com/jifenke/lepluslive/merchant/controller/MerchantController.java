@@ -33,6 +33,8 @@ import java.util.Map;
 
 import javax.inject.Inject;
 
+import springfox.documentation.spring.web.json.Json;
+
 /**
  * Created by wcg on 16/3/17.
  */
@@ -70,6 +72,15 @@ public class MerchantController {
   @Inject
   private MerchantUserService merchantUserService;
 
+  @Inject
+  private MerchantScanPayWayService merchantScanPayWayService;
+
+  @Inject
+  private MerchantSettlementStoreService merchantSettlementStoreService;
+
+  @Inject
+  private MerchantSettlementService merchantSettlementService;
+
   @RequestMapping(value = "/merchant", method = RequestMethod.GET)
   public ModelAndView goShowMerchantPage(Model model) {
     model.addAttribute("merchantTypes", merchantService.findAllMerchantTypes());
@@ -99,31 +110,53 @@ public class MerchantController {
   }
 
 
+  /**
+   * 创建门店页面  2017/01/10
+   *
+   * @param merchantUserId 商户ID
+   */
   @RequestMapping(value = "/merchant/edit", method = RequestMethod.GET)
-  public ModelAndView goCreateMerchantPage(Model model) {
-    model.addAttribute("merchantUsers",merchantUserService.findAllManager());
+  public ModelAndView goCreateMerchantPage(@RequestParam Long merchantUserId, Model model) {
+    model.addAttribute("merchantUser", merchantUserService.findById(merchantUserId));
     model.addAttribute("merchantTypes", merchantService.findAllMerchantTypes());
     model.addAttribute("partners", partnerService.findAllParter());
     List<SalesStaff> salesStaffList = salesService.findAllSaleStaff();
     model.addAttribute("sales", salesStaffList);
-    return MvUtil.go("/merchant/merchantCreate");
+    //新加内容 01/10
+    //获取商户所有的商户号
+    model.addAttribute("settlementList",
+                       merchantSettlementService.findByMerchantUser(merchantUserId));
+    return MvUtil.go("/merchant/edit");
   }
 
+  /**
+   * 修改门店页面  2017/01/10
+   *
+   * @param id 门店ID
+   */
   @RequiresPermissions("merchant:edit")
   @RequestMapping(value = "/merchant/edit/{id}", method = RequestMethod.GET)
   public ModelAndView goEditMerchantPage(@PathVariable Long id, Model model) {
-    model.addAttribute("merchant", merchantService.findMerchantById(id));
+    Merchant merchant = merchantService.findMerchantById(id);
+    model.addAttribute("merchant", merchant);
     model.addAttribute("merchantTypes", merchantService.findAllMerchantTypes());
-    model.addAttribute("merchantUsers", merchantUserService.findAllManager());
+    model.addAttribute("merchantUser", merchant.getMerchantUser());
     model.addAttribute("partners", partnerService.findAllParter());
     model.addAttribute("merchantRebatePolicy", merchantReBatePolicyService.findByMerchant(id));
-    Merchant merchant=merchantService.findMerchantById(id);
-    SalesStaff salesStaff=merchant.getSalesStaff();
-    model.addAttribute("salesStaff",salesStaff);
+    SalesStaff salesStaff = merchant.getSalesStaff();
+    model.addAttribute("salesStaff", salesStaff);
     List<SalesStaff> salesStaffList = salesService.findAllSaleStaff();
-    salesStaffList.remove(salesStaff);
+//    salesStaffList.remove(salesStaff);
     model.addAttribute("sales", salesStaffList);
-    return MvUtil.go("/merchant/merchantCreate");
+    //新加内容 01/10
+    //获取商户所有的商户号
+    model.addAttribute("settlementList", merchantSettlementService
+        .findByMerchantUser(merchant.getMerchantUser().getId()));
+    //获取门店结算方式和使用商户号信息 (没有就创建)
+    model.addAttribute("scanPayWay", merchantScanPayWayService.findByMerchantId(id));
+    model.addAttribute("store", merchantSettlementStoreService.findByMerchantId(id));
+
+    return MvUtil.go("/merchant/edit");
   }
 
   @RequestMapping(value = "/merchant", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -133,19 +166,44 @@ public class MerchantController {
     MerchantRebatePolicy policy = merchantDto.getMerchantRebatePolicy();
     policy.setMerchantId(merchant.getId());
     merchantReBatePolicyService.saveMerchantRebatePolicy(policy);
+    //新加内容 01/13
+    //保存支付方式和商户号使用信息
+    MerchantScanPayWay scanPayWay = merchantDto.getMerchantScanPayWay();
+    scanPayWay.setMerchantId(merchant.getId());
+    MerchantSettlementStore store = merchantDto.getMerchantSettlementStore();
+    store.setMerchantId(merchant.getId());
+    try {
+      merchantScanPayWayService.savePayWay(scanPayWay);
+      merchantSettlementStoreService.saveSettlementStore(store);
+    } catch (Exception e) {
+      e.printStackTrace();
+      return LejiaResult.build(500, "创建异常");
+    }
+
     return LejiaResult.ok("添加商户成功");
   }
 
   @RequestMapping(value = "/merchant", method = RequestMethod.PUT)
-  public LejiaResult eidtMerchant(@RequestBody MerchantDto merchantDto) {
+  public LejiaResult editMerchant(@RequestBody MerchantDto merchantDto) {
     Merchant merchant = merchantDto.getMerchant();
     merchantService.editMerchant(merchant);
     MerchantRebatePolicy policy = merchantDto.getMerchantRebatePolicy();
-    if(policy.getId()==null) {
+    if (policy.getId() == null) {
       policy.setMerchantId(merchant.getId());
       merchantReBatePolicyService.saveMerchantRebatePolicy(policy);
     }
     merchantReBatePolicyService.editMerchantRebatePolicy(policy);
+    //新加内容 01/13
+    //保存支付方式和商户号使用信息
+    MerchantScanPayWay scanPayWay = merchantDto.getMerchantScanPayWay();
+    MerchantSettlementStore store = merchantDto.getMerchantSettlementStore();
+    try {
+      merchantScanPayWayService.savePayWay(scanPayWay);
+      merchantSettlementStoreService.saveSettlementStore(store);
+    } catch (Exception e) {
+      e.printStackTrace();
+      return LejiaResult.build(500, "修改异常");
+    }
     return LejiaResult.ok("修改商户成功");
   }
 
@@ -156,7 +214,9 @@ public class MerchantController {
     return LejiaResult.ok("成功停用商户");
   }
 
-
+  /**
+   * fixme:待删除  2017/02/07 转移到merchantUserController
+   */
   @RequestMapping(value = "/merchant/user/{id}", method = RequestMethod.GET)
   public ModelAndView goMerchantUserPage(@PathVariable Long id, Model model) {
     Merchant merchant = merchantService.findMerchantById(id);
@@ -165,7 +225,8 @@ public class MerchantController {
         merchantUsers =
         merchantService.findMerchantUsersByMerchant(merchant);
     model.addAttribute("merchantUsers", merchantUsers);
-    model.addAttribute("merchantWeiXinUsers",merchantService.findmerchantWeixinUserByMerchanUsers(merchantUsers));
+    model.addAttribute("merchantWeiXinUsers",
+                       merchantService.findmerchantWeixinUserByMerchanUsers(merchantUsers));
     return MvUtil.go("/merchant/merchantUser");
   }
 
@@ -189,6 +250,9 @@ public class MerchantController {
     return MvUtil.go("/merchant/openStore");
   }
 
+  /**
+   * fixme:待删除  2017/02/09 转移到merchantUserController
+   */
   @RequestMapping(value = "/merchant/user/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
   public
   @ResponseBody
@@ -205,7 +269,9 @@ public class MerchantController {
     return LejiaResult.ok("成功解绑用户");
   }
 
-
+  /**
+   * fixme:待删除  2017/02/09
+   */
   @RequestMapping(value = "/merchant/user", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
   public
   @ResponseBody
@@ -218,7 +284,9 @@ public class MerchantController {
     return LejiaResult.ok("成功创建用户");
   }
 
-
+  /**
+   * fixme:待删除  2017/02/09
+   */
   @RequestMapping(value = "/merchant/user", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
   public
   @ResponseBody
@@ -231,6 +299,9 @@ public class MerchantController {
     return LejiaResult.ok("成功修改用户");
   }
 
+  /**
+   * fixme:待删除  2017/02/08 转移到merchantUserController
+   */
   @RequestMapping(value = "/merchant/user/{id}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
   public
   @ResponseBody
@@ -258,9 +329,9 @@ public class MerchantController {
     if (merchantCriteria.getOffset() == null) {
       merchantCriteria.setOffset(1);
     }
-    if(!"0".equals(city)){
+    if (!"0".equals(city)) {
       merchantCriteria.setCity(Long.parseLong(city));
-    }else {
+    } else {
       merchantCriteria.setCity(null);
     }
     Page page = merchantService.findMerchantsByPage(merchantCriteria, 10000);
@@ -268,7 +339,7 @@ public class MerchantController {
     List<Integer> binds = merchantService.findBindLeJiaUsers(merchants);
     Map map = new HashMap();
     map.put("merchantList", page.getContent());
-    map.put("binds",binds);
+    map.put("binds", binds);
     return new ModelAndView(merchantViewExcel, map);
   }
 
@@ -277,9 +348,9 @@ public class MerchantController {
     Merchant merchant = merchantService.findMerchantById(id);
     List list = merchantService.findAllPosByMerchant(merchant);
     model.addAttribute(list);
-    model.addAttribute("posList",list);
-    model.addAttribute("merchantId",id);
-    model.addAttribute("merchantName",merchant.getName());
+    model.addAttribute("posList", list);
+    model.addAttribute("merchantId", id);
+    model.addAttribute("merchantName", merchant.getName());
     return MvUtil.go("/merchant/merchantPosManage");
   }
 

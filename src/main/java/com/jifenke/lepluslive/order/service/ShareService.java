@@ -85,6 +85,10 @@ public class ShareService {
           predicate.getExpressions().add(
               cb.like(r.get("offLineOrder").get("orderSid"),  "%" +shareCriteria.getOrderSid()+ "%"));
         }
+        if (shareCriteria.getLockPartnerManager() != null && shareCriteria.getLockPartnerManager() != "") {
+          predicate.getExpressions().add(
+                  cb.like(r.get("lockPartnerManager").get("name"),  "%" +shareCriteria.getLockPartnerManager()+ "%"));
+        }
 
         return predicate;
       }
@@ -95,5 +99,14 @@ public class ShareService {
   public OffLineOrderShare findOneByOrderId(Long id) {
     return offLineOrderShareRepository.findOneByOrderId(id);
 
+  }
+
+  /**
+   * 根据富友订单查询分润单  2016/12/22
+   *
+   * @param orderId 订单ID
+   */
+  public OffLineOrderShare findByScanCodeOrder(String orderId) {
+    return offLineOrderShareRepository.findByScanCodeOrder(orderId);
   }
 }
