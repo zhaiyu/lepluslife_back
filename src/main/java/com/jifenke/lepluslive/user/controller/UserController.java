@@ -8,8 +8,10 @@ import com.jifenke.lepluslive.order.service.OrderService;
 import com.jifenke.lepluslive.partner.domain.entities.Partner;
 import com.jifenke.lepluslive.score.domain.entities.ScoreA;
 import com.jifenke.lepluslive.score.domain.entities.ScoreB;
+import com.jifenke.lepluslive.score.domain.entities.ScoreC;
 import com.jifenke.lepluslive.score.service.ScoreAService;
 import com.jifenke.lepluslive.score.service.ScoreBService;
+import com.jifenke.lepluslive.score.service.ScoreCService;
 import com.jifenke.lepluslive.user.controller.dto.LeJiaUserDto;
 import com.jifenke.lepluslive.user.domain.criteria.LeJiaUserCriteria;
 import com.jifenke.lepluslive.user.domain.entities.LeJiaUser;
@@ -52,6 +54,9 @@ public class UserController {
   private ScoreBService scoreBService;
 
   @Inject
+  private ScoreCService scoreCService;
+
+  @Inject
   private OrderService orderService;
 
   @Inject
@@ -83,6 +88,7 @@ public class UserController {
       LeJiaUserDto leJiaUserDto = new LeJiaUserDto();
       ScoreA scoreA = scoreAService.findScoreAByWeiXinUser(leJiaUser);
       ScoreB scoreB = scoreBService.findScoreBByWeiXinUser(leJiaUser);
+      ScoreC scoreC = scoreCService.findScoreBByWeiXinUser(leJiaUser);
       WeiXinUser weiXinUser = leJiaUser.getWeiXinUser();
       try {
         BeanUtils.copyProperties(leJiaUserDto, leJiaUser);
@@ -90,6 +96,8 @@ public class UserController {
         leJiaUserDto.setTotalScoreA(scoreA.getTotalScore());
         leJiaUserDto.setScoreB(scoreB.getScore());
         leJiaUserDto.setTotalScoreB(scoreB.getTotalScore());
+        if(scoreC!=null)
+          leJiaUserDto.setScoreC(scoreC.getScore());
         leJiaUserDto.setOnLineCount(orderService.countUserConsumptionTimes(leJiaUser));
         leJiaUserDto.setHeadImageUrl(weiXinUser != null ? weiXinUser.getHeadImageUrl() : null);
         leJiaUserDto.setNickname(weiXinUser != null ? weiXinUser.getNickname() : null);

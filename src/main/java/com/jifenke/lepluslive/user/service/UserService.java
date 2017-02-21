@@ -171,7 +171,21 @@ public class UserService {
               cb.between(r.get("createDate"), new Date(userCriteria.getStartDate()),
                          new Date(userCriteria.getEndDate())));
         }
-
+        // 注册时间
+        if (userCriteria.getRegistStartDate() != null && (!""
+                .equals(userCriteria.getRegistStartDate()))) {
+          predicate.getExpressions().add(
+                  cb.between(r.get("phoneBindDate"), new Date(userCriteria.getRegistStartDate()),
+                          new Date(userCriteria.getRegistEndDate())));
+        }
+        // 运营城市
+        if(userCriteria.getOpaCity()!=null && !"".equals(userCriteria.getOpaCity())) {
+          predicate.getExpressions().add(cb.equal(r.get("cityId"),userCriteria.getOpaCity()));
+        }
+        // 关注来源
+        if(userCriteria.getRegisterOriginType()!=null && !"".equals(userCriteria.getRegisterOriginType())) {
+          predicate.getExpressions().add(cb.equal(r.get("registerOrigin").get("originType"),userCriteria.getRegisterOriginType()));
+        }
         return predicate;
       }
     };

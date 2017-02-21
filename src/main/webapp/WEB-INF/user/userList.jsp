@@ -103,7 +103,7 @@
                     <div class="form-group col-md-2">
                         <label for="city">所在城市</label>
                         <select class="form-control" id="city">
-                            <option value="0">全部分类</option>
+                            <option value="0">全部城市</option>
                             <c:forEach items="${cities}" var="city">
                                 <option value="${city.id}">${city.name}</option>
                             </c:forEach>
@@ -115,7 +115,8 @@
                             <option value="1">已关注</option>
                             <option value="0">未关注</option>
                             <%--  0 或 2 --%>
-                        </select></div>
+                        </select>
+                    </div>
                     <div class="form-group col-md-2">
                         <label for="massRemain">本月群发余额</label>
                         <select class="form-control" id="massRemain">
@@ -126,7 +127,8 @@
                             <option value="2">2</option>
                             <option value="1">1</option>
                             <option value="0">0</option>
-                        </select></div>
+                        </select>
+                    </div>
 
                     <div class="form-group col-md-4">
                         <label for="date-end">创建时间</label>
@@ -134,6 +136,35 @@
                         <div id="date-end" class="form-control">
                             <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
                             <span id="searchDateRange"></span>
+                            <b class="caret"></b>
+                        </div>
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <label for="opaCity">运营城市</label>
+                        <select class="form-control" id="opaCity">
+                            <option value="-1">全部城市</option>
+                            <c:forEach items="${cities}" var="city">
+                                <option value="${city.id}">${city.name}</option>
+                            </c:forEach>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-2">
+                        <label for="subFrom">关注来源</label>
+                        <select class="form-control" id="subFrom">
+                            <option value="-1">全部来源</option>
+                            <option value="0">微信注册</option>
+                            <option value="1">APP注册</option>
+                            <option value="2">商户注册</option>
+                        </select>
+                    </div>
+
+                    <div class="form-group col-md-4">
+                        <label for="date-regist">注册时间</label>
+                        <div id="date-regist" class="form-control">
+                            <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
+                                <span id="registDate"></span>
                             <b class="caret"></b>
                         </div>
                     </div>
@@ -181,6 +212,7 @@
                             <th class="text-center">绑合伙人时间</th>
                             <th class="text-center">红包</th>
                             <th class="text-center">积分</th>
+                            <th class="text-center">金币</th>
                             <th class="text-center">群发余额</th>
                             <th class="text-center">操作</th>
                         </tr>
@@ -378,6 +410,51 @@
                     $('#date-end span').html(start.format('YYYY/MM/DD HH:mm:ss') + ' - '
                                              + end.format('YYYY/MM/DD HH:mm:ss'));
                 });
+
+                $('#date-regist').daterangepicker({
+                    maxDate: moment(), //最大时间
+                    showDropdowns: true,
+                    showWeekNumbers: false, //是否显示第几周
+                    timePicker: true, //是否显示小时和分钟
+                    timePickerIncrement: 60, //时间的增量，单位为分钟
+                    timePicker12Hour: false, //是否使用12小时制来显示时间
+                    ranges: {
+                        '最近1小时': [moment().subtract('hours', 1),
+                            moment()],
+                        '今日': [moment().startOf('day'), moment()],
+                        '昨日': [moment().subtract('days',
+                                1).startOf('day'),
+                            moment().subtract('days',
+                                    1).endOf('day')],
+                        '最近7日': [moment().subtract('days', 6),
+                            moment()],
+                        '最近30日': [moment().subtract('days', 29),
+                            moment()]
+                    },
+                    opens: 'right', //日期选择框的弹出位置
+                    buttonClasses: ['btn btn-default'],
+                    applyClass: 'btn-small btn-primary blue',
+                    cancelClass: 'btn-small',
+                    format: 'YYYY-MM-DD HH:mm:ss', //控件中from和to 显示的日期格式
+                    separator: ' to ',
+                    locale: {
+                        applyLabel: '确定',
+                        cancelLabel: '取消',
+                        fromLabel: '起始时间',
+                        toLabel: '结束时间',
+                        customRangeLabel: '自定义',
+                        daysOfWeek: ['日', '一', '二', '三', '四', '五',
+                            '六'],
+                        monthNames: ['一月', '二月', '三月', '四月', '五月',
+                            '六月',
+                            '七月', '八月', '九月', '十月', '十一月',
+                            '十二月'],
+                        firstDay: 1
+                    }
+                }, function (start, end, label) {//格式化日期显示框
+                    $('#date-regist span').html(start.format('YYYY/MM/DD HH:mm:ss') + ' - '
+                            + end.format('YYYY/MM/DD HH:mm:ss'));
+                });
             });
         });
         userCriteria.offset = 1;
@@ -470,6 +547,13 @@
                                '<td><span>' + content[i].scoreA / 100 + '</span></td>';
                                contentStr +=
                                '<td><span>' + content[i].scoreB + '</span></td>';
+                               if(content[i].scoreC!=null && content[i].scoreC!='') {
+                                   contentStr +=
+                                           '<td><span>' + content[i].scoreC/100 + '</span></td>';
+                               }else {
+                                   contentStr +=
+                                           '<td><span>' + 0 + '</span></td>';
+                               }
                                contentStr +=
                                '<td><span>' + content[i].massRemain + '</span></td>';
                                if (content[i].phoneNumber == null) {
@@ -641,6 +725,23 @@
             userCriteria.province = $("#province").val();
         } else {
             userCriteria.province = null;
+        }
+        if ($("#opaCity").val() != 0) {
+            userCriteria.opaCity = $("#opaCity").val();
+        } else {
+            userCriteria.opaCity = null;
+        }
+        if ($("#subFrom").val() != -1 && $("#subFrom").val() != '') {
+            userCriteria.registerOriginType = $("#subFrom").val();
+        } else {
+            userCriteria.registerOriginType = null;
+        }
+        var registDate = $('#date-regist span').text().split("-");
+        if (registDate != null && registDate != '') {
+            var registStartDate = registDate[0].replace(/-/g, "/");
+            var registEndDate = registDate[1].replace(/-/g, "/");
+            userCriteria.registStartDate = registStartDate;
+            userCriteria.registEndDate = registEndDate;
         }
         getUserByAjax(userCriteria);
     }

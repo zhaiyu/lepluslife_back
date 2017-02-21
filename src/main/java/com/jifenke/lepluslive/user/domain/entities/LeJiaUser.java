@@ -36,7 +36,7 @@ public class LeJiaUser {
 
   private Date createDate = new Date();
 
-  private Date phoneBindDate;
+  private Date phoneBindDate;                                 //   注册时间
 
   @OneToOne(fetch = FetchType.LAZY)
   private WeiXinUser weiXinUser;
@@ -44,7 +44,7 @@ public class LeJiaUser {
   private String phoneNumber;
 
   @ManyToOne
-  private RegisterOrigin registerOrigin;
+  private RegisterOrigin registerOrigin;                       //  关注来源
 
   @ManyToOne
   private Merchant bindMerchant;
@@ -56,7 +56,7 @@ public class LeJiaUser {
 
   private Date bindPartnerDate;
 
-  private Long cityId;
+  private Long cityId;                                          // 运营城市ID
 
 
   public Long getCityId() {

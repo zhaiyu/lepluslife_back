@@ -229,4 +229,14 @@ public class LeJiaUserDto {
   public void setPartnerName(String partnerName) {
     this.partnerName = partnerName;
   }
+
+  private Long scoreC;
+
+  public Long getScoreC() {
+    return scoreC;
+  }
+
+  public void setScoreC(Long scoreC) {
+    this.scoreC = scoreC;
+  }
 }
