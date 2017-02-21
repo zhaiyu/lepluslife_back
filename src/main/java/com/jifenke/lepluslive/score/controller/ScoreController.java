@@ -7,8 +7,10 @@ import com.jifenke.lepluslive.score.domain.entities.ScoreA;
 
 import com.jifenke.lepluslive.score.domain.entities.ScoreB;
 
+import com.jifenke.lepluslive.score.domain.entities.ScoreC;
 import com.jifenke.lepluslive.score.service.ScoreAService;
 import com.jifenke.lepluslive.score.service.ScoreBService;
+import com.jifenke.lepluslive.score.service.ScoreCService;
 import com.jifenke.lepluslive.user.domain.entities.LeJiaUser;
 import com.jifenke.lepluslive.user.service.UserService;
 
@@ -42,6 +44,9 @@ public class ScoreController {
   private ScoreBService scoreBService;
 
   @Inject
+  private ScoreCService scoreCService;
+
+  @Inject
   private UserService leJiaUserService;
 
   @RequestMapping(value = "/list/{id}", method = RequestMethod.GET)
@@ -50,12 +55,15 @@ public class ScoreController {
     //累计获得红包和积分
     ScoreA scoreA = scoreAService.findScoreAByWeiXinUser(leJiaUser);
     ScoreB scoreB = scoreBService.findScoreBByWeiXinUser(leJiaUser);
+    ScoreC scoreC = scoreCService.findScoreCByWeiXinUser(leJiaUser);
     model.addAttribute("user", leJiaUser);
     model.addAttribute("id", id);
     model.addAttribute("scoreA", scoreA != null ? scoreA.getTotalScore() : -1);
     model.addAttribute("scoreAID", scoreA != null ? scoreA.getId() : -1);
     model.addAttribute("scoreB", scoreB != null ? scoreB.getTotalScore() : -1);
     model.addAttribute("scoreBID", scoreB != null ? scoreB.getId() : -1);
+    model.addAttribute("scoreC", scoreC != null ? scoreC.getTotalScore() : -1);
+    model.addAttribute("scoreCID", scoreC != null ? scoreC.getId() : -1);
     return MvUtil.go("/score/scoreList");
   }
 
@@ -78,6 +86,18 @@ public class ScoreController {
       scoreCriteria.setOffset(1);
     }
     Page page = scoreBService.findScoreBDetailByPage(scoreCriteria, 10);
+    return LejiaResult.ok(page);
+  }
+
+
+  @RequestMapping(value = "/listC", method = RequestMethod.POST)
+  public
+  @ResponseBody
+  LejiaResult listC(@RequestBody ScoreCriteria scoreCriteria) {
+    if (scoreCriteria.getOffset() == null) {
+      scoreCriteria.setOffset(1);
+    }
+    Page page = scoreCService.findScoreCDetailByPage(scoreCriteria, 10);
     return LejiaResult.ok(page);
   }
 

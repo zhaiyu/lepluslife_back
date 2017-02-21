@@ -25,7 +25,6 @@ import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
@@ -88,7 +87,7 @@ public class UserController {
       LeJiaUserDto leJiaUserDto = new LeJiaUserDto();
       ScoreA scoreA = scoreAService.findScoreAByWeiXinUser(leJiaUser);
       ScoreB scoreB = scoreBService.findScoreBByWeiXinUser(leJiaUser);
-      ScoreC scoreC = scoreCService.findScoreBByWeiXinUser(leJiaUser);
+      ScoreC scoreC = scoreCService.findScoreCByWeiXinUser(leJiaUser);
       WeiXinUser weiXinUser = leJiaUser.getWeiXinUser();
       try {
         BeanUtils.copyProperties(leJiaUserDto, leJiaUser);
