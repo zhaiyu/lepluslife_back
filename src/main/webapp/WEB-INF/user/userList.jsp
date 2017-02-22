@@ -224,7 +224,9 @@
                     <div class="tcdPageCode" style="display: inline;">
                     </div>
                     <div style="display: inline;"> 共有 <span id="totalElements"></span> 个</div>
-
+                    <button class="btn btn-primary" style="margin-top: -10px;float: right;"
+                            onclick="exportExcel()">导出表格
+                    </button>
                 </div>
             </div>
         </div>
@@ -665,7 +667,8 @@
         }
         return fmt;
     }
-    function searchUserByCriteria(i) {
+    //  设置条件
+    function condition() {
         userCriteria.offset = 1;
         search = i;
         init1 = 1;
@@ -726,7 +729,7 @@
         } else {
             userCriteria.province = null;
         }
-        if ($("#opaCity").val() != 0) {
+        if ($("#opaCity").val() != -1 && $("#subFrom").val() != '') {
             userCriteria.opaCity = $("#opaCity").val();
         } else {
             userCriteria.opaCity = null;
@@ -743,6 +746,10 @@
             userCriteria.registStartDate = registStartDate;
             userCriteria.registEndDate = registEndDate;
         }
+    }
+    //  条件查询
+    function searchUserByCriteria(i) {
+        condition();
         getUserByAjax(userCriteria);
     }
     function sendMassToAll() {
@@ -777,6 +784,11 @@
     }
     function serchSendRecord() {
         location.href = "/manage/shortMessagesListPage";
+    }
+    // 导出 EXCEL
+    function exportExcel() {
+        condition();
+        location.href = '/manage/userExport?condition=' + JSON.stringify(userCriteria);
     }
 </script>
 </body>

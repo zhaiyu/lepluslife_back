@@ -2,7 +2,6 @@ package com.jifenke.lepluslive.score.service;
 
 import com.jifenke.lepluslive.score.domain.criteria.ScoreCriteria;
 import com.jifenke.lepluslive.score.domain.entities.ScoreB;
-import com.jifenke.lepluslive.score.domain.entities.ScoreBDetail;
 import com.jifenke.lepluslive.score.domain.entities.ScoreC;
 import com.jifenke.lepluslive.score.domain.entities.ScoreCDetail;
 import com.jifenke.lepluslive.score.repository.ScoreCDetailRepository;
