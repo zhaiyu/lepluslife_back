@@ -26,6 +26,44 @@
           href="${resourceUrl}/merchantUser/css/create-edit-store.css"/>
     <script type="text/javascript" src="${resourceUrl}/js/jquery-2.0.3.min.js"></script>
 </head>
+<style>
+    .create_edit-addyjcl > div, .create_edit-addhbcl > div {
+        margin-bottom: 10px;
+    }
+
+    .create_edit-addyjcl > div *, .create_edit-addhbcl > div * {
+        float: left;
+    }
+
+    .create_edit-addyjcl input，.create_edit-addhbcl input {
+        margin: 0 6px;
+        border: 1px solid #ccc;
+        -webkit-border-radius: 2px;
+        -moz-border-radius: 2px;
+        border-radius: 2px;
+    }
+
+    .create_edit-addyjcl button, .create_edit-addhbcl button {
+        border: 1px solid #ccc;
+        -webkit-border-radius: 2px;
+        -moz-border-radius: 2px;
+        border-radius: 2px;
+        padding: 0 1%;
+        margin-left: 5px;
+    }
+
+    .yjcl_del {
+        color: #fff;
+        background-color: #c9302c;
+        border-color: #ac2925 !important;
+    }
+
+    .create_edit-addyjcl > div:after, .create_edit-addhbcl > div:after {
+        content: '\20';
+        display: block;
+        clear: both;
+    }
+</style>
 <body>
 <div id="topIframe">
     <%@include file="../common/top.jsp" %>
@@ -286,6 +324,129 @@
                 break;
         }
     }
+    function yjclInit() {
+        if (${merchantRebatePolicy!=null&&merchantRebatePolicy.commissionStages!=null}) {
+            var j = "<c:forEach var='commissionStage' items='${merchantRebatePolicy.commissionStages}' varStatus='loop'>";
+            j +=
+            "<c:if test="${!loop.last}"><c:if test="${!loop.first}"><div class='w'></c:if><c:if test="${loop.first}"><div></c:if>"
+            j +=
+            "<div class='Mod-3'><div class='firstData'>${commissionStage.start/100.0}</div><div>~</div><input type='number' class='Mod-4 lastData' value='${commissionStage.end/100.0}'></div><div class='Mod-3'><span>佣金费率</span><input type='number' value='${commissionStage.commissionScale}' class='Mod-4 collectionData collect_jy'><span>%</span></div>"
+            j +=
+            "<div class='Mod-3'><span>金币返点</span><input type='number' value='${commissionStage.scoreCScale}' class='Mod-4 collectionData collect_jb'><span>%</span></div><c:if test="${!loop.first}"><button class='yjcl_del' onclick='yjclDel(this)'>删除</button></c:if></div></c:if>"
+            j +=
+            "<c:if test="${loop.last}"><div class='addyjcl_add'><button onclick='addArea(this)'>添加区段</button></div><div><div class='Mod-3'><div>大于</div><div class='finalData'>${commissionStage.start/100.0}</div></div><div class='Mod-3'><span>佣金费率</span><input type='number' value='${commissionStage.commissionScale}' class='Mod-4'><span>%</span></div><div class='Mod-3'><span>金币返点</span><input type='number' class='Mod-4' value='${commissionStage.scoreCScale}'><span>%</span></div></div></c:if>"
+            j += "</c:forEach>"
+            $(".create_edit-addyjcl").append(j)
+        } else {
+            yjcl()
+        }
+
+    }
+    function hbclInit() {
+        if (${merchantRebatePolicy!=null&&merchantRebatePolicy.rebateStages!=null}) {
+            var j = "<c:forEach var='rebateStage' items='${merchantRebatePolicy.rebateStages}' varStatus='loop'>";
+            j +=
+            "<c:if test="${!loop.last}"><c:if test="${!loop.first}"><div class='w'><div class='Mod-3'><div class='firstData'>${rebateStage.start/100.0}</div><div>~</div><input type='number' class='Mod-4 lastData' value='${rebateStage.end/100.0}'></div><div class='Mod-6'><span>送鼓励金</span><input type='number' value='${rebateStage.rebateStart/100.0}' class='Mod-4 collect_start'><span>~</span><input type='number' class='Mod-4 collect_end' value='${rebateStage.rebateEnd/100.0}'></div><button class='yjcl_del' onclick='yjclDel(this)'>删除</button></div></c:if><c:if test="${loop.first}"><div><div class='Mod-3'><div class='firstData'>${rebateStage.start/100.0}</div><div>~</div><input type='number' class='Mod-4 lastData' value='${rebateStage.end/100.0}'></div><div class='Mod-6'><span>送鼓励金</span><input type='number' value='${rebateStage.rebateStart/100.0}' class='Mod-4 collect_start'><span>~</span><input type='number' class='Mod-4 collect_end' value='${rebateStage.rebateEnd/100.0}'></div></div></c:if></c:if>"
+            j +=
+            "<c:if test="${loop.last}"><div class='addhbcl_add'><button onclick='addArea1(this)'>添加区段</button></div><div><div class='Mod-3'><div>大于</div><div class='finalData'>${rebateStage.start/100.0}</div></div><div class='Mod-6'><span>送鼓励金</span><input type='number' value='${rebateStage.rebateStart/100.0}' class='Mod-4'><span>~</span><input type='number' value='${rebateStage.rebateEnd/100.0}' class='Mod-4'></div></div></c:if>"
+            j += "</c:forEach>"
+            $(".create_edit-addhbcl").append(j)
+        } else {
+            var stages = "${rebateStage}".split("_");
+            for (i; i < stages.length - 1; i++) {
+                var array = stages[i].replace("(", "").replace(")", "").split(",")
+                if (i == 0) {
+                    $(".create_edit-addhbcl").append(
+                            $("<div></div>").append(
+                                    $("<div></div>").attr("class", "Mod-3").append(
+                                            $("<div class='firstData'></div>").html(array[0])
+                                    ).append(
+                                            $("<div></div>").html("~")
+                                    ).append(
+                                            $("<input>").attr("type", "number").attr("class",
+                                                                                     "Mod-4 lastData").attr("value",
+                                                                                                            array[1]).val(array[1])
+                                    )
+                            ).append(
+                                    $("<div></div>").attr("class", "Mod-6").append(
+                                            $("<span></span>").html("送鼓励金")
+                                    ).append(
+                                            $("<input>").attr("type", "number").attr("class",
+                                                                                     "Mod-4").attr("value",
+                                                                                                   array[2])
+                                    ).append(
+                                            $("<span></span>").html("~")
+                                    ).append(
+                                            $("<input>").attr("type", "number").attr("class",
+                                                                                     "Mod-4").attr("value",
+                                                                                                   array[3])
+                                    )
+                            )
+                    )
+                } else {
+                    $(".create_edit-addhbcl").append(
+                            $("<div class='w'></div>").append(
+                                    $("<div></div>").attr("class", "Mod-3").append(
+                                            $("<div class='firstData'></div>").html(array[0])
+                                    ).append(
+                                            $("<div></div>").html("~")
+                                    ).append(
+                                            $("<input>").attr("type", "number").attr("class",
+                                                                                     "Mod-4 lastData").attr("value",
+                                                                                                            array[1]).val(array[1])
+                                    )
+                            ).append(
+                                    $("<div></div>").attr("class", "Mod-6").append(
+                                            $("<span></span>").html("送鼓励金")
+                                    ).append(
+                                            $("<input>").attr("type", "number").attr("class",
+                                                                                     "Mod-4 collect_start").attr("value",
+                                                                                                                 array[2])
+                                    ).append(
+                                            $("<span></span>").html("~")
+                                    ).append(
+                                            $("<input>").attr("type", "number").attr("class",
+                                                                                     "Mod-4 collect_end").attr("value",
+                                                                                                               array[3])
+                                    )
+                            )
+                    )
+                }
+
+            }
+            var array = stages[stages.length - 1].replace("(", "").replace(")", "").split(",")
+            $(".create_edit-addhbcl").append(
+                    $("<div></div>").attr("class", "addhbcl_add").append(
+                            $("<button></button>").attr("onclick", "addArea1(this)").html("添加区段")
+                    )
+            ).append(
+                    $("<div></div>").append(
+                            $("<div></div>").attr("class", "Mod-3").append(
+                                    $("<div></div>").html("大于")
+                            ).append(
+                                    $("<div></div>").attr("class", "finalData").html(array[0])
+                            )
+                    ).append(
+                            $("<div></div>").attr("class", "Mod-6").append(
+                                    $("<span></span>").html("送鼓励金")
+                            ).append(
+                                    $("<input>").attr("type", "number").attr("class",
+                                                                             "Mod-4").attr("class",
+                                                                                           "Mod-4").attr("value",
+                                                                                                         array[2])
+                            ).append(
+                                    $("<span></span>").html("~")
+                            ).append(
+                                    $("<input>").attr("type", "number").attr("class",
+                                                                             "Mod-4").attr("class",
+                                                                                           "Mod-4").attr("value",
+                                                                                                         array[3])
+                            )
+                    )
+            )
+        }
+
+    }
 
     function filling2(title, id) {
         var filling = $("<div></div>").attr("class", "MODInput_row ModFilling").append(
@@ -338,11 +499,13 @@
                         $("#b-policy").attr("checked", true);
                         $("input[name=lm-userScoreAScale]").val(${merchantRebatePolicy.userScoreAScale});        // 会员发放红包 【比例】
                         $("input[name=lm-userScoreBScale]").val(${merchantRebatePolicy.userScoreBScale});        // 会员发放红包 【比例】
+                        $("input[name=lm-userScoreCScale]").val(${merchantRebatePolicy.userScoreCScale});        // 会员发放红包 【比例】
                     }
                     if (${merchantRebatePolicy.rebateFlag==1}) {//红包积分发放策略(全部)
                         rebateFlag = 1;
                         $("#q-policy").attr("checked", true);
                         $("input[name=lm-userScoreBScaleB]").val(${merchantRebatePolicy.userScoreBScaleB});      // 会员发放红包 【全额】
+                        $("input[name=lm-userScoreCScaleB]").val(${merchantRebatePolicy.userScoreCScaleB});      // 会员发放红包 【全额】
                     }
                 } else {//会员订单类型为普通费率
                     leJia(0);
@@ -401,7 +564,33 @@
             $("input[name=lm-ljCommission]").val(${merchant.ljCommission});                     // 导流订单费率
             $("input[name=lm-scoreARebate]").val(${merchant.scoreARebate});                         // 导流订单红包
             $("input[name=lm-importScoreBScale]").val(${merchantRebatePolicy.importScoreBScale});   // 导流订单积分返点
+            $("input[name=lm-importScoreCScale]").val(${merchantRebatePolicy.importScoreCScale});   // 导流订单金币返点
+            $("input[name=lm-importShareScale]").val(${merchantRebatePolicy.importShareScale});   // 导流订单金币返点
+            $("input[name=lm-memberShareScale]").val(${merchantRebatePolicy.memberShareScale});   // 导流订单金币返点
+            if (${merchantRebatePolicy.commissionPolicy == 1}) {
+                $(".create_edit-typeChose_").find(".ModRadius-right")[0].className +=
+                " ModRadius2_active";
+                $($(".create_edit-typeChose_").find(".ModRadius-left")[0]).removeClass('ModRadius2_active')
+                $(".hb_ptcl").fadeOut();
+                $(".create_edit-addyjcl").empty();
+                $(".hb_ptcl").removeClass("ModRadius2_active");
+                $(".hb_glj").addClass("ModRadius2_active");
+                $(".create_edit-addhbcl").empty();
+                yjclInit();
+                hbclInit();
 
+            } else {
+                $(".create_edit-typeChose_").find(".ModRadius-left")[0].className +=
+                " ModRadius2_active";
+                if (${merchantRebatePolicy.rebatePolicy == 1}) {
+                    $(".create_edit-addyjcl").empty();
+                    $(".hb_ptcl").removeClass("ModRadius2_active");
+                    $(".hb_glj").addClass("ModRadius2_active");
+                    $(".create_edit-addhbcl").empty();
+                    hbclInit();
+                }
+
+            }
         }
         if (${merchant.partnership==0}) { //普通协议
             $(".YJ").remove();
@@ -700,6 +889,7 @@
                 break;
         }
     });
+
     function hyddChange() {//  会员订单费率：佣金费率
         $('#mendiancanshu').append(
                 $("<div></div>").attr('id', 'dingdanChange-1').append(
@@ -727,6 +917,15 @@
                                                                                                                                      "0.01")
                 ).append(
                         $("<span></span>").html("%")
+                ).append(
+                        $("<span></span>").html("金币返点")
+                ).append(
+                        $("<input>").attr("name", "lm-userScoreCScale").attr("class",
+                                                                             "Mod-1 ModRadius create_edit-for2").attr("type",
+                                                                                                                      "number").attr("step",
+                                                                                                                                     "0.01")
+                ).append(
+                        $("<span></span>").html("%")
                 )
         ).append(
                 $("<div></div>").attr('id', 'dingdanChange-2').append(
@@ -739,6 +938,15 @@
                         $("<span></span>").html("积分返点")
                 ).append(
                         $("<input>").attr("name", "lm-userScoreBScaleB").attr("class",
+                                                                              "Mod-1 ModRadius create_edit-for2").attr("type",
+                                                                                                                       "number").attr("step",
+                                                                                                                                      "0.01")
+                ).append(
+                        $("<span></span>").html("%")
+                ).append(
+                        $("<span></span>").html("金币返点")
+                ).append(
+                        $("<input>").attr("name", "lm-userScoreCScaleB").attr("class",
                                                                               "Mod-1 ModRadius create_edit-for2").attr("type",
                                                                                                                        "number").attr("step",
                                                                                                                                       "0.01")
@@ -812,6 +1020,16 @@
                                                                                                                                                "0.01")
                                 ).append(
                                         $("<span></span>").html("%")
+                                ).append(
+                                        $("<span></span>").html("金币返点")
+                                ).append(
+                                        $("<input>").attr("name",
+                                                          "lm-importScoreCScale").attr("class",
+                                                                                       "Mod-1 ModRadius create_edit-for2").attr("type",
+                                                                                                                                "number").attr("step",
+                                                                                                                                               "0.01")
+                                ).append(
+                                        $("<span></span>").html("%")
                                 )
                         ).append(
                                 $("<div></div>").append(
@@ -834,13 +1052,82 @@
                                 )
                         )
                 )
-        ).
-                append(
+        ).append(
+                $("<div></div>").attr("class", "MODInput_row create_edit-yjcl").append(
+                        $("<div></div>").attr("class", "Mod-2").html("佣金策略")
+                ).append(
+                        $("<div></div>").attr("class",
+                                              "Mod-5 ModRadio2 create_edit-typeChose_").append(
+                                $("<div></div>").attr("class",
+                                                      "ModRadius-left ModRadius2_active").html("固定策略")
+                        ).append(
+                                $("<div></div>").attr("class", "ModRadius-right").html("阶梯式收取")
+                        )
+                )
+        ).append(
+                $("<div></div>").attr("class", "MODInput_row").append(
+                        $("<div></div>").attr("class", "Mod-2").html("")
+                ).append(
+                        $("<div></div>").attr("class", "Mod-7 create_edit-addyjcl")
+                )
+        ).append(
+                $("<div></div>").attr("class", "MODInput_row create_edit-hbcl").append(
+                        $("<div></div>").attr("class", "Mod-2").html("红包策略")
+                ).append(
+                        $("<div></div>").attr("class",
+                                              "Mod-5 ModRadio2 create_edit-typeChose_").append(
+                                $("<div></div>").attr("class",
+                                                      "ModRadius-left ModRadius2_active hb_ptcl").html("普通策略")
+                        ).append(
+                                $("<div></div>").attr("class",
+                                                      "ModRadius-right hb_glj").html("鼓励金活动")
+                        )
+                )
+        ).append(
+                $("<div></div>").attr("class", "MODInput_row").append(
+                        $("<div></div>").attr("class", "Mod-2").html("")
+                ).append(
+                        $("<div></div>").attr("class", "Mod-7 create_edit-addhbcl")
+                )
+        ).append(
+                $("<div></div>").attr("class", "MODInput_row").append(
+                        $("<div></div>").attr("class", "Mod-2").html("分润比例")
+                ).append(
+                        $("<div></div>").attr("class",
+                                              "Mod-5").append(
+                                $("<div></div>").attr("style", "margin:5px 0;").html("佣金类订单参与分润的比例")
+                        ).append(
+                                $("<div></div>").append(
+                                        $("<span></span>").html("导流订单")
+                                ).append(
+                                        $("<input>").attr("name",
+                                                          "lm-importShareScale").attr("class",
+                                                                                      "Mod-2 ModRadius create_edit-for2").attr("type",
+                                                                                                                               "number").attr("step",
+                                                                                                                                              "0.01").attr("style",
+                                                                                                                                                           "margin-right:0;")
+                                ).append(
+                                        $("<span></span>").html("%")
+                                ).append(
+                                        $("<span></span>").html("会员订单（佣金费率）")
+                                ).append(
+                                        $("<input>").attr("name",
+                                                          "lm-memberShareScale").attr("class",
+                                                                                      "Mod-2 ModRadius create_edit-for2").attr("type",
+                                                                                                                               "number").attr("step",
+                                                                                                                                              "0.01").attr("style",
+                                                                                                                                                           "margin-right:0;")
+                                ).append(
+                                        $("<span></span>").html("%")
+                                )
+                        )
+                )
+        ).append(
                 $("<div></div>").attr("class", "MODInput_row create_edit-filling").append(
                         $("<div></div>").attr("class", "Mod-2").html("账户类型")
                 ).append(
                         $("<div></div>").attr("class",
-                                              "Mod-5 ModRadio2 create_edit-typeChose").append(
+                                              "Mod-5 ModRadio2 create_edit-typeChose_").append(
                                 $("<div></div>").attr("class",
                                                       "ModRadius-left ModRadius2_active").html("法人私账")
                         ).append(
@@ -851,6 +1138,38 @@
         if (hyddType == 1) {//  会员订单费率：佣金费率
             hyddChange();
         }
+        $(".create_edit-yjcl .create_edit-typeChose_ > div").click(function () {
+            var val = $(this).html();
+            $(".create_edit-addyjcl").empty();
+            switch (val) {
+                case "固定策略":
+                    $(".hb_ptcl").fadeIn();
+                    $(".create_edit-addyjcl").empty();
+                    break;
+                case "阶梯式收取":
+                    $(".hb_ptcl").fadeOut();
+                    $(".create_edit-addyjcl").empty();
+                    $(".hb_ptcl").removeClass("ModRadius2_active");
+                    $(".hb_glj").addClass("ModRadius2_active");
+                    yjclInit();
+                    $(".create_edit-addhbcl").empty();
+                    hbclInit();
+                    break;
+            }
+        });
+        $(".create_edit-hbcl .create_edit-typeChose_ > div").click(function () {
+            var val = $(this).html();
+            $(".create_edit-addhbcl").empty();
+            switch (val) {
+                case "普通策略":
+                    $(".create_edit-addhbcl").empty();
+                    break;
+                case "鼓励金活动":
+                    $(".create_edit-addhbcl").empty();
+                    hbclInit();
+                    break;
+            }
+        });
         var reVal = $(".create_edit-filling .ModRadius2_active").html();
         merchant_informationSwitch(reVal);
         $(".create_edit-filling .ModRadio2 > div").click(function () {
@@ -858,6 +1177,14 @@
             $(this).addClass("ModRadius2_active");
             var thisVal = $(this).html();
             merchant_informationSwitch(thisVal);
+        });
+        $(".create_edit-yjcl .ModRadio2 > div").click(function () {
+            $(".create_edit-yjcl .ModRadio2 > div").removeClass("ModRadius2_active");
+            $(this).addClass("ModRadius2_active");
+        });
+        $(".create_edit-hbcl .ModRadio2 > div").click(function () {
+            $(".create_edit-hbcl .ModRadio2 > div").removeClass("ModRadius2_active");
+            $(this).addClass("ModRadius2_active");
         });
     }
     function leJia_pt() {  //普通协议&乐加结算
@@ -894,7 +1221,7 @@
                         $("<div></div>").attr("class", "Mod-2").html("账户类型")
                 ).append(
                         $("<div></div>").attr("class",
-                                              "Mod-5 ModRadio2 create_edit-typeChose").append(
+                                              "Mod-5 ModRadio2 create_edit-typeChose_").append(
                                 $("<div></div>").attr("class",
                                                       "ModRadius-left ModRadius2_active").html("法人私账")
                         ).append(
@@ -1056,6 +1383,264 @@
             $("input[name=pt-ljCommission]").val($(this).next().val());
         });
     }
+    function yjcl() {
+        $(".create_edit-addyjcl").append(
+                $("<div></div>").append(
+                        $("<div></div>").attr("class", "Mod-3").append(
+                                $("<div></div>").html("0.01")
+                        ).append(
+                                $("<div></div>").html("~")
+                        ).append(
+                                $("<input>").attr("type", "number").attr("class",
+                                                                         "Mod-4 lastData").attr("value",
+                                                                                                "0.02").val("0.02")
+                        )
+                ).append(
+                        $("<div></div>").attr("class", "Mod-3").append(
+                                $("<span></span>").html("佣金费率")
+                        ).append(
+                                $("<input>").attr("type", "number").attr("class", "Mod-4")
+                        ).append(
+                                $("<span></span>").html("%")
+                        )
+                ).append(
+                        $("<div></div>").attr("class", "Mod-3").append(
+                                $("<span></span>").html("金币返点")
+                        ).append(
+                                $("<input>").attr("type", "number").attr("class", "Mod-4")
+                        ).append(
+                                $("<span></span>").html("%")
+                        )
+                )
+        ).append(
+                $("<div></div>").attr("class", "addyjcl_add").append(
+                        $("<button></button>").attr("onclick", "addArea(this)").html("添加区段")
+                )
+        ).append(
+                $("<div></div>").append(
+                        $("<div></div>").attr("class", "Mod-3").append(
+                                $("<div></div>").html("大于")
+                        ).append(
+                                $("<div></div>").attr("class", "finalData")
+                        )
+                ).append(
+                        $("<div></div>").attr("class", "Mod-3").append(
+                                $("<span></span>").html("佣金费率")
+                        ).append(
+                                $("<input>").attr("type", "number").attr("class", "Mod-4")
+                        ).append(
+                                $("<span></span>").html("%")
+                        )
+                ).append(
+                        $("<div></div>").attr("class", "Mod-3").append(
+                                $("<span></span>").html("金币返点")
+                        ).append(
+                                $("<input>").attr("type", "number").attr("class", "Mod-4")
+                        ).append(
+                                $("<span></span>").html("%")
+                        )
+                )
+        )
+        $(".lastData").blur(function () {
+            var sData = parseFloat($(this).val);
+            var eData = parseFloat($(this).prev().prev().html());
+            if (eData < sData && eData == sData) {
+                $(this).val(eData + 0.01)
+            }
+        });
+    }
+    function hbcl() {
+        $(".create_edit-addhbcl").append(
+                $("<div></div>").append(
+                        $("<div></div>").attr("class", "Mod-3").append(
+                                $("<div></div>").html("0.01")
+                        ).append(
+                                $("<div></div>").html("~")
+                        ).append(
+                                $("<input>").attr("type", "number").attr("class",
+                                                                         "Mod-4 lastData").attr("value",
+                                                                                                "0.02").val("0.02")
+                        )
+                ).append(
+                        $("<div></div>").attr("class", "Mod-6").append(
+                                $("<span></span>").html("送鼓励金")
+                        ).append(
+                                $("<input>").attr("type", "number").attr("class", "Mod-4")
+                        ).append(
+                                $("<span></span>").html("~")
+                        ).append(
+                                $("<input>").attr("type", "number").attr("class", "Mod-4")
+                        )
+                )
+        ).append(
+                $("<div></div>").attr("class", "addhbcl_add").append(
+                        $("<button></button>").attr("onclick", "addArea1(this)").html("添加区段")
+                )
+        ).append(
+                $("<div></div>").append(
+                        $("<div></div>").attr("class", "Mod-3").append(
+                                $("<div></div>").html("大于")
+                        ).append(
+                                $("<div></div>").attr("class", "finalData")
+                        )
+                ).append(
+                        $("<div></div>").attr("class", "Mod-6").append(
+                                $("<span></span>").html("送鼓励金")
+                        ).append(
+                                $("<input>").attr("type", "number").attr("class", "Mod-4")
+                        ).append(
+                                $("<span></span>").html("~")
+                        ).append(
+                                $("<input>").attr("type", "number").attr("class", "Mod-4")
+                        )
+                )
+        )
+    }
+
+    function addArea(e) {
+        if ($(e).parent().prev().children("div").children(".lastData").val() == '') {
+            alert("请先输入区间！")
+        } else {
+            var lastData = $(e).parent().prev().children("div").children(".lastData").val();
+            lastData = parseFloat(lastData) + 0.01;
+            var line = $("<div></div>").attr("class", "w").append(
+                    $("<div></div>").attr("class", "Mod-3").append(
+                            $("<div></div>").attr("class", "firstData").html(lastData)
+                    ).append(
+                            $("<div></div>").html("~")
+                    ).append(
+                            $("<input>").attr("type", "number").attr("class", "Mod-4 lastData")
+                    )
+            ).append(
+                    $("<div></div>").attr("class", "Mod-3").append(
+                            $("<span></span>").html("佣金费率")
+                    ).append(
+                            $("<input>").attr("type", "number").attr("class", "Mod-4 collect_jy")
+                    ).append(
+                            $("<span></span>").html("%")
+                    )
+            ).append(
+                    $("<div></div>").attr("class", "Mod-3").append(
+                            $("<span></span>").html("金币返点")
+                    ).append(
+                            $("<input>").attr("type", "number").attr("class", "Mod-4 collect_jb")
+                    ).append(
+                            $("<span></span>").html("%")
+                    )
+            ).append(
+                    $("<button></button>").attr("class", "yjcl_del").attr("onclick",
+                                                                          "yjclDel(this)").html("删除")
+            );
+            $(".addyjcl_add").before(line);
+            $(".lastData").blur(function () {
+                $(".w").each(function () {
+                    var eData = parseFloat($(this).children("div").children(".lastData").val());
+                    var sData = parseFloat($(this).children("div").children(".firstData").html());
+                    if (sData > eData || eData == sData) {
+                        $(this).children("div").children(".lastData").val(toDecimal(sData + 0.01));
+                    } else {
+                        $(this).children("div").children(".lastData").val(toDecimal(eData));
+                    }
+                });
+            });
+        }
+    }
+    function addArea1(e) {
+        if ($(e).parent().prev().children("div").children(".lastData").val() == '') {
+            alert("请先输入区间！")
+        } else {
+            var lastData = $(e).parent().prev().children("div").children(".lastData").val();
+            lastData = parseFloat(lastData) + 0.01;
+            var line = $("<div></div>").attr("class", "w").append(
+                    $("<div></div>").attr("class", "Mod-3").append(
+                            $("<div></div>").attr("class", "firstData").html(lastData)
+                    ).append(
+                            $("<div></div>").html("~")
+                    ).append(
+                            $("<input>").attr("type", "number").attr("class", "Mod-4 lastData")
+                    )
+            ).append(
+                    $("<div></div>").attr("class", "Mod-6").append(
+                            $("<span></span>").html("送鼓励金")
+                    ).append(
+                            $("<input>").attr("type", "number").attr("class", "Mod-4 collect_start")
+                    ).append(
+                            $("<span></span>").html("~")
+                    ).append(
+                            $("<input>").attr("type", "number").attr("class", "Mod-4 collect_end")
+                    )
+            ).append(
+                    $("<button></button>").attr("class", "yjcl_del").attr("onclick",
+                                                                          "yjclDel(this)").html("删除")
+            );
+            $(".addhbcl_add").before(line);
+            $(".lastData").blur(function () {
+                $(".w").each(function () {
+                    var eData = parseFloat($(this).children("div").children(".lastData").val());
+                    var sData = parseFloat($(this).children("div").children(".firstData").html());
+                    if (sData > eData || eData == sData) {
+                        $(this).children("div").children(".lastData").val(toDecimal(sData + 0.01));
+                    } else {
+                        $(this).children("div").children(".lastData").val(toDecimal(eData));
+                    }
+                });
+            });
+        }
+    }
+    //强制保留2位小数
+    function toDecimal(x) {
+        var f = parseFloat(x);
+        if (isNaN(f)) {
+            return false;
+        }
+        var f = Math.round(x * 100) / 100;
+        var s = f.toString();
+        var rs = s.indexOf('.');
+        if (rs < 0) {
+            rs = s.length;
+            s += '.';
+        }
+        while (s.length <= rs + 2) {
+            s += '0';
+        }
+        return s;
+    }
+    function yjclDel(e) {
+        $(e).parent().remove();
+    }
+    setInterval(function () {
+        var min, max, min_, max_;
+        min = $(".create_edit-addyjcl > div:first-child .lastData").val();
+        min_ = $(".create_edit-addhbcl > div:first-child .lastData").val();
+        $(".create_edit-addyjcl .w").each(function () {
+            var firstNum = $(this).prev().children("div").children(".lastData").val();
+            var lastNum = $(this).children("div").children(".lastData").val();
+            var th_firstNum = $(this).children("div").children(".firstData");
+            var new_firstNum = parseFloat(firstNum) + 0.01;
+            new_firstNum = toDecimal(new_firstNum);
+            th_firstNum.html(new_firstNum);
+            max = lastNum;
+        });
+        $(".create_edit-addhbcl .w").each(function () {
+            var firstNum = $(this).prev().children("div").children(".lastData").val();
+            var lastNum = $(this).children("div").children(".lastData").val();
+            var th_firstNum = $(this).children("div").children(".firstData");
+            var new_firstNum = parseFloat(firstNum) + 0.01;
+            new_firstNum = toDecimal(new_firstNum);
+            th_firstNum.html(new_firstNum);
+            max_ = lastNum;
+        });
+        if (max == '' || max == null) {
+            $(".create_edit-addyjcl .finalData").html(min);
+        } else {
+            $(".create_edit-addyjcl .finalData").html(max);
+        }
+        if (max_ == '' || max_ == null) {
+            $(".create_edit-addhbcl .finalData").html(min_);
+        } else {
+            $(".create_edit-addhbcl .finalData").html(max_);
+        }
+    }, 100);
 </script>
 <script>
     $("#enter").click(function () {
@@ -1216,9 +1801,26 @@
                     alert("请输入导流订单积分");
                     return;
                 }
+                var importScoreCScale = $("input[name=lm-importScoreCScale]").val();
+                if (importScoreCScale > 100 || importScoreCScale == null || importScoreCScale
+                                                                            == "") {
+                    alert("请输入导流订单金币");
+                    return;
+                }
                 var scoreARebate = $("input[name=lm-scoreARebate]").val();
                 if (scoreARebate > 100 || scoreARebate == null || scoreARebate == "") {
                     alert("请输入导流订单红包");
+                    return;
+                }
+
+                var importShareScale = $("input[name=lm-importShareScale]").val();
+                if (importShareScale > 100 || importShareScale == null || importShareScale == "") {
+                    alert("请输入导流分润比例");
+                    return;
+                }
+                var memberShareScale = $("input[name=lm-memberShareScale]").val();
+                if (memberShareScale > 100 || memberShareScale == null || memberShareScale == "") {
+                    alert("请输入会员分润比例");
                     return;
                 }
                 var hydd = $("input[name='hydd']:checked").val();
@@ -1231,15 +1833,22 @@
                 var policy = $("input[name='policy']:checked").val();
                 if (policy == 1) {                     //   成本差全额
                     var userScoreBScaleB = $("input[name=lm-userScoreBScaleB]").val();
+                    var userScoreCScaleB = $("input[name=lm-userScoreCScaleB]").val();
                     if (userScoreBScaleB == null || userScoreBScaleB == "" || userScoreBScaleB > 100
                         || userScoreBScaleB < 0) {
                         alert("请输入全额发放积分返点");
+                        return;
+                    }
+                    if (userScoreCScaleB == null || userScoreCScaleB == "" || userScoreCScaleB > 100
+                        || userScoreCScaleB < 0) {
+                        alert("请输入全额发放金币返点");
                         return;
                     }
                     merchantRebatePolicy.rebateFlag = 1;
                     merchantRebatePolicy.userScoreAScale = null;
                     merchantRebatePolicy.userScoreBScale = null;
                     merchantRebatePolicy.userScoreBScaleB = userScoreBScaleB;      // 会员发放红包 【全额】
+                    merchantRebatePolicy.userScoreCScaleB = userScoreCScaleB;      // 会员发放红包 【全额】
                 }
                 if (policy == 0) {                     //   比例发放
                     var userScoreAScale = $("input[name=lm-userScoreAScale]").val();
@@ -1254,16 +1863,40 @@
                         alert("请输入比例发放积分");
                         return;
                     }
+                    var userScoreCScale = $("input[name=lm-userScoreCScale]").val();
+                    if (userScoreCScale == null || userScoreCScale == "" || userScoreCScale > 100
+                        || userScoreCScale < 0) {
+                        alert("请输入比例发放金币");
+                        return;
+                    }
                     merchantRebatePolicy.rebateFlag = 0;
                     merchantRebatePolicy.userScoreBScaleB = null;
                     merchantRebatePolicy.userScoreAScale = userScoreAScale;        // 会员发放红包 【比例】
                     merchantRebatePolicy.userScoreBScale = userScoreBScale;        // 会员发放红包 【比例】
+                    merchantRebatePolicy.userScoreCScale = userScoreCScale;        // 会员发放红包 【比例】
                 }
                 merchant.ljBrokerage = ljBrokerage;                                                 // 普通订单费率
                 merchant.scoreBRebate = scoreBRebate1;                                               // 普通订单积分返点
                 merchant.ljCommission = $("input[name=lm-ljCommission]").val();                     // 导流订单费率
                 merchant.scoreARebate = scoreARebate;                                               // 导流订单红包
                 merchantRebatePolicy.importScoreBScale = importScoreBScale;                         // 导流订单积分返点
+                merchantRebatePolicy.importScoreCScale = importScoreCScale;                         // 导流订单积分返点
+                merchantRebatePolicy.importShareScale = importShareScale;                         // 导流订单积分返点
+                merchantRebatePolicy.memberShareScale = memberShareScale;                         // 导流订单积分返点
+                if ($($('.create_edit-yjcl').children()).children(".ModRadius2_active")[0].innerHTML
+                    == '固定策略') {
+                    merchantRebatePolicy.commissionPolicy = 0
+                } else {
+                    merchantRebatePolicy.commissionPolicy = 1
+                    merchantRebatePolicy.commissionStages = collectData_yj()
+                }
+                if ($($('.create_edit-hbcl').children()).children(".ModRadius2_active")[0].innerHTML
+                    == '普通策略') {
+                    merchantRebatePolicy.rebatePolicy = 0
+                } else {
+                    merchantRebatePolicy.rebatePolicy = 1
+                    merchantRebatePolicy.rebateStages = collectData_hb()
+                }
             }
         }
         merchant.cycle = 1;
@@ -1345,6 +1978,93 @@
                    });
         }
     }
+
+    function toInt(val) {
+        return parseInt(val * 100)
+    }
+    function collectData_yj() {
+        var Arry_yj = [];
+        var firstLine_start = $(".create_edit-addyjcl > div:first-child > div:first-child > div:first-child").html();
+        var firstLine_end = $(".create_edit-addyjcl > div:first-child > div:first-child input[type=number]").val();
+        var firstLine_yj = $(".create_edit-addyjcl > div:first-child > div:nth-child(2) input[type=number]").val();
+        var firstLine_jb = $(".create_edit-addyjcl > div:first-child > div:last-child input[type=number]").val();
+        var firstLine = {
+            start: toInt(firstLine_start),
+            end: toInt(firstLine_end),
+            commissionScale: firstLine_yj,
+            scoreCScale: firstLine_jb
+        }
+        Arry_yj.push(firstLine);
+        $(".create_edit-addyjcl .w").each(function () {
+            var w_start = $(this).children("div").children(".firstData").html();
+            var w_end = $(this).children("div").children(".lastData").val();
+            var w_yj = $(this).children("div").children(".collect_jy").val();
+            var w_jb = $(this).children("div").children(".collect_jb").val();
+            var wLine = {
+                start: toInt(w_start),
+                end: toInt(w_end),
+                commissionScale: w_yj,
+                scoreCScale: w_jb
+            }
+            Arry_yj.push(wLine);
+        });
+        var finalLine_start = $(".create_edit-addyjcl > div:last-child > div:first-child>div:last-child").html();
+        var finalLine_end = Number.MAX_SAFE_INTEGER;
+        var finalLine_yj = $(".create_edit-addyjcl > div:last-child > div:nth-child(2) input[type=number]").val();
+        var finalLine_jb = $(".create_edit-addyjcl > div:last-child > div:last-child input[type=number]").val();
+        var finalLine = {
+            start: toInt(finalLine_start),
+            end: finalLine_end,
+            commissionScale: finalLine_yj,
+            scoreCScale: finalLine_jb
+        }
+        Arry_yj.push(finalLine);
+        return Arry_yj;
+    }
+    function collectData_hb() {
+        var Arry_hb = [];
+        var firstLine_start = $(".create_edit-addhbcl > div:first-child > div:first-child > div:first-child").html();
+        var firstLine_end = $(".create_edit-addhbcl > div:first-child > div:first-child input[type=number]").val();
+        var firstLine_left = $(".create_edit-addhbcl > div:first-child > div:last-child > input:nth-child(2)").val();
+        var firstLine_right = $(".create_edit-addhbcl > div:first-child > div:last-child > input:last-child").val();
+        var firstLine = {
+            start: toInt(firstLine_start),
+            end: toInt(firstLine_end),
+            rebateStart: toInt(firstLine_left),
+            rebateEnd: toInt(firstLine_right)
+        }
+        Arry_hb.push(firstLine);
+        $(".create_edit-addhbcl .w").each(function () {
+            var w_start = $(this).children("div").children(".firstData").html();
+            var w_end = $(this).children("div").children(".lastData").val();
+            var w_yj = $(this).children("div").children(".collect_start").val();
+            var w_jb = $(this).children("div").children(".collect_end").val();
+            var wLine = {
+                start: toInt(w_start),
+                end: toInt(w_end),
+                rebateStart: toInt(w_yj),
+                rebateEnd: toInt(w_jb)
+            }
+            Arry_hb.push(wLine);
+        });
+        var finalLine_start = $(".create_edit-addhbcl > div:last-child > div:first-child>div:last-child").html();
+        var finalLine_end = Number.MAX_SAFE_INTEGER;
+        var finalLine_left = $(".create_edit-addhbcl > div:last-child > div:last-child > input:nth-child(2)").val();
+        var finalLine_right = $(".create_edit-addhbcl > div:last-child > div:last-child > input:last-child").val();
+        var finalLine = {
+            start: toInt(finalLine_start),
+            end: finalLine_end,
+            rebateStart: toInt(finalLine_left),
+            rebateEnd: toInt(finalLine_right)
+        }
+        Arry_hb.push(finalLine);
+        return Arry_hb;
+    }
+
+</script>
+<script>
+
+
 </script>
 
 </html>
