@@ -49,16 +49,22 @@ public class MerchantRebatePolicyService {
     if (merchantRebatePolicy.getRebateFlag() == 2) {
       policyReset(merchantRebatePolicy);
     }
-    merchantRebatePolicyRepository.save(merchantRebatePolicy);
-    for (RebateStage rebateStage : merchantRebatePolicy.getRebateStages()) {
-      rebateStage.setMerchantRebatePolicy(
-          merchantRebatePolicy);
-      rebateStageRepository.save(rebateStage);
+    merchantRebatePolicyRepository.saveAndFlush(merchantRebatePolicy);
+    if (merchantRebatePolicy.getCommissionPolicy() == 1) {
+      for (CommissionStage commissionStage : merchantRebatePolicy.getCommissionStages()) {
+        commissionStage.setMerchantRebatePolicy(merchantRebatePolicy);
+        commissionStageRepository.save(commissionStage);
+      }
     }
-    for (CommissionStage commissionStage : merchantRebatePolicy.getCommissionStages()) {
-      commissionStage.setMerchantRebatePolicy(merchantRebatePolicy);
-      commissionStageRepository.save(commissionStage);
+    if (merchantRebatePolicy.getRebatePolicy() == 1) {
+      for (RebateStage rebateStage : merchantRebatePolicy.getRebateStages()) {
+        rebateStage.setMerchantRebatePolicy(
+            merchantRebatePolicy);
+        rebateStageRepository.save(rebateStage);
+      }
     }
+
+
   }
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
