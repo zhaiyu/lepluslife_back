@@ -65,11 +65,11 @@ public class MerchantRebatePolicy {
 
   private Integer regionFour;//区间4 regionThree%～regionFour%
 
-  @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "merchantRebatePolicy")
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "merchantRebatePolicy")
   private List<CommissionStage> commissionStages;
 
 
-  @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "merchantRebatePolicy")
+  @OneToMany(fetch = FetchType.LAZY, mappedBy = "merchantRebatePolicy")
   private List<RebateStage> rebateStages;
 
 
