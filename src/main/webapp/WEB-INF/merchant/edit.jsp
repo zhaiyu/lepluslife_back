@@ -325,7 +325,7 @@
         }
     }
     function yjclInit() {
-        if (${merchantRebatePolicy!=null&&merchantRebatePolicy.commissionStages!=null}) {
+        if (${merchantRebatePolicy!=null&&merchantRebatePolicy.commissionStages.size()!=0}) {
             var j = "<c:forEach var='commissionStage' items='${merchantRebatePolicy.commissionStages}' varStatus='loop'>";
             j +=
             "<c:if test="${!loop.last}"><c:if test="${!loop.first}"><div class='w'></c:if><c:if test="${loop.first}"><div></c:if>"
@@ -343,7 +343,7 @@
 
     }
     function hbclInit() {
-        if (${merchantRebatePolicy!=null&&merchantRebatePolicy.rebateStages!=null}) {
+        if (${merchantRebatePolicy!=null&&merchantRebatePolicy.rebateStages.size()!=0}) {
             var j = "<c:forEach var='rebateStage' items='${merchantRebatePolicy.rebateStages}' varStatus='loop'>";
             j +=
             "<c:if test="${!loop.last}"><c:if test="${!loop.first}"><div class='w'><div class='Mod-3'><div class='firstData'>${rebateStage.start/100.0}</div><div>~</div><input type='number' class='Mod-4 lastData' value='${rebateStage.end/100.0}'></div><div class='Mod-6'><span>送鼓励金</span><input type='number' value='${rebateStage.rebateStart/100.0}' class='Mod-4 collect_start'><span>~</span><input type='number' class='Mod-4 collect_end' value='${rebateStage.rebateEnd/100.0}'></div><button class='yjcl_del' onclick='yjclDel(this)'>删除</button></div></c:if><c:if test="${loop.first}"><div><div class='Mod-3'><div class='firstData'>${rebateStage.start/100.0}</div><div>~</div><input type='number' class='Mod-4 lastData' value='${rebateStage.end/100.0}'></div><div class='Mod-6'><span>送鼓励金</span><input type='number' value='${rebateStage.rebateStart/100.0}' class='Mod-4 collect_start'><span>~</span><input type='number' class='Mod-4 collect_end' value='${rebateStage.rebateEnd/100.0}'></div></div></c:if></c:if>"
