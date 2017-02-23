@@ -126,7 +126,7 @@ public class MerchantController {
     model.addAttribute("partners", partnerService.findAllParter());
     List<SalesStaff> salesStaffList = salesService.findAllSaleStaff();
     model.addAttribute("sales", salesStaffList);
-    model.addAttribute("rebateStage", dictionaryService.findDictionaryById(42L).getValue());
+    model.addAttribute("rebateStage", dictionaryService.findDictionaryById(50L).getValue());
     //新加内容 01/10
     //获取商户所有的商户号
     model.addAttribute("settlementList",
@@ -160,7 +160,7 @@ public class MerchantController {
     //获取门店结算方式和使用商户号信息 (没有就创建)
     model.addAttribute("scanPayWay", merchantScanPayWayService.findByMerchantId(id));
     model.addAttribute("store", merchantSettlementStoreService.findByMerchantId(id));
-    model.addAttribute("rebateStage", dictionaryService.findDictionaryById(42L).getValue());
+    model.addAttribute("rebateStage", dictionaryService.findDictionaryById(50L).getValue());
 
     return MvUtil.go("/merchant/edit");
   }
