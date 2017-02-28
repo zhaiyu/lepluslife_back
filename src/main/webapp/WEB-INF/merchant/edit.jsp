@@ -1224,41 +1224,46 @@
                 var hydd = $("input[name='hydd']:checked").val();
                 if (hydd == 1) {                       //  会员订单费率： 佣金费率
                     merchant.memberCommission = $("input[name=lm-ljCommission]").val();                  // 会员订单费率
+                    var policy = $("input[name='policy']:checked").val();
+                    if (policy == 1) {                     //   成本差全额
+                        var userScoreBScaleB = $("input[name=lm-userScoreBScaleB]").val();
+                        if (userScoreBScaleB == null || userScoreBScaleB == "" || userScoreBScaleB
+                                                                                  > 100
+                            || userScoreBScaleB < 0) {
+                            alert("请输入全额发放积分返点");
+                            return;
+                        }
+                        merchantRebatePolicy.rebateFlag = 1;
+                        merchantRebatePolicy.userScoreAScale = null;
+                        merchantRebatePolicy.userScoreBScale = null;
+                        merchantRebatePolicy.userScoreBScaleB = userScoreBScaleB;      // 会员发放红包 【全额】
+                    }
+                    if (policy == 0) {                     //   比例发放
+                        var userScoreAScale = $("input[name=lm-userScoreAScale]").val();
+                        if (userScoreAScale == null || userScoreAScale == "" || userScoreAScale
+                                                                                > 100
+                            || userScoreAScale < 0) {
+                            alert("请输入比例发放红包");
+                            return;
+                        }
+                        var userScoreBScale = $("input[name=lm-userScoreBScale]").val();
+                        if (userScoreBScale == null || userScoreBScale == "" || userScoreBScale
+                                                                                > 100
+                            || userScoreBScale < 0) {
+                            alert("请输入比例发放积分");
+                            return;
+                        }
+                        merchantRebatePolicy.rebateFlag = 0;
+                        merchantRebatePolicy.userScoreBScaleB = null;
+                        merchantRebatePolicy.userScoreAScale = userScoreAScale;        // 会员发放红包 【比例】
+                        merchantRebatePolicy.userScoreBScale = userScoreBScale;        // 会员发放红包 【比例】
+                    }
                 }
                 if (hydd == 0) {                       //  会员订单费率： 普通费率
                     merchant.memberCommission = ljBrokerage;
+                    merchantRebatePolicy.rebateFlag = 2;
                 }
-                var policy = $("input[name='policy']:checked").val();
-                if (policy == 1) {                     //   成本差全额
-                    var userScoreBScaleB = $("input[name=lm-userScoreBScaleB]").val();
-                    if (userScoreBScaleB == null || userScoreBScaleB == "" || userScoreBScaleB > 100
-                        || userScoreBScaleB < 0) {
-                        alert("请输入全额发放积分返点");
-                        return;
-                    }
-                    merchantRebatePolicy.rebateFlag = 1;
-                    merchantRebatePolicy.userScoreAScale = null;
-                    merchantRebatePolicy.userScoreBScale = null;
-                    merchantRebatePolicy.userScoreBScaleB = userScoreBScaleB;      // 会员发放红包 【全额】
-                }
-                if (policy == 0) {                     //   比例发放
-                    var userScoreAScale = $("input[name=lm-userScoreAScale]").val();
-                    if (userScoreAScale == null || userScoreAScale == "" || userScoreAScale > 100
-                        || userScoreAScale < 0) {
-                        alert("请输入比例发放红包");
-                        return;
-                    }
-                    var userScoreBScale = $("input[name=lm-userScoreBScale]").val();
-                    if (userScoreBScale == null || userScoreBScale == "" || userScoreBScale > 100
-                        || userScoreBScale < 0) {
-                        alert("请输入比例发放积分");
-                        return;
-                    }
-                    merchantRebatePolicy.rebateFlag = 0;
-                    merchantRebatePolicy.userScoreBScaleB = null;
-                    merchantRebatePolicy.userScoreAScale = userScoreAScale;        // 会员发放红包 【比例】
-                    merchantRebatePolicy.userScoreBScale = userScoreBScale;        // 会员发放红包 【比例】
-                }
+
                 merchant.ljBrokerage = ljBrokerage;                                                 // 普通订单费率
                 merchant.scoreBRebate = scoreBRebate1;                                               // 普通订单积分返点
                 merchant.ljCommission = $("input[name=lm-ljCommission]").val();                     // 导流订单费率
