@@ -6,133 +6,173 @@ package com.jifenke.lepluslive.user.domain.criteria;
  */
 public class LeJiaUserCriteria {
 
-  private String startDate;
+    private String startDate;
 
-  private String endDate;
+    private String endDate;
 
-  private String nickname;
+    private String nickname;
 
-  private String phoneNumber;
+    private String phoneNumber;
 
-  private String userSid;
+    private String userSid;
 
-  private Long province;
+    private Long province;
 
-  private Long city;
+    private Long city;
 
-  private String merchant;  //商户名称
+    private String merchant;  //商户名称
 
-  private String partner;  //合伙人名称
+    private String partner;  //合伙人名称
 
-  private Integer userType;  //用户类型   WeiXinUser.state
+    private Integer userType;  //用户类型   WeiXinUser.state
 
-  private Integer subState;  //关注状态   WeiXinUser.state
+    private Integer subState;  //关注状态   WeiXinUser.state
 
-  private Integer massRemain;  //本月群发余数
+    private Integer massRemain;  //本月群发余数
 
-  private Integer offset;
+    private Integer offset;
 
-  public String getStartDate() {
-    return startDate;
-  }
+    public String getStartDate() {
+        return startDate;
+    }
 
-  public void setStartDate(String startDate) {
-    this.startDate = startDate;
-  }
+    public void setStartDate(String startDate) {
+        this.startDate = startDate;
+    }
 
-  public String getEndDate() {
-    return endDate;
-  }
+    public String getEndDate() {
+        return endDate;
+    }
 
-  public void setEndDate(String endDate) {
-    this.endDate = endDate;
-  }
+    public void setEndDate(String endDate) {
+        this.endDate = endDate;
+    }
 
-  public String getPhoneNumber() {
-    return phoneNumber;
-  }
+    public String getPhoneNumber() {
+        return phoneNumber;
+    }
 
-  public void setPhoneNumber(String phoneNumber) {
-    this.phoneNumber = phoneNumber;
-  }
+    public void setPhoneNumber(String phoneNumber) {
+        this.phoneNumber = phoneNumber;
+    }
 
-  public String getUserSid() {
-    return userSid;
-  }
+    public String getUserSid() {
+        return userSid;
+    }
 
-  public void setUserSid(String userSid) {
-    this.userSid = userSid;
-  }
+    public void setUserSid(String userSid) {
+        this.userSid = userSid;
+    }
 
-  public String getMerchant() {
-    return merchant;
-  }
+    public String getMerchant() {
+        return merchant;
+    }
 
-  public void setMerchant(String merchant) {
-    this.merchant = merchant;
-  }
+    public void setMerchant(String merchant) {
+        this.merchant = merchant;
+    }
 
-  public String getPartner() {
-    return partner;
-  }
+    public String getPartner() {
+        return partner;
+    }
 
-  public void setPartner(String partner) {
-    this.partner = partner;
-  }
+    public void setPartner(String partner) {
+        this.partner = partner;
+    }
 
-  public Integer getUserType() {
-    return userType;
-  }
+    public Integer getUserType() {
+        return userType;
+    }
 
-  public void setUserType(Integer userType) {
-    this.userType = userType;
-  }
+    public void setUserType(Integer userType) {
+        this.userType = userType;
+    }
 
-  public Integer getSubState() {
-    return subState;
-  }
+    public Integer getSubState() {
+        return subState;
+    }
 
-  public void setSubState(Integer subState) {
-    this.subState = subState;
-  }
+    public void setSubState(Integer subState) {
+        this.subState = subState;
+    }
 
-  public Integer getMassRemain() {
-    return massRemain;
-  }
+    public Integer getMassRemain() {
+        return massRemain;
+    }
 
-  public void setMassRemain(Integer massRemain) {
-    this.massRemain = massRemain;
-  }
+    public void setMassRemain(Integer massRemain) {
+        this.massRemain = massRemain;
+    }
 
-  public Integer getOffset() {
-    return offset;
-  }
+    public Integer getOffset() {
+        return offset;
+    }
 
-  public void setOffset(Integer offset) {
-    this.offset = offset;
-  }
+    public void setOffset(Integer offset) {
+        this.offset = offset;
+    }
 
-  public Long getProvince() {
-    return province;
-  }
+    public Long getProvince() {
+        return province;
+    }
 
-  public void setProvince(Long province) {
-    this.province = province;
-  }
+    public void setProvince(Long province) {
+        this.province = province;
+    }
 
-  public Long getCity() {
-    return city;
-  }
+    public Long getCity() {
+        return city;
+    }
 
-  public void setCity(Long city) {
-    this.city = city;
-  }
+    public void setCity(Long city) {
+        this.city = city;
+    }
 
-  public String getNickname() {
-    return nickname;
-  }
+    public String getNickname() {
+        return nickname;
+    }
 
-  public void setNickname(String nickname) {
-    this.nickname = nickname;
-  }
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    private Long opaCity;                                                                            //  运营城市
+
+    public Long getOpaCity() {
+        return opaCity;
+    }
+
+    public void setOpaCity(Long opaCity) {
+        this.opaCity = opaCity;
+    }
+
+    public Integer registerOriginType;                                                               //  关注来源
+
+    private String registStartDate;                                                                  //  注册时间 - 开始
+
+    private String registEndDate;                                                                    //  注册时间 - 结束
+
+    public String getRegistStartDate() {
+        return registStartDate;
+    }
+
+    public void setRegistStartDate(String registStartDate) {
+        this.registStartDate = registStartDate;
+    }
+
+    public String getRegistEndDate() {
+        return registEndDate;
+    }
+
+    public void setRegistEndDate(String registEndDate) {
+        this.registEndDate = registEndDate;
+    }
+
+    public Integer getRegisterOriginType() {
+        return registerOriginType;
+    }
+
+    public void setRegisterOriginType(Integer registerOriginType) {
+        this.registerOriginType = registerOriginType;
+    }
 }

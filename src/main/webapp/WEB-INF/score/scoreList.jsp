@@ -56,12 +56,17 @@
             <h4 style="margin:20px;display: inline">累计获得积分: <span
                     style="color: blue;font-size: 30px">${scoreB}</span></h4>
 
+            <h4 style="margin:20px;display: inline">累计获得金币: <span
+                    style="color: black;font-size: 30px">${scoreC/100}</span></h4>
+
             <div class="container-fluid">
                 <ul id="myTab" class="nav nav-tabs" style="margin-top: 10px">
                     <li><a href="#tab1" data-toggle="tab"
                            onclick="searchScoreByType(0)">红包明细</a></li>
                     <li class="active"><a href="#tab2" data-toggle="tab"
                                           onclick="searchScoreByType(1)">积分明细</a></li>
+                    <li class="active"><a href="#tab3" data-toggle="tab"
+                                          onclick="searchScoreByType(2)">金币明细</a></li>
                 </ul>
                 <div id="myTabContent" class="tab-content">
                     <div class="tab-pane fade in active" id="tab1">
@@ -235,7 +240,7 @@
                            }
                        }
                    });
-        } else {
+        } else if(status==1) {
             scoreCriteria.id = '${scoreBID}';
             $.ajax({
                        type: "post",
@@ -279,6 +284,50 @@
                            }
                        }
                    });
+        }else {
+            scoreCriteria.id = '${scoreCID}';
+            $.ajax({
+                type: "post",
+                url: "/manage/score/listC",
+                async: false,
+                data: JSON.stringify(scoreCriteria),
+                contentType: "application/json",
+                success: function (data) {
+                    var page = data.data;
+                    var content = page.content;
+                    var totalPage = page.totalPages;
+                    $("#totalElements").html(page.totalElements);
+                    if (totalPage == 0) {
+                        totalPage = 1;
+                    }
+                    if (flag) {
+                        flag = false;
+                        initPage(scoreCriteria.offset, totalPage);
+                    }
+
+                    for (i = 0; i < content.length; i++) {
+                        var contentStr = '<tr><td>' + content[i].number + '</td>';
+                        contentStr += '<td>' + content[i].operate + '</td>';
+                        if (content[i].origin == 3) {
+                            contentStr += '<td>线下消费</td>';
+                        } else if (content[i].origin == 4) {
+                            contentStr += '<td>线下返还</td>';
+                        } else if (content[i].origin == 1) {
+                            contentStr += '<td>线上返还</td>';
+                        } else if (content[i].origin == 2) {
+                            contentStr += '<td>线上消费</td>';
+                        } else {
+                            contentStr += '<td>未知</td>';
+                        }
+                        contentStr +=
+                                '<td><span>'
+                                + new Date(content[i].dateCreated).format('yyyy-MM-dd HH:mm')
+                                + '</span></td>';
+                        contentStr += '<td>' + content[i].orderSid + '</td>';
+                        scoreContent.innerHTML += contentStr;
+                    }
+                }
+            });
         }
 
     }

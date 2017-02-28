@@ -197,8 +197,9 @@ public class MerchantController {
     if (policy.getId() == null) {
       policy.setMerchantId(merchant.getId());
       merchantReBatePolicyService.saveMerchantRebatePolicy(policy);
+    }else {
+      merchantReBatePolicyService.editMerchantRebatePolicy(policy);
     }
-    merchantReBatePolicyService.editMerchantRebatePolicy(policy);
     //新加内容 01/13
     //保存支付方式和商户号使用信息
     MerchantScanPayWay scanPayWay = merchantDto.getMerchantScanPayWay();
