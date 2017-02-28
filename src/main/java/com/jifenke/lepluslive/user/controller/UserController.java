@@ -1,5 +1,6 @@
 package com.jifenke.lepluslive.user.controller;
 
+import com.jifenke.lepluslive.global.util.JsonUtils;
 import com.jifenke.lepluslive.global.util.LejiaResult;
 import com.jifenke.lepluslive.global.util.MvUtil;
 import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
@@ -8,24 +9,23 @@ import com.jifenke.lepluslive.order.service.OrderService;
 import com.jifenke.lepluslive.partner.domain.entities.Partner;
 import com.jifenke.lepluslive.score.domain.entities.ScoreA;
 import com.jifenke.lepluslive.score.domain.entities.ScoreB;
+import com.jifenke.lepluslive.score.domain.entities.ScoreC;
 import com.jifenke.lepluslive.score.service.ScoreAService;
 import com.jifenke.lepluslive.score.service.ScoreBService;
+import com.jifenke.lepluslive.score.service.ScoreCService;
 import com.jifenke.lepluslive.user.controller.dto.LeJiaUserDto;
 import com.jifenke.lepluslive.user.domain.criteria.LeJiaUserCriteria;
 import com.jifenke.lepluslive.user.domain.entities.LeJiaUser;
+import com.jifenke.lepluslive.user.domain.entities.UserViewExcel;
 import com.jifenke.lepluslive.user.domain.entities.WeiXinUser;
 import com.jifenke.lepluslive.user.service.UserService;
 import com.jifenke.lepluslive.weixin.service.DictionaryService;
 
+import com.sun.org.apache.xpath.internal.operations.Mod;
 import org.apache.commons.beanutils.BeanUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RequestParam;
-import org.springframework.web.bind.annotation.ResponseBody;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.HashMap;
@@ -52,6 +52,9 @@ public class UserController {
   private ScoreBService scoreBService;
 
   @Inject
+  private ScoreCService scoreCService;
+
+  @Inject
   private OrderService orderService;
 
   @Inject
@@ -60,6 +63,8 @@ public class UserController {
   @Inject
   private DictionaryService dictionaryService;
 
+  @Inject
+  private UserViewExcel userViewExcel;
 
   @RequestMapping(value = "/user", method = RequestMethod.GET)
   public ModelAndView goUserManagePage(Model model) {
@@ -79,10 +84,31 @@ public class UserController {
     }
     Page page = userService.findLeJiaUserByPage(leJiaUserCriteria, 10);
     List<LeJiaUser> users = page.getContent();
+    List<LeJiaUserDto> leJiaUserDtos = getLejiaDtoList(users);
+    Map<String, Object> map = new HashMap<>();
+    map.put("content", leJiaUserDtos);
+    map.put("totalPages", page.getTotalPages());
+    map.put("totalElements", page.getTotalElements());
+    return LejiaResult.ok(map);
+  }
+
+  @RequestMapping(value = "/userExport", method = RequestMethod.GET)
+  public ModelAndView userInfoExport(@RequestParam String condition) {
+    LeJiaUserCriteria leJiaUserCriteria = JsonUtils.jsonToPojo(condition, LeJiaUserCriteria.class);
+    Page page = userService.findLeJiaUserByPage(leJiaUserCriteria, 10000);
+    Map map = new HashMap();
+    List<LeJiaUser> users = page.getContent();
+    List<LeJiaUserDto> lejiaDtoList = getLejiaDtoList(users);
+    map.put("userList", lejiaDtoList);
+    return new ModelAndView(userViewExcel, map);
+  }
+
+  public List<LeJiaUserDto> getLejiaDtoList(List<LeJiaUser> users) {
     List<LeJiaUserDto> leJiaUserDtos = users.stream().map(leJiaUser -> {
       LeJiaUserDto leJiaUserDto = new LeJiaUserDto();
       ScoreA scoreA = scoreAService.findScoreAByWeiXinUser(leJiaUser);
       ScoreB scoreB = scoreBService.findScoreBByWeiXinUser(leJiaUser);
+      ScoreC scoreC = scoreCService.findScoreCByWeiXinUser(leJiaUser);
       WeiXinUser weiXinUser = leJiaUser.getWeiXinUser();
       try {
         BeanUtils.copyProperties(leJiaUserDto, leJiaUser);
@@ -90,6 +116,8 @@ public class UserController {
         leJiaUserDto.setTotalScoreA(scoreA.getTotalScore());
         leJiaUserDto.setScoreB(scoreB.getScore());
         leJiaUserDto.setTotalScoreB(scoreB.getTotalScore());
+        if(scoreC!=null)
+          leJiaUserDto.setScoreC(scoreC.getScore());
         leJiaUserDto.setOnLineCount(orderService.countUserConsumptionTimes(leJiaUser));
         leJiaUserDto.setHeadImageUrl(weiXinUser != null ? weiXinUser.getHeadImageUrl() : null);
         leJiaUserDto.setNickname(weiXinUser != null ? weiXinUser.getNickname() : null);
@@ -97,11 +125,11 @@ public class UserController {
         leJiaUserDto.setCity(weiXinUser != null ? weiXinUser.getCity() : null);
         leJiaUserDto.setState(weiXinUser != null ? weiXinUser.getState() : -1);
         leJiaUserDto.setSubState(
-            weiXinUser != null ? weiXinUser.getSubState() != null ? weiXinUser.getSubState() : -1
-                               : -1);
+                weiXinUser != null ? weiXinUser.getSubState() != null ? weiXinUser.getSubState() : -1
+                        : -1);
         leJiaUserDto.setMassRemain(
-            weiXinUser != null ? weiXinUser.getMassRemain() == null ? 4 : weiXinUser.getMassRemain()
-                               : -1);
+                weiXinUser != null ? weiXinUser.getMassRemain() == null ? 4 : weiXinUser.getMassRemain()
+                        : -1);
         Merchant merchant = leJiaUser.getBindMerchant();
         Partner partner = leJiaUser.getBindPartner();
         leJiaUserDto.setMerchantName(merchant != null ? merchant.getName() : "");
@@ -112,10 +140,6 @@ public class UserController {
       return leJiaUserDto;
     }).collect(Collectors.toList());
 
-    Map<String, Object> map = new HashMap<>();
-    map.put("content", leJiaUserDtos);
-    map.put("totalPages", page.getTotalPages());
-    map.put("totalElements", page.getTotalElements());
-    return LejiaResult.ok(map);
+    return leJiaUserDtos;
   }
 }

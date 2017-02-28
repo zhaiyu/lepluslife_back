@@ -12,6 +12,7 @@ import com.jifenke.lepluslive.partner.service.PartnerService;
 
 import com.jifenke.lepluslive.sales.domain.entities.SalesStaff;
 import com.jifenke.lepluslive.sales.service.SalesService;
+import com.jifenke.lepluslive.weixin.service.DictionaryService;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.data.domain.Page;
@@ -81,6 +82,9 @@ public class MerchantController {
   @Inject
   private MerchantSettlementService merchantSettlementService;
 
+  @Inject
+  private DictionaryService dictionaryService;
+
   @RequestMapping(value = "/merchant", method = RequestMethod.GET)
   public ModelAndView goShowMerchantPage(Model model) {
     model.addAttribute("merchantTypes", merchantService.findAllMerchantTypes());
@@ -122,6 +126,7 @@ public class MerchantController {
     model.addAttribute("partners", partnerService.findAllParter());
     List<SalesStaff> salesStaffList = salesService.findAllSaleStaff();
     model.addAttribute("sales", salesStaffList);
+    model.addAttribute("rebateStage", dictionaryService.findDictionaryById(50L).getValue());
     //新加内容 01/10
     //获取商户所有的商户号
     model.addAttribute("settlementList",
@@ -155,6 +160,7 @@ public class MerchantController {
     //获取门店结算方式和使用商户号信息 (没有就创建)
     model.addAttribute("scanPayWay", merchantScanPayWayService.findByMerchantId(id));
     model.addAttribute("store", merchantSettlementStoreService.findByMerchantId(id));
+    model.addAttribute("rebateStage", dictionaryService.findDictionaryById(50L).getValue());
 
     return MvUtil.go("/merchant/edit");
   }
@@ -191,8 +197,9 @@ public class MerchantController {
     if (policy.getId() == null) {
       policy.setMerchantId(merchant.getId());
       merchantReBatePolicyService.saveMerchantRebatePolicy(policy);
+    }else {
+      merchantReBatePolicyService.editMerchantRebatePolicy(policy);
     }
-    merchantReBatePolicyService.editMerchantRebatePolicy(policy);
     //新加内容 01/13
     //保存支付方式和商户号使用信息
     MerchantScanPayWay scanPayWay = merchantDto.getMerchantScanPayWay();
