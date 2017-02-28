@@ -63,6 +63,7 @@ public class OnLineOrder {
 
   private Integer state;//0 未支付 1 已支付 2 已发货 3已收获 4 订单取消
 
+  private Integer type = 1;  //订单类型  1=积分订单|2=金币订单
 
   private Integer payState = 0;    //支付状态 0=未支付|1=已支付
 
@@ -241,5 +242,13 @@ public class OnLineOrder {
 
   public void setDeliveryDate(Date deliveryDate) {
     this.deliveryDate = deliveryDate;
+  }
+
+  public Integer getType() {
+    return type;
+  }
+
+  public void setType(Integer type) {
+    this.type = type;
   }
 }

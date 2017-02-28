@@ -86,10 +86,18 @@
                         <input type="text" id="order-ID" class="form-control"
                                placeholder="请输入订单编号"/>
                     </div>
-                    <div class="form-group col-md-3">
+                    <div class="form-group col-md-2">
                         <label for="userName">买家姓名</label>
                         <input type="text" id="userName" class="form-control"
                                placeholder="请输入买家姓名"/>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="type">订单类型</label>
+                        <select class="form-control" id="type">
+                            <option value="-1">全部分类</option>
+                            <option value="1">积分订单</option>
+                            <option value="2">金币订单</option>
+                        </select>
                     </div>
                     <div class="form-group col-md-2">
                         <label for="payOrigin">订单来源</label>
@@ -156,6 +164,7 @@
                             <thead>
                             <tr id="tr" class="active">
                                 <th class="text-center">订单编号</th>
+                                <th class="text-center">类型</th>
                                 <th class="text-center">商品信息</th>
                                 <th class="text-center">买家信息</th>
                                 <th class="text-center">总价</th>
@@ -500,6 +509,25 @@
                                + orderDetails[o].productNumber + '<br>';
                            }
                            contentStr += '</td>';
+                           var t11 = '';
+                           if (content[i].type != null && content[i].type == 2) {
+                               contentStr += '<td>金币类</td>';
+                               t11 =
+                               '<td>所需金币:' + toDecimal(content[i].totalScore / 100)
+                               + '金币</td><td>实际支付:' + toDecimal(content[i].truePrice / 100)
+                               + '元<br>实际使用:'
+                               + toDecimal(content[i].trueScore / 100)
+                               + '金币</td>';
+                           } else {
+                               contentStr += '<td>积分类</td>';
+                               t11 =
+                               '<td>最低需付:' + toDecimal(content[i].totalPrice / 100) + '元<br>最高可用:'
+                               + content[i].totalScore
+                               + '积分</td><td>实际支付:' + toDecimal(content[i].truePrice / 100)
+                               + '元<br>实际使用:'
+                               + content[i].trueScore
+                               + '积分</td>';
+                           }
 
                            if (content[i].address != null) {
                                contentStr +=
@@ -512,16 +540,19 @@
                                contentStr +=
                                '<td>未输入收货地址(' + content[i].leJiaUser.userSid + ')</td>';
                            }
-                           contentStr +=
-                           '<td>最低需付:' + toDecimal(content[i].totalPrice / 100) + '元<br>最高可用:'
-                           + content[i].totalScore
-                           + '积分</td>';
-                           contentStr +=
-                           '<td>实际支付:' + toDecimal(content[i].truePrice / 100) + '元<br>实际使用:'
-                           + content[i].trueScore
-                           + '积分</td>';
-                           //支付方式 6种
-                           var pO = content[i].payOrigin.id, pOT = '';
+
+                           contentStr += t11;
+//                           contentStr +=
+//                           '<td>最低需付:' + toDecimal(content[i].totalPrice / 100) + '元<br>最高可用:'
+//                           + content[i].totalScore
+//                           + '积分</td>';
+//                           contentStr +=
+//                           '<td>实际支付:' + toDecimal(content[i].truePrice / 100) + '元<br>实际使用:'
+//                           + content[i].trueScore
+//                           + '积分</td>';
+
+                           //支付方式
+                           var pO = content[i].payOrigin.payFrom, pOT = '';
                            switch (pO) {
                                case 1:
                                    pOT = 'APP';
@@ -529,28 +560,35 @@
                                case 2:
                                    pOT = 'APP';
                                    break;
-                               case 4:
-                                   pOT = 'APP';
-                                   break;
-                               case 9:
-                                   pOT = 'APP';
-                                   break;
-                               case 5:
-                                   pOT = '公众号';
-                                   break;
-                               case 6:
-                                   pOT = '公众号';
-                                   break;
-                               case 8:
-                                   pOT = '公众号';
-                                   break;
-                               case 10:
-                                   pOT = '公众号';
-                                   break;
+                               default :
+                                   pOT = '未知';
                            }
-                           if (pO == 1) {
-                               pOT = 'APP';
-                           }
+//                           switch (pO) {
+//                               case 1:
+//                                   pOT = 'APP';
+//                                   break;
+//                               case 2:
+//                                   pOT = 'APP';
+//                                   break;
+//                               case 4:
+//                                   pOT = 'APP';
+//                                   break;
+//                               case 9:
+//                                   pOT = 'APP';
+//                                   break;
+//                               case 5:
+//                                   pOT = '公众号';
+//                                   break;
+//                               case 6:
+//                                   pOT = '公众号';
+//                                   break;
+//                               case 8:
+//                                   pOT = '公众号';
+//                                   break;
+//                               case 10:
+//                                   pOT = '公众号';
+//                                   break;
+//                           }
                            contentStr += '<td>' + pOT + '</td>';
                            contentStr += '<td>' + toDecimal(content[i].payBackA / 100) + '</td>';
                            contentStr +=

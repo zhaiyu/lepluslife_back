@@ -10,7 +10,7 @@ import javax.persistence.ManyToOne;
 import javax.persistence.Table;
 
 /**
- * Created by wcg on 16/3/18.
+ * 金币记录 Created by wcg on 17/02/17.
  */
 @Entity
 @Table(name = "SCOREC_DETAIL")
@@ -20,8 +20,7 @@ public class ScoreCDetail {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
-
-  private Long number;
+  private Long number = 0L;
   private String operate;
   private Date dateCreated = new Date();
 

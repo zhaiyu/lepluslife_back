@@ -186,6 +186,11 @@ public class OrderService {
               cb.equal(r.get("state"),
                        orderCriteria.getState()));
         }
+        if (orderCriteria.getType() != null) {
+          predicate.getExpressions().add(
+              cb.equal(r.get("type"),
+                       orderCriteria.getType()));
+        }
         if (orderCriteria.getTransmitWay() != null) {
           predicate.getExpressions().add(
               cb.equal(r.get("transmitWay"),

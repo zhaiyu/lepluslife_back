@@ -185,6 +185,9 @@
                     <shiro:hasPermission name="product:query">
                         <a href="/manage/limit?type=1">限量秒杀</a>
                     </shiro:hasPermission>
+                    <shiro:hasPermission name="product:query">
+                        <a href="/manage/gold/product">金币商城</a>
+                    </shiro:hasPermission>
                     <shiro:hasPermission name="onLineOrder:query"> <a
                             href='/manage/order'>订单管理</a> </shiro:hasPermission>
                 </div>
@@ -320,12 +323,12 @@
             $(".none1").parent('li').addClass('selected');
             $(".none1").slideDown(300);
         }
-        if ((url.indexOf("/manage/product") != -1 || url.indexOf("/manage/order") != -1 || url.indexOf("/manage/topic") != -1) || url.indexOf("productRec") != -1) {
+        if ((url.indexOf("/manage/product") != -1|| url.indexOf("/manage/gold") != -1 || url.indexOf("/manage/limit") != -1 || url.indexOf("/manage/order") != -1 || url.indexOf("/manage/topic") != -1) || url.indexOf("productRec") != -1) {
             $(".none2").parent('li').addClass('selected');
             $(".none2").slideDown(300);
         }
-        if (( url.indexOf("/manage/printer")==-1|| url.indexOf("/manage/merchant") != -1 || url.indexOf("merchantRec") != -1
-             || url.indexOf("/manage/pos") != -1) && url.indexOf("/manage/merchant_data") == -1) {
+        if ( url.indexOf("/manage/printer")!=-1|| url.indexOf("/manage/merchant") != -1 || url.indexOf("merchantRec") != -1
+             || url.indexOf("/manage/pos") != -1 || url.indexOf("/manage/merchant_data") != -1) {
             $(".none3").parent('li').addClass('selected');
             $(".none3").slideDown(300);
         }

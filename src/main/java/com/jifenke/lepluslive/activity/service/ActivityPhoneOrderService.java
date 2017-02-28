@@ -232,6 +232,9 @@ public class ActivityPhoneOrderService {
         if (criteria.getState() != null) {
           predicate.getExpressions().add(cb.equal(r.get("state"), criteria.getState()));
         }
+        if (criteria.getType() != null) {
+          predicate.getExpressions().add(cb.equal(r.get("type"), criteria.getType()));
+        }
         if (criteria.getStartDate() != null && !"".equals(criteria.getStartDate())) {
           predicate.getExpressions().add(
               cb.between(r.get("createDate"), new Date(criteria.getStartDate()),

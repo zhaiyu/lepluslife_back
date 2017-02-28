@@ -34,7 +34,7 @@ public class Product implements Serializable {
 
   private Long sid;
 
-  private Integer type = 1; //商品类型 1=常规|2=秒杀
+  private Integer type = 1; //商品类型 1=常规|2=限量|3=秒杀|4=金币
 
   @NotNull
   private String name;
@@ -49,7 +49,7 @@ public class Product implements Serializable {
   @NotNull
   private Long minPrice;   //购买最低金额
 
-  private Integer minScore = 0;  //兑换最低所需积分
+  private Integer minScore = 0;  //兑换最低所需积分或金币
 
   @Column(name = "sale_num")
   private Integer saleNumber = 0;
@@ -85,10 +85,10 @@ public class Product implements Serializable {
   @ManyToOne
   private Category mark; //商品角标  为null时无角标
 
-  private Integer isBackRed;    //是否返红包 1返 0不返
-  private Integer backRedType;  //返红包类型 1比例返还 2金额返还
-  private Integer backRatio;    //返还比例
-  private Integer backMoney;    //返还金额
+  private Integer isBackRed = 0;    //是否返红包 1返 0不返
+  private Integer backRedType = 2;  //返红包类型 1比例返还 2金额返还
+  private Integer backRatio = 0;    //返还比例
+  private Integer backMoney = 0;    //返还金额
 
 
   public Integer getBackMoney() {
