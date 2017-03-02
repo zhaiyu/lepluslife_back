@@ -261,6 +261,8 @@
                                 <p>累计充值话费</p>
 
                                 <p id="totalWorth"></p>
+
+                                <p id="totalWorthDetail"></p>
                             </div>
                         </div>
                         <div>
@@ -269,6 +271,7 @@
                                 <p>累计充值人/次</p>
 
                                 <p id="totalUser-totalNumber"></p>
+                                <p id="totalUser-totalNumberDetail"></p>
                             </div>
                         </div>
                         <div>
@@ -313,6 +316,14 @@
                                     <option value="2">已充值</option>
                                     <option value="0">待支付</option>
                                     <option value="3">充值失败</option>
+                                </select>
+                            </div>
+                            <div class="form-group col-md-2">
+                                <label>订单类型</label>
+                                <select class="form-control" id="orderType">
+                                    <option value="-1">全部类型</option>
+                                    <option value="1">积分类</option>
+                                    <option value="2">金币类</option>
                                 </select>
                             </div>
                             <div class="form-group col-md-3">
@@ -368,6 +379,7 @@
                             <thead>
                             <tr class="active">
                                 <th>订单编号</th>
+                                <th>类型</th>
                                 <th>话费金额</th>
                                 <th>付费方式</th>
                                 <th>充值手机号</th>
@@ -1549,11 +1561,18 @@
                        }
                        for (var i = 0; i < data.data.content.length; i++) {
                            var list = data.data.content[i];
-                           var trueP, userPhone;
-                           if (toDecimal(list.truePrice / 100) == "0.00") {
+                           var trueP, trueS, userPhone, orderType;
+                           if (list.type != null && list.type == 2) {
+                               orderType = '金币';
+                               trueS = toDecimal(list.trueScoreB / 100);
+                           } else {
+                               orderType = '积分';
+                               trueS = list.trueScoreB;
+                           }
+                           if (list.truePrice == 0) {
                                trueP = '';
                            } else {
-                               trueP = toDecimal(list.truePrice / 100);
+                               trueP = toDecimal(list.truePrice / 100) + '+';
                            }
                            if (list.leJiaUser.phoneNumber == "") {
                                userPhone = ''
@@ -1583,9 +1602,11 @@
                                    $("<tr></tr>").append(
                                            $("<td></td>").html(list.orderSid)
                                    ).append(
+                                           $("<td></td>").html(orderType)
+                                   ).append(
                                            $("<td></td>").html(list.worth)
                                    ).append(
-                                           $("<td></td>").html(trueP + "+" + list.trueScoreB + "积分")
+                                           $("<td></td>").html(trueP + trueS + orderType)
                                    ).append(
                                            $("<td></td>").html(list.phone)
                                    ).append(
@@ -1735,11 +1756,14 @@
                                    ).append(
                                            $("<td></td>").html(t == null ? 0 : t.totalNumber)
                                    ).append(
-                                           $("<td></td>").html(t == null ? 0 : toDecimal(t.totalPrice/100))
+                                           $("<td></td>").html(t == null ? 0
+                                                                       : toDecimal(t.totalPrice
+                                                                                   / 100))
                                    ).append(
                                            $("<td></td>").html(t == null ? 0 : t.totalScore)
                                    ).append(
-                                           $("<td></td>").html(t == null ? 0 : toDecimal(t.totalBack/100))
+                                           $("<td></td>").html(t == null ? 0 : toDecimal(t.totalBack
+                                                                                         / 100))
                                    ).append(
                                            $("<td></td>").html(showList.repositoryLimit == 1
                                                                        ? showList.repository
@@ -1781,6 +1805,11 @@
             criteria.state = $("#state").val();
         } else {
             criteria.state = null;
+        }
+        if ($("#orderType").val() != -1) {
+            criteria.type = $("#orderType").val();
+        } else {
+            criteria.type = null;
         }
         var dateStr = $('.date-end span').text().split("-");
         if (dateStr != null && dateStr != '') {

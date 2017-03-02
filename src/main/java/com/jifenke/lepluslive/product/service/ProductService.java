@@ -365,6 +365,7 @@ public class ProductService {
       throw new RuntimeException("不存在的商品");
     }
     p.setState(1 - p.getState());
+    p.setLastUpdate(new Date());
     productRepository.save(p);
   }
 
@@ -388,6 +389,7 @@ public class ProductService {
       } else {
         p.setHotStyle(0);
       }
+      p.setLastUpdate(new Date());
       productRepository.save(p);
     } catch (Exception e) {
       throw new Exception();
@@ -419,6 +421,7 @@ public class ProductService {
       }
       DBProduct.setState(1);
       DBProduct.setType(2);
+      DBProduct.setLastUpdate(new Date());
       DBProduct.setBuyLimit(product.getBuyLimit());
       DBProduct.setMinPrice(product.getMinPrice());
       DBProduct.setMinScore(product.getMinScore());
@@ -539,6 +542,7 @@ public class ProductService {
       DBProduct.setMark(product.getMark());
       DBProduct.setState(1);
       DBProduct.setType(1);
+      DBProduct.setLastUpdate(new Date());
       DBProduct.setMinPrice(product.getMinPrice());
       DBProduct.setMinScore(product.getMinScore());
       DBProduct.setName(product.getName());

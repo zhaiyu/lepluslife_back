@@ -13,7 +13,7 @@ import javax.persistence.OneToOne;
 import javax.persistence.Table;
 
 /**
- * Created by wcg on 16/3/18.
+ * 金币账户 Created by wcg on 17/02/17.
  */
 @Entity
 @Table(name = "SCOREC")
@@ -23,14 +23,14 @@ public class ScoreC {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
-  private Long score;
+  private Long score = 0L; //单位分
 
   @OneToOne
   private LeJiaUser leJiaUser;
 
   private Date createdDate = new Date();
 
-  private Long totalScore;
+  private Long totalScore = 0L;
 
   private Date lastUpdateDate;
 

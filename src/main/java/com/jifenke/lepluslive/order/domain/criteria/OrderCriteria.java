@@ -33,6 +33,8 @@ public class OrderCriteria {
 
   private Integer payWay;    //支付方式  0=未选择 1=微信 2=微信+A积分 3=微信+B积分
 
+  private Integer type;  //订单类型  1=积分订单|2=金币订单
+
   public String getOrderSid() {
     return orderSid;
   }
@@ -143,5 +145,13 @@ public class OrderCriteria {
 
   public void setState(Integer state) {
     this.state = state;
+  }
+
+  public Integer getType() {
+    return type;
+  }
+
+  public void setType(Integer type) {
+    this.type = type;
   }
 }

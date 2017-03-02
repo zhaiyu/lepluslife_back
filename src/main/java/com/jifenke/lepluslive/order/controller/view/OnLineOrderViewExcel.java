@@ -68,6 +68,7 @@ public class OnLineOrderViewExcel extends AbstractExcelView {
     excelHeader.createCell(15).setCellValue("微信手续费");
     excelHeader.createCell(16).setCellValue("微信平台入账");
     excelHeader.createCell(17).setCellValue("是否已付款(1=是)");
+    excelHeader.createCell(18).setCellValue("订单类型");
   }
 
   public void setExcelRows(HSSFSheet excelSheet, List<OnLineOrder> orderList) {
@@ -158,6 +159,11 @@ public class OnLineOrderViewExcel extends AbstractExcelView {
         excelRow.createCell(16).setCellValue(0);
       }
       excelRow.createCell(17).setCellValue(payState);
+      if (order.getType() != null && order.getType() == 2) {
+        excelRow.createCell(18).setCellValue("金币类");
+      } else {
+        excelRow.createCell(18).setCellValue("积分类");
+      }
     }
   }
 }

@@ -17,6 +17,6 @@ public interface UnionPayStoreRepository extends JpaRepository<UnionPayStore, Lo
    *
    */
   @Query(value = "SELECT shop_number FROM union_pay_store WHERE merchant_num IS NOT NULL", nativeQuery = true)
-  List<Object> findAllMerchantNum();
+  List<String> findAllMerchantNum();
 
 }

@@ -14,8 +14,11 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.Date;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
 import java.util.SortedMap;
 import java.util.TreeMap;
 import java.util.UUID;
@@ -43,7 +46,7 @@ public class UnionPayStoreService {
     //业务项
     params.put("shop_name", shopName);
     params.put("address", address);
-    //params.put("term_no", "12340008");
+//    params.put("term_no", "12340008");
     //签名
     params.put("sign", RSAUtil.sign(getOriginStr(params)));
     String result = HttpClientUtil.post(Constants.SHOP_QUERY_URL, params, "utf-8");
@@ -66,8 +69,8 @@ public class UnionPayStoreService {
     SortedMap<String, String> params = commonParams("102103");
     //业务项
     params.put("sp_chnl_no", Constants.MSG_SENDER);
-    params.put("enc_card_no", map.get("enc_card_no").toString());
-    params.put("mobile_no", phone);  //公钥RSA加密后卡号
+    params.put("enc_card_no", map.get("enc_card_no").toString());//公钥RSA加密后卡号
+    params.put("mobile_no", phone);
     //签名
     params.put("sign", RSAUtil.sign(getOriginStr(params)));
     String result = HttpClientUtil.post(Constants.BANK_REGISTER_URL, params, "utf-8");
@@ -99,11 +102,12 @@ public class UnionPayStoreService {
   public Map process() {
     SortedMap<String, String> params = commonParams("101001");
     //获取所有的门店号
-    List<Object> list = repository.findAllMerchantNum();
-    StringBuilder builder = new StringBuilder();
-    for (Object o : list) {
-      builder.append(o).append(",");
+    List<String> list = repository.findAllMerchantNum();
+    Set<String> set = new HashSet<>();
+    for (String o : list) {
+      set.add(o);
     }
+    Optional<String> reduced = set.stream().reduce((s1, s2) -> s1 + "," + s2);
     //业务项
     params.put("sp_chnl_no", Constants.MSG_SENDER);//分配的渠道号
     params.put("event_no", Constants.EVENT_NO);//活动号
@@ -120,7 +124,7 @@ public class UnionPayStoreService {
     //签名
     params.put("sign", RSAUtil.sign(getOriginStr(params)));
     //不对门店号签名
-    params.put("shop_no", builder.substring(0, builder.length() - 1));//门店号
+    params.put("shop_no", reduced.get());//门店号
     String result = HttpClientUtil.post(Constants.EVENT_PROCESS_URL, params, "utf-8");
 
     return JsonUtils.jsonToPojo(result, Map.class);

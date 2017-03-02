@@ -112,6 +112,7 @@ public class ActivityCodeBurseService {
           WeiXinQrCode qrCode = new WeiXinQrCode();
           qrCode.setParameter(parameter);
           qrCode.setTicket(map.get("ticket").toString());
+          qrCode.setUrl(String.valueOf(map.get("url")));
           qrCode.setType(2);
           weiXinQrCodeRepository.save(qrCode);
           activityCodeBurseRepository.save(codeBurse);

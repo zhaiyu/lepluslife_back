@@ -7,6 +7,8 @@ public class PhoneOrderCriteria {
 
   private Integer state; //订单状态
 
+  private Integer type; //订单类型
+
   //下单时间区域
   private String startDate;
   private String endDate;
@@ -93,5 +95,13 @@ public class PhoneOrderCriteria {
 
   public void setRuleId(Long ruleId) {
     this.ruleId = ruleId;
+  }
+
+  public Integer getType() {
+    return type;
+  }
+
+  public void setType(Integer type) {
+    this.type = type;
   }
 }
