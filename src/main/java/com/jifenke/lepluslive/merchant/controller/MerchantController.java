@@ -155,13 +155,14 @@ public class MerchantController {
     model.addAttribute("sales", salesStaffList);
     //新加内容 01/10
     //获取商户所有的商户号
-    model.addAttribute("settlementList", merchantSettlementService
-        .findByMerchantUser(merchant.getMerchantUser().getId()));
+    if (merchant.getMerchantUser() != null) {
+      model.addAttribute("settlementList", merchantSettlementService
+          .findByMerchantUser(merchant.getMerchantUser().getId()));
+    }
     //获取门店结算方式和使用商户号信息 (没有就创建)
     model.addAttribute("scanPayWay", merchantScanPayWayService.findByMerchantId(id));
     model.addAttribute("store", merchantSettlementStoreService.findByMerchantId(id));
     model.addAttribute("rebateStage", dictionaryService.findDictionaryById(50L).getValue());
-
     return MvUtil.go("/merchant/edit");
   }
 
@@ -197,7 +198,7 @@ public class MerchantController {
     if (policy.getId() == null) {
       policy.setMerchantId(merchant.getId());
       merchantReBatePolicyService.saveMerchantRebatePolicy(policy);
-    }else {
+    } else {
       merchantReBatePolicyService.editMerchantRebatePolicy(policy);
     }
     //新加内容 01/13
