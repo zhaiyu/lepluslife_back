@@ -324,7 +324,7 @@
                         <c:if test="${product.backRedType==2}"> checked="checked" class="checked444" </c:if>>
                         <span>金额返还</span>
                         <c:if test="${product.backRedType==2}">
-                            <input name="backMoney" value="${product.backMoney}" style="width: 20%">元
+                            <input name="backMoney" value="${product.backMoney/100}" style="width: 20%">元
                         </c:if>
                         <c:if test="${product.backRedType!=2}">
                             <input name="backMoney" value="" style="width: 20%">元
