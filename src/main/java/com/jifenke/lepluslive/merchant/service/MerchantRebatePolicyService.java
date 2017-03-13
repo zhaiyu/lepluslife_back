@@ -39,24 +39,28 @@ public class MerchantRebatePolicyService {
     merchantRebatePolicy.setStageTwo(0);
     merchantRebatePolicy.setStageThree(0);
     merchantRebatePolicy.setStageFour(0);
-    if (merchantRebatePolicy.getRebateFlag() == 0) {
-      merchantRebatePolicy.setUserScoreBScaleB(new BigDecimal(0));
-    }
-    if (merchantRebatePolicy.getRebateFlag() == 1) {
-      merchantRebatePolicy.setUserScoreBScale(new BigDecimal(0));
-      merchantRebatePolicy.setUserScoreAScale(new BigDecimal(0));
-    }
-    if (merchantRebatePolicy.getRebateFlag() == 2) {
-      policyReset(merchantRebatePolicy);
+    if (merchantRebatePolicy.getRebateFlag() != null) {
+      if (merchantRebatePolicy.getRebateFlag() == 0) {
+        merchantRebatePolicy.setUserScoreBScaleB(new BigDecimal(0));
+      }
+      if (merchantRebatePolicy.getRebateFlag() == 1) {
+        merchantRebatePolicy.setUserScoreBScale(new BigDecimal(0));
+        merchantRebatePolicy.setUserScoreAScale(new BigDecimal(0));
+      }
+      if (merchantRebatePolicy.getRebateFlag() == 2) {
+        policyReset(merchantRebatePolicy);
+      }
     }
     merchantRebatePolicyRepository.saveAndFlush(merchantRebatePolicy);
-    if (merchantRebatePolicy.getCommissionPolicy() == 1) {
+    if (merchantRebatePolicy.getCommissionPolicy() != null
+        && merchantRebatePolicy.getCommissionPolicy() == 1) {
       for (CommissionStage commissionStage : merchantRebatePolicy.getCommissionStages()) {
         commissionStage.setMerchantRebatePolicy(merchantRebatePolicy);
         commissionStageRepository.save(commissionStage);
       }
     }
-    if (merchantRebatePolicy.getRebatePolicy() == 1) {
+    if (merchantRebatePolicy.getRebatePolicy() != null
+        && merchantRebatePolicy.getRebatePolicy() == 1) {
       for (RebateStage rebateStage : merchantRebatePolicy.getRebateStages()) {
         rebateStage.setMerchantRebatePolicy(
             merchantRebatePolicy);

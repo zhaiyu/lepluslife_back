@@ -172,6 +172,7 @@
                                 <th class="text-center">来源</th>
                                 <th class="text-center">红包返还</th>
                                 <th class="text-center">下单时间</th>
+                                <th class="text-center">留言</th>
                                 <th class="text-center">状态</th>
                                 <th class="text-center">操作</th>
                             </tr>
@@ -542,14 +543,6 @@
                            }
 
                            contentStr += t11;
-//                           contentStr +=
-//                           '<td>最低需付:' + toDecimal(content[i].totalPrice / 100) + '元<br>最高可用:'
-//                           + content[i].totalScore
-//                           + '积分</td>';
-//                           contentStr +=
-//                           '<td>实际支付:' + toDecimal(content[i].truePrice / 100) + '元<br>实际使用:'
-//                           + content[i].trueScore
-//                           + '积分</td>';
 
                            //支付方式
                            var pO = content[i].payOrigin.payFrom, pOT = '';
@@ -563,37 +556,13 @@
                                default :
                                    pOT = '未知';
                            }
-//                           switch (pO) {
-//                               case 1:
-//                                   pOT = 'APP';
-//                                   break;
-//                               case 2:
-//                                   pOT = 'APP';
-//                                   break;
-//                               case 4:
-//                                   pOT = 'APP';
-//                                   break;
-//                               case 9:
-//                                   pOT = 'APP';
-//                                   break;
-//                               case 5:
-//                                   pOT = '公众号';
-//                                   break;
-//                               case 6:
-//                                   pOT = '公众号';
-//                                   break;
-//                               case 8:
-//                                   pOT = '公众号';
-//                                   break;
-//                               case 10:
-//                                   pOT = '公众号';
-//                                   break;
-//                           }
+
                            contentStr += '<td>' + pOT + '</td>';
                            contentStr += '<td>' + toDecimal(content[i].payBackA / 100) + '</td>';
                            contentStr +=
                            '<td>' + new Date(content[i].createDate).format('yyyy-MM-dd HH:mm:ss')
                            + '</td>';
+                           contentStr += '<td>' + content[i].message + '</td>';
                            if (content[i].state == 0) {
                                contentStr += '<td>待付款</td>';
                                contentStr +=
@@ -796,6 +765,12 @@
             onLineOrderCriteria.payWay = payWay;
         } else {
             onLineOrderCriteria.payWay = null;
+        }
+        var type = $("#type").val();
+        if (type != -1) {
+            onLineOrderCriteria.type = type;
+        } else {
+            onLineOrderCriteria.type = null;
         }
     }
     function exportExcel(criteria) {
