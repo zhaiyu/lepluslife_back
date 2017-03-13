@@ -46,6 +46,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.Date;
 import java.util.HashMap;
@@ -181,6 +182,9 @@ public class MerchantService {
     new Thread(() -> {
       fileImageService.SaveBarCode(finalBytes, filePath);
     }).start();
+    if (merchant.getLjCommission() == null) {
+      merchant.setLjCommission(new BigDecimal(0.6));
+    }
 
     MerchantInfo merchantInfo = new MerchantInfo();
     merchantInfoRepository.save(merchantInfo);
@@ -216,7 +220,8 @@ public class MerchantService {
     }
     origin.setSalesStaff(merchant.getSalesStaff());
     origin.setLjBrokerage(merchant.getLjBrokerage());
-    origin.setLjCommission(merchant.getLjCommission());
+    origin.setLjCommission(
+        merchant.getLjCommission() == null ? new BigDecimal(0.6) : merchant.getLjCommission());
     origin.setName(merchant.getName());
     origin.setLocation(merchant.getLocation());
     //  origin.setPartner(merchant.getPartner());
@@ -738,41 +743,51 @@ public class MerchantService {
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public List<Map<String, Object>> findByMerchantUser(MerchantUser merchantUser) {
     List<Map<String, Object>> result = new ArrayList<>();
-    List<Merchant> list = merchantRepository.findByMerchantUser(merchantUser);
-    if (list != null && list.size() > 0) {
-      for (Merchant m : list) {
-        Map<String, Object> map = new HashMap<>();
-        map.put("id", m.getId());
-        map.put("sid", m.getMerchantSid());
-        map.put("city", m.getCity().getName());
-        map.put("type", m.getMerchantType().getName());
-        map.put("name", m.getName());
-        map.put("merchantName",
-                m.getMerchantUser() != null ? m.getMerchantUser().getMerchantName() : "未知");
-        map.put("partner", m.getPartner() != null ? m.getPartner().getPartnerName() : "未知");
-        map.put("partnership", m.getPartnership());
-        MerchantScanPayWay scanPayWay = scanPayWayService.findByMerchantId(m.getId());
-        //商户结算类型及费率
-        if (scanPayWay != null) {
-          map.put("rate", scanPayWay.getCommission()); //佣金协议，仅仅做展示用，理论和实际一致
-          map.put("payWay", scanPayWay.getType());
-          if (scanPayWay.getType() == 0) { //富友结算
-            MerchantSettlementStore
-                store =
-                merchantSettlementStoreService.findByMerchantId(m.getId());
-            if (store != null) {
-              if (store.getCommonSettlementId() != 0) {
-                map.put("common",
-                        merchantSettlementService.findById(store.getCommonSettlementId())
-                            .getCommission());
+    try {
+      List<Merchant> list = merchantRepository.findByMerchantUser(merchantUser);
+      if (list != null && list.size() > 0) {
+        for (Merchant m : list) {
+          Map<String, Object> map = new HashMap<>();
+          map.put("id", m.getId());
+          map.put("sid", m.getMerchantSid());
+          map.put("city", m.getCity().getName());
+          map.put("type", m.getMerchantType().getName());
+          map.put("name", m.getName());
+          map.put("merchantName",
+                  m.getMerchantUser() != null ? m.getMerchantUser().getMerchantName() : "未知");
+          map.put("partner", m.getPartner() != null ? m.getPartner().getPartnerName() : "未知");
+          map.put("partnership", m.getPartnership());
+          MerchantScanPayWay scanPayWay = scanPayWayService.findByMerchantId(m.getId());
+          //商户结算类型及费率
+          if (scanPayWay != null) {
+            map.put("rate", scanPayWay.getCommission()); //佣金协议，仅仅做展示用，理论和实际一致
+            map.put("payWay", scanPayWay.getType());
+            if (scanPayWay.getType() == 0) { //富友结算
+              MerchantSettlementStore
+                  store =
+                  merchantSettlementStoreService.findByMerchantId(m.getId());
+              if (store != null) {
+                if (store.getCommonSettlementId() != 0) {
+                  map.put("common",
+                          merchantSettlementService.findById(store.getCommonSettlementId())
+                              .getCommission());
+                }
+                if (store.getAllianceSettlementId() != 0) {
+                  map.put("alliance",
+                          merchantSettlementService.findById(store.getAllianceSettlementId())
+                              .getCommission());
+                }
               }
-              if (store.getAllianceSettlementId() != 0) {
-                map.put("alliance",
-                        merchantSettlementService.findById(store.getAllianceSettlementId())
-                            .getCommission());
+            } else if (scanPayWay.getType() == 1) { //乐加结算
+              if (m.getPartnership() == 0) {
+                map.put("common", m.getLjCommission());
+              } else {
+                map.put("common", m.getLjBrokerage());
+                map.put("alliance", m.getLjCommission());
               }
             }
-          } else if (scanPayWay.getType() == 1) { //乐加结算
+          } else {
+            map.put("payWay", 1); //乐加结算
             if (m.getPartnership() == 0) {
               map.put("common", m.getLjCommission());
             } else {
@@ -780,24 +795,18 @@ public class MerchantService {
               map.put("alliance", m.getLjCommission());
             }
           }
-        } else {
-          map.put("payWay", 1); //乐加结算
-          if (m.getPartnership() == 0) {
-            map.put("common", m.getLjCommission());
-          } else {
-            map.put("common", m.getLjBrokerage());
-            map.put("alliance", m.getLjCommission());
-          }
-        }
 
-        map.put("pos", merchantPosRepository.countByMerchant(m.getId())); //POS数量
-        map.put("limit", m.getUserLimit());
-        map.put("bind", countByBindMerchant(m.getId()));
-        map.put("shop", m.getState()); //乐店开启状态
-        map.put("receipt", m.getReceiptAuth()); //收款权限为1
-        map.put("createDate", m.getCreateDate());
-        result.add(map);
+          map.put("pos", merchantPosRepository.countByMerchant(m.getId())); //POS数量
+          map.put("limit", m.getUserLimit());
+          map.put("bind", countByBindMerchant(m.getId()));
+          map.put("shop", m.getState()); //乐店开启状态
+          map.put("receipt", m.getReceiptAuth()); //收款权限为1
+          map.put("createDate", m.getCreateDate());
+          result.add(map);
+        }
       }
+    } catch (Exception e) {
+      e.printStackTrace();
     }
 
     return result;
