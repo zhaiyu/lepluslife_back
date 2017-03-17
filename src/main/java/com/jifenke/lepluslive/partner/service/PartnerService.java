@@ -35,6 +35,7 @@ import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.io.IOException;
+import java.util.Date;
 import java.util.List;
 
 import javax.inject.Inject;
@@ -238,7 +239,33 @@ public class PartnerService {
     partnerInfoRepository.save(partnerInfo);
   }
 
-  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  public void editCityPartner(PartnerManager partnerManager) {
+     partnerManager.setCreateTime(new Date());
+     // 创建合伙人登录账号
+     if(partnerManager.getId()==null) {
+        String dftPwd = "123456";
+        Partner partner = new Partner();
+        partner.setName(partnerManager.getName());
+        partner.setPassword(MD5Util.MD5Encode(dftPwd,null));
+        partnerRepository.save(partner);
+        partnerManager.setPartnerId(partner.getId());
+     }
+     // 创建城市合伙人钱包
+     if(partnerManager.getId()==null) {
+       PartnerManagerWallet wallet = new PartnerManagerWallet();
+       wallet.setAvailableBalance(0L);
+       wallet.setTotalMoney(0L);
+       wallet.setTotalWithdrawals(0L);
+       wallet.setVersion(0L);
+       partnerManagerRepository.save(partnerManager);
+       wallet.setPartnerManager(partnerManager);
+       partnerManagerWalletRepository.save(wallet);
+     }
+    partnerManagerRepository.save(partnerManager);
+  }
+
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
   public PartnerWallet findPartnerWalletByPartner(Partner partner) {
     return partnerWalletRepository.findByPartner(partner);
   }
