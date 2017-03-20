@@ -22,6 +22,8 @@ public class PartnerManager {
 
   private String payee;
 
+  private Long activityMember; //激活会员数 (至少有一个消费）
+
   private Long userLimit = 0L;
 
   public Long getId() {
@@ -54,5 +56,13 @@ public class PartnerManager {
 
   public void setPayee(String payee) {
     this.payee = payee;
+  }
+
+  public Long getActivityMember() {
+    return activityMember;
+  }
+
+  public void setActivityMember(Long activityMember) {
+    this.activityMember = activityMember;
   }
 }

@@ -275,4 +275,18 @@ public class PartnerService {
   public PartnerInfo findPartnerInfoByPartner(Partner partner) {
     return partnerInfoRepository.findByPartner(partner);
   }
+
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  public void calculateActivityMember() {
+    partnerManagerRepository.findAll().forEach(partnerManager -> {
+      Long total = 0L;
+      for (Partner partner : partnerRepository.findByPartnerManager(partnerManager)) {
+        Long count = partnerRepository.countLeJiaUserByPartner(partner.getId());
+        total += count;
+      }
+      partnerManager.setActivityMember(total);
+      partnerManagerRepository.save(partnerManager);
+    });
+
+  }
 }
