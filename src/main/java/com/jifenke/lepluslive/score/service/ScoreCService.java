@@ -15,6 +15,8 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.List;
+
 import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
@@ -58,5 +60,9 @@ public class ScoreCService {
                 return predicate;
             }
         };
+    }
+
+    public List<ScoreC> monitorScoreC() {
+        return scoreCRepository.findByScoreGreaterThan(10000L).get();
     }
 }

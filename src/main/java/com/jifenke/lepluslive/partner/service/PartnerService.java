@@ -302,4 +302,5 @@ public class PartnerService {
     public PartnerInfo findPartnerInfoByPartner(Partner partner) {
         return partnerInfoRepository.findByPartner(partner);
     }
+
 }
