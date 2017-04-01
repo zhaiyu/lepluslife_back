@@ -23,6 +23,7 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Calendar;
@@ -34,6 +35,7 @@ import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
+import javax.persistence.Query;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -337,5 +339,18 @@ public class OffLineOrderService {
     map.put("totalPrice_lj", totalPrice);
     map.put("trueScore_lj", trueScore);
     return map;
+  }
+
+  public Long monitorOffLineOrder(Date start, Date end) {
+    return offLineOrderRepository.monitorOffLineOrder(start, end);
+  }
+
+  public Long monitorScorec() {
+    Query
+        nativeQuery =
+        entityManager.createNativeQuery(
+            "select sum(scorec) from off_line_order where scorec>0 and state = 1 and complete_date > '2017-04-01 00:00:00'");
+    List<BigDecimal> resultList = nativeQuery.getResultList();
+    return resultList.get(0).longValue();
   }
 }

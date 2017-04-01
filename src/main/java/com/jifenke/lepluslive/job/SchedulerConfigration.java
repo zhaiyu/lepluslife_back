@@ -115,26 +115,28 @@ public class SchedulerConfigration {
     return tigger;
   }
 
-  @Bean(name = "partnerManagerJob")
-  public JobDetailFactoryBean partnerManager() {
+  //监控金币
+  @Bean(name = "monitorScoreCJob")
+  public JobDetailFactoryBean monitorScoreCDetail() {
     JobDetailFactoryBean bean = new JobDetailFactoryBean();
-    bean.setJobClass(OffLineOrderJob.class);
+    bean.setJobClass(ScoreCMonitorJob.class);
     bean.setDurability(false);
     return bean;
   }
 
-  @Bean(name = "partnerManagerTrigger")
-  public CronTriggerFactoryBean partnerManagerTriggerBean() {
+  @Bean(name = "monitorScoreCTrigger")
+  public CronTriggerFactoryBean monitorScoreCTriggerBean() {
     CronTriggerFactoryBean tigger = new CronTriggerFactoryBean();
-    tigger.setJobDetail(partnerManager().getObject());
+    tigger.setJobDetail(monitorScoreCDetail().getObject());
     try {
-      //tigger.setCronExpression ("0 0/5 * * * ? ");//每天凌晨1点执行
-      tigger.setCronExpression("0 0 1 * * ? ");//每天凌晨1点执行
+      tigger.setCronExpression("0 0 0/1 * * ?");//每1小时执行一次
     } catch (Exception e) {
       e.printStackTrace();
     }
     return tigger;
   }
+
+
 
 
   @Bean
@@ -148,8 +150,7 @@ public class SchedulerConfigration {
       bean.setDataSource(dataSource);
       bean.setTriggers(cronTriggerBean().getObject(), wxCronTriggerBean().getObject(),
                        scoreAAccountAddCronTriggerBean().getObject(),
-                       scanCodeCronTriggerBean().getObject(),
-                       partnerManagerTriggerBean().getObject());
+                       scanCodeCronTriggerBean().getObject(), monitorScoreCTriggerBean().getObject());
       bean.setSchedulerName("orderConfrim");
     }
     return bean;

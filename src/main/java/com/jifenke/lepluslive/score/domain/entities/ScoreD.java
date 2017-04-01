@@ -4,6 +4,7 @@ import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantUser;
 import com.jifenke.lepluslive.user.domain.entities.LeJiaUser;
 
+import java.math.BigDecimal;
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -40,8 +41,27 @@ public class ScoreD {
 
   private Long scoreCToUser = 0L; //已经带来的c金币的改变
 
+  private BigDecimal shareRate; // 分润比例  只要会员购买储值产品 就会刷新比例
+
+  private BigDecimal scoreCRate; //返金币比例 只要会员购买储值产品 就会刷新比例
+
   private Date createdDate = new Date();
 
+  public BigDecimal getShareRate() {
+    return shareRate;
+  }
+
+  public void setShareRate(BigDecimal shareRate) {
+    this.shareRate = shareRate;
+  }
+
+  public BigDecimal getScoreCRate() {
+    return scoreCRate;
+  }
+
+  public void setScoreCRate(BigDecimal scoreCRate) {
+    this.scoreCRate = scoreCRate;
+  }
 
   public Long getId() {
     return id;

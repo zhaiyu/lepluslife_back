@@ -80,4 +80,7 @@ public interface OffLineOrderRepository extends JpaRepository<OffLineOrder, Long
    */
   @Query(value = "SELECT SUM(total_price),SUM(true_score) FROM off_line_order WHERE state = 1 AND merchant_id = ?1", nativeQuery = true)
   List<Object[]> countPriceByMerchant(Long merchantId);
+
+  @Query(value = "select count(*) from off_line_order where scorec/total_price >0.31 and state = 1 and complete_date between ?1 and ?2",nativeQuery = true)
+  Long monitorOffLineOrder(Date start, Date end);
 }
