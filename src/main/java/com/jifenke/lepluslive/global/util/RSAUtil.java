@@ -20,51 +20,16 @@ public class RSAUtil {
   /**
    * 银商公钥
    */
-  private static String pubYS = "" +
-                                "30819f300d06092a864886f70d010101050003818" +
-                                "d0030818902818100ea5b22fc7e4a47b424b484de" +
-                                "b463c91c869fc14b8afa697caef5513d7d6ff3fc9" +
-                                "28be7457e74fd5b67b0e5d1e26a58dfa6118310f4" +
-                                "3e43540f3d7e9a985c8de373c0e5c9e2ac8d7396a" +
-                                "4b57e6be3279a13f13b720c3f7fa2fa8ad2cc91c5" +
-                                "ea4587c608af96825597b6eaf316a1daeff906350" +
-                                "f9c18eef819592b8efcbb0536af0203010001";
+  private static String
+      pubYS =
+      "30819f300d06092a864886f70d010101050003818d0030818902818100c60738ffae05b8902661cc8c72dbdaa9de6a98f69575f2118aeafd77d91989f4363119dcc8c2109d94fbdc48873305c67e3a742ea9879555ab573bb95cd4c5200cf680146812405c134f3f89c283eb9fec75013b358c3818b9c1055737cd25a811e38ba714b22167520fe4d9f6f3dc29deeea9f59b583a59ad426c08e1d1dc3f0203010001";
 
   /**
    * 积分客私钥
    */
-  private static String pri = "" +
-                              "30820278020100300d06092a864886f70d0101010" +
-                              "500048202623082025e02010002818100d42a42bb" +
-                              "229bc745071cbe1772b8f3db3d08423a834407798" +
-                              "124df3f061d94086f404898d27260d6caaaee1c5b" +
-                              "1b10726942bed5e045f489ebf553f78df45085265" +
-                              "4ebd5759c3ddb4f2b2e5cdeba850c7bd170baf716" +
-                              "f8f03971179963785c5f40e35293afb6cd69250f7" +
-                              "606056986714dc8569187ba117314fb3b11495d07" +
-                              "61020301000102818100c3da2733bca4f4f481b64" +
-                              "4bc3c89038334f9f4b933078fa6d852834b188821" +
-                              "690fd9d5aa4d4a8c9e7b04033e65d3bc0101ae3da" +
-                              "00da24635337e8a7e91aa20d0bab67cf07121126d" +
-                              "900252d0d8ed7fbe59d24d3392f495f1730e2e8b6" +
-                              "d12933a3a9466c12d2321ca754704285cb337c4fd" +
-                              "bcbaca38600ae1a77aed5e51892a69024100efec2" +
-                              "3c2fd391460b6d9f18dd6be28ccf1c7a15ec87ec0" +
-                              "13b4aca27b868a125c412dddcd581cb8f6d705ff5" +
-                              "be91942e1c04b6abc2daa89f996b4a318180d7193" +
-                              "024100e261f1e039800c65a376b5671d2f31fe1ce" +
-                              "76db8d17dd26a6194568a8a06c12f7fa4863a3a4d" +
-                              "257e2eb7a0ba8ad38a97304054ec8d7b354ec74d2" +
-                              "1cc4ac74bbb024100ce1c5218980baa3aefbac9ae" +
-                              "2d564d9ccaf4d1e7a85c634c4a81a85070233b64a" +
-                              "fc5e46f1d0c07c65eb0d350352f336ad714b30c18" +
-                              "3b12af2d4ddf72ba6f0a2b024030fed1c29daf40f" +
-                              "f9e694ac98e5f708a76e6ffb04866daeb7b430797" +
-                              "e457a1e80dd025dce4515e13f93874e8eab2ee03d" +
-                              "ac5919bc0e3319e6334266478aab991024100a3ac" +
-                              "9c5366f59a67566d35d6ab7a36dafe379e9cfbb35" +
-                              "e31387a40b1f492eceb0250a61dd4fe8b3390e34b" +
-                              "bf001ea6845304a8116fbbb80257195947a7937486";
+  private static String
+      pri =
+      "30820278020100300d06092a864886f70d0101010500048202623082025e02010002818100e3b7f8a022be8ffa8057b7c6277c4bb60b2ede048b90d4df5b676d41e437255d976436a77b551a963fc12cff0847c5206a7e7c62be256011e5b4365300df584d18733f43b3d4be99d3ba455a47f51931999a2fe93e0dc79bc386a37e9b9a2e0bf95672c2d57ad74b7b7ca6c604e0fced2b08f874e0604e8b80aa30270cab3211020301000102818100b54ec1321ef7c3031c34bb29963eacb960e60bf76a780245642d511c696c4edfd9adfca614d889b69f445b632360a15f51eb2b762316f70ac8ed5763770a5cee645fb0809239f614fe7de41955bd3a46cefb9081b8ff98a362526b54ab6f40088b4fa2243816e38d20225f81fb44cf80dfe9ca00e0c05eeee4c790542af9cd01024100fd63abf258ca666f1568d0da8438b04b4a2ee04eb8e323e0449f6dd63c0f5b2fe759b3397595e2f15486d0551a48166118330bbefaadce4676eb251a0b7d7ec9024100e61097750f00ce316eba28755acab74275caf67198918fb875838c850927fa716a3cbc74d121a284b810be937b1dfac083452f7aad4f7051945757af70615509024100f11a20e75553294ab38d6b8530e09be6d7ec68a49f4a09be00adce9e55c1aadb970004083d79645a8b3a480b62198ba9d193e8ae4cea8a67040a54e046649ff902400a7b730b2855d70f358651d596ff697e23b3cdaabb52d6838707295dde5eedf040f0e77d43120f3f90cb628381b689f83f82e578e77099237e68c45bfff8cf5102410094362e41dce4db21360819efec1193070c4e77172735946cb77024af26bbf78ce2e6a3f6c823d18e8b6fd08c6b0d53ab2d4cf284240d2b49e585f474121e88e8";
 
   /**
    * RSA银商公钥加密

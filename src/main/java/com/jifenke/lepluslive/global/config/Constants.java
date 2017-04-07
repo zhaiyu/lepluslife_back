@@ -69,17 +69,16 @@ public final class Constants {
   public static final String MSG_SENDER = "214"; //银联商务分配的渠道号
   public static final String EVENT_NO = "666"; //银联商务活动号
   public static final String
-      SHOP_QUERY_URL =
-      "http://dev.spserv.yxlm.chinaums.com:17201/spservice/shopquery/doShopQuery";//银商商户门店查询接口地址
+      SHOP_QUERY_URL = "https://mktos.chinaums.com/spservice/shopquery/doShopQuery";//银商商户门店查询接口地址
   public static final String
       EVENT_PROCESS_URL =
-      "http://dev.spserv.yxlm.chinaums.com:17201/spservice/spevent/process";//活动注册接口地址
+      "https://mktos.chinaums.com/spservice/spevent/process";//活动注册接口地址
   public static final String
       BANK_SIGN_URL =
-      "http://dev.spserv.yxlm.chinaums.com:17201/spservice/spenc/doReSign";//卡号转加密接口地址
+      "https://mktos.chinaums.com/spservice/spenc/doReSign";//卡号转加密接口地址
   public static final String
       BANK_REGISTER_URL =
-      "http://dev.spserv.yxlm.chinaums.com:17201/spservice/spmember/process";//会员注册接口地址
+      "https://mktos.chinaums.com/spservice/spmember/process";//会员注册接口地址
 
 
   private Constants() {

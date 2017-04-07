@@ -99,24 +99,24 @@
                             <b class="caret"></b>
                         </div>
                     </div>
-                    <%--<div class="form-group col-md-2">--%>
-                    <%--<label for="productType">商品分类</label>--%>
-                    <%--<select class="form-control" id="productType">--%>
-                    <%--<option value="-1">全部分类</option>--%>
-                    <%--<c:forEach items="${productTypes}" var="productType">--%>
-                    <%--<option value="${productType.id}">${productType.type}</option>--%>
-                    <%--</c:forEach>--%>
-                    <%--</select>--%>
-                    <%--</div>--%>
-                    <%--<div class="form-group col-md-2">--%>
-                    <%--<label for="mark">角标分类</label>--%>
-                    <%--<select class="form-control" id="mark">--%>
-                    <%--<option value="-1">全部分类</option>--%>
-                    <%--<c:forEach items="${markList}" var="mark">--%>
-                    <%--<option value="${mark.id}">${mark.value}</option>--%>
-                    <%--</c:forEach>--%>
-                    <%--</select>--%>
-                    <%--</div>--%>
+                    <div class="form-group col-md-2">
+                        <label for="productType">商品分类</label>
+                        <select class="form-control" id="productType">
+                            <option value="-1">全部分类</option>
+                            <c:forEach items="${productTypes}" var="productType">
+                                <option value="${productType.id}">${productType.type}</option>
+                            </c:forEach>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-2">
+                        <label for="mark">角标分类</label>
+                        <select class="form-control" id="mark">
+                            <option value="-1">全部分类</option>
+                            <c:forEach items="${markList}" var="mark">
+                                <option value="${mark.id}">${mark.value}</option>
+                            </c:forEach>
+                        </select>
+                    </div>
 
                     <%--<div class="form-group col-md-2">--%>
                     <%--<label for="minTruePrice">最低金额</label>--%>
@@ -183,7 +183,7 @@
                         <table class="table table-bordered table-hover">
                             <thead>
                             <tr id="tr" class="active">
-                                <%--<th class="text-center">商品分类</th>--%>
+                                <th class="text-center">商品分类</th>
                                 <th class="text-center">商品序号</th>
                                 <th class="text-center">商品ID</th>
                                 <th class="text-center">商品名称</th>
@@ -448,8 +448,8 @@
                        }
 
                        for (var i = 0; i < content.length; i++) {
-                           var contentStr = '<tr><td>' + content[i].sid + '</td>';
-//                           contentStr += '<td>' + content[i].sid + '</td>';
+                           var contentStr = '<tr><td>' + content[i].typeName + '</td>';
+                           contentStr += '<td>' + content[i].sid + '</td>';
                            contentStr += '<td>' + content[i].id + '</td>';
                            contentStr += '<td>' + content[i].name + '</td>';
                            contentStr +=
@@ -517,14 +517,14 @@
             criteria.startDate = startDate;
             criteria.endDate = endDate;
         }
-//        var typeId = $("#productType").val();
-//        if (typeId != -1) {
-//            var productType = {};
-//            productType.id = typeId;
-//            criteria.productType = productType;
-//        } else {
-//            criteria.productType = null;
-//        }
+        var typeId = $("#productType").val();
+        if (typeId != -1) {
+            var productType = {};
+            productType.id = typeId;
+            criteria.productType = productType;
+        } else {
+            criteria.productType = null;
+        }
 //        var minTruePrice = $("#minTruePrice").val();
 //        if (minTruePrice != "" && minTruePrice != null) {
 //            criteria.minTruePrice = minTruePrice * 100;
@@ -549,12 +549,12 @@
         } else {
             criteria.postage = null;
         }
-//        var mark = $("#mark").val();
-//        if (mark != -1) {
-//            criteria.mark = mark;
-//        } else {
-//            criteria.mark = null;
-//        }
+        var mark = $("#mark").val();
+        if (mark != -1) {
+            criteria.mark = mark;
+        } else {
+            criteria.mark = null;
+        }
         criteria.orderBy = $("#orderBy").val();
         criteria.desc = $("#Desc").val();
     }
