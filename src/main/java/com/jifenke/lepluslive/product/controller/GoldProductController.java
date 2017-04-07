@@ -79,6 +79,8 @@ public class GoldProductController {
     Product product = null;
     List<ProductDetail> detailList = null;
     List<ScrollPicture> scrollPictureList = null;
+    model.addAttribute("productTypes", productService.findAllProductType());
+    model.addAttribute("markList", categoryService.findAllByCategory(1));
     if (id != null) {
       product = productService.findOneProduct(id);
     } else {
@@ -102,8 +104,6 @@ public class GoldProductController {
         model.addAttribute("scrollSize", scrollPictureList.size());
       }
     }
-    model.addAttribute("productTypes", productService.findAllProductType());
-    model.addAttribute("markList", categoryService.findAllByCategory(1));
 
     return MvUtil.go("/product/gold/productCreate");
   }
