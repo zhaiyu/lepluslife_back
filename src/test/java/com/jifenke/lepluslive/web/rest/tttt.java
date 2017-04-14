@@ -237,10 +237,6 @@ public class tttt {
     shortMessageService
         .sendOneMessage(userService.findUserById(50L), shortMessageSceneService.findSceneById(6L),
                         message.toString());
-    shortMessageService
-        .sendOneMessage(userService.findUserById(65791L),
-                        shortMessageSceneService.findSceneById(6L),
-                        message.toString());
 
   }
 

@@ -39,28 +39,31 @@ public class ScoreD {
 
   private Long totalScoreC = 0L;//总返c积分值 储值消费会带来c积分的改变
 
-  private Long scoreCToUser = 0L; //已经带来的c金币的改变
+  private Long
+      scoreCToUser =
+      0L;
+      //已经返c积分值 对于每笔储值订单储值部分发放金币值 = (totalScoreC-scoreCToUser)* 使用储值金额／当前可用储值余额
 
-  private BigDecimal shareRate; // 分润比例  只要会员购买储值产品 就会刷新比例
+  private Long totalShareMoney = 0L; //总分润值
 
-  private BigDecimal scoreCRate; //返金币比例 只要会员购买储值产品 就会刷新比例
+  private Long sharedMoney = 0L; //已经分润的金额
 
   private Date createdDate = new Date();
 
-  public BigDecimal getShareRate() {
-    return shareRate;
+  public Long getTotalShareMoney() {
+    return totalShareMoney;
   }
 
-  public void setShareRate(BigDecimal shareRate) {
-    this.shareRate = shareRate;
+  public void setTotalShareMoney(Long totalShareMoney) {
+    this.totalShareMoney = totalShareMoney;
   }
 
-  public BigDecimal getScoreCRate() {
-    return scoreCRate;
+  public Long getSharedMoney() {
+    return sharedMoney;
   }
 
-  public void setScoreCRate(BigDecimal scoreCRate) {
-    this.scoreCRate = scoreCRate;
+  public void setSharedMoney(Long sharedMoney) {
+    this.sharedMoney = sharedMoney;
   }
 
   public Long getId() {

@@ -43,7 +43,7 @@ public class ScoreCMonitorJob implements Job {
     } catch (ParseException e) {
       e.printStackTrace();
     }
-    if (end.after(date) && end.before(date2)) {
+    if (end.after(date)) {
       calendar.set(Calendar.MINUTE, -60);
       Date start = calendar.getTime();
       ApplicationContext applicationContext = null;
@@ -51,45 +51,45 @@ public class ScoreCMonitorJob implements Job {
 
         applicationContext =
             (ApplicationContext) context.getScheduler().getContext().get("applicationContextKey");
-      } catch (SchedulerException e) {
-        log.error("jobExecutionContext.getScheduler().getContext() error!", e);
-        throw new RuntimeException(e);
+        ScoreCService
+            scoreCService =
+            (ScoreCService) applicationContext.getBean("scoreCService");
+        OffLineOrderService offLineOrderService =
+            (OffLineOrderService) applicationContext.getBean("offLineOrderService");
+        ShortMessageService shortMessageService =
+            (ShortMessageService) applicationContext.getBean("shortMessageService");
+        UserService userService = (UserService) applicationContext.getBean("userService");
+        ShortMessageSceneService
+            shortMessageSceneService =
+            (ShortMessageSceneService) applicationContext.getBean("shortMessageSceneService");
+        Long warningOrder = offLineOrderService.monitorOffLineOrder(start, end);
+        int scoreCs = scoreCService.monitorScoreC().size();
+        Long scoreCValue = offLineOrderService.monitorScorec();
+        System.out.println(warningOrder);
+        System.out.println(scoreCs);
+        System.out.println(scoreCValue);
+        StringBuilder message = new StringBuilder();
+        message.append("4月1日到现在发送了");
+        message.append(scoreCValue / 100.0);
+        message.append("金币");
+        if (warningOrder != 0) {
+          message.append(",出现");
+          message.append(warningOrder);
+          message.append("比可疑订单");
+        }
+        if (scoreCs != 0) {
+          message.append(",有");
+          message.append(scoreCs);
+          message.append("个用户金币大于100");
+        }
+        System.out.println(message.toString());
+        shortMessageService
+            .sendOneMessage(userService.findUserById(65791L),
+                            shortMessageSceneService.findSceneById(6L),
+                            message.toString());
+      } catch (Exception e) {
+        log.error("error",e);
       }
-      ScoreCService
-          scoreCService =
-          (ScoreCService) applicationContext.getBean("scoreCService");
-      OffLineOrderService offLineOrderService =
-          (OffLineOrderService) applicationContext.getBean("offLineOrderService");
-      ShortMessageService shortMessageService =
-          (ShortMessageService) applicationContext.getBean("shortMessageService");
-      UserService userService = (UserService) applicationContext.getBean("userService");
-      ShortMessageSceneService
-          shortMessageSceneService =
-          (ShortMessageSceneService) applicationContext.getBean("shortMessageSceneService");
-      Long warningOrder = offLineOrderService.monitorOffLineOrder(start, end);
-      int scoreCs = scoreCService.monitorScoreC().size();
-      Long scoreCValue = offLineOrderService.monitorScorec();
-
-      StringBuilder message = new StringBuilder();
-      message.append("4月1日到现在发送了");
-      message.append(scoreCValue / 100.0);
-      message.append("金币");
-      if (warningOrder != 0) {
-        message.append(",出现");
-        message.append(warningOrder);
-        message.append("比可疑订单");
-      }
-      if (scoreCs != 0) {
-        message.append(",有");
-        message.append(scoreCs);
-        message.append("个用户金币大于100");
-      }
-      shortMessageService
-          .sendOneMessage(userService.findUserById(65791L),
-                          shortMessageSceneService.findSceneById(6L),
-                          message.toString());
     }
-
   }
-
 }

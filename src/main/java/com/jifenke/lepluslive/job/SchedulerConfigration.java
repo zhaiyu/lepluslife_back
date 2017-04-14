@@ -129,7 +129,7 @@ public class SchedulerConfigration {
     CronTriggerFactoryBean tigger = new CronTriggerFactoryBean();
     tigger.setJobDetail(monitorScoreCDetail().getObject());
     try {
-      tigger.setCronExpression("0 0 0/1 * * ?");//每1小时执行一次
+      tigger.setCronExpression("0 0 9 * * ? ");//每1小时执行一次
     } catch (Exception e) {
       e.printStackTrace();
     }
