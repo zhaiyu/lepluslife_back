@@ -124,6 +124,12 @@ public class MerchantService {
   @Inject
   private MerchantSettlementService merchantSettlementService;
 
+  @Inject
+  private LejiaResourceRepository lejiaResourceRepository;
+
+  @Inject
+  private MerchantUserResourceRepository merchantUserResourceRepository;
+
   @Value("${bucket.ossBarCodeReadRoot}")
   private String barCodeRootUrl;
 
@@ -202,6 +208,17 @@ public class MerchantService {
       merchantProtocolRepository.save(merchantProtocol);
       return merchantProtocol;
     }).collect(Collectors.toList());
+    // 资源注册
+    LejiaResource lejiaResource = new LejiaResource();
+    lejiaResource.setResourceId(merchant.getId());
+    lejiaResource.setResourceType(0);
+    lejiaResourceRepository.save(lejiaResource);
+    // 角色关联
+    MerchantUserResource merchantUserResource = new MerchantUserResource();
+    merchantUserResource.setResourceType(0);
+    merchantUserResource.setMerchantUser(merchant.getMerchantUser());
+    merchantUserResource.setLeJiaResource(lejiaResource);
+    merchantUserResourceRepository.save(merchantUserResource);
     merchantWalletRepository.save(merchantWallet);
     walletOnlineRepository.save(walletOnline);
     registerOriginRepository.save(registerOrigin);
