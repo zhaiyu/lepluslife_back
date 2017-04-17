@@ -4,6 +4,7 @@ package com.jifenke.lepluslive.activity.service;
 import com.jifenke.lepluslive.activity.domain.criteria.PhoneOrderCriteria;
 import com.jifenke.lepluslive.activity.domain.entities.ActivityPhoneOrder;
 import com.jifenke.lepluslive.activity.repository.ActivityPhoneOrderRepository;
+import com.jifenke.lepluslive.global.util.MvUtil;
 import com.jifenke.lepluslive.user.service.WeiXinUserService;
 import com.jifenke.lepluslive.weixin.service.WxTemMsgService;
 
@@ -100,14 +101,14 @@ public class ActivityPhoneOrderService {
    * @param orderSid 自有订单号
    */
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-  public Map recharge(String orderSid) throws Exception {
+  public Map<String, Object> recharge(String orderSid) throws Exception {
     Map<String, Object> result = new HashMap<>();
     //查询该笔订单是否已经充值
     try {
       Map map = rechargeService.status(orderSid);
       System.out.println(map);
       ActivityPhoneOrder order = repository.findByOrderSid(orderSid);
-      String status = map.get("status").toString();
+      String status = String.valueOf(((Map<String, Object>) map.get("data")).get("status"));
       Date date = new Date();
       if ("success".equals(status)) {
         //掉单，将订单设为已支付，并发送模板消息
@@ -124,7 +125,7 @@ public class ActivityPhoneOrderService {
         String[] keys = new String[4];
         keys[0] = order.getPhone();
         keys[1] = order.getWorth() + ".00元";
-        keys[2] = order.getTruePrice() / 100.0 + "元+" + order.getTrueScoreB() + "积分";
+        keys[2] = order.getTruePrice() / 100.0 + "元+" + order.getTrueScoreB() / 100.0 + "金币";
         keys[3] =
             new SimpleDateFormat("yyyy-MM-dd HH:mm")
                 .format(order.getPayDate() == null ? date : order.getPayDate());
@@ -138,6 +139,7 @@ public class ActivityPhoneOrderService {
         result.put("msg", "该订单正在充值中,请稍后查询");
       } else if ("failure".equals(status)) {
         //调充值接口充值
+        orderSid = MvUtil.getOrderNumber();
         Map<Object, Object>
             result2 =
             rechargeService.submit(order.getPhone(), order.getWorth(), orderSid);
@@ -151,6 +153,9 @@ public class ActivityPhoneOrderService {
           result.put("status", 103);
           result.put("msg", result.get("message"));
         } else {
+          order.setOrderSid(orderSid);
+          order.setPlatform(2);
+          repository.saveAndFlush(order);
           result.put("status", 100);
           result.put("msg", "重新充值成功，请稍后查询");
         }
