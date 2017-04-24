@@ -246,6 +246,14 @@
                 </div>
             </li>
         </shiro:hasPermission>
+
+            <li><h4 class="M6"><span></span>银商POS</h4>
+                <div class="list-item none none12">
+                    <a href='/manage/unionPayStore/unionPayStorePage'>银商门店</a>
+                    <a href='/manage/unionPosOrder/unionPosOrderPage'>银商订单</a>
+                    <a href='/manage/unionBankCard/unionBankCardPage'>会员绑卡</a>
+                </div>
+            </li>
         <shiro:hasPermission name="market_center:query">
             <li><h4 class="M6"><span></span>营销中心</h4>
 
@@ -363,6 +371,10 @@
         if (url.indexOf("/manage/productSecKill") != -1) {
             $(".none11").parent('li').addClass('selected');
             $(".none11").slideDown(300);
+        }
+        if (url.indexOf("/manage/unionPayStore/unionPayStorePage") != -1||url.indexOf("/manage/unionPosOrder/unionPosOrderPage")!=-1||url.indexOf("/manage/unionBankCard/unionBankCardPage")!=-1) {
+            $(".none12").parent('li').addClass('selected');
+            $(".none12").slideDown(300);
         }
     })
 </script>

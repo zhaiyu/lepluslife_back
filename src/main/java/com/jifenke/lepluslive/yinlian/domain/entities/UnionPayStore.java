@@ -2,15 +2,8 @@ package com.jifenke.lepluslive.yinlian.domain.entities;
 
 import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
 
+import javax.persistence.*;
 import java.util.Date;
-
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
 
 /**
  * 银联商务门店 Created by zhangwen on 2017/1/17.
