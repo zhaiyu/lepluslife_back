@@ -1,29 +1,24 @@
 package com.jifenke.lepluslive.yinlian.service;
 
 import com.jifenke.lepluslive.global.config.Constants;
-import com.jifenke.lepluslive.global.util.DataUtils;
-import com.jifenke.lepluslive.global.util.HttpClientUtil;
-import com.jifenke.lepluslive.global.util.JsonUtils;
-import com.jifenke.lepluslive.global.util.MvUtil;
-import com.jifenke.lepluslive.global.util.RSAUtil;
+import com.jifenke.lepluslive.global.util.*;
+import com.jifenke.lepluslive.yinlian.domain.criteria.UnionPayStoreCriteria;
 import com.jifenke.lepluslive.yinlian.domain.entities.UnionPayStore;
 import com.jifenke.lepluslive.yinlian.repository.UnionPayStoreRepository;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.Date;
-import java.util.HashSet;
-import java.util.List;
-import java.util.Map;
-import java.util.Optional;
-import java.util.Set;
-import java.util.SortedMap;
-import java.util.TreeMap;
-import java.util.UUID;
-
 import javax.inject.Inject;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
+import java.util.*;
 
 /**
  * 银联商务门店 Created by zhangwen on 2017/1/17.
@@ -96,6 +91,37 @@ public class UnionPayStoreService {
     return JsonUtils.jsonToPojo(result, Map.class);
   }
 
+  public static Specification<UnionPayStore> getWhereClause(UnionPayStoreCriteria unionPayStoreCriteria) {
+    return new Specification<UnionPayStore>() {
+      @Override
+      public Predicate toPredicate(Root<UnionPayStore> r, CriteriaQuery<?> q,
+                                   CriteriaBuilder cb) {
+        Predicate predicate = cb.conjunction();
+
+
+        if (unionPayStoreCriteria.getStartDate() != null && unionPayStoreCriteria.getStartDate() != "") {
+          predicate.getExpressions().add(
+                  cb.between(r.get("createDate"), new Date(unionPayStoreCriteria.getStartDate()),
+                          new Date(unionPayStoreCriteria.getEndDate())));
+        }
+
+        if (unionPayStoreCriteria.getMerchantSid() != null && unionPayStoreCriteria.getMerchantSid() != "") {
+          predicate.getExpressions().add(
+                  cb.equal(r.<UnionPayStore>get("merchant").get("merchantSid"),
+                          unionPayStoreCriteria.getMerchantSid()));
+        }
+
+        if (unionPayStoreCriteria.getShopNumber() != null && unionPayStoreCriteria.getShopNumber() != "") {
+          predicate.getExpressions().add(
+                  cb.equal(r.<UnionPayStore>get("shopNumber"),
+                          unionPayStoreCriteria.getShopNumber()));
+        }
+
+        return predicate;
+      }
+    };
+  }
+
   /**
    * 活动注册  2017/01/17
    */
@@ -114,8 +140,14 @@ public class UnionPayStoreService {
     params.put("event_title", "测试活动主题");
     params.put("event_desc", "测试活动介绍");  // o
     String now = DataUtils.formatYYYYMMDD(new Date());
+    Date date = new Date();//取时间
+    Calendar calendar = new GregorianCalendar();
+    calendar.setTime(date);
+    calendar.add(calendar.YEAR, 1);
+    date = calendar.getTime();
+    String end = DataUtils.formatYYYYMMDD(date);
     params.put("begin_date", now + "000000");
-    params.put("end_date", now + "235959");
+    params.put("end_date", end + "235959");
     params.put("event_link", "测试活动链接");  // o
     params.put("event_rule", "测试活动规则");
     params.put("rule_desc", "测试规则描述");
@@ -130,6 +162,21 @@ public class UnionPayStoreService {
     return JsonUtils.jsonToPojo(result, Map.class);
   }
 
+  private String getOriginStr(SortedMap<String, String> parameters) {
+    StringBuilder sb = new StringBuilder();
+    for (Map.Entry<String, String> entry : parameters.entrySet()) {
+      String k = entry.getKey();
+      String v = entry.getValue();
+      if (null != v) {
+        sb.append(k).append("=").append(v).append("&");
+      }
+    }
+    if (sb.length() > 1) {
+      sb.deleteCharAt(sb.length() - 1);
+    }
+    return sb.toString();
+  }
+
   /**
    * 保存或更新银商门店信息  2017/01/18
    *
@@ -137,7 +184,7 @@ public class UnionPayStoreService {
    * @param store 银联商务门店
    */
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-  public void saveStore(Map<String, String> shop, UnionPayStore store) throws Exception {
+  public Map saveStore(Map<String, String> shop, UnionPayStore store) throws Exception {
     try {
       UnionPayStore db_store = null;
       if (store.getId() != null) {
@@ -159,26 +206,12 @@ public class UnionPayStoreService {
       db_store.setProvinceName(shop.get("province_name"));
       db_store.setProvinceCode(shop.get("province_code"));
       db_store.setTermNos(shop.get("term_nos"));
-      repository.save(db_store);
+      repository.saveAndFlush(db_store);
+      return process();
     } catch (Exception e) {
       e.printStackTrace();
       throw new RuntimeException();
     }
-  }
-
-  private String getOriginStr(SortedMap<String, String> parameters) {
-    StringBuilder sb = new StringBuilder();
-    for (Map.Entry<String, String> entry : parameters.entrySet()) {
-      String k = entry.getKey();
-      String v = entry.getValue();
-      if (null != v) {
-        sb.append(k).append("=").append(v).append("&");
-      }
-    }
-    if (sb.length() > 1) {
-      sb.deleteCharAt(sb.length() - 1);
-    }
-    return sb.toString();
   }
 
   /**
@@ -198,5 +231,22 @@ public class UnionPayStoreService {
     params.put("msg_ver", "0.1");
     return params;
   }
+
+  public Page findUnionPayStoreByPage(UnionPayStoreCriteria unionPayStoreCriteria, Integer limit) {
+    Sort sort = new Sort(Sort.Direction.DESC, "createDate");
+    return repository
+            .findAll(getWhereClause(unionPayStoreCriteria),
+                    new PageRequest(unionPayStoreCriteria.getOffset() - 1, limit, sort));
+  }
+
+  public UnionPayStore findUnionPayStoreById(Long id) {
+    return repository.findOne(id);
+  }
+
+
+  public UnionPayStore findUnionPayStoreByShopNumber(String shopNumber) {
+    return repository.findUnionPayStoreByShopNumber(shopNumber);
+  }
+
 
 }

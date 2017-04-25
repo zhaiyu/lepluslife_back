@@ -1,7 +1,9 @@
 package com.jifenke.lepluslive.yinlian.repository;
 
 import com.jifenke.lepluslive.yinlian.domain.entities.UnionPayStore;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
@@ -18,5 +20,9 @@ public interface UnionPayStoreRepository extends JpaRepository<UnionPayStore, Lo
    */
   @Query(value = "SELECT shop_number FROM union_pay_store WHERE merchant_num IS NOT NULL", nativeQuery = true)
   List<String> findAllMerchantNum();
+
+  Page findAll(Specification<UnionPayStore> whereClause, Pageable pageRequest);
+
+  UnionPayStore findUnionPayStoreByShopNumber(String shopNumber);
 
 }

@@ -2,6 +2,7 @@ package com.jifenke.lepluslive.global.util;
 
 import org.apache.commons.codec.binary.MHex;
 
+import javax.crypto.Cipher;
 import java.io.ByteArrayOutputStream;
 import java.security.KeyFactory;
 import java.security.PrivateKey;
@@ -9,8 +10,6 @@ import java.security.PublicKey;
 import java.security.Signature;
 import java.security.spec.PKCS8EncodedKeySpec;
 import java.security.spec.X509EncodedKeySpec;
-
-import javax.crypto.Cipher;
 
 /**
  * 银联商务加解密及签名验签
