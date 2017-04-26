@@ -639,7 +639,7 @@
             $("input[name=creditCardCommission]").val(pos.creditCardCommission);
             $("input[name=debitCardCommission]").val(pos.debitCardCommission);
             $("input[name=ljCommission]").val(pos.ljCommission);
-            $("input[name=ceil]").val(pos.ceil);
+            $("input[name=ceil]").val(pos.ceil/100.0);
             $("input[name=wxCommission]").val(pos.wxCommission);
             $("input[name=aliCommission]").val(pos.aliCommission);
             $("input[name=wxCommission]").val(pos.wxCommission);
