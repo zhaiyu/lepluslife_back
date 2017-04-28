@@ -95,8 +95,8 @@
                         <label for="type">订单类型</label>
                         <select class="form-control" id="type">
                             <option value="-1">全部分类</option>
-                            <option value="1">积分订单</option>
-                            <option value="2">金币订单</option>
+                            <option value="1">积分类</option>
+                            <option value="2">金币类</option>
                         </select>
                     </div>
                     <div class="form-group col-md-2">
@@ -135,6 +135,8 @@
                         <select class="form-control" id="payWay">
                             <option value="-1">全部</option>
                             <option value="1">纯微信</option>
+                            <option value="5">微信+金币</option>
+                            <option value="6">纯金币</option>
                             <option value="3">微信+积分</option>
                             <option value="4">纯积分</option>
                         </select>

@@ -200,18 +200,18 @@
                 </div>
             </div>
         </div>
-        <div>
-            <div>缩略图片</div>
-            <div class="col-sm-6">
-                <div>
-                    <!--<div class="thumbnail">-->
-                    <img style="width: 100%" src="${product.thumb}" alt="..." id="thumb">
-                    <!--</div>-->
-                    <input type="file" class="form-control" id="thumbPicture" name="file"
-                           data-url="/manage/file/saveImage"/>
-                </div>
-            </div>
-        </div>
+        <%--<div>--%>
+        <%--<div>缩略图片</div>--%>
+        <%--<div class="col-sm-6">--%>
+        <%--<div>--%>
+        <%--<!--<div class="thumbnail">-->--%>
+        <%--<img style="width: 100%" src="${product.thumb}" alt="..." id="thumb">--%>
+        <%--<!--</div>-->--%>
+        <%--<input type="file" class="form-control" id="thumbPicture" name="file"--%>
+        <%--data-url="/manage/file/saveImage"/>--%>
+        <%--</div>--%>
+        <%--</div>--%>
+        <%--</div>--%>
         <div>
             <div>邮费</div>
             <div class="limited">
@@ -251,10 +251,10 @@
         <div>
             <div>价格(展示用)</div>
             <div class="w-prace">
-                <span>所需积分：</span>
-                <input type="number" placeholder="所需积分" onblur="noNumbers(event,0)"
+                <span>所需金币：</span>
+                <input type="number" placeholder="所需金币" onblur="noNumbers(event,0)"
                        id="productMinScore"
-                       value="${product.minScore}"/><span> 最低价格：</span>
+                       value="${product.minScore / 100}"/><span> 最低价格：</span>
                 <input type="number" placeholder="需支付的金额" onblur="noNumbers(event,2)"
                        id="productMinPrice"
                        value="${product.minPrice/100}"/>
@@ -402,20 +402,20 @@
                                                                    + resp.data);
                                             }
                                         });
-        $('#thumbPicture').fileupload({
-                                          dataType: 'json',
-                                          maxFileSize: 5000000,
-                                          acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
-                                          add: function (e, data) {
-                                              data.submit();
-                                          },
-                                          done: function (e, data) {
-                                              var resp = data.result;
-                                              $('#thumb').attr('src',
-                                                               '${ossImageReadRoot}/'
-                                                               + resp.data);
-                                          }
-                                      });
+        <%--$('#thumbPicture').fileupload({--%>
+        <%--dataType: 'json',--%>
+        <%--maxFileSize: 5000000,--%>
+        <%--acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,--%>
+        <%--add: function (e, data) {--%>
+        <%--data.submit();--%>
+        <%--},--%>
+        <%--done: function (e, data) {--%>
+        <%--var resp = data.result;--%>
+        <%--$('#thumb').attr('src',--%>
+        <%--'${ossImageReadRoot}/'--%>
+        <%--+ resp.data);--%>
+        <%--}--%>
+        <%--});--%>
     });
     function noNumbers(e, len) {
         var val = e.currentTarget.value;
@@ -450,15 +450,17 @@
         }
         if (/(E+)/.test(fmt)) {
             fmt =
-            fmt.replace(RegExp.$1,
-                        ((RegExp.$1.length > 1) ? (RegExp.$1.length > 2 ? "\u661f\u671f" : "\u5468")
+                fmt.replace(RegExp.$1,
+                            ((RegExp.$1.length > 1) ? (RegExp.$1.length > 2 ? "\u661f\u671f"
+                                : "\u5468")
                                 : "") + week[this.getDay() + ""]);
         }
         for (var k in o) {
             if (new RegExp("(" + k + ")").test(fmt)) {
                 fmt =
-                fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr((""
-                                                                                                 + o[k]).length)));
+                    fmt.replace(RegExp.$1,
+                                (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr((""
+                                                                                          + o[k]).length)));
             }
         }
         return fmt;
@@ -467,7 +469,8 @@
 <script>
 
     $("#save").click(function () {
-        var product = {}, productType = {}, mark = {}, scrollPictureList = [], productDetailList = [], goOn = 0;
+        var product = {}, productType = {}, mark = {}, scrollPictureList = [],
+            productDetailList = [], goOn = 0;
 
         product.id = $("#productId").val();
         //商品序号
@@ -508,17 +511,18 @@
         }
         product.description = $("#description").val();
         //商品图片
-        if ($("#picture").attr("src") == "") {
+        var currPic = $("#picture").attr("src");
+        if (currPic == null || "" == currPic) {
             alert("请上传商品图片");
             return
         }
-        product.picture = $("#picture").attr("src");
-        //商品缩略图片
-        if ($("#thumb").attr("src") == "") {
-            alert("请上传缩略图片");
-            return
-        }
-        product.thumb = $("#thumb").attr("src");
+        product.picture = currPic;
+//        //商品缩略图片
+//        if ($("#thumb").attr("src") == "") {
+//            alert("请上传缩略图片");
+//            return
+//        }
+        product.thumb = currPic;
         //邮费
         var postage = $("input[name='postage']:checked").val();
         if (postage == null) {
@@ -545,13 +549,14 @@
                 product.freePrice = freePrice * 100;
             }
         }
-        //展示用价格
-        if ($("#productMinScore").val() == "") {
-            alert("请输入最低积分");
+        //展示用金币
+        var minScore = $("#productMinScore").val();
+        if (minScore == null || minScore == "") {
+            alert("请输入最低金币");
             $("#productMinScore").focus();
             return
         }
-        product.minScore = $("#productMinScore").val();
+        product.minScore = minScore * 100;
         if ($("#productMinPrice").val() == "") {
             alert("请输入支付价格");
             $("#productMinPrice").focus();
@@ -649,25 +654,26 @@
         var picture = "scrollPicture" + n;
         var pic = "scrollPic" + n;
         $(".banner").append(
-                $("<div></div>").attr("id", currId).attr("style", "margin:5px;").append(
-                        $("<input>").attr("type", "hidden").attr("value", "")
-                ).append(
-                        $("<div></div>").append(
-                                $("<img>").attr("id", currId).attr("class", "addImg").attr("id",
-                                                                                           pic)
-                        )
-                ).append(
-                        $("<div></div>").append(
-                                $("<input>").attr("type", "file").attr("id", picture).attr("name",
-                                                                                           "file").attr("class",
-                                                                                                        "form-control").attr("data-url",
-                                                                                                                             "/manage/file/saveImage")
-                        )
-                ).append(
-                        $("<button></button>").attr("onclick",
-                                                    "delScroll('" + currId + "');").attr("class",
-                                                                                         "del").html("x")
+            $("<div></div>").attr("id", currId).attr("style", "margin:5px;").append(
+                $("<input>").attr("type", "hidden").attr("value", "")
+            ).append(
+                $("<div></div>").append(
+                    $("<img>").attr("id", currId).attr("class", "addImg").attr("id",
+                                                                               pic)
                 )
+            ).append(
+                $("<div></div>").append(
+                    $("<input>").attr("type", "file").attr("id", picture).attr("name",
+                                                                               "file").attr("class",
+                                                                                            "form-control").attr(
+                        "data-url",
+                        "/manage/file/saveImage")
+                )
+            ).append(
+                $("<button></button>").attr("onclick",
+                                            "delScroll('" + currId + "');").attr("class",
+                                                                                 "del").html("x")
+            )
         );
 
         $('#' + picture).fileupload({
@@ -705,25 +711,26 @@
         var picture = "detailPicture" + m;
         var pic = "detailPic" + m;
         $(".information").append(
-                $("<div></div>").attr("id", currId).attr("style", "margin:5px;").append(
-                        $("<input>").attr("type", "hidden").attr("value", "")
-                ).append(
-                        $("<div></div>").append(
-                                $("<img>").attr("id", currId).attr("class", "addImg").attr("id",
-                                                                                           pic)
-                        )
-                ).append(
-                        $("<div></div>").append(
-                                $("<input>").attr("type", "file").attr("name", "file").attr("id",
-                                                                                            picture).attr("class",
-                                                                                                          "form-control").attr("data-url",
-                                                                                                                               "/manage/file/saveImage")
-                        )
-                ).append(
-                        $("<button></button>").attr("onclick",
-                                                    "delDetail('" + currId + "');").attr("class",
-                                                                                         "del").html("x")
+            $("<div></div>").attr("id", currId).attr("style", "margin:5px;").append(
+                $("<input>").attr("type", "hidden").attr("value", "")
+            ).append(
+                $("<div></div>").append(
+                    $("<img>").attr("id", currId).attr("class", "addImg").attr("id",
+                                                                               pic)
                 )
+            ).append(
+                $("<div></div>").append(
+                    $("<input>").attr("type", "file").attr("name", "file").attr("id",
+                                                                                picture).attr(
+                        "class",
+                        "form-control").attr("data-url",
+                                             "/manage/file/saveImage")
+                )
+            ).append(
+                $("<button></button>").attr("onclick",
+                                            "delDetail('" + currId + "');").attr("class",
+                                                                                 "del").html("x")
+            )
         );
         $('#' + picture).fileupload({
                                         dataType: 'json',
