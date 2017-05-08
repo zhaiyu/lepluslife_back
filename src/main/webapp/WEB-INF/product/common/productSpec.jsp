@@ -5,6 +5,7 @@
   Time: 上午11:49
   商品规格管理
 --%>
+<%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@include file="../../commen.jsp" %>
@@ -81,8 +82,18 @@
                                 <tr class="active">
                                     <td class="text-center">${productSpec.id}</td>
                                     <td class="text-center">${productSpec.specDetail}</td>
-                                    <td class="text-center">${productSpec.price/100}</td>
-                                    <td class="text-center">${productSpec.minPrice/100}</td>
+                                    <td class="text-center"><fmt:formatNumber
+                                            type="number" value="${productSpec.price/100}"
+                                            pattern="0.00"
+                                            maxFractionDigits="2"/></td>
+                                    <td class="text-center"><fmt:formatNumber
+                                            type="number" value="${productSpec.minPrice/100}"
+                                            pattern="0.00"
+                                            maxFractionDigits="2"/>元+<fmt:formatNumber
+                                            type="number" value="${productSpec.minScore/100}"
+                                            pattern="0.00"
+                                            maxFractionDigits="2"/>金币
+                                    </td>
                                     <td class="text-center">
                                         <c:if test="${productSpec.state==1}">
                                             已上架
@@ -171,11 +182,11 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="minScore" class="col-sm-3 control-label">可用积分</label>
+                        <label for="minScore" class="col-sm-3 control-label">可用金币</label>
 
                         <div class="col-sm-4">
                             <input type="text" class="form-control" id="minScore"
-                                   placeholder="请输入可用积分">
+                                   placeholder="请输入可用金币">
                         </div>
                     </div>
                     <div class="form-group">
@@ -381,7 +392,7 @@
                 $("#specDetail").val(data.specDetail);
                 $("#price").val(data.price / 100);
                 $("#minPrice").val(data.minPrice / 100);
-                $("#minScore").val(data.minScore);
+                $("#minScore").val(data.minScore / 100);
                 $("#toMerchant").val(data.toMerchant / 100);
                 $("#toPartner").val(data.toPartner / 100);
                 $("#repository").val(data.repository);
@@ -408,7 +419,7 @@
         productSpec.specDetail = $("#specDetail").val();
         productSpec.price = Math.round($("#price").val() * 100);
         productSpec.minPrice = Math.round($("#minPrice").val() * 100);
-        productSpec.minScore = $("#minScore").val();
+        productSpec.minScore = Math.round($("#minScore").val() * 100);
         productSpec.toMerchant = Math.round($("#toMerchant").val() * 100);
         productSpec.toPartner = Math.round($("#toPartner").val() * 100);
         productSpec.repository = $("#repository").val();
@@ -427,7 +438,7 @@
                    success: function (data) {
                        setTimeout(function () {
                            location.href =
-                           "/manage/product/specManage?id=${product.id}";
+                               "/manage/product/specManage?id=${product.id}";
                        }, 0);
                    }
                });
@@ -451,7 +462,7 @@
                                success: function (data) {
                                    setTimeout(function () {
                                        location.href =
-                                       "/manage/product/specManage?id=${product.id}";
+                                           "/manage/product/specManage?id=${product.id}";
                                    }, 0);
                                }
                            });
@@ -470,7 +481,7 @@
                                success: function (data) {
                                    setTimeout(function () {
                                        location.href =
-                                       "/manage/product/specManage?id=${product.id}";
+                                           "/manage/product/specManage?id=${product.id}";
                                    }, 0);
                                }
                            });
@@ -485,7 +496,7 @@
             $.post("/manage/productSpec/putOn/" + id, null, function (data) {
                 setTimeout(function () {
                     location.href =
-                    "/manage/product/specManage?id=${product.id}";
+                        "/manage/product/specManage?id=${product.id}";
                 }, 1000);
 
             });
@@ -498,7 +509,7 @@
             $.post("/manage/productSpec/putOff/" + id, null, function (data) {
                 setTimeout(function () {
                     location.href =
-                    "/manage/product/specManage?id=${product.id}";
+                        "/manage/product/specManage?id=${product.id}";
                 }, 1000);
             });
         });

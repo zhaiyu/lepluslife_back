@@ -180,11 +180,11 @@
                         <a href="/manage/topic">专题模块</a>
                     </shiro:hasPermission>
                     <shiro:hasPermission name="product:query">
-                        <a href="/manage/product">商品管理</a>
+                        <a href="/manage/product">臻品商城</a>
                     </shiro:hasPermission>
-                    <shiro:hasPermission name="product:query">
-                        <a href="/manage/limit?type=1">限量秒杀</a>
-                    </shiro:hasPermission>
+                    <%--<shiro:hasPermission name="product:query">--%>
+                        <%--<a href="/manage/limit?type=1">限量秒杀</a>--%>
+                    <%--</shiro:hasPermission>--%>
                     <shiro:hasPermission name="product:query">
                         <a href="/manage/gold/product">金币商城</a>
                     </shiro:hasPermission>

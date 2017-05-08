@@ -149,7 +149,7 @@
                             <option value="1">创建时间</option>
                             <option value="2">商品序号</option>
                             <option value="3">实际价格</option>
-                            <option value="4">可用积分</option>
+                            <option value="4">可用金币</option>
                             <option value="5">实际销量</option>
                             <option value="6">最后修改时间</option>
                         </select>
@@ -378,15 +378,17 @@
         }
         if (/(E+)/.test(fmt)) {
             fmt =
-            fmt.replace(RegExp.$1,
-                        ((RegExp.$1.length > 1) ? (RegExp.$1.length > 2 ? "\u661f\u671f" : "\u5468")
+                fmt.replace(RegExp.$1,
+                            ((RegExp.$1.length > 1) ? (RegExp.$1.length > 2 ? "\u661f\u671f"
+                                : "\u5468")
                                 : "") + week[this.getDay() + ""]);
         }
         for (var k in o) {
             if (new RegExp("(" + k + ")").test(fmt)) {
                 fmt =
-                fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr((""
-                                                                                                 + o[k]).length)));
+                    fmt.replace(RegExp.$1,
+                                (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr((""
+                                                                                          + o[k]).length)));
             }
         }
         return fmt;
@@ -454,36 +456,38 @@
                            contentStr += '<td>' + content[i].id + '</td>';
                            contentStr += '<td>' + content[i].name + '</td>';
                            contentStr +=
-                           '<td><img src="' + content[i].thumb + '" alt="...">' + '</td>';
+                               '<td><img src="' + content[i].thumb + '" alt="...">' + '</td>';
                            contentStr +=
-                           '<td>￥' + toDecimal(content[i].minPrice / 100) + '+'
-                           + content[i].minScore
-                           + '积分</td>';
+                               '<td>￥' + toDecimal(content[i].minPrice / 100) + '+'
+                               + toDecimal(content[i].minScore / 100)
+                               + '金币</td>';
                            contentStr += '<td>￥' + toDecimal(content[i].price / 100) + '</td>';
                            contentStr += '<td>' + content[i].saleNumber + '</td>';
                            contentStr += '<td>' + content[i].repository + '</td>';
 
                            if (content[i].state == 1) {
                                contentStr +=
-                               '<td><input type="hidden" class="id-hidden" value="' + content[i].id
-                               + '"><button class="btn btn-primary" onclick="putOff('
-                               + content[i].id
-                               + ')">下架</button>';
+                                   '<td><input type="hidden" class="id-hidden" value="'
+                                   + content[i].id
+                                   + '"><button class="btn btn-primary" onclick="putOff('
+                                   + content[i].id
+                                   + ')">下架</button>';
                            } else {
                                contentStr +=
-                               '<td><input type="hidden" class="id-hidden" value="' + content[i].id
-                               + '"><button class="btn btn-primary" onclick="putOn('
-                               + content[i].id
-                               + ')">上架</button>';
+                                   '<td><input type="hidden" class="id-hidden" value="'
+                                   + content[i].id
+                                   + '"><button class="btn btn-primary" onclick="putOn('
+                                   + content[i].id
+                                   + ')">上架</button>';
                            }
                            contentStr +=
-                           '<button class="btn btn-primary" onclick="editProduct('
-                           + content[i].id
-                           + ')">编辑</button><button class="btn btn-primary" onclick="specManage('
-                           + content[i].id
-                           + ')">规格管理</button><button class="btn btn-primary" onclick="qrCodeManage('
-                           + content[i].id
-                           + ')">二维码</button></td></tr>';
+                               '<button class="btn btn-primary" onclick="editProduct('
+                               + content[i].id
+                               + ')">编辑</button><button class="btn btn-primary" onclick="specManage('
+                               + content[i].id
+                               + ')">规格管理</button><button class="btn btn-primary" onclick="qrCodeManage('
+                               + content[i].id
+                               + ')">二维码</button></td></tr>';
 
                            orderContent.innerHTML += contentStr;
                        }
