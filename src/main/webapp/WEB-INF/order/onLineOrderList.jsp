@@ -95,8 +95,8 @@
                         <label for="type">订单类型</label>
                         <select class="form-control" id="type">
                             <option value="-1">全部分类</option>
-                            <option value="1">积分订单</option>
-                            <option value="2">金币订单</option>
+                            <option value="1">臻品商城</option>
+                            <option value="2">金币商城</option>
                         </select>
                     </div>
                     <div class="form-group col-md-2">
@@ -135,6 +135,8 @@
                         <select class="form-control" id="payWay">
                             <option value="-1">全部</option>
                             <option value="1">纯微信</option>
+                            <option value="5">微信+金币</option>
+                            <option value="6">纯金币</option>
                             <option value="3">微信+积分</option>
                             <option value="4">纯积分</option>
                         </select>
@@ -512,7 +514,7 @@
                            contentStr += '</td>';
                            var t11 = '';
                            if (content[i].type != null && content[i].type == 2) {
-                               contentStr += '<td>金币类</td>';
+                               contentStr += '<td>金币商城</td>';
                                t11 =
                                '<td>所需金币:' + toDecimal(content[i].totalScore / 100)
                                + '金币</td><td>实际支付:' + toDecimal(content[i].truePrice / 100)
@@ -520,14 +522,14 @@
                                + toDecimal(content[i].trueScore / 100)
                                + '金币</td>';
                            } else {
-                               contentStr += '<td>积分类</td>';
+                               contentStr += '<td>臻品商城</td>';
                                t11 =
                                '<td>最低需付:' + toDecimal(content[i].totalPrice / 100) + '元<br>最高可用:'
-                               + content[i].totalScore
-                               + '积分</td><td>实际支付:' + toDecimal(content[i].truePrice / 100)
+                               + toDecimal(content[i].totalScore / 100)
+                               + '金币</td><td>实际支付:' + toDecimal(content[i].truePrice / 100)
                                + '元<br>实际使用:'
-                               + content[i].trueScore
-                               + '积分</td>';
+                               + toDecimal(content[i].trueScore / 100)
+                               + '金币</td>';
                            }
 
                            if (content[i].address != null) {
@@ -551,7 +553,7 @@
                                    pOT = 'APP';
                                    break;
                                case 2:
-                                   pOT = 'APP';
+                                   pOT = '公众号';
                                    break;
                                default :
                                    pOT = '未知';

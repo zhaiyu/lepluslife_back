@@ -63,7 +63,7 @@ public class OnLineOrderViewExcel extends AbstractExcelView {
     excelHeader.createCell(10).setCellValue("买家地址");
     excelHeader.createCell(11).setCellValue("订单总价");
     excelHeader.createCell(12).setCellValue("实付金额");
-    excelHeader.createCell(13).setCellValue("使用积分");
+    excelHeader.createCell(13).setCellValue("使用金币");
     excelHeader.createCell(14).setCellValue("红包返还");
     excelHeader.createCell(15).setCellValue("微信手续费");
     excelHeader.createCell(16).setCellValue("微信平台入账");
@@ -144,9 +144,10 @@ public class OnLineOrderViewExcel extends AbstractExcelView {
       excelRow.createCell(9).setCellValue(phone);
       excelRow.createCell(10).setCellValue(location);
       excelRow.createCell(11)
-          .setCellValue(order.getTotalPrice() / 100.0 + "+" + order.getTotalScore() + "积分");
+          .setCellValue(order.getTotalPrice() / 100.0 + "+" + order.getTotalScore() / 100.0 + "金币");
       excelRow.createCell(12).setCellValue(order.getTruePrice() / 100.0);
-      excelRow.createCell(13).setCellValue(order.getTrueScore() == null ? 0 : order.getTrueScore());
+      excelRow.createCell(13)
+          .setCellValue(order.getTrueScore() == null ? 0 : order.getTrueScore() / 100.0);
       excelRow.createCell(14)
           .setCellValue(order.getPayBackA() == null ? 0 : order.getPayBackA() / 100.0);
       if (order.getTruePrice() != null) {

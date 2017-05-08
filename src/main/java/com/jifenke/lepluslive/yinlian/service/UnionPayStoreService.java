@@ -1,10 +1,16 @@
 package com.jifenke.lepluslive.yinlian.service;
 
 import com.jifenke.lepluslive.global.config.Constants;
-import com.jifenke.lepluslive.global.util.*;
+import com.jifenke.lepluslive.global.util.DataUtils;
+import com.jifenke.lepluslive.global.util.HttpClientUtil;
+import com.jifenke.lepluslive.global.util.JsonUtils;
+import com.jifenke.lepluslive.global.util.MvUtil;
+import com.jifenke.lepluslive.global.util.RSAUtil;
+import com.jifenke.lepluslive.weixin.service.DictionaryService;
 import com.jifenke.lepluslive.yinlian.domain.criteria.UnionPayStoreCriteria;
 import com.jifenke.lepluslive.yinlian.domain.entities.UnionPayStore;
 import com.jifenke.lepluslive.yinlian.repository.UnionPayStoreRepository;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -13,17 +19,31 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.UnsupportedEncodingException;
+import java.util.Calendar;
+import java.util.Date;
+import java.util.GregorianCalendar;
+import java.util.HashSet;
+import java.util.List;
+import java.util.Map;
+import java.util.Optional;
+import java.util.Set;
+import java.util.SortedMap;
+import java.util.TreeMap;
+import java.util.UUID;
+
 import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.io.UnsupportedEncodingException;
-import java.util.*;
+
 
 /**
- * 银联商务门店 Created by zhangwen on 2017/1/17.
- */
+ * 银联商务门店
+ *
+ * @author zhangwen【zhangwenit@126.com】 2017/5/2 16:09
+ **/
 @Service
 @Transactional(readOnly = true)
 public class UnionPayStoreService {
@@ -31,23 +51,72 @@ public class UnionPayStoreService {
   @Inject
   private UnionPayStoreRepository repository;
 
+  @Inject
+  private DictionaryService dictionaryService;
+
   /**
-   * 根据银商门店名称和银商门店地址查询银联门店信息  2017/01/17
+   * 根据银商门店名称和银商门店地址查询银联门店信息  2017/05/2
    *
    * @param shopName 银商门店名称
    * @param address  银商门店地址
    */
   public Map shopQuery(String shopName, String address) {
+
+    int i = Integer.valueOf(dictionaryService.findDictionaryById(55L).getValue());
     SortedMap<String, String> params = commonParams("104001");
+
+    if (i == 1) {
+      try {
+        params.put("shop_name", new String(shopName.getBytes("utf-8"), "gbk"));
+        params.put("address", new String(address.getBytes("utf-8"), "gbk"));
+      } catch (UnsupportedEncodingException e) {
+        e.printStackTrace();
+      }
+      params.put("sign", RSAUtil.sign(getOriginStr(params)));
+      String result = HttpClientUtil.post(Constants.SHOP_QUERY_URL, params, "utf-8");
+      return JsonUtils.jsonToPojo(result, Map.class);
+    } else if (i == 2) {
+      try {
+        params.put("shop_name", new String(shopName.getBytes("utf-8"), "iso8859-1"));
+        params.put("address", new String(address.getBytes("utf-8"), "iso8859-1"));
+      } catch (UnsupportedEncodingException e) {
+        e.printStackTrace();
+      }
+      params.put("sign", RSAUtil.sign(getOriginStr(params)));
+      String result = HttpClientUtil.post(Constants.SHOP_QUERY_URL, params, "utf-8");
+      return JsonUtils.jsonToPojo(result, Map.class);
+    } else if (i == 3) {
+      try {
+        params.put("shop_name", new String(shopName.getBytes("iso8859-1"), "utf-8"));
+        params.put("address", new String(address.getBytes("iso8859-1"), "utf-8"));
+      } catch (UnsupportedEncodingException e) {
+        e.printStackTrace();
+      }
+      params.put("sign", RSAUtil.sign(getOriginStr(params)));
+      String result = HttpClientUtil.post(Constants.SHOP_QUERY_URL, params, "utf-8");
+      return JsonUtils.jsonToPojo(result, Map.class);
+    } else if (i == 4) {
+      try {
+        params.put("shop_name", new String(shopName.getBytes("gbk"), "utf-8"));
+        params.put("address", new String(address.getBytes("gbk"), "utf-8"));
+      } catch (UnsupportedEncodingException e) {
+        e.printStackTrace();
+      }
+      params.put("sign", RSAUtil.sign(getOriginStr(params)));
+      String result = HttpClientUtil.post(Constants.SHOP_QUERY_URL, params, "utf-8");
+      return JsonUtils.jsonToPojo(result, Map.class);
+    }
+
     //业务项
     params.put("shop_name",shopName);
     params.put("address",address);
 //    params.put("term_no", "12340008");
+
     //签名
     params.put("sign", RSAUtil.sign(getOriginStr(params)));
     String result = HttpClientUtil.post(Constants.SHOP_QUERY_URL, params, "utf-8");
-
     return JsonUtils.jsonToPojo(result, Map.class);
+
   }
 
   /**
@@ -92,30 +161,33 @@ public class UnionPayStoreService {
     return JsonUtils.jsonToPojo(result, Map.class);
   }
 
-  public static Specification<UnionPayStore> getWhereClause(UnionPayStoreCriteria unionPayStoreCriteria) {
+  public static Specification<UnionPayStore> getWhereClause(
+      UnionPayStoreCriteria unionPayStoreCriteria) {
     return new Specification<UnionPayStore>() {
       @Override
       public Predicate toPredicate(Root<UnionPayStore> r, CriteriaQuery<?> q,
                                    CriteriaBuilder cb) {
         Predicate predicate = cb.conjunction();
 
-
-        if (unionPayStoreCriteria.getStartDate() != null && unionPayStoreCriteria.getStartDate() != "") {
+        if (unionPayStoreCriteria.getStartDate() != null
+            && unionPayStoreCriteria.getStartDate() != "") {
           predicate.getExpressions().add(
-                  cb.between(r.get("createDate"), new Date(unionPayStoreCriteria.getStartDate()),
-                          new Date(unionPayStoreCriteria.getEndDate())));
+              cb.between(r.get("createDate"), new Date(unionPayStoreCriteria.getStartDate()),
+                         new Date(unionPayStoreCriteria.getEndDate())));
         }
 
-        if (unionPayStoreCriteria.getMerchantSid() != null && unionPayStoreCriteria.getMerchantSid() != "") {
+        if (unionPayStoreCriteria.getMerchantSid() != null
+            && unionPayStoreCriteria.getMerchantSid() != "") {
           predicate.getExpressions().add(
-                  cb.equal(r.<UnionPayStore>get("merchant").get("merchantSid"),
-                          unionPayStoreCriteria.getMerchantSid()));
+              cb.equal(r.<UnionPayStore>get("merchant").get("merchantSid"),
+                       unionPayStoreCriteria.getMerchantSid()));
         }
 
-        if (unionPayStoreCriteria.getShopNumber() != null && unionPayStoreCriteria.getShopNumber() != "") {
+        if (unionPayStoreCriteria.getShopNumber() != null
+            && unionPayStoreCriteria.getShopNumber() != "") {
           predicate.getExpressions().add(
-                  cb.equal(r.<UnionPayStore>get("shopNumber"),
-                          unionPayStoreCriteria.getShopNumber()));
+              cb.equal(r.<UnionPayStore>get("shopNumber"),
+                       unionPayStoreCriteria.getShopNumber()));
         }
 
         return predicate;
@@ -163,21 +235,6 @@ public class UnionPayStoreService {
     return JsonUtils.jsonToPojo(result, Map.class);
   }
 
-  private String getOriginStr(SortedMap<String, String> parameters) {
-    StringBuilder sb = new StringBuilder();
-    for (Map.Entry<String, String> entry : parameters.entrySet()) {
-      String k = entry.getKey();
-      String v = entry.getValue();
-      if (null != v) {
-        sb.append(k).append("=").append(v).append("&");
-      }
-    }
-    if (sb.length() > 1) {
-      sb.deleteCharAt(sb.length() - 1);
-    }
-    return sb.toString();
-  }
-
   /**
    * 保存或更新银商门店信息  2017/01/18
    *
@@ -215,6 +272,31 @@ public class UnionPayStoreService {
     }
   }
 
+  public Page findUnionPayStoreByPage(UnionPayStoreCriteria unionPayStoreCriteria, Integer limit) {
+    Sort sort = new Sort(Sort.Direction.DESC, "createDate");
+    return repository
+        .findAll(getWhereClause(unionPayStoreCriteria),
+                 new PageRequest(unionPayStoreCriteria.getOffset() - 1, limit, sort));
+  }
+
+  public UnionPayStore findUnionPayStoreById(Long id) {
+    return repository.findOne(id);
+  }
+
+
+  public UnionPayStore findUnionPayStoreByShopNumber(String shopNumber) {
+    return repository.findUnionPayStoreByShopNumber(shopNumber);
+  }
+
+  private String getOriginStr(SortedMap<String, String> parameters) {
+    StringBuilder sb = new StringBuilder();
+    parameters.forEach((k, v) -> sb.append(k).append("=").append(v).append("&"));
+    if (sb.length() > 1) {
+      sb.deleteCharAt(sb.length() - 1);
+    }
+    return sb.toString();
+  }
+
   /**
    * 其他银商接口获取公共参数  2017/01/19
    *
@@ -231,22 +313,6 @@ public class UnionPayStoreService {
     params.put("msg_sys_sn", MvUtil.getOrderNumber());
     params.put("msg_ver", "0.1");
     return params;
-  }
-
-  public Page findUnionPayStoreByPage(UnionPayStoreCriteria unionPayStoreCriteria, Integer limit) {
-    Sort sort = new Sort(Sort.Direction.DESC, "createDate");
-    return repository
-            .findAll(getWhereClause(unionPayStoreCriteria),
-                    new PageRequest(unionPayStoreCriteria.getOffset() - 1, limit, sort));
-  }
-
-  public UnionPayStore findUnionPayStoreById(Long id) {
-    return repository.findOne(id);
-  }
-
-
-  public UnionPayStore findUnionPayStoreByShopNumber(String shopNumber) {
-    return repository.findUnionPayStoreByShopNumber(shopNumber);
   }
 
 

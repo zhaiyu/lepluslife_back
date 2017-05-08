@@ -1,5 +1,7 @@
 package com.jifenke.lepluslive.merchant.repository;
 
+import com.jifenke.lepluslive.merchant.domain.entities.LejiaResource;
+import com.jifenke.lepluslive.merchant.domain.entities.MerchantUser;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantUserResource;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
@@ -71,4 +73,6 @@ public interface MerchantUserResourceRepository extends JpaRepository<MerchantUs
         "LIMIT ?2,\n" +
         "10",nativeQuery = true)
     List<Object []> pageFindMerchantInfoByMerchantUser(List<Object> obj, Integer offSet);
+
+    MerchantUserResource findByMerchantUserAndLeJiaResource(MerchantUser merchantUser, LejiaResource leJiaResource);
 }
