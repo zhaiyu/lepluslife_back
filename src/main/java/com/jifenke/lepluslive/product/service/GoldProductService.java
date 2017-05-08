@@ -5,11 +5,10 @@ import com.jifenke.lepluslive.product.domain.entities.Product;
 import com.jifenke.lepluslive.product.domain.entities.ProductCriteria;
 import com.jifenke.lepluslive.product.domain.entities.ProductDetail;
 import com.jifenke.lepluslive.product.domain.entities.ProductSpec;
+import com.jifenke.lepluslive.product.domain.entities.ProductType;
 import com.jifenke.lepluslive.product.domain.entities.ScrollPicture;
 import com.jifenke.lepluslive.product.repository.ProductDetailRepository;
 import com.jifenke.lepluslive.product.repository.ProductRepository;
-import com.jifenke.lepluslive.product.repository.ProductSpecRepository;
-import com.jifenke.lepluslive.product.repository.ProductTypeRepository;
 import com.jifenke.lepluslive.product.repository.ScrollPictureRepository;
 
 import org.springframework.beans.factory.annotation.Value;
@@ -48,13 +47,7 @@ public class GoldProductService {
   private ProductRepository productRepository;
 
   @Inject
-  private ProductTypeRepository productTypeRepository;
-
-  @Inject
   private ProductDetailRepository productDetailRepository;
-
-  @Inject
-  private ProductSpecRepository productSpecRepository;
 
   @Inject
   private ProductSpecService productSpecService;
@@ -113,7 +106,7 @@ public class GoldProductService {
     result.put("totalElements", page.getTotalElements());
     for (Product product : list) {
       Map<String, Object> pro = new HashMap<>();
-//      pro.put("typeName", product.getProductType().getType());
+      pro.put("typeName", product.getProductType().getType());
       pro.put("sid", product.getSid());
       pro.put("id", product.getId());
       pro.put("name", product.getName());
@@ -151,20 +144,20 @@ public class GoldProductService {
         if (productCriteria.getType() != null) {
           predicate.getExpressions().add(cb.equal(r.get("type"), productCriteria.getType()));
         }
-//        if (productCriteria.getProductType() != null) {
-//          predicate.getExpressions().add(
-//              cb.equal(r.<ProductType>get("productType"), productCriteria.getProductType()));
-//        }
+        if (productCriteria.getProductType() != null) {
+          predicate.getExpressions().add(
+              cb.equal(r.<ProductType>get("productType"), productCriteria.getProductType()));
+        }
         if (productCriteria.getStartDate() != null && (!""
             .equals(productCriteria.getStartDate()))) { //创建时间
           predicate.getExpressions().add(
               cb.between(r.get("createDate"), new Date(productCriteria.getStartDate()),
                          new Date(productCriteria.getEndDate())));
         }
-//        if (productCriteria.getMark() != null) {
-//          predicate.getExpressions().add(
-//              cb.equal(r.get("mark").get("id"), productCriteria.getMark()));
-//        }
+        if (productCriteria.getMark() != null) {
+          predicate.getExpressions().add(
+              cb.equal(r.get("mark").get("id"), productCriteria.getMark()));
+        }
 //        if (productCriteria.getMinTruePrice() != null) {
 //          predicate.getExpressions().add(
 //              cb.greaterThanOrEqualTo(r.get("minPrice"), productCriteria.getMinTruePrice()));
@@ -215,7 +208,7 @@ public class GoldProductService {
       }
       DBProduct.setSid(product.getSid());
       DBProduct.setProductType(product.getProductType());
-//      DBProduct.setMark(product.getMark());
+      DBProduct.setMark(product.getMark());
       DBProduct.setState(1);
       DBProduct.setType(4);
       DBProduct.setLastUpdate(new Date());

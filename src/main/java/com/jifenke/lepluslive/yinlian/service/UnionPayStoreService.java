@@ -18,6 +18,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.io.UnsupportedEncodingException;
 import java.util.*;
 
 /**
@@ -39,8 +40,8 @@ public class UnionPayStoreService {
   public Map shopQuery(String shopName, String address) {
     SortedMap<String, String> params = commonParams("104001");
     //业务项
-    params.put("shop_name", shopName);
-    params.put("address", address);
+    params.put("shop_name",shopName);
+    params.put("address",address);
 //    params.put("term_no", "12340008");
     //签名
     params.put("sign", RSAUtil.sign(getOriginStr(params)));

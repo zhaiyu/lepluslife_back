@@ -223,7 +223,7 @@ public class ActivityPhoneController {
    *
    * @param orderSid 自有订单号
    */
-  @RequestMapping(value = "/recharge", method = RequestMethod.POST)
+  @RequestMapping(value = "/recharge")
   public LejiaResult recharge(@RequestParam String orderSid) {
     try {
       return LejiaResult.ok(phoneOrderService.recharge(orderSid));
