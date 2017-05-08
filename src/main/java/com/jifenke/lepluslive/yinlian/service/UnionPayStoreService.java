@@ -40,12 +40,8 @@ public class UnionPayStoreService {
   public Map shopQuery(String shopName, String address) {
     SortedMap<String, String> params = commonParams("104001");
     //业务项
-    try {
-      params.put("shop_name", new String(shopName.getBytes("utf8"), "iso8859-1"));
-      params.put("address", new String(address.getBytes("utf8"), "iso8859-1"));
-    } catch (UnsupportedEncodingException e) {
-      e.printStackTrace();
-    }
+    params.put("shop_name",shopName);
+    params.put("address",address);
 //    params.put("term_no", "12340008");
     //签名
     params.put("sign", RSAUtil.sign(getOriginStr(params)));
