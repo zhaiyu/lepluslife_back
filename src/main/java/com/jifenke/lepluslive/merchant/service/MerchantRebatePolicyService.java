@@ -104,7 +104,7 @@ public class MerchantRebatePolicyService {
     rebatePolicy.setUserScoreCScale(merchantRebatePolicy.getUserScoreCScale());
     rebatePolicy.setUserScoreCScaleB(merchantRebatePolicy.getUserScoreCScaleB());
 
-    if (merchantRebatePolicy.getCommissionPolicy() == 1) {
+    if (merchantRebatePolicy.getCommissionPolicy()!=null&&merchantRebatePolicy.getCommissionPolicy() == 1) {
       rebatePolicy.getCommissionStages().stream().map(commissionStage -> {
         commissionStageRepository.delete(commissionStage);
         return null;
@@ -115,7 +115,7 @@ public class MerchantRebatePolicyService {
         commissionStageRepository.save(commissionStage);
       }
     }
-    if (merchantRebatePolicy.getRebatePolicy() == 1) {
+    if (merchantRebatePolicy.getRebatePolicy()!=null&&merchantRebatePolicy.getRebatePolicy() == 1) {
       rebatePolicy.getRebateStages().stream().map(rebateStage -> {
         rebateStageRepository.delete(rebateStage);
         return null;

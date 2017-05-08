@@ -193,7 +193,11 @@ public class MerchantController {
   @RequestMapping(value = "/merchant", method = RequestMethod.PUT)
   public LejiaResult editMerchant(@RequestBody MerchantDto merchantDto) {
     Merchant merchant = merchantDto.getMerchant();
-    merchantService.editMerchant(merchant);
+    MerchantUser merchantUser = null;
+    if(merchant.getMerchantUser()!=null&&merchant.getMerchantUser().getName()!=null) {
+      merchantUser = merchantUserService.findMerchantManagerByName(merchant.getMerchantUser().getName());
+    }
+    merchantService.editMerchant(merchant,merchantUser);
     MerchantRebatePolicy policy = merchantDto.getMerchantRebatePolicy();
     if (policy.getId() == null) {
       policy.setMerchantId(merchant.getId());
@@ -212,7 +216,7 @@ public class MerchantController {
       e.printStackTrace();
       return LejiaResult.build(500, "修改异常");
     }
-    return LejiaResult.ok("修改商户成功");
+    return LejiaResult.build(200,"修改门店成功",merchantUser.getId());
   }
 
   @RequestMapping(value = "/merchant/disable/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
