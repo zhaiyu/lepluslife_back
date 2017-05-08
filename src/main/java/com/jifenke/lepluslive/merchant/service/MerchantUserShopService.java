@@ -1,5 +1,6 @@
 package com.jifenke.lepluslive.merchant.service;
 
+import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantUser;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantUserShop;
 import com.jifenke.lepluslive.merchant.repository.MerchantUserShopRepository;
@@ -20,43 +21,50 @@ import javax.inject.Inject;
 @Transactional(readOnly = true)
 public class MerchantUserShopService {
 
-  @Inject
-  private MerchantUserShopRepository repository;
+    @Inject
+    private MerchantUserShopRepository repository;
 
-  /**
-   * 获取每个账户的管理门店信息  2017/02/07
-   */
-  public List countByMerchantUserList(List<MerchantUser> list) {
-    List<Object> result = new ArrayList<>();
-    for (MerchantUser user : list) {
-      List<MerchantUserShop> shops = repository.findByMerchantUser(user);
-      result.add(shops);
+    /**
+     * 获取每个账户的管理门店信息  2017/02/07
+     */
+    public List countByMerchantUserList(List<MerchantUser> list) {
+        List<Object> result = new ArrayList<>();
+        for (MerchantUser user : list) {
+            List<MerchantUserShop> shops = repository.findByMerchantUser(user);
+            result.add(shops);
+        }
+        return result;
     }
-    return result;
-  }
 
-  /**
-   * 获取某个账户的管理门店信息  2017/02/08
-   */
-  public List<MerchantUserShop> countByMerchantUser(MerchantUser merchantUser) {
+    /**
+     * 获取某个账户的管理门店信息  2017/02/08
+     */
+    public List<MerchantUserShop> countByMerchantUser(MerchantUser merchantUser) {
 
-    return repository.findByMerchantUser(merchantUser);
-  }
+        return repository.findByMerchantUser(merchantUser);
+    }
 
-  /**
-   * 删除某个账号对应的门店 2017/02/09
-   */
-  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-  public void deleteShop(MerchantUserShop shop) {
-    repository.delete(shop);
-  }
+    /**
+     * 删除某个账号对应的门店 2017/02/09
+     */
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+    public void deleteShop(MerchantUserShop shop) {
+        repository.delete(shop);
+    }
 
-  /**
-   * 保存某个账号对应的门店 2017/02/09
-   */
-  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-  public void saveShop(MerchantUserShop shop) {
-    repository.save(shop);
-  }
+    /**
+     * 保存某个账号对应的门店 2017/02/09
+     */
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+    public void saveShop(MerchantUserShop shop) {
+        repository.save(shop);
+    }
 
+    /**
+     * 获取某个账号和门店对应的记录 2017/05/04
+     */
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
+    public MerchantUserShop findByMerchantAndUser(MerchantUser merchantUser, Merchant merchant) {
+        return repository.findByMerchantUserAndMerchant(merchantUser, merchant);
+    }
 }

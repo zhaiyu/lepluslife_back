@@ -464,5 +464,11 @@ public class MerchantUserService {
 ////    }
 //    return map;
 //  }
-
+  /**
+   *  根据名称查询商户（门店管理员）
+   */
+  @Transactional(readOnly = true,propagation = Propagation.REQUIRED)
+  public MerchantUser findMerchantManagerByName(String name) {
+    return merchantUserRepository.findMerchantUserByType(name,8);
+  }
 }

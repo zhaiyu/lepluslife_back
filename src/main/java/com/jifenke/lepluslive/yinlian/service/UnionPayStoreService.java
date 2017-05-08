@@ -38,6 +38,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 
+
 /**
  * 银联商务门店
  *
@@ -63,6 +64,7 @@ public class UnionPayStoreService {
 
     int i = Integer.valueOf(dictionaryService.findDictionaryById(55L).getValue());
     SortedMap<String, String> params = commonParams("104001");
+
     if (i == 1) {
       try {
         params.put("shop_name", new String(shopName.getBytes("utf-8"), "gbk"));
@@ -105,8 +107,12 @@ public class UnionPayStoreService {
       return JsonUtils.jsonToPojo(result, Map.class);
     }
 
-    params.put("shop_name", shopName);
-    params.put("address", address);
+    //业务项
+    params.put("shop_name",shopName);
+    params.put("address",address);
+//    params.put("term_no", "12340008");
+
+    //签名
     params.put("sign", RSAUtil.sign(getOriginStr(params)));
     String result = HttpClientUtil.post(Constants.SHOP_QUERY_URL, params, "utf-8");
     return JsonUtils.jsonToPojo(result, Map.class);

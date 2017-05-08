@@ -156,29 +156,29 @@
             </c:if>
         </div>
 
-        <%--<div>--%>
-        <%--<div>商品分类</div>--%>
-        <%--<div style="width: 40%">--%>
-        <%--<select id="productType" name="productType" style="width: 20%">--%>
-        <%--<option value="0">请选择</option>--%>
-        <%--<c:forEach var="productType" items="${productTypes}">--%>
-        <%--<option value="${productType.id}">${productType.type}</option>--%>
-        <%--</c:forEach>--%>
-        <%--</select>--%>
-        <%--</div>--%>
-        <%--</div>--%>
+        <div>
+            <div>商品分类</div>
+            <div style="width: 40%">
+                <select id="productType" name="productType" style="width: 20%">
+                    <option value="0">请选择</option>
+                    <c:forEach var="productType" items="${productTypes}">
+                        <option value="${productType.id}">${productType.type}</option>
+                    </c:forEach>
+                </select>
+            </div>
+        </div>
 
-        <%--<div>--%>
-        <%--<div>商品角标</div>--%>
-        <%--<div style="width: 40%">--%>
-        <%--<select id="mark" name="mark" style="width: 20%">--%>
-        <%--<option value="0">--无--</option>--%>
-        <%--<c:forEach var="mark" items="${markList}">--%>
-        <%--<option value="${mark.id}">${mark.value}</option>--%>
-        <%--</c:forEach>--%>
-        <%--</select>--%>
-        <%--</div>--%>
-        <%--</div>--%>
+        <div>
+            <div>商品角标</div>
+            <div style="width: 40%">
+                <select id="mark" name="mark" style="width: 20%">
+                    <option value="0">--无--</option>
+                    <c:forEach var="mark" items="${markList}">
+                        <option value="${mark.id}">${mark.value}</option>
+                    </c:forEach>
+                </select>
+            </div>
+        </div>
 
         <div>
             <div>商品名称</div>
@@ -308,11 +308,14 @@
             <div class="limited">
                 <div>
                     <input type="radio" name="isBackRed" value="1"
-                    <c:if test="${product.isBackRed==1}"> checked="checked" class="checked333" </c:if>>
+                    <c:if test="${product.isBackRed==1}"> checked="checked"
+                           class="checked333" </c:if>>
                     <span>是</span>
+
                     <div>
                         <input type="radio" name="backRedType" value="1"
-                        <c:if test="${product.backRedType==1}"> checked="checked" class="checked444" </c:if>>
+                        <c:if test="${product.backRedType==1}"> checked="checked"
+                               class="checked444" </c:if>>
                         <span>比例返还</span>
                         <c:if test="${product.backRedType==1}">
                             <input name="backRatio" value="${product.backRatio}" style="width: 20%">%
@@ -321,10 +324,12 @@
                             <input name="backRatio" value="" style="width: 20%">%
                         </c:if>
                         <input type="radio" name="backRedType" value="2"
-                        <c:if test="${product.backRedType==2}"> checked="checked" class="checked444" </c:if>>
+                        <c:if test="${product.backRedType==2}"> checked="checked"
+                               class="checked444" </c:if>>
                         <span>金额返还</span>
                         <c:if test="${product.backRedType==2}">
-                            <input name="backMoney" value="${product.backMoney/100}" style="width: 20%">元
+                            <input name="backMoney" value="${product.backMoney/100}"
+                                   style="width: 20%">元
                         </c:if>
                         <c:if test="${product.backRedType!=2}">
                             <input name="backMoney" value="" style="width: 20%">元
@@ -333,7 +338,8 @@
                 </div>
                 <div>
                     <input type="radio" name="isBackRed" value="0"
-                    <c:if test="${product.isBackRed==0}"> checked="checked" class="checked333" </c:if>>
+                    <c:if test="${product.isBackRed==0}"> checked="checked"
+                           class="checked333" </c:if>>
                     <span>否</span>
                 </div>
             </div>
@@ -358,6 +364,11 @@
 
     var delSpecList = [], delScrollList = [], delDetailList = [];
     $(function () {
+
+        $("#productType option[value=${product.productType.id}]").attr("selected", true);
+        if (${product.mark != null}) {
+            $("#mark option[value=${product.mark.id}]").attr("selected", true);
+        }
 
         $("input[name=limited]").click(function (e) {
             $("input[name=limited]").removeClass("checked");
@@ -454,7 +465,7 @@
 <script>
 
     $("#save").click(function () {
-        var product = {}, productType = {}, scrollPictureList = [], productDetailList = [], goOn = 0;
+        var product = {}, productType = {}, mark = {}, scrollPictureList = [], productDetailList = [], goOn = 0;
 
         product.id = $("#productId").val();
         //商品序号
@@ -465,8 +476,22 @@
         }
         product.sid = $("#productNum").val();
 
-        productType.id = 1;
+        //商品分类
+        var typeId = $("#productType").val();
+        if (typeId == 0) {
+            alert("请选择商品分类");
+            $("#productType").focus();
+            return
+        }
+        productType.id = typeId;
         product.productType = productType;
+
+        //商品角标
+        var markId = $("#mark").val();
+        if (markId != 0) {
+            mark.id = markId;
+            product.mark = mark;
+        }
 
         //商品名称
         if ($("#name").val() == "") {
@@ -594,7 +619,7 @@
                 } else {
                     product.backRatio = backRatio;
                 }
-            } else if (backRedType == 2){
+            } else if (backRedType == 2) {
                 var backMoney = $("input[name=backMoney]").val();
                 if (backMoney == "" || backMoney == null) {
                     alert("请输入返还金额");

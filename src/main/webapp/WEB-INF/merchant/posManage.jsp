@@ -501,7 +501,7 @@
                            contentStr += '<td><h5>' + new Date(content[i].createdDate).format("yyyy-MM-dd") +'</h5><h5'
                                        + new Date(content[i].createdDate).format("HH:mm:ss") +'</h5></td>';
                            // 银行卡
-                           contentStr +='<td><h5>（非会员）</h5><h5>&nbsp;&nbsp;借记卡'+ content[i].debitCardCommission +'&nbsp; 封顶 '+content[i].ceil+'</h5>'
+                           contentStr +='<td><h5>（非会员）</h5><h5>&nbsp;&nbsp;借记卡'+ content[i].debitCardCommission +'&nbsp; 封顶 '+content[i].ceil/100.0+'</h5>'
                                         +'<h5>&nbsp;&nbsp;贷记卡 '+content[i].creditCardCommission+'% &nbsp;';
                            if(content[i].ljCommission!=null) {
                                contentStr +='佣金'+content[i].ljCommission;
@@ -639,7 +639,7 @@
             $("input[name=creditCardCommission]").val(pos.creditCardCommission);
             $("input[name=debitCardCommission]").val(pos.debitCardCommission);
             $("input[name=ljCommission]").val(pos.ljCommission);
-            $("input[name=ceil]").val(pos.ceil);
+            $("input[name=ceil]").val(pos.ceil/100.0);
             $("input[name=wxCommission]").val(pos.wxCommission);
             $("input[name=aliCommission]").val(pos.aliCommission);
             $("input[name=wxCommission]").val(pos.wxCommission);
