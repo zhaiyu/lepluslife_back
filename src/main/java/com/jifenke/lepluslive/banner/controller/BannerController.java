@@ -197,6 +197,7 @@ public class BannerController {
     int status = bannerService.editBanner(banner);
     return LejiaResult.build(status, "ok");
   }
+
   //新建或修改-首页管理
   @RequestMapping(value = "/banner/saveHomepPage", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
   public LejiaResult saveHomepPage(@RequestBody Banner banner) {
@@ -230,7 +231,9 @@ public class BannerController {
   }
 
 
-  /***************************************************** 启动广告管理 start ******************************************************/
+  /**
+   * ************************************************** 启动广告管理 start *****************************************************
+   */
 
   //启动广告管理 页面
   @RequestMapping(value = "/start_ad", method = RequestMethod.GET)
@@ -244,18 +247,21 @@ public class BannerController {
   public LejiaResult ajaxProvince() {
     return LejiaResult.ok(cityService.getAllProvince());
   }
+
   //根据省 获取市
   @RequestMapping(value = "/start_ad/ajaxCity", method = RequestMethod.POST)
   @ResponseBody
   public LejiaResult ajaxCity(String province) {
     return LejiaResult.ok(cityService.getCityByProvince(province));
   }
+
   //根city_id 获取区县
   @RequestMapping(value = "/start_ad/ajaxArea", method = RequestMethod.POST)
   @ResponseBody
   public LejiaResult ajaxArea(Long cityId) {
     return LejiaResult.ok(areaService.getAreaByCityId(cityId));
   }
+
   //新建或修改-启动广告
   @RequestMapping(value = "/start_ad/save_start_ad", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
   public LejiaResult save_start_ad(@RequestBody Banner banner) {
@@ -263,6 +269,38 @@ public class BannerController {
     return LejiaResult.build(status, "ok");
   }
 
-  /***************************************************** 启动广告管理 end ******************************************************/
+  /**
+   * ************************************************** 启动广告管理 end *****************************************************
+   */
 
+
+  @RequestMapping(value = "/banner/getSMovieBannerByAjax", method = RequestMethod.POST)
+  public
+  @ResponseBody
+  LejiaResult getSMovieBannerByAjax(@RequestBody BannerCriteria bannerCriteria) {
+
+    if (bannerCriteria != null) {
+      if (bannerCriteria.getOffset() == null) {
+        bannerCriteria.setOffset(1);
+      }
+    }
+    Page page = bannerService.findSMovieBannersByPage(bannerCriteria, 10);
+
+    return LejiaResult.ok(page);
+  }
+
+
+  @RequestMapping(value = "/banner/changeSMovieBannerState/{id}", method = RequestMethod.GET)
+  public
+  @ResponseBody
+  LejiaResult changeSMovieBannerState(@PathVariable Long id) {
+    bannerService.changeSMovieProductState(id);
+    return LejiaResult.ok();
+  }
+
+  @RequestMapping(value = "/banner/saveForMovie", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+  public LejiaResult saveForMovie(@RequestBody Banner banner) {
+    int status = bannerService.editBannerForSmovie(banner);
+    return LejiaResult.build(status, "ok");
+  }
 }
