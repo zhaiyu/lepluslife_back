@@ -31,7 +31,7 @@ import javax.persistence.criteria.Root;
  * app广告轮播 Created by zhangwen on 16/8/26.
  */
 @Service
-@Transactional(readOnly = true)
+@Transactional(readOnly = false)
 public class BannerService {
 
   @Inject
@@ -342,4 +342,134 @@ public class BannerService {
   public void deleteBanner(Long id) {
     bannerRepository.delete(id);
   }
+
+  private static Specification<Banner> getSMovieWhereClause(BannerCriteria criteria) {
+    return new Specification<Banner>() {
+      @Override
+      public Predicate toPredicate(Root<Banner> r, CriteriaQuery<?> q,
+                                   CriteriaBuilder cb) {
+        Predicate predicate = cb.conjunction();
+        if (criteria.getType() == 15) {   //banner类型
+          predicate.getExpressions().add(
+                  cb.or(cb.equal(r.<Banner>get("bannerType").get("id"), 15),
+                          cb.equal(r.<Banner>get("bannerType").get("id"), 16)));
+        }
+        return predicate;
+      }
+    };
+  }
+
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+  public Page findSMovieBannersByPage(BannerCriteria bannerCriteria, Integer limit) {
+    Sort sort = new Sort(Sort.Direction.DESC, "sid");
+    return bannerRepository
+            .findAll(getSMovieWhereClause(bannerCriteria),
+                    new PageRequest(bannerCriteria.getOffset() - 1, limit, sort));
+  }
+
+
+  public void changeSMovieProductState(Long id) {
+    Banner banner = bannerRepository.findOne(id);
+    Banner banner1 = new Banner();
+    banner1.setCreateDate(banner.getCreateDate());
+    banner1.setAfterType(banner.getAfterType());
+    banner1.setAlive(banner.getAlive());
+    banner1.setAppType(banner.getAppType());
+    banner1.setArea(banner.getArea());
+    banner1.setBannerType(banner.getBannerType());
+    banner1.setCity(banner.getCity());
+    banner1.setIntroduce(banner.getIntroduce());
+    banner1.setLastUpDate(banner.getLastUpDate());
+    banner1.setMerchant(banner.getMerchant());
+    banner1.setOldPicture(banner.getOldPicture());
+    banner1.setPicture(banner.getPicture());
+    banner1.setPrice(banner.getPrice());
+    banner1.setProduct(banner.getProduct());
+    banner1.setSid(banner.getSid());
+    banner1.setTitle(banner.getTitle());
+    banner1.setUrl(banner.getUrl());
+    banner1.setUrlTitle(banner.getUrlTitle());
+    if (banner.getStatus() == 1) {
+      banner1.setStatus(0);
+    }
+    if (banner.getStatus() == 0) {
+      banner1.setStatus(1);
+    }
+    bannerRepository.delete(banner);
+    bannerRepository.save(banner1);
+  }
+  //新建或修改电影票banner
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  public int editBannerForSmovie(Banner banner) {
+    Banner DBBanner = null;
+    Date date = new Date();
+    Long id = banner.getId();
+    Integer afterType = banner.getAfterType();
+    try {
+      if (id != null) {
+        DBBanner = bannerRepository.findOne(id);
+        if (DBBanner == null) {
+          return 404;
+        } else {
+          DBBanner.setBannerType(banner.getBannerType());
+        }
+      } else { //新建
+        DBBanner = new Banner();
+        DBBanner.setBannerType(banner.getBannerType());
+        DBBanner.setCreateDate(date);
+      }
+      DBBanner.setSid(banner.getSid());
+      DBBanner.setPicture(banner.getPicture());
+      DBBanner.setAfterType(afterType);
+      if (afterType == 1) {//后置类型  1=链接  2=商品   3=商家
+        DBBanner.setUrl(banner.getUrl());
+        DBBanner.setUrlTitle(banner.getUrlTitle());
+        if (banner.getMerchant() != null) {
+          if (banner.getMerchant().getMerchantSid() != null) {
+            Merchant
+                    merchant =
+                    merchantService.findMerchantByMerchantSid(banner.getMerchant().getMerchantSid());
+            if (merchant == null) {
+              return 506;
+            }
+            DBBanner.setMerchant(merchant);
+          }
+        }
+      } else if (afterType == 2) {
+        Product product = productService.findOneProduct(banner.getProduct().getId());
+        if (product == null) {
+          return 505;
+        }
+        DBBanner.setProduct(product);
+      } else if (afterType == 3) {
+        Merchant
+                merchant =
+                merchantService.findMerchantByMerchantSid(banner.getMerchant().getMerchantSid());
+        if (merchant == null) {
+          return 506;
+        }
+        DBBanner.setMerchant(merchant);
+      }
+
+      if (banner.getIntroduce() != null) {
+        DBBanner.setIntroduce(banner.getIntroduce());
+      }
+      if (banner.getTitle() != null) {
+        DBBanner.setTitle(banner.getTitle());
+      }
+      if (banner.getPrice() != null) {
+        DBBanner.setPrice(banner.getPrice());
+      }
+      if (banner.getOldPicture() != null) {
+        DBBanner.setOldPicture(banner.getOldPicture());
+      }
+      DBBanner.setLastUpDate(date);
+      bannerRepository.save(DBBanner);
+    } catch (Exception e) {
+      e.printStackTrace();
+      return 500;
+    }
+    return 200;
+  }
+
 }

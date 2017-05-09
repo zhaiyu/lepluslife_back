@@ -267,6 +267,7 @@
                     <a href='/manage/phone/index'>充话费活动</a>
 
                     <a href='/manage/rechargeCard/list'>充值卡</a>
+                    <a href='/manage/sMovieOrder/list'>电影票</a>
                 </div>
             </li>
         </shiro:hasPermission>
@@ -350,7 +351,7 @@
             $(".none4").slideDown(300);
         }
         if (url.indexOf("codeBurse") != -1 || url.indexOf("initial_order_rebate") != -1
-            || url.indexOf("codePage") != -1) {
+            || url.indexOf("codePage") != -1|| url.indexOf("sMovieOrder") != -1) {
             $(".none6").parent('li').addClass('selected');
             $(".none6").slideDown(300);
         }
