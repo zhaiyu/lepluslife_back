@@ -46,6 +46,8 @@ public class Partner {
   @ManyToOne
   private PartnerManager partnerManager;
 
+  private Integer origin = 0; //0 后台添加  1 公众号注册
+
   public Integer getBenefitTime() {
     return benefitTime;
   }
