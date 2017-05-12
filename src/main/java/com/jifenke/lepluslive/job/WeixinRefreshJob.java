@@ -40,8 +40,10 @@ public class WeixinRefreshJob implements Job {
 //    String[] app2 = {"wxec4f3a2fb6ee8f06", "437e62266d3ff047ea0803b234ad0801", "9", "10"};
     String[] app1 = {"wxe2190d22ce025e4f", "4a3f22e2ac05822b8b284e5a7c93b280", "7", "8"};
     String[] app2 = {"wx16edfa0dda02edd5", "2ff98b94441224bf584181e844a8af66", "9", "10"};
+    String[] app3 = {"wx9a694d7de8b8b081", "2f7b245ec0367dd3dc691ddaa390a2bb", "57", "58"};
     apps.put("乐加生活", app1);
     apps.put("乐加支付", app2);
+    apps.put("乐加臻品商城", app3);
 
     ApplicationContext
         applicationContext = null;

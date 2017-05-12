@@ -6,6 +6,9 @@ import com.jifenke.lepluslive.weixin.domain.entities.AccessToken;
 import org.apache.http.HttpEntity;
 import org.apache.http.client.methods.CloseableHttpResponse;
 import org.apache.http.client.methods.HttpGet;
+import org.apache.http.client.methods.HttpPost;
+import org.apache.http.conn.ssl.SSLConnectionSocketFactory;
+import org.apache.http.entity.StringEntity;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.util.EntityUtils;
@@ -25,6 +28,8 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+
+import javax.net.ssl.SSLContext;
 
 
 /**
@@ -56,6 +61,41 @@ public class WeixinPayUtil {
     return accessToken;
   }
 
+
+
+  public static Map initialRebateOrder(String requestUrl, String outputStr, SSLContext sslcontext) {
+    Map map = null;
+    CloseableHttpClient httpclient = null;
+    try {
+      SSLConnectionSocketFactory sslsf = new SSLConnectionSocketFactory(
+          sslcontext,
+          new String[]{"TLSv1"},
+          null,
+          SSLConnectionSocketFactory.BROWSER_COMPATIBLE_HOSTNAME_VERIFIER);
+      httpclient = HttpClients.custom()
+          .setSSLSocketFactory(sslsf)
+          .build();
+      HttpPost
+          httppost =
+          new HttpPost(requestUrl);
+      StringEntity myEntity = new StringEntity(outputStr, "utf-8");
+      httppost.addHeader("Content-Type", "text/xml");
+      httppost.setEntity(myEntity);
+      CloseableHttpResponse response = httpclient.execute(httppost);
+      HttpEntity resEntity = response.getEntity();
+      map = doXMLParse(EntityUtils.toString(resEntity, "UTF-8"));
+    } catch (Exception e) {
+      e.printStackTrace();
+    } finally {
+      // 关闭连接,释放资源
+      try {
+        httpclient.close();
+      } catch (IOException e) {
+        e.printStackTrace();
+      }
+    }
+    return map;
+  }
 
   public static Map doXMLParse(String strxml) throws JDOMException, IOException {
     strxml = strxml.replaceFirst("encoding=\".*\"", "encoding=\"UTF-8\"");
