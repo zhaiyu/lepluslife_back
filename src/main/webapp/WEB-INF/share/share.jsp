@@ -260,26 +260,46 @@
                  initPage(shareCriteria.offset, totalPage);
                }
                for (i = 0; i < content.length; i++) {
-                 var contentStr = '<tr><td>' + content[i].offLineOrder.orderSid + '</td>';
+                 var contentStr = '<tr>';
+                 if( content[i].offLineOrder!=null){
+                     contentStr += '<td>' + content[i].offLineOrder.orderSid + '</td>';
+                 }else{
+                     contentStr +="<td>--</td>";
+                 }
+
                  contentStr +=
                  '<td><span>'
                  + new Date(content[i].createDate).format('yyyy-MM-dd')
                  + '</span><br><span>'
                  + new Date(content[i].createDate).format('HH:mm:ss')
                  + '</span></td>';
-                 if (content[i].offLineOrder.leJiaUser.phoneNumber != null) {
-                   contentStr +=
-                   '<td><span>' + content[i].offLineOrder.leJiaUser.phoneNumber
-                   + '</span><br><span>('
-                   + content[i].offLineOrder.leJiaUser.userSid + ')</span></td>'
-                 } else {
-                   contentStr +=
-                   '<td><span>未绑定手机号</span><br><span>('
-                   + content[i].offLineOrder.leJiaUser.userSid + ')</span></td>'
+                 if(content[i].offLineOrder!=null){
+                     if (content[i].offLineOrder.leJiaUser.phoneNumber != null) {
+                         contentStr +=
+                             '<td><span>' + content[i].offLineOrder.leJiaUser.phoneNumber
+                             + '</span><br><span>('
+                             + content[i].offLineOrder.leJiaUser.userSid + ')</span></td>'
+                     } else {
+                         contentStr +=
+                             '<td><span>未绑定手机号</span><br><span>('
+                             + content[i].offLineOrder.leJiaUser.userSid + ')</span></td>'
+                     }
+                 }else {
+                     contentStr +="<td>--</td>";
                  }
+             if(content[i].offLineOrder!=null){
                  contentStr += '<td>' + content[i].offLineOrder.totalPrice / 100 + '</td>'
+             }else {
+                 contentStr +="<td>--</td>";
+             }
+
                  contentStr += '<td>' + content[i].shareMoney / 100 + '</td>'
-                 contentStr += '<td>' + content[i].offLineOrder.merchant.name+ '</td>'
+                   if(content[i].offLineOrder!=null){
+                       contentStr += '<td>' + content[i].offLineOrder.merchant.name+ '</td>';
+                   }else {
+                       contentStr +="<td>--</td>";
+                   }
+
                  contentStr +=
                  '<td><span>' + content[i].tradePartner.name
                  + '</span><br><span>('
@@ -308,18 +328,18 @@
                    contentStr +=
                    '<td><span>无</span><br><span>(--)</span></td>'
                  }
-                 if(content[i].lockPartnerManager!=null){
-                   contentStr +=
-                   '<td><span>' + content[i].lockPartnerManager.name
-                   + '</span><br><span>('
-                   + content[i].toLockPartnerManager/100 + ')</span></td>'
+                 if(content[i].lockPartnerManager==null){
+                     contentStr +=
+                         '<td><span>无</span><br><span>(--)</span></td>'
                  }else{
-                   contentStr +=
-                   '<td><span>无</span><br><span>(--)</span></td>'
+                     contentStr +=
+                         '<td><span>' + content[i].lockPartnerManager.name
+                         + '</span><br><span>('
+                         + content[i].toLockPartnerManager/100 + ')</span></td>'
                  }
 //                 contentStr += '<td>' + content[i].toLockPartner / 100 + '</td>'
 //                 contentStr += '<td>' + content[i].toLockPartnerManager / 100 + '</td>'
-                 contentStr += '<td>' + content[i].toLePlusLife / 100 + '</td>'
+                 contentStr += '<td>' + content[i].toLePlusLife / 100.0 + '</td>'
                  shareContent.innerHTML += contentStr;
 
                }
