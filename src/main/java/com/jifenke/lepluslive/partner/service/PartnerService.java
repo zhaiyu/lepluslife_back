@@ -10,6 +10,7 @@ import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantInfo;
 import com.jifenke.lepluslive.merchant.service.MerchantService;
 import com.jifenke.lepluslive.partner.controller.dto.PartnerDto;
+import com.jifenke.lepluslive.partner.domain.criteria.PartnerCriteria;
 import com.jifenke.lepluslive.partner.domain.entities.Partner;
 import com.jifenke.lepluslive.partner.domain.entities.PartnerInfo;
 import com.jifenke.lepluslive.partner.domain.entities.PartnerManager;
@@ -30,6 +31,10 @@ import com.jifenke.lepluslive.partner.repository.PartnerWalletOnlineRepository;
 import com.jifenke.lepluslive.partner.repository.PartnerWalletRepository;
 
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -41,6 +46,10 @@ import java.util.List;
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
 import javax.persistence.Query;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 /**
  * Created by wcg on 16/6/3.
@@ -302,5 +311,57 @@ public class PartnerService {
     public PartnerInfo findPartnerInfoByPartner(Partner partner) {
         return partnerInfoRepository.findByPartner(partner);
     }
+
+
+
+    public Page findPartnerByPage(PartnerCriteria partnerCriteria, Integer limit) {
+        Sort sort = new Sort(Sort.Direction.DESC, "registerDate");
+        return partnerRepository
+                .findAll(getWhereClause(partnerCriteria),
+                        new PageRequest(partnerCriteria.getOffset() - 1, limit, sort));
+    }
+
+
+    public static Specification<Partner> getWhereClause(PartnerCriteria partnerCriteria) {
+        return new Specification<Partner>() {
+            @Override
+            public Predicate toPredicate(Root<Partner> r, CriteriaQuery<?> q,
+                                         CriteriaBuilder cb) {
+                Predicate predicate = cb.conjunction();
+
+                if (partnerCriteria.getRegisterStartDate() != null && !"".equals(partnerCriteria.getRegisterStartDate())) {
+                    predicate.getExpressions().add(
+                            cb.between(r.get("registerDate"), new Date(partnerCriteria.getRegisterStartDate()),
+                                    new Date(partnerCriteria.getRegisterEndDate())));
+                }
+
+                if (partnerCriteria.getOrigin() != null && !"".equals(partnerCriteria.getOrigin())) {
+                    predicate.getExpressions().add(
+                            cb.equal(r.get("origin"), partnerCriteria.getOrigin())
+                    );
+                }
+                if (partnerCriteria.getName() != null && !"".equals(partnerCriteria.getName())) {
+                    predicate.getExpressions().add(
+                            cb.equal(r.get("partnerName"), partnerCriteria.getName())
+                    );
+                }
+
+                if (partnerCriteria.getPhoneNumber() != null && !"".equals(partnerCriteria.getPhoneNumber())) {
+                    predicate.getExpressions().add(
+                            cb.equal(r.get("phoneNumber"), partnerCriteria.getPhoneNumber())
+                    );
+                }
+                return predicate;
+            }
+        };
+    }
+    public  int findPartnerBindMerchantCount(Long partnerId){
+        return partnerRepository.findPartnerBindMerchantCount(partnerId);
+    }
+    public  int findPartnerBindUserCount(Long partnerId){
+        return partnerRepository.findPartnerBindUserCount(partnerId);
+    }
+
+
 
 }

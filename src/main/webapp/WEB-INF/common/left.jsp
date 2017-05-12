@@ -275,7 +275,8 @@
         <li><h4 class="M6"><span></span>审核流程</h4>
 
             <div class="list-item none none8">
-                <a href='/manage/withdrawBill'>提现审核</a>
+                <a href='/manage/withdrawBill'>手动提现审核</a>
+                <a href='/manage/wxWithdrawBill'>公众号提现审核</a>
                 <a href='/manage/fillingBillApply'>充值申请</a>
             </div>
         </li>
@@ -324,7 +325,7 @@
 <script>
     $(function () {
         var url = window.location.href;
-        if (url.indexOf("withdrawBill") != -1||url.indexOf("fillingBillApply") != -1) {
+        if (url.indexOf("withdrawBill") != -1||url.indexOf("fillingBillApply") != -1||url.indexOf("wxWithdrawBill")!=-1) {
             $(".none8").parent('li').addClass('selected');
             $(".none8").slideDown(300);
         }

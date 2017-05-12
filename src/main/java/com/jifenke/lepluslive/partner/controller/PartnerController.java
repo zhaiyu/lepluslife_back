@@ -3,19 +3,29 @@ package com.jifenke.lepluslive.partner.controller;
 import com.jifenke.lepluslive.global.util.LejiaResult;
 import com.jifenke.lepluslive.global.util.MvUtil;
 import com.jifenke.lepluslive.partner.controller.dto.PartnerDto;
+import com.jifenke.lepluslive.partner.domain.criteria.PartnerCriteria;
 import com.jifenke.lepluslive.partner.domain.entities.Partner;
 import com.jifenke.lepluslive.partner.domain.entities.PartnerManager;
+import com.jifenke.lepluslive.partner.domain.entities.PartnerWallet;
+import com.jifenke.lepluslive.partner.domain.entities.PartnerWalletOnline;
 import com.jifenke.lepluslive.partner.service.PartnerManagerService;
 import com.jifenke.lepluslive.partner.service.PartnerService;
 
+import com.jifenke.lepluslive.partner.service.PartnerWalletOnlineService;
+import com.jifenke.lepluslive.partner.service.PartnerWalletService;
+import com.jifenke.lepluslive.user.domain.entities.WeiXinUser;
+import com.jifenke.lepluslive.user.service.UserService;
+import com.jifenke.lepluslive.user.service.WeiXinUserService;
+import org.springframework.data.domain.Page;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.RequestBody;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.bind.annotation.RequestMethod;
-import org.springframework.web.bind.annotation.RestController;
+import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  * Created by wcg on 16/7/21.
@@ -28,6 +38,18 @@ public class PartnerController {
     private PartnerService partnerService;
     @Inject
     private PartnerManagerService partnerManagerService;
+
+    @Inject
+    private PartnerWalletService partnerWalletService;
+
+    @Inject
+    private PartnerWalletOnlineService partnerWalletOnlineService;
+
+
+
+    @Inject
+    private UserService userService;
+
 
     @RequestMapping(value = "/partner")
     public ModelAndView goPartnerEditPage(Model model) {
@@ -85,4 +107,75 @@ public class PartnerController {
         Partner account = partnerService.findPartnerById(id);
         return LejiaResult.ok(account);
     }
+
+
+    @RequestMapping(value = "/partner/getPartnerByAjax", method = RequestMethod.POST)
+    public
+    @ResponseBody
+    LejiaResult getPartnerByAjax(@RequestBody PartnerCriteria partnerCriteria) {
+        Page page = partnerService.findPartnerByPage(partnerCriteria, 10);
+        if (partnerCriteria.getOffset() == null) {
+            partnerCriteria.setOffset(1);
+        }
+        List<Partner> partnerList = page.getContent();
+        List<Integer> partnerBindMerchantCountList = new ArrayList<Integer>();
+        List<Integer> partnerBindUserCountList = new ArrayList<Integer>();
+        List<Long> partnerWalletAvailableBalanceList = new ArrayList<Long>();
+        List<Long> partnerWalletTotalMoneyList = new ArrayList<Long>();
+        List<Long> partnerWalletOnlineAvailableBalanceList = new ArrayList<Long>();
+        List<Long> partnerWalletOnlineTotalMoneyList = new ArrayList<Long>();
+        List<String> leJiaUserSidList = new ArrayList<String>();
+
+        for (Partner partner : partnerList) {
+            int partnerBindMerchant = 0;
+            int partnerBindUser = 0;
+            long partnerWalletAvailableBalance = 0;
+            long partnerWalletTotalMoney = 0;
+
+            long partnerWalletOnlineAvailableBalance = 0;
+            long partnerWalletOnlineTotalMoney = 0;
+            String leJiaUserSid="";
+
+            Long partnerId = partner.getId();
+            partnerBindMerchant = partnerService.findPartnerBindMerchantCount(partnerId);
+            partnerBindUser = partnerService.findPartnerBindUserCount(partnerId);
+            PartnerWallet partnerWallet=partnerWalletService.findByPartner(partner);
+            PartnerWalletOnline partnerWalletOnline=partnerWalletOnlineService.findByPartner(partner);
+
+            if(partner.getWeiXinUser()!=null){
+                WeiXinUser weiXinUser=partner.getWeiXinUser();
+                if(weiXinUser.getLeJiaUser()!=null){
+                    Long id=weiXinUser.getId();
+                    leJiaUserSid=userService.findUserByWeiXinId(id);
+                }
+            }
+            leJiaUserSidList.add(leJiaUserSid);
+            partnerWalletOnlineAvailableBalance=partnerWalletOnline.getAvailableBalance();
+            partnerWalletOnlineTotalMoney=partnerWalletOnline.getTotalMoney();
+            partnerWalletAvailableBalance=partnerWallet.getAvailableBalance();
+            partnerWalletTotalMoney=partnerWallet.getTotalMoney();
+            partnerWalletOnlineAvailableBalanceList.add(partnerWalletOnlineAvailableBalance);
+            partnerWalletOnlineTotalMoneyList.add(partnerWalletOnlineTotalMoney);
+            partnerWalletAvailableBalanceList.add(partnerWalletAvailableBalance);
+            partnerWalletTotalMoneyList.add(partnerWalletTotalMoney);
+            partnerBindMerchantCountList.add(partnerBindMerchant);
+            partnerBindUserCountList.add(partnerBindUser);
+
+
+        }
+        Map<String, Object> map = new HashMap<String, Object>();
+        map.put("page", page);
+        map.put("partnerBindMerchantCountList", partnerBindMerchantCountList);
+        map.put("partnerBindUserCountList", partnerBindUserCountList);
+        map.put("partnerWalletAvailableBalanceList", partnerWalletAvailableBalanceList);
+        map.put("partnerWalletTotalMoneyList", partnerWalletTotalMoneyList);
+        map.put("partnerWalletOnlineAvailableBalanceList", partnerWalletOnlineAvailableBalanceList);
+        map.put("partnerWalletOnlineTotalMoneyList", partnerWalletOnlineTotalMoneyList);
+        map.put("leJiaUserSidList", leJiaUserSidList);
+
+        return LejiaResult.ok(map);
+    }
+
+
+
 }
