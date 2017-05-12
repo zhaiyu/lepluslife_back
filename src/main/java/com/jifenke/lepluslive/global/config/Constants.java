@@ -15,7 +15,11 @@ public final class Constants {
   public static final String SPRING_PROFILE_HEROKU = "heroku";
 
   public static final String SYSTEM_ACCOUNT = "system";
+
   public static final Long ORDER_EXPIRED = 864000000L;
+
+//  public static final Long WITHDRAW_CHECK = 93600000L;
+  public static final Long WITHDRAW_CHECK = 10000L;
   // public static final Long ORDER_EXPIRED =60000L ;
 
   public static final String PRODUCT_URL = "http://www.lepluslife.com/weixin/product/";
