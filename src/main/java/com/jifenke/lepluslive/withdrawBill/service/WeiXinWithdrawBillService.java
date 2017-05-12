@@ -5,6 +5,7 @@ import com.jifenke.lepluslive.global.util.MD5Util;
 import com.jifenke.lepluslive.global.util.MvUtil;
 import com.jifenke.lepluslive.global.util.WeixinPayUtil;
 import com.jifenke.lepluslive.job.WeiXinWithDrawBillJob;
+import com.jifenke.lepluslive.partner.service.PartnerWalletService;
 import com.jifenke.lepluslive.withdrawBill.domain.entities.WeiXinWithdrawBill;
 import com.jifenke.lepluslive.withdrawBill.repository.WeixinWithdrawBillRepository;
 
@@ -58,6 +59,9 @@ public class WeiXinWithdrawBillService {
   @Inject
   private Scheduler scheduler;
 
+  @Inject
+  private PartnerWalletService partnerWalletService;
+
   /**
    * 发放红包接口,调用此接口会转账给用户
    *
@@ -108,6 +112,7 @@ public class WeiXinWithdrawBillService {
           scheduler.scheduleJob(weiXinWithDrawBillJob, autoCheckedWithdrawJobTrigger);
           scheduler.start();
           weiXinWithdrawBill.setState(1);
+          weiXinWithdrawBill.setNote(map.get("return_code"));
           weixinWithdrawBillRepository.save(weiXinWithdrawBill);
         } catch (Exception e) {
           e.printStackTrace();
@@ -119,8 +124,6 @@ public class WeiXinWithdrawBillService {
 
   /**
    * 查看用户是否接收红包,未接受退款
-   * @param mchBillno
-   * @return
    */
   @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
   public Map checkRedPackInfo(String mchBillno) {
@@ -135,13 +138,24 @@ public class WeiXinWithdrawBillService {
         "https://api.mch.weixin.qq.com/mmpaymkttransfers/gethbinfo",
         getRequestXml(parameters), sslContext);
     WeiXinWithdrawBill weiXinWithdrawBill = weixinWithdrawBillRepository.findByMchBillno(mchBillno);
+    weiXinWithdrawBill.setNote(map.get("status"));
     if (!"RECEIVED".equals(map.get("status")) && ("REFUND".equals(map.get("status")) || "RFUND_ING"
         .equals(map.get("status")))) {//如果退款或者退款中返回佣金
-
-    } else if ("RECEIVED".equals(map.get("status"))) {
-
+      if (weiXinWithdrawBill.getOfflineWallet() != 0) {
+        partnerWalletService.changePartnerWallet(weiXinWithdrawBill.getOfflineWallet(),
+                                                 weiXinWithdrawBill.getPartner(),
+                                                 weiXinWithdrawBill.getMchBillno(), 15004L);
+      }
+      if (weiXinWithdrawBill.getOnlineWallet() != 0) {
+        partnerWalletService.changeOnlinePartnerWallet(weiXinWithdrawBill.getOfflineWallet(),
+                                                       weiXinWithdrawBill.getPartner(),
+                                                       weiXinWithdrawBill.getMchBillno(), 16004L);
+      }
+      weiXinWithdrawBill.setState(3);
+    } else if ("RECEIVED".equals(map.get("status"))) { //成功接收
+      weiXinWithdrawBill.setState(4);
     } else {
-
+      weiXinWithdrawBill.setState(5);
     }
     return map;
 
