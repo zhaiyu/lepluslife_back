@@ -3,6 +3,7 @@ package com.jifenke.lepluslive.partner.controller;
 import com.jifenke.lepluslive.global.util.LejiaResult;
 import com.jifenke.lepluslive.global.util.MvUtil;
 import com.jifenke.lepluslive.partner.controller.dto.PartnerDto;
+import com.jifenke.lepluslive.partner.controller.view.PartnerViewExcel;
 import com.jifenke.lepluslive.partner.domain.criteria.PartnerCriteria;
 import com.jifenke.lepluslive.partner.domain.entities.Partner;
 import com.jifenke.lepluslive.partner.domain.entities.PartnerManager;
@@ -13,6 +14,8 @@ import com.jifenke.lepluslive.partner.service.PartnerService;
 
 import com.jifenke.lepluslive.partner.service.PartnerWalletOnlineService;
 import com.jifenke.lepluslive.partner.service.PartnerWalletService;
+import com.jifenke.lepluslive.sMovie.domain.criteria.SMovieOrderCriteria;
+import com.jifenke.lepluslive.sMovie.domain.entities.SMovieProduct;
 import com.jifenke.lepluslive.user.domain.entities.WeiXinUser;
 import com.jifenke.lepluslive.user.service.UserService;
 import com.jifenke.lepluslive.user.service.WeiXinUserService;
@@ -45,7 +48,8 @@ public class PartnerController {
     @Inject
     private PartnerWalletOnlineService partnerWalletOnlineService;
 
-
+    @Inject
+    private PartnerViewExcel partnerViewExcel;
 
     @Inject
     private UserService userService;
@@ -53,7 +57,7 @@ public class PartnerController {
 
     @RequestMapping(value = "/partner")
     public ModelAndView goPartnerEditPage(Model model) {
-        model.addAttribute("partners", partnerService.findAll());
+//        model.addAttribute("partners", partnerService.findAll());
         model.addAttribute("partnerManagers", partnerService.findAllPartnerManagerByWallet());
         return MvUtil.go("/partner/partnerList");
     }
@@ -125,7 +129,6 @@ public class PartnerController {
         List<Long> partnerWalletOnlineAvailableBalanceList = new ArrayList<Long>();
         List<Long> partnerWalletOnlineTotalMoneyList = new ArrayList<Long>();
         List<String> leJiaUserSidList = new ArrayList<String>();
-
         for (Partner partner : partnerList) {
             int partnerBindMerchant = 0;
             int partnerBindUser = 0;
@@ -160,8 +163,6 @@ public class PartnerController {
             partnerWalletTotalMoneyList.add(partnerWalletTotalMoney);
             partnerBindMerchantCountList.add(partnerBindMerchant);
             partnerBindUserCountList.add(partnerBindUser);
-
-
         }
         Map<String, Object> map = new HashMap<String, Object>();
         map.put("page", page);
@@ -172,10 +173,27 @@ public class PartnerController {
         map.put("partnerWalletOnlineAvailableBalanceList", partnerWalletOnlineAvailableBalanceList);
         map.put("partnerWalletOnlineTotalMoneyList", partnerWalletOnlineTotalMoneyList);
         map.put("leJiaUserSidList", leJiaUserSidList);
-
         return LejiaResult.ok(map);
     }
 
+    @RequestMapping(value = "/partner/editPartnerPage/{id}", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    LejiaResult editPartnerPage(@PathVariable Long id) {
+        Partner partner = partnerService.findPartnerById(id);
+        return LejiaResult.ok(partner);
+    }
+
+    @RequestMapping(value = "/partner/exportExcel", method = RequestMethod.POST)
+    public ModelAndView exportExcel(PartnerCriteria partnerCriteria) {
+        if (partnerCriteria.getOffset() == null) {
+            partnerCriteria.setOffset(1);
+        }
+        Page page = partnerService.findPartnerByPage(partnerCriteria, 10000);
+        Map map = new HashMap();
+        map.put("partnerList", page.getContent());
+        return new ModelAndView(partnerViewExcel, map);
+    }
 
 
 }

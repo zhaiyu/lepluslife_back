@@ -716,6 +716,9 @@
                     if (content[i].sMovieTerminal != null) {
                         contentStr +=
                                 '<td>' + content[i].sMovieTerminal.movieName + '</td>';
+                    }else{
+                        contentStr +=
+                                '<td>--</td>';
                     }
                     if (content[i].state == 0) {
                         contentStr +=

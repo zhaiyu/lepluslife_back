@@ -259,6 +259,7 @@
                         <label class="col-sm-2 control-label">账号</label>
                         <div class="col-sm-8">
                             <input type="text" class="form-control" id="user">
+                            <input type="hidden" id="partnerId">
                         </div>
                     </div>
                     <div class="form-group">
@@ -271,7 +272,7 @@
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
-                <button type="button" class="btn btn-primary" data-dismiss="modal" id="confirm">确认</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal" id="confirm" onclick="confirmUserEdit()">确认</button>
             </div>
         </div>
     </div>
@@ -476,14 +477,35 @@
                     contentStr +=
                         '<td><input type="hidden" class="id-hidden" value="' + content[i].id
                         + '"><button class="btn btn-primary btn-sm userEdit">账号</button><button  class="btn btn-primary btn-sm editPartner">编辑</button><button class="btn btn-primary btn-sm partnerWalletLog">详情</button></td>';
-
-
-
-
                     partnerContent.innerHTML += contentStr;
                 }
 
+                $(".userEdit").each(function (i) {
+                    $(".userEdit").eq(i).bind("click", function () {
+                        var id = $(this).parent().find(".id-hidden").val();
+                        $.ajax({
+                            type: "get",
+                            url: "/manage/partner/editPartnerPage/" + id,
+                            contentType: "application/json",
+                            success: function (data) {
+                                var partner=data.data;
+                                var name=partner.name;
+                                var password=partner.password;
+                                userEdit(id,name,password);
+                            }
+                        });
 
+                    });
+                });
+
+
+
+                $(".editPartner").each(function (i) {
+                    $(".editPartner").eq(i).bind("click", function () {
+                        var id = $(this).parent().find(".id-hidden").val();
+                        editPartner(id);
+                    });
+                });
 
 
 
@@ -510,31 +532,75 @@
 
 
     function exportPartnerExcel() {
-        alert(2);
-    }
+        var dateStr = $('#date-end span').text().split("-");
+        if (dateStr != null && dateStr != '') {
+            var startDate = dateStr[0].replace(/-/g, "/");
+            var endDate = dateStr[1].replace(/-/g, "/");
+            partnerCriteria.registerStartDate = startDate;
+            partnerCriteria.registerEndDate = endDate;
+        }
 
-    function userEdit(id, name, password) {
+        if ($("#partnerRegister").val() != "") {
+            partnerCriteria.origin = $("#partnerRegister").val();
+        } else {
+            partnerCriteria.origin = null;
+        }
+
+        if ($("#partnerName").val() != "") {
+            partnerCriteria.name = $("#partnerName").val();
+        } else {
+            partnerCriteria.name = null;
+        }
+
+        if ($("#partnerPhoneNumber").val() != "") {
+            partnerCriteria.phoneNumber = $("#partnerPhoneNumber").val();
+        } else {
+            partnerCriteria.phoneNumber = null;
+        }
+        partnerCriteria.offset = 1;
+        post("/manage/partner/exportExcel", partnerCriteria);
+    }
+    function post(URL, PARAMS) {
+        var temp = document.createElement("form");
+        temp.action = URL;
+        temp.method = "post";
+        temp.style.display = "none";
+        for (var x in PARAMS) {
+            var opt = document.createElement("textarea");
+            opt.name = x;
+            opt.value = PARAMS[x];
+            // alert(opt.name)
+            temp.appendChild(opt);
+        }
+        document.body.appendChild(temp);
+        temp.submit();
+        return temp;
+    }
+    function  userEdit(id,name, password) {
+        $("#partnerId").val(id);
         $("#user").val(name);
         $("#password").val(password);
-        $("#confirm").bind("click", function () {
-            var partner = {};
-            partner.id = id;
-            partner.name = $("#user").val();
-            partner.password = $("#password").val();
-            $("#confirm").unbind("tap");
-            $.ajax({
-                type: "post",
-                data: JSON.stringify(partner),
-                contentType: "application/json",
-                url: "/manage/partner/editUser",
-                success: function (data) {
-                    alert(data.msg);
-                    location.href = "/manage/partner";
-                }
-            });
-        });
         $("#zhWarn").modal("toggle");
-
+    }
+    function confirmUserEdit(){
+        var partner = {};
+        partner.id =$("#partnerId").val();
+        partner.name = $("#user").val();
+        partner.password = $("#password").val();
+        $("#confirm").unbind("tap");
+        $.ajax({
+            type: "post",
+            data: JSON.stringify(partner),
+            contentType: "application/json",
+            url: "/manage/partner/editUser",
+            success: function (data) {
+                $("#user").val("");
+                $("#password").val("");
+                $("#partnerId").val("")
+                alert(data.msg);
+                //return data.msg;
+            }
+        });
     }
     function editPartner(id) {
         location.href = "/manage/partner/edit?id=" + id;
