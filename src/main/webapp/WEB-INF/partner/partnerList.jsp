@@ -443,7 +443,7 @@
                     initPage(1, totalPage);
                 }
                 for (i = 0; i < content.length; i++) {
-                    var contentStr = '<tr><td>' + content[i].id + '</td>';
+                    var contentStr = '<tr><td>' + content[i].partnerSid + '</td>';
                     contentStr+='<td>' + content[i].name + '</td>';
                     contentStr+='<td>' + content[i].phoneNumber + '</td>';
                     contentStr+='<td>' + partnerBindMerchantCountList[i] +'/'+content[i].merchantLimit+'</td>';
