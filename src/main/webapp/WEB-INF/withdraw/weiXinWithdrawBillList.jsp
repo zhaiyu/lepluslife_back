@@ -377,7 +377,7 @@
                         $("#reject").modal("toggle");
                         $.ajax({
                             type: "get",
-                            url: "/manage/weiXinWithdrawBill/reject/" + id,
+                            url: "/manage/weiXinWithdrawBill/getOneWeiXinWithdrawBill/" + id,
                             contentType: "application/json",
                             success: function (data) {
                                 var weiXinWithdrawBill = data.data;
@@ -390,6 +390,28 @@
                         });
                     });
                 });
+
+
+                $(".confirmWithdrawBill").each(function (i) {
+                    $(".confirmWithdrawBill").eq(i).bind("click", function () {
+                        var id = $(this).parent().find(".id-hidden").val();
+                        $("#createWarn").modal("toggle");
+                        $.ajax({
+                            type: "get",
+                            url: "/manage/weiXinWithdrawBill/getOneWeiXinWithdrawBill/" + id,
+                            contentType: "application/json",
+                            success: function (data) {
+                                var weiXinWithdrawBill = data.data;
+                                var partnerName = weiXinWithdrawBill.partner.partnerName;
+                                var totalPrice = weiXinWithdrawBill.totalPrice / 100.0;
+                                var rejectMessage = document.getElementById("rejectMessage");
+                                rejectMessage.innerHTML = "<h4>确认通过合伙人" + partnerName + "，提现" + totalPrice + "元的申请吗？</h4>";
+                                $("#rejectID").val(id);
+                            }
+                        });
+                    });
+                });
+
 
             }
         });

@@ -57,7 +57,7 @@ public class WeiXinWithdrawBillController {
     }
 
 
-    @RequestMapping(value = "/reject/{id}", method = RequestMethod.GET)
+    @RequestMapping(value = "/getOneWeiXinWithdrawBill/{id}", method = RequestMethod.GET)
     public
     @ResponseBody
     LejiaResult reject(@PathVariable Long id) {
