@@ -7,6 +7,7 @@ import com.jifenke.lepluslive.withdrawBill.domain.criteria.WeiXinWithdrawBillCri
 import com.jifenke.lepluslive.withdrawBill.domain.entities.WeiXinWithdrawBill;
 import com.jifenke.lepluslive.withdrawBill.service.WeiXinWithdrawBillService;
 import org.springframework.data.domain.Page;
+import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -76,7 +77,32 @@ public class WeiXinWithdrawBillController {
         } catch (Exception e) {
             return LejiaResult.build(500, "error");
         }
-        return LejiaResult.build(500, "ok");
+        return LejiaResult.ok();
+    }
+
+    @RequestMapping(value = "/withdrawConfirm/{id}", method = RequestMethod.GET)
+    public
+    @ResponseBody
+    LejiaResult withdrawConfirm(@PathVariable Long id) {
+        try {
+            Map<String, String> map = weiXinWithdrawBillService.withdraw(id);
+            if ("SUCCESS".equals(map.get("result_code").toString()) && "SUCCESS".equals(map.get(
+                    "return_code").toString())) {
+                return LejiaResult.ok(map);
+            } else {
+                return LejiaResult.build(500, "error", map);
+            }
+        } catch (Exception e) {
+            return LejiaResult.build(500, "serverError");
+        }
+    }
+
+
+    @RequestMapping(value = "/shareDetailsPage/{id}", method = RequestMethod.GET)
+    public ModelAndView goPartnerEditPage(Model model, @PathVariable Long id) {
+        WeiXinWithdrawBill weiXinWithdrawBill = weiXinWithdrawBillService.findById(id);
+        model.addAttribute("weiXinWithdrawBill", weiXinWithdrawBill);
+        return MvUtil.go("/withdraw/weiXinWithdrawBillDetails");
     }
 
 

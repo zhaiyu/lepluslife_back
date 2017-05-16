@@ -293,23 +293,30 @@ public void rejectConfirm(Long id){
   if (weiXinWithdrawBill.getOfflineWallet() != 0) {
     PartnerWalletLog partnerWalletLog=new PartnerWalletLog();
     partnerWalletLog.setOrderSid(weiXinWithdrawBill.getWithdrawBillSid());
-    partnerWalletLog.setAfterChangeMoney(partnerWallet.getAvailableBalance());
+    partnerWalletLog.setAfterChangeMoney(partnerWallet.getAvailableBalance()+weiXinWithdrawBill.getOfflineWallet());
     partnerWalletLog.setBeforeChangeMoney(partnerWallet.getAvailableBalance());
     partnerWalletLog.setCreateDate(new Date());
     partnerWalletLog.setType(15005l);
     partnerWalletLog.setPartnerId(weiXinWithdrawBill.getPartner().getId());
     partnerWalletLogRepository.save(partnerWalletLog);
+    partnerWallet.setAvailableBalance(partnerWallet.getAvailableBalance()+weiXinWithdrawBill.getOfflineWallet());
+    partnerWallet.setTotalWithdrawals(partnerWallet.getTotalWithdrawals()-weiXinWithdrawBill.getOfflineWallet());
+    partnerWalletRepository.save(partnerWallet);
   }
   if (weiXinWithdrawBill.getOnlineWallet() != 0) {
     PartnerWalletOnlineLog partnerWalletOnlineLog=new PartnerWalletOnlineLog();
     partnerWalletOnlineLog.setPartnerId(weiXinWithdrawBill.getPartner().getId());
     partnerWalletOnlineLog.setType(16005l);
     partnerWalletOnlineLog.setBeforeChangeMoney(partnerWalletOnline.getAvailableBalance());
-    partnerWalletOnlineLog.setAfterChangeMoney(partnerWalletOnline.getAvailableBalance());
+    partnerWalletOnlineLog.setAfterChangeMoney(partnerWalletOnline.getAvailableBalance()+weiXinWithdrawBill.getOnlineWallet());
     partnerWalletOnlineLog.setOrderSid(weiXinWithdrawBill.getWithdrawBillSid());
-    partnerWalletOnlineLog.setChangeMoney(0l);
+    partnerWalletOnlineLog.setChangeMoney(weiXinWithdrawBill.getOnlineWallet());
     partnerWalletOnlineLog.setCreateDate(new Date());
     partnerWalletOnlineLogRepository.save(partnerWalletOnlineLog);
+    partnerWalletOnline.setAvailableBalance(partnerWalletOnline.getAvailableBalance()+weiXinWithdrawBill.getOnlineWallet());
+    partnerWalletOnline.setTotalWithdrawals(partnerWalletOnline.getTotalWithdrawals()-weiXinWithdrawBill.getOnlineWallet());
+    partnerWalletOnline.setLastUpdate(new Date());
+    partnerWalletOnlineRepository.save(partnerWalletOnline);
   }
 }
 

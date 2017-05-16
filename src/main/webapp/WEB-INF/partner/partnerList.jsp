@@ -476,7 +476,9 @@
 
                     contentStr +=
                         '<td><input type="hidden" class="id-hidden" value="' + content[i].id
-                        + '"><button class="btn btn-primary btn-sm userEdit">账号</button><button  class="btn btn-primary btn-sm editPartner">编辑</button><button class="btn btn-primary btn-sm partnerWalletLog">详情</button></td>';
+                        + '"><button class="btn btn-primary btn-sm userEdit">账号</button><button  class="btn btn-primary btn-sm editPartner">编辑</button>' +
+//                        '<button class="btn btn-primary btn-sm partnerWalletLog">详情</button>' +
+                        '</td>';
                     partnerContent.innerHTML += contentStr;
                 }
 

@@ -72,13 +72,14 @@
                         aria-hidden="true">×</span><span class="sr-only">Close</span></button>
                 <h4 class="modal-title">提示</h4>
             </div>
+            <input type="hidden" id="confirmID">
+            <input type="hidden" id="confirmTotalPrice">
             <div class="modal-body" id="withdrawal-title">
-
             </div>
             <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
                 <button type="button" class="btn btn-primary" data-dismiss="modal"
-                        id="withdraw-confirm">确认
+                        id="withdraw-confirm" onclick="withdrawConfirm()">确认
                 </button>
             </div>
         </div>
@@ -395,7 +396,6 @@
                 $(".confirmWithdrawBill").each(function (i) {
                     $(".confirmWithdrawBill").eq(i).bind("click", function () {
                         var id = $(this).parent().find(".id-hidden").val();
-                        $("#createWarn").modal("toggle");
                         $.ajax({
                             type: "get",
                             url: "/manage/weiXinWithdrawBill/getOneWeiXinWithdrawBill/" + id,
@@ -404,11 +404,21 @@
                                 var weiXinWithdrawBill = data.data;
                                 var partnerName = weiXinWithdrawBill.partner.partnerName;
                                 var totalPrice = weiXinWithdrawBill.totalPrice / 100.0;
-                                var rejectMessage = document.getElementById("rejectMessage");
-                                rejectMessage.innerHTML = "<h4>确认通过合伙人" + partnerName + "，提现" + totalPrice + "元的申请吗？</h4>";
-                                $("#rejectID").val(id);
+                                var withdrawalDiv = document.getElementById("withdrawal-title");
+                                withdrawalDiv.innerHTML = "<h4>确认通过合伙人" + partnerName + "，提现" + totalPrice + "元的申请吗？</h4>";
+                                $("#confirmID").val(id);
+                                $("#confirmTotalPrice").val(totalPrice);
+
+                                $("#createWarn").modal("toggle");
                             }
                         });
+                    });
+                });
+
+                $(".shareDetails").each(function (i) {
+                    $(".shareDetails").eq(i).bind("click", function () {
+                        var id = $(this).parent().find(".id-hidden").val();
+                        location.href = "/manage/weiXinWithdrawBill/shareDetailsPage/" + id;
                     });
                 });
 
@@ -553,9 +563,8 @@
             url: "/manage/weiXinWithdrawBill/rejectConfirm/" + rejectID,
             contentType: "application/json",
             success: function (data) {
-
                 var msg=data.msg;
-                if(msg=="ok"){
+                if(msg=="OK"){
                     alert("驳回成功");
                 }else {
                     alert("驳回失败");
@@ -563,6 +572,33 @@
                 getWeiXinWithdrawBillByAjax(weiXinWithdrawBillCriteria);
             }
         });
+
+    }
+    function withdrawConfirm() {
+        var confirmID= $("#confirmID").val();
+        $.ajax({
+            type: "get",
+            url: "/manage/weiXinWithdrawBill/withdrawConfirm/" + confirmID,
+            contentType: "application/json",
+            success: function (data) {
+                var confirmTotalPrice=$("#confirmTotalPrice").val()/100.0;
+                var msg=data.msg;
+                var map=data.data;
+                if(msg=="OK"){
+                    var send_listid=map.send_listid;
+                    alert("提现成功,微信红包"+confirmTotalPrice+"元已发出，微信红包单号："+send_listid+"");
+                }else {
+                    if(msg=="serverError"){
+                      alert("提现失败,错误描述：serverError")
+                    }else {
+                        var send_listid=map.send_listid;
+                        alert("提现失败,错误描述:"+map.err_code_des+"，错误码："+map.err_code+"")
+                    }
+                }
+                getWeiXinWithdrawBillByAjax(weiXinWithdrawBillCriteria);
+            }
+        });
+
 
     }
 
