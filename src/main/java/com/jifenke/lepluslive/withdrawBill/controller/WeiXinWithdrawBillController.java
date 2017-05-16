@@ -2,6 +2,8 @@ package com.jifenke.lepluslive.withdrawBill.controller;
 
 import com.jifenke.lepluslive.global.util.LejiaResult;
 import com.jifenke.lepluslive.global.util.MvUtil;
+import com.jifenke.lepluslive.partner.domain.entities.Partner;
+import com.jifenke.lepluslive.partner.service.PartnerService;
 import com.jifenke.lepluslive.withdrawBill.controller.view.WeiXinWithdrawBillExcel;
 import com.jifenke.lepluslive.withdrawBill.domain.criteria.WeiXinWithdrawBillCriteria;
 import com.jifenke.lepluslive.withdrawBill.domain.entities.WeiXinWithdrawBill;
@@ -26,6 +28,9 @@ public class WeiXinWithdrawBillController {
 
     @Inject
     private WeiXinWithdrawBillExcel weiXinWithdrawBillExcel;
+
+    @Inject
+    private PartnerService partnerService;
 
 
     @RequestMapping("/weiXinWithdrawBillList")
@@ -100,8 +105,8 @@ public class WeiXinWithdrawBillController {
 
     @RequestMapping(value = "/shareDetailsPage/{id}", method = RequestMethod.GET)
     public ModelAndView goPartnerEditPage(Model model, @PathVariable Long id) {
-        WeiXinWithdrawBill weiXinWithdrawBill = weiXinWithdrawBillService.findById(id);
-        model.addAttribute("weiXinWithdrawBill", weiXinWithdrawBill);
+        Partner partner = partnerService.findPartnerById(id);
+        model.addAttribute("partner", partner);
         return MvUtil.go("/withdraw/weiXinWithdrawBillDetails");
     }
 

@@ -357,11 +357,13 @@
                     if(content[i].state == 0){
                         contentStr +=
                             '<td>' + '<input type="hidden" class="id-hidden" value="'
+                            + content[i].id + '" >'+ '<input type="hidden" class="partnerID-hidden" value="'
                             + content[i].id + '" >'
                             + '<button class="btn btn-primary shareDetails" style="margin-top: 10px" >分润详情</button><button class="btn btn-primary confirmWithdrawBill" style="margin-top: 10px" >确认提现</button><button class="btn btn-primary reject" style="margin-top: 10px" >驳回</button>'
                     }else {
                         contentStr +=
                             '<td>' + '<input type="hidden" class="id-hidden" value="'
+                            + content[i].id + '" >'+ '<input type="hidden" class="partnerID-hidden" value="'
                             + content[i].id + '" >'
                             + '<button class="btn btn-primary shareDetails" style="margin-top: 10px" >分润详情</button>'
 
@@ -417,7 +419,7 @@
 
                 $(".shareDetails").each(function (i) {
                     $(".shareDetails").eq(i).bind("click", function () {
-                        var id = $(this).parent().find(".id-hidden").val();
+                        var id = $(this).parent().find(".partnerID-hidden").val();
                         location.href = "/manage/weiXinWithdrawBill/shareDetailsPage/" + id;
                     });
                 });

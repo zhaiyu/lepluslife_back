@@ -42,10 +42,10 @@
             <div class="container-fluid">
 
                 <button class="btn btn-primary" style="margin-top: 10px" onclick="goWeiXinWithdrawBill()">返回提现记录 </button>
-                <center><h1>合伙人：${weiXinWithdrawBill.partner.partnerName}</h1></center>
+                <center><h1>合伙人：${partner.partnerName}</h1></center>
                 <div class="row" style="margin-top: 30px">
                     <div class="form-group col-md-5">
-                        <label for="date-end">消费完成时间</label>
+                        <label for="date-end">变更时间</label>
                         <div id="date-end" class="form-control">
                             <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
                             <span id="searchDateRange"></span>
@@ -54,23 +54,37 @@
                     </div>
                 </div>
                 <div class="row" style="margin-bottom: 30px">
-                    <div class="form-group col-md-2">
-                        <label>订单号</label>
-                        <input type="text" id="orderSid" class="form-control" placeholder="请输入订单号" />
-                    </div>
-                    <div class="form-group col-md-1">
-                        <button class="btn btn-primary" style="margin-top: 24px" onclick="searchShareByCriteria()">查询</button>
-                    </div>
-                </div>
+                    <div class="form-group col-md-3">
+                    <label for="remote-style">所在类型</label>
+                    <select class="form-control" id="remote-style">
+                        <option value="">全部来源</option>
+                        <option value="0">非会员普通订单</option>
+                        <option value="2">会员普通订单</option>
+                        <option value="1">导流订单</option>
+                        <option value="3">会员订单</option>
+                        <option value="4">非会员扫纯支付码</option>
+                        <option value="5">会员扫纯支付码</option>
+                        <option value="6">会员订单(普通费率)</option>
+                    </select>
+                </div></div>
                 <span>佣金余额 ： ￥${commissionBalance/100} ，  提现中 ： ￥${onWithdrawal/100}，  已提现 ： ￥${totalWithdrawals/100}，  ￥累计佣金收入 ： ￥${totalMoney/100}</span>
                 <div id="myTabContent" class="tab-content">
                     <div class="tab-pane fade in active" id="tab1">
                         <table class="table table-bordered table-hover">
                             <thead>
                             <tr class="active">
-                                <th>订单号</th><th>交易完成时间</th><th>消费者信息</th><th>消费金额</th><th>分润金额</th><th>交易商户</th>
-                                <th>交易商户所在合伙人分润</th><th>交易合伙人管理员分润</th><th>会员绑定商户分润</th>
-                                <th>会员绑定合伙人分润</th><th>绑定合伙人管理员分润</th><th>积分客分润</th>
+                                <th>订单号</th>
+                                <th>交易完成时间</th>
+                                <th>消费者信息</th>
+                                <th>消费金额</th>
+                                <th>分润金额</th>
+                                <th>交易商户</th>
+                                <th>交易商户所在合伙人分润</th>
+                                <th>交易合伙人管理员分润</th>
+                                <th>会员绑定商户分润</th>
+                                <th>会员绑定合伙人分润</th>
+                                <th>绑定合伙人管理员分润</th>
+                                <th>积分客分润</th>
                             </tr>
                             </thead>
                             <tbody id="shareContent">
