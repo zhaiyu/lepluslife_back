@@ -576,33 +576,84 @@
         });
 
     }
-    function withdrawConfirm() {
-        var confirmID= $("#confirmID").val();
-        $.ajax({
-            type: "get",
-            url: "/manage/weiXinWithdrawBill/withdrawConfirm/" + confirmID,
-            contentType: "application/json",
-            success: function (data) {
-                var confirmTotalPrice=$("#confirmTotalPrice").val()/100.0;
-                var msg=data.msg;
-                var map=data.data;
-                if(msg=="OK"){
-                    var send_listid=map.send_listid;
-                    alert("提现成功,微信红包"+confirmTotalPrice+"元已发出，微信红包单号："+send_listid+"");
-                }else {
-                    if(msg=="serverError"){
-                      alert("提现失败,错误描述：serverError")
-                    }else {
+//    function withdrawConfirm() {
+//        var confirmID= $("#confirmID").val();
+//        $.ajax({
+//            type: "get",
+//            url: "/manage/weiXinWithdrawBill/withdrawConfirm/" + confirmID,
+//            contentType: "application/json",
+//            success: function (data) {
+//                var confirmTotalPrice=$("#confirmTotalPrice").val()/100.0;
+//                var msg=data.msg;
+//                var map=data.data;
+//                if(msg=="OK"){
+//                    var send_listid=map.send_listid;
+//                    alert("提现成功,微信红包"+confirmTotalPrice+"元已发出，微信红包单号："+send_listid+"");
+//                }else {
+//                    if(msg=="serverError"){
+//                      alert("提现失败,错误描述：serverError")
+//                    }else {
+//                        var send_listid=map.send_listid;
+//                        alert("提现失败,错误描述:"+map.err_code_des+"，错误码："+map.err_code+"")
+//                    }
+//                }
+//                getWeiXinWithdrawBillByAjax(weiXinWithdrawBillCriteria);
+//            }
+//        });
+//    }
+
+
+    var i=0;  //判断点击次数寄存
+    var closetimer = null;  //延时函数寄存
+
+
+    function setout(){  //点击执行事件
+        if(i>1)   //如果点击次数超过1
+        {
+            window.clearTimeout(closetimer);  //清除延时函数
+            closetimer = null;  //设置延时寄存为null
+            //添加操作代码
+            i=0;  //重置点击次数为0
+        }
+        else{  //如果点击次数为1
+            i=0;  //重置点击次数为0
+
+            var confirmID= $("#confirmID").val();
+            $.ajax({
+                type: "get",
+                url: "/manage/weiXinWithdrawBill/withdrawConfirm/" + confirmID,
+                contentType: "application/json",
+                success: function (data) {
+                    var confirmTotalPrice=$("#confirmTotalPrice").val()/100.0;
+                    var msg=data.msg;
+                    var map=data.data;
+                    if(msg=="OK"){
                         var send_listid=map.send_listid;
-                        alert("提现失败,错误描述:"+map.err_code_des+"，错误码："+map.err_code+"")
+                        alert("提现成功,微信红包"+confirmTotalPrice+"元已发出，微信红包单号："+send_listid+"");
+                    }else {
+                        if(msg=="serverError"){
+                            alert("提现失败,错误描述：serverError")
+                        }else {
+                            var send_listid=map.send_listid;
+                            alert("提现失败,错误描述:"+map.err_code_des+"，错误码："+map.err_code+"")
+                        }
                     }
+                    getWeiXinWithdrawBillByAjax(weiXinWithdrawBillCriteria);
                 }
-                getWeiXinWithdrawBillByAjax(weiXinWithdrawBillCriteria);
-            }
-        });
+            });
 
 
+
+        }
     }
+
+        function withdrawConfirm() {
+            console.log('1');
+            i++;  //记录点击次数
+            closetimer = window.setTimeout(setout,200);
+        }
+
+
 
 </script>
 </body>
