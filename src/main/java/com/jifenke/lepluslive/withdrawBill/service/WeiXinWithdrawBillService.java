@@ -320,4 +320,11 @@ public void rejectConfirm(Long id){
   }
 }
 
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+  public Long findPartnerOnWithdrawalByPartnerId(Long id) {
+    return weixinWithdrawBillRepository.findPartnerOnWithdrawalByPartnerId(id);
+  }
+
+
+
 }

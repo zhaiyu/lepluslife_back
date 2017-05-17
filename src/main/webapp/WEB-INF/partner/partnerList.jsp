@@ -477,7 +477,7 @@
                     contentStr +=
                         '<td><input type="hidden" class="id-hidden" value="' + content[i].id
                         + '"><button class="btn btn-primary btn-sm userEdit">账号</button><button  class="btn btn-primary btn-sm editPartner">编辑</button>' +
-//                        '<button class="btn btn-primary btn-sm partnerWalletLog">详情</button>' +
+                        '<button class="btn btn-primary btn-sm partnerWalletLog">详情</button>' +
                         '</td>';
                     partnerContent.innerHTML += contentStr;
                 }
@@ -506,6 +506,14 @@
                     $(".editPartner").eq(i).bind("click", function () {
                         var id = $(this).parent().find(".id-hidden").val();
                         editPartner(id);
+                    });
+                });
+
+
+                $(".partnerWalletLog").each(function (i) {
+                    $(".partnerWalletLog").eq(i).bind("click", function () {
+                        var id = $(this).parent().find(".id-hidden").val();
+                        location.href = "/manage/partnerWalletLog/partnerDetailsPage/" + id;
                     });
                 });
 
