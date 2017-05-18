@@ -93,29 +93,44 @@ public class WeiXinWithdrawBillController {
     public
     @ResponseBody
     LejiaResult rejectConfirm(@PathVariable Long id) {
-        try {
-            weiXinWithdrawBillService.rejectConfirm(id);
-        } catch (Exception e) {
+        WeiXinWithdrawBill weiXinWithdrawBill=weiXinWithdrawBillService.findById(id);
+        if(weiXinWithdrawBill.getState()==0){
+            try {
+                weiXinWithdrawBillService.rejectConfirm(id);
+            } catch (Exception e) {
+                return LejiaResult.build(500, "error");
+            }
+            return LejiaResult.ok();
+
+        }else {
             return LejiaResult.build(500, "error");
         }
-        return LejiaResult.ok();
+
     }
 
     @RequestMapping(value = "/withdrawConfirm/{id}", method = RequestMethod.GET)
     public
     @ResponseBody
     LejiaResult withdrawConfirm(@PathVariable Long id) {
-        try {
-            Map<String, String> map = weiXinWithdrawBillService.withdraw(id);
-            if ("SUCCESS".equals(map.get("result_code").toString()) && "SUCCESS".equals(map.get(
-                    "return_code").toString())) {
-                return LejiaResult.ok(map);
-            } else {
-                return LejiaResult.build(500, "error", map);
+        WeiXinWithdrawBill weiXinWithdrawBill=weiXinWithdrawBillService.findById(id);
+        if(weiXinWithdrawBill.getState()==0){
+            try {
+                Map<String, String> map = weiXinWithdrawBillService.withdraw(id);
+                if ("SUCCESS".equals(map.get("result_code").toString()) && "SUCCESS".equals(map.get(
+                        "return_code").toString())) {
+                    return LejiaResult.ok(map);
+                } else {
+                    return LejiaResult.build(500, "error", map);
+                }
+            } catch (Exception e) {
+                return LejiaResult.build(500, "serverError");
             }
-        } catch (Exception e) {
+        }else {
             return LejiaResult.build(500, "serverError");
         }
+
+
+
     }
 
 

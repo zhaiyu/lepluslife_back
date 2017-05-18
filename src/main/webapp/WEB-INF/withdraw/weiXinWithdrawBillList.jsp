@@ -557,25 +557,25 @@
         temp.submit();
         return temp;
     }
-    function rejectConfirm() {
-        var rejectID = $("#rejectID").val();
-
-        $.ajax({
-            type: "get",
-            url: "/manage/weiXinWithdrawBill/rejectConfirm/" + rejectID,
-            contentType: "application/json",
-            success: function (data) {
-                var msg=data.msg;
-                if(msg=="OK"){
-                    alert("驳回成功");
-                }else {
-                    alert("驳回失败");
-                }
-                getWeiXinWithdrawBillByAjax(weiXinWithdrawBillCriteria);
-            }
-        });
-
-    }
+//    function rejectConfirm() {
+//        var rejectID = $("#rejectID").val();
+//
+//        $.ajax({
+//            type: "get",
+//            url: "/manage/weiXinWithdrawBill/rejectConfirm/" + rejectID,
+//            contentType: "application/json",
+//            success: function (data) {
+//                var msg=data.msg;
+//                if(msg=="OK"){
+//                    alert("驳回成功");
+//                }else {
+//                    alert("驳回失败");
+//                }
+//                getWeiXinWithdrawBillByAjax(weiXinWithdrawBillCriteria);
+//            }
+//        });
+//
+//    }
 //    function withdrawConfirm() {
 //        var confirmID= $("#confirmID").val();
 //        $.ajax({
@@ -603,9 +603,16 @@
 //    }
 
 
+    //提现防止多次点击
+
     var i=0;  //判断点击次数寄存
     var closetimer = null;  //延时函数寄存
 
+
+    function withdrawConfirm() {
+        i++;  //记录点击次数
+        closetimer = window.setTimeout(setout,200);
+    }
 
     function setout(){  //点击执行事件
         if(i>1)   //如果点击次数超过1
@@ -614,10 +621,11 @@
             closetimer = null;  //设置延时寄存为null
             //添加操作代码
             i=0;  //重置点击次数为0
+            console.log("错了");
         }
         else{  //如果点击次数为1
+            console.log("对了");
             i=0;  //重置点击次数为0
-
             var confirmID= $("#confirmID").val();
             $.ajax({
                 type: "get",
@@ -641,17 +649,51 @@
                     getWeiXinWithdrawBillByAjax(weiXinWithdrawBillCriteria);
                 }
             });
-
-
-
         }
     }
 
-        function withdrawConfirm() {
-            console.log('1');
-            i++;  //记录点击次数
-            closetimer = window.setTimeout(setout,200);
+
+    //驳回防止多次点击
+
+    var i1=0;  //判断点击次数寄存
+    var closetimer1 = null;  //延时函数寄存
+
+    function rejectConfirm() {
+        i1++;  //记录点击次数
+        closetimer1 = window.setTimeout(setout1,200);
+    }
+
+
+
+    function setout1(){  //点击执行事件
+        if(i1>1)   //如果点击次数超过1
+        {
+            window.clearTimeout(closetimer1);  //清除延时函数
+            closetimer1 = null;  //设置延时寄存为null
+            //添加操作代码
+            i1=0;  //重置点击次数为0
+            console.log("错了");
         }
+        else{  //如果点击次数为1
+            console.log("对了");
+            i1=0;  //重置点击次数为0
+            var rejectID = $("#rejectID").val();
+            $.ajax({
+                type: "get",
+                url: "/manage/weiXinWithdrawBill/rejectConfirm/" + rejectID,
+                contentType: "application/json",
+                success: function (data) {
+                    var msg=data.msg;
+                    if(msg=="OK"){
+                        alert("驳回成功");
+                    }else {
+                        alert("驳回失败");
+                    }
+                    getWeiXinWithdrawBillByAjax(weiXinWithdrawBillCriteria);
+                }
+            });
+        }
+    }
 
 
 
