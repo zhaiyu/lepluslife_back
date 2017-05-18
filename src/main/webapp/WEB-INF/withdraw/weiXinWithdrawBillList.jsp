@@ -605,27 +605,26 @@
 
     //提现防止多次点击
 
-    var i=0;  //判断点击次数寄存
-    var closetimer = null;  //延时函数寄存
+    var i2=0;  //判断点击次数寄存
+    var closetimer2 = null;  //延时函数寄存
 
 
     function withdrawConfirm() {
-        i++;  //记录点击次数
-        closetimer = window.setTimeout(setout,200);
+        i2++;  //记录点击次数
+        closetimer2 = window.setTimeout(setout2,200);
     }
 
-    function setout(){  //点击执行事件
-        if(i>1)   //如果点击次数超过1
+    function setout2(){  //点击执行事件
+        if(i2>1)   //如果点击次数超过1
         {
-            window.clearTimeout(closetimer);  //清除延时函数
-            closetimer = null;  //设置延时寄存为null
+            window.clearTimeout(closetimer2);  //清除延时函数
+            closetimer2 = null;  //设置延时寄存为null
             //添加操作代码
-            i=0;  //重置点击次数为0
-            console.log("错了");
+            i2=0;  //重置点击次数为0
+            console.log("多次点击");
         }
         else{  //如果点击次数为1
-            console.log("对了");
-            i=0;  //重置点击次数为0
+            i2=0;  //重置点击次数为0
             var confirmID= $("#confirmID").val();
             $.ajax({
                 type: "get",
@@ -672,10 +671,9 @@
             closetimer1 = null;  //设置延时寄存为null
             //添加操作代码
             i1=0;  //重置点击次数为0
-            console.log("错了");
+            console.log("多次点击");
         }
         else{  //如果点击次数为1
-            console.log("对了");
             i1=0;  //重置点击次数为0
             var rejectID = $("#rejectID").val();
             $.ajax({
