@@ -197,7 +197,15 @@ public class MerchantService {
         if (merchant.getLjCommission() == null) {
             merchant.setLjCommission(new BigDecimal(0.6));
         }
-
+        // 设置商户
+        MerchantUser merchantUser = merchantUserRepository.findMerchantUserByType(merchant.getMerchantUser().getName(), 8);
+        if (merchantUser == null) {
+            // 注： 旧数据中的 type 为 0,新版本统一用8
+            merchantUser = merchantUserRepository.findMerchantUserByType(merchant.getMerchantUser().getName(), 0);
+            merchantUser.setType(8);
+            merchantUserRepository.save(merchantUser);
+        }
+        merchant.setMerchantUser(merchantUser);
         MerchantInfo merchantInfo = new MerchantInfo();
         merchantInfoRepository.save(merchantInfo);
         merchant.setMerchantInfo(merchantInfo);
@@ -205,10 +213,13 @@ public class MerchantService {
         RegisterOrigin registerOrigin = new RegisterOrigin();
         registerOrigin.setOriginType(3);
         registerOrigin.setMerchant(merchant);
+        registerOriginRepository.save(registerOrigin);
         MerchantWallet merchantWallet = new MerchantWallet();
         merchantWallet.setMerchant(merchant);
+        merchantWalletRepository.save(merchantWallet);
         MerchantWalletOnline walletOnline = new MerchantWalletOnline();
         walletOnline.setMerchant(merchant);
+        walletOnlineRepository.save(walletOnline);
         merchant.getMerchantProtocols().stream().map(merchantProtocol -> {
             merchantProtocol.setMerchant(merchant);
             merchantProtocolRepository.save(merchantProtocol);
@@ -222,12 +233,15 @@ public class MerchantService {
         // 角色关联
         MerchantUserResource merchantUserResource = new MerchantUserResource();
         merchantUserResource.setResourceType(0);
-        merchantUserResource.setMerchantUser(merchant.getMerchantUser());
+        merchantUserResource.setMerchantUser(merchantUser);
         merchantUserResource.setLeJiaResource(lejiaResource);
         merchantUserResourceRepository.save(merchantUserResource);
-        merchantWalletRepository.save(merchantWallet);
-        walletOnlineRepository.save(walletOnline);
-        registerOriginRepository.save(registerOrigin);
+        // 乐加支付公众号
+        MerchantUserShop merchantUserShop = new MerchantUserShop();
+        merchantUserShop.setMerchantUser(merchantUser);
+        merchantUserShop.setMerchant(merchant);
+        merchantUserShop.setCreateDate(new Date());
+        merchantUserShopService.saveShop(merchantUserShop);
     }
 
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
