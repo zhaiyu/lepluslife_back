@@ -57,7 +57,7 @@ public class SMovieOrderController {
         if (sMovieOrderCriteria.getOffset() == null) {
             sMovieOrderCriteria.setOffset(1);
         }
-        Page page = sMovieOrderService.findOrderByPage(sMovieOrderCriteria, 10);
+        Page page = sMovieOrderService.findOrderByPage(sMovieOrderCriteria, 10000);
         Map map = new HashMap();
         map.put("orderList", page.getContent());
         return new ModelAndView(sMovieOrderViewExcel, map);

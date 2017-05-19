@@ -1,8 +1,6 @@
 package com.jifenke.lepluslive.withdrawBill.repository;
 
 import com.jifenke.lepluslive.withdrawBill.domain.entities.WeiXinWithdrawBill;
-import com.jifenke.lepluslive.withdrawBill.domain.entities.WithdrawBill;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;
@@ -16,5 +14,11 @@ public interface WeixinWithdrawBillRepository extends JpaRepository<WeiXinWithdr
 
   WeiXinWithdrawBill findByMchBillno(String mchBillno);
 
+  Page findAll(Specification<WeiXinWithdrawBill> whereClause, Pageable pageRequest);
+
+
+
+  @Query(value = "SELECT sum(total_price) FROM weixin_withdraw_bill where partner_id=?1 and state=0",nativeQuery = true)
+  Long findPartnerOnWithdrawalByPartnerId(Long id);
 
 }

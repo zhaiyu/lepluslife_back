@@ -283,7 +283,49 @@
 <div id="bottomIframe">
     <%@include file="../../common/bottom.jsp" %>
 </div>
-
+<!--分享产品-->
+<div class="modal" id="shareProductModal">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span
+                        aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+            </div>
+            <div class="modal-body">
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon">分享时标题</span>
+                    <input type="text" class="form-control" id="shareTitle">
+                </div>
+                　
+                <br>
+                <div class="input-group input-group-lg">
+                    <span class="input-group-addon">分享时描述</span>
+                    <input type="text" class="form-control" id="shareDescription">
+                </div>
+                <br>
+                <div class="form-group">
+                    <label for="sharePicture1"
+                           class="col-sm-3 control-label">分享时图片</label>
+                    <div class="col-sm-6">
+                        <!--<div class="thumbnail">-->
+                        <img height="200" width="200" src="" alt="..." id="picture1">
+                        <!--</div>-->
+                        <input type="file" class="form-control" id="sharePicture1" name="file"
+                               data-url="/manage/file/saveImage"/>
+                        <input type="hidden" id="shareProductID">
+                    </div>
+                </div>
+                <br>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal" onclick="shareProductCancel()">取消</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal"
+                        onclick="shareProductConfirm()">确认
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
 <script src="${resourceUrl}/js/bootstrap.min.js"></script>
 <script src="${resourceUrl}/js/daterangepicker.js"></script>
 <script src="${resourceUrl}/js/moment.min.js"></script>
@@ -302,7 +344,20 @@
         } else if (tableType == 1) {
             $('#myTab li:eq(1) a').tab('show');
         }
-
+        $('#sharePicture1').fileupload({
+            dataType: 'json',
+            maxFileSize: 5000000,
+            acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+            add: function (e, data) {
+                data.submit();
+            },
+            done: function (e, data) {
+                var resp = data.result;
+                $('#picture1').attr('src',
+                    '${ossImageReadRoot}/'
+                    + resp.data);
+            }
+        });
         // 时间选择器
         $(document).ready(function () {
             $('#date-end').daterangepicker({
@@ -487,7 +542,9 @@
                                + content[i].id
                                + ')">规格管理</button><button class="btn btn-primary" onclick="qrCodeManage('
                                + content[i].id
-                               + ')">二维码</button></td></tr>';
+                               + ')">二维码</button><button class="btn btn-primary" onclick="shareProduct('
+                               + content[i].id
+                               + ')">分享</button></td></tr>';
 
                            orderContent.innerHTML += contentStr;
                        }
@@ -612,7 +669,68 @@
     function goProductCreatePage() {
         location.href = "/manage/product/edit";
     }
+    function shareProduct(id) {
+        $("#shareProductID").val(id);
+        $.ajax({
+            type: "get",
+            url: "/manage/product/shareProduct/" + id,
+            contentType: "application/json",
+            success: function (data) {
+               if(data.data!=null){
+                   var productShare=data.data;
+                   $("#shareTitle").val(productShare.title);
+                   $("#shareDescription").val(productShare.description);
+                   $("#picture1").attr("src",productShare.picture );
+               }
 
+            }
+        });
+        $("#shareProductModal").modal("toggle");
+    }
+
+    function shareProductCancel() {
+        $("#shareTitle").val("");
+        $("#shareDescription").val("");
+        $("#picture1").attr("src","");
+    }
+
+    function shareProductConfirm() {
+        var product={};
+        var productShare={};
+        product.id=$("#shareProductID").val();
+        productShare.product=product;
+        var title=$("#shareTitle").val();
+        var description=$("#shareDescription").val();
+        var picture=$("#picture1").attr('src');
+        productShare.title=title;
+        productShare.description=description;
+        productShare.picture=picture;
+
+        if(title!=null&&title!=""&&description!=null&&description!=""&&picture!=null&&picture!=""){
+
+            $.ajax({
+                type: "post",
+                url: "/manage/product/shareProductConfirm",
+                async: false,
+                data: JSON.stringify(productShare),
+                contentType: "application/json",
+                success: function (data) {
+                    var status = data.status;
+                    if (status == "200") {
+                        alert("保存成功");
+                    } else {
+                        alert("保存失败");
+                    }
+                }
+            });
+        }else {
+            alert("请输入完整参数");
+        }
+        $("#shareProductID").val("");
+        $("#shareTitle").val("");
+        $("#shareDescription").val("");
+        $("#picture1").attr("src", "");
+    }
 </script>
 </body>
 </html>

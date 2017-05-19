@@ -200,4 +200,12 @@ public class UserService {
   public LeJiaUser findUserBySid(String sid) {
     return leJiaUserRepository.findUserBySid(sid);
   }
+
+
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+  public String findUserByWeiXinId(Long id) {
+    return leJiaUserRepository.findUserByWeiXinId(id);
+  }
+
+
 }
