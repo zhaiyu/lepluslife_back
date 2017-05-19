@@ -113,7 +113,13 @@ public class OrderController {
         keys[3] =
             address.getName() + " " + address.getCity() + address.getCounty() + address
                 .getLocation();
-        wxTemMsgService.sendTemMessage(weiXinUser.getOpenId(), 1L, keys, order.getId());
+        long temId = 1L;
+        long wxId = 7L;
+        if (order.getSource() != null && order.getSource() == 2) {
+          temId = 10L;
+          wxId = 57L;
+        }
+        wxTemMsgService.sendTemMessage(weiXinUser.getOpenId(), temId, wxId, keys, order.getId());
       }
     } else if (onLineOrder.getState() == 1) {
       orderService

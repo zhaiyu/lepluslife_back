@@ -551,6 +551,7 @@ public class ProductService {
       DBProduct.setPostage(product.getPostage());
       DBProduct.setFreePrice(product.getFreePrice());
       DBProduct.setCustomSale(product.getCustomSale());
+      DBProduct.setBackPartner(product.getBackPartner());
       DBProduct.setPicture(product.getPicture());
       DBProduct.setThumb(product.getThumb());
       productRepository.save(DBProduct);
