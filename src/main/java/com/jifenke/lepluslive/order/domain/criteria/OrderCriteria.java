@@ -35,6 +35,8 @@ public class OrderCriteria {
 
   private Integer type;  //订单类型  1=积分订单|2=金币订单
 
+  private Integer source; //公众号来源  1=乐加生活|2=乐加臻品商城
+
   public String getOrderSid() {
     return orderSid;
   }
@@ -153,5 +155,13 @@ public class OrderCriteria {
 
   public void setType(Integer type) {
     this.type = type;
+  }
+
+  public Integer getSource() {
+    return source;
+  }
+
+  public void setSource(Integer source) {
+    this.source = source;
   }
 }
