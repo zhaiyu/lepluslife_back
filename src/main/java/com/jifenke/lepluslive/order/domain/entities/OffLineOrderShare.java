@@ -3,6 +3,8 @@ package com.jifenke.lepluslive.order.domain.entities;
 import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
 import com.jifenke.lepluslive.partner.domain.entities.Partner;
 import com.jifenke.lepluslive.partner.domain.entities.PartnerManager;
+import org.hibernate.annotations.NotFound;
+import org.hibernate.annotations.NotFoundAction;
 
 import java.util.Date;
 
@@ -25,6 +27,7 @@ public class OffLineOrderShare {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
+  @NotFound(action = NotFoundAction.IGNORE)
   @OneToOne
   private OffLineOrder offLineOrder;
 

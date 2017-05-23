@@ -112,6 +112,9 @@
           <div class="tcdPageCode" style="display: inline;">
           </div>
           <div style="display: inline;"> 共有 <span id="totalElements"></span> 个</div>
+          <button class="btn btn-primary pull-right" style="margin-top: 5px"
+                  onclick="exportExcel()">导出excel
+          </button>
         </div>
       </div>
     </div>
@@ -443,6 +446,70 @@
       shareCriteria.orderSid = null;
     }
     getOffLineOrderShareByAjax(shareCriteria);
+  }
+
+  function exportExcel() {
+    shareCriteria.offset = 1;
+    var dateStr = $('#date-end span').text().split("-");
+    if (dateStr != null && dateStr != '') {
+      var startDate = dateStr[0].replace(/-/g, "/");
+      var endDate = dateStr[1].replace(/-/g, "/");
+      shareCriteria.startDate = startDate;
+      shareCriteria.endDate = endDate;
+    }
+
+    if ($("#customer-ID").val() != "" && $("#customer-ID").val() != null) {
+      shareCriteria.userSid = $("#customer-ID").val();
+    } else {
+      shareCriteria.userSid = null;
+    }
+    if ($("#customer-tel").val() != "" && $("#customer-tel").val() != null) {
+      shareCriteria.userPhone = $("#customer-tel").val();
+    } else {
+      shareCriteria.userPhone = null;
+    }
+    if ($("#merchant-name").val() != "" && $("#merchant-name").val() != null) {
+      shareCriteria.bindMerchant = $("#merchant-name").val();
+    } else {
+      shareCriteria.bindMerchant = null;
+    }
+    if ($("#bindPartner").val() != "" && $("#bindPartner").val() != null) {
+      shareCriteria.bindPartner = $("#bindPartner").val();
+    } else {
+      shareCriteria.bindPartner = null;
+    }
+    if ($("#tradeMerchant").val() != "" && $("#tradeMerchant").val() != null) {
+      shareCriteria.tradeMerchant = $("#tradeMerchant").val();
+    } else {
+      shareCriteria.tradeMerchant = null;
+    }
+    if ($("#tradePartner").val() != "" && $("#tradePartner").val() != null) {
+      shareCriteria.tradePartner = $("#tradePartner").val();
+    } else {
+      shareCriteria.tradePartner = null;
+    }
+    if ($("#orderSid").val() != "" && $("#orderSid").val() != null) {
+      shareCriteria.orderSid = $("#orderSid").val();
+    } else {
+      shareCriteria.orderSid = null;
+    }
+      post("/manage/offLineOrder/share/exportExcel", shareCriteria);
+  }
+  function post(URL, PARAMS) {
+    var temp = document.createElement("form");
+    temp.action = URL;
+    temp.method = "post";
+    temp.style.display = "none";
+    for (var x in PARAMS) {
+      var opt = document.createElement("textarea");
+      opt.name = x;
+      opt.value = PARAMS[x];
+      // alert(opt.name)
+      temp.appendChild(opt);
+    }
+    document.body.appendChild(temp);
+    temp.submit();
+    return temp;
   }
 </script>
 
