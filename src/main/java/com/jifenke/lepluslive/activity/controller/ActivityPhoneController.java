@@ -1,5 +1,6 @@
 package com.jifenke.lepluslive.activity.controller;
 
+import com.jifenke.lepluslive.activity.controller.view.ActivityPhoneOrderExcel;
 import com.jifenke.lepluslive.activity.domain.criteria.PhoneOrderCriteria;
 import com.jifenke.lepluslive.activity.domain.criteria.PhoneRuleCriteria;
 import com.jifenke.lepluslive.activity.domain.entities.ActivityPhoneRule;
@@ -11,6 +12,7 @@ import com.jifenke.lepluslive.global.util.MvUtil;
 import com.jifenke.lepluslive.weixin.domain.entities.Dictionary;
 import com.jifenke.lepluslive.weixin.service.DictionaryService;
 
+import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -48,6 +50,9 @@ public class ActivityPhoneController {
 
   @Inject
   private RechargeService rechargeService;
+
+  @Inject
+  private ActivityPhoneOrderExcel activityPhoneOrderExcel;
 
   @RequestMapping(value = "/index", method = RequestMethod.GET)
   public ModelAndView index() {
@@ -156,7 +161,7 @@ public class ActivityPhoneController {
   @RequestMapping(value = "/orderList", method = RequestMethod.POST)
   public LejiaResult orderList(@RequestBody PhoneOrderCriteria criteria) {
 
-    return LejiaResult.ok(phoneOrderService.findByCriteria(criteria));
+    return LejiaResult.ok(phoneOrderService.findByCriteria(criteria,10));
   }
 
   /**
@@ -232,5 +237,15 @@ public class ActivityPhoneController {
       return LejiaResult.build(500, "server error");
     }
   }
+  /**
+   *导出话费订单
+   */
+  @RequestMapping(value = "/exportExcel", method = RequestMethod.POST)
+  public ModelAndView exportExcel(PhoneOrderCriteria phoneOrderCriteria) {
 
+    Page page =phoneOrderService.findByCriteria(phoneOrderCriteria,10000);
+    Map map = new HashMap();
+    map.put("phoneOrderList", page.getContent());
+    return new ModelAndView(activityPhoneOrderExcel, map);
+  }
 }

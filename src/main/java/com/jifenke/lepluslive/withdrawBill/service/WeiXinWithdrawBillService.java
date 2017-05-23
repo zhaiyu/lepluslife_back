@@ -282,7 +282,7 @@ public WeiXinWithdrawBill findById(Long id){
     return weixinWithdrawBillRepository.findOne(id);
 }
 
-
+@Transactional(propagation = Propagation.REQUIRED, readOnly = false)
 public void rejectConfirm(Long id){
   WeiXinWithdrawBill weiXinWithdrawBill=weixinWithdrawBillRepository.findOne(id);
 
