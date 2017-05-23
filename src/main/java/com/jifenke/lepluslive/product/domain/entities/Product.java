@@ -56,12 +56,6 @@ public class Product implements Serializable {
 
   private Integer customSale = 0;  //自定义起始销售量
 
-  @Column(name = "points_count")
-  private Long pointsCount = 0L;   // 该商品的所有订单使用的积分加和  不再使用
-
-  @Column(name = "packet_count")
-  private Long packetCount = 0L; //该商品的所有订单发放的红包加和    不再使用
-
   private String description;
 
   private Integer state; //1=上架|0=已下架
@@ -90,6 +84,7 @@ public class Product implements Serializable {
   private Integer backRatio = 0;    //返还比例
   private Integer backMoney = 0;    //返还金额
 
+  private Integer backPartner = 0;  //合伙人展示用分佣金额
 
   public Integer getBackMoney() {
     return backMoney;
@@ -227,28 +222,12 @@ public class Product implements Serializable {
     this.saleNumber = saleNumber;
   }
 
-  public Long getPointsCount() {
-    return pointsCount;
-  }
-
   public Category getMark() {
     return mark;
   }
 
   public void setMark(Category mark) {
     this.mark = mark;
-  }
-
-  public void setPointsCount(Long pointsCount) {
-    this.pointsCount = pointsCount;
-  }
-
-  public Long getPacketCount() {
-    return packetCount;
-  }
-
-  public void setPacketCount(Long packetCount) {
-    this.packetCount = packetCount;
   }
 
   public Integer getFreePrice() {
@@ -313,5 +292,13 @@ public class Product implements Serializable {
 
   public void setHotStyle(Integer hotStyle) {
     this.hotStyle = hotStyle;
+  }
+
+  public Integer getBackPartner() {
+    return backPartner;
+  }
+
+  public void setBackPartner(Integer backPartner) {
+    this.backPartner = backPartner;
   }
 }

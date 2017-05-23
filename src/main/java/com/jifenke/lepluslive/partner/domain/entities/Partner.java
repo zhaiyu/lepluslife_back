@@ -1,13 +1,10 @@
 package com.jifenke.lepluslive.partner.domain.entities;
 
 import com.jifenke.lepluslive.global.util.MvUtil;
+import com.jifenke.lepluslive.user.domain.entities.WeiXinUser;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.Date;
 
 /**
  * Created by wcg on 16/6/3. 合伙人表
@@ -46,7 +43,12 @@ public class Partner {
   @ManyToOne
   private PartnerManager partnerManager;
 
+  @OneToOne
+  private WeiXinUser weiXinUser;
+
   private Integer origin = 0; //0 后台添加  1 公众号注册
+
+  private Date registerDate;
 
   public Integer getBenefitTime() {
     return benefitTime;
@@ -157,5 +159,29 @@ public class Partner {
 
   public void setPartnerSid(String partnerSid) {
     this.partnerSid = partnerSid;
+  }
+
+  public WeiXinUser getWeiXinUser() {
+    return weiXinUser;
+  }
+
+  public void setWeiXinUser(WeiXinUser weiXinUser) {
+    this.weiXinUser = weiXinUser;
+  }
+
+  public Integer getOrigin() {
+    return origin;
+  }
+
+  public void setOrigin(Integer origin) {
+    this.origin = origin;
+  }
+
+  public Date getRegisterDate() {
+    return registerDate;
+  }
+
+  public void setRegisterDate(Date registerDate) {
+    this.registerDate = registerDate;
   }
 }

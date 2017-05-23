@@ -5,8 +5,17 @@ import com.jifenke.lepluslive.global.util.MD5Util;
 import com.jifenke.lepluslive.global.util.MvUtil;
 import com.jifenke.lepluslive.global.util.WeixinPayUtil;
 import com.jifenke.lepluslive.job.WeiXinWithDrawBillJob;
+import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
+import com.jifenke.lepluslive.partner.domain.entities.*;
+import com.jifenke.lepluslive.partner.repository.PartnerWalletLogRepository;
+import com.jifenke.lepluslive.partner.repository.PartnerWalletOnlineLogRepository;
+import com.jifenke.lepluslive.partner.repository.PartnerWalletOnlineRepository;
+import com.jifenke.lepluslive.partner.repository.PartnerWalletRepository;
 import com.jifenke.lepluslive.partner.service.PartnerWalletService;
+import com.jifenke.lepluslive.withdrawBill.domain.criteria.WeiXinWithdrawBillCriteria;
+import com.jifenke.lepluslive.withdrawBill.domain.criteria.WithdrawBillCriteria;
 import com.jifenke.lepluslive.withdrawBill.domain.entities.WeiXinWithdrawBill;
+import com.jifenke.lepluslive.withdrawBill.domain.entities.WithdrawBill;
 import com.jifenke.lepluslive.withdrawBill.repository.WeixinWithdrawBillRepository;
 
 import org.quartz.JobBuilder;
@@ -16,6 +25,10 @@ import org.quartz.Trigger;
 import org.quartz.TriggerBuilder;
 import org.quartz.TriggerKey;
 import org.springframework.beans.factory.annotation.Value;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
@@ -30,12 +43,16 @@ import java.util.TreeMap;
 
 import javax.inject.Inject;
 import javax.net.ssl.SSLContext;
+import javax.persistence.criteria.CriteriaBuilder;
+import javax.persistence.criteria.CriteriaQuery;
+import javax.persistence.criteria.Predicate;
+import javax.persistence.criteria.Root;
 
 /**
  * Created by wcg on 2017/5/11.
  */
 @Service
-@Transactional(readOnly = true)
+@Transactional(readOnly = false)
 public class WeiXinWithdrawBillService {
 
   private static String jobGroupName = "WITHDRAW";
@@ -43,6 +60,22 @@ public class WeiXinWithdrawBillService {
 
   @Inject
   private WeixinWithdrawBillRepository weixinWithdrawBillRepository;
+
+  @Inject
+  private PartnerWalletRepository partnerWalletRepository;
+
+  @Inject
+  private PartnerWalletOnlineRepository partnerWalletOnlineRepository;
+
+
+
+  @Inject
+  private PartnerWalletLogRepository partnerWalletLogRepository;
+
+  @Inject
+  private PartnerWalletOnlineLogRepository partnerWalletOnlineLogRepository;
+
+
 
   @Inject
   private SSLContext sslContext;
@@ -202,4 +235,96 @@ public class WeiXinWithdrawBillService {
     sb.append("</xml>");
     return sb.toString();
   }
+
+
+  public Page findWeiXinWithdrawBillByPage(WeiXinWithdrawBillCriteria weiXinWithdrawBillCriteria, Integer limit) {
+    Sort sort = new Sort(Sort.Direction.DESC, "createdDate");
+    return weixinWithdrawBillRepository
+            .findAll(getWhereClause(weiXinWithdrawBillCriteria),
+                    new PageRequest(weiXinWithdrawBillCriteria.getOffset() - 1, limit, sort));
+  }
+
+  public static Specification<WeiXinWithdrawBill> getWhereClause(WeiXinWithdrawBillCriteria weiXinWithdrawBillCriteria) {
+    return new Specification<WeiXinWithdrawBill>() {
+      @Override
+      public Predicate toPredicate(Root<WeiXinWithdrawBill> r, CriteriaQuery<?> q,
+                                   CriteriaBuilder cb) {
+        Predicate predicate = cb.conjunction();
+
+        if (weiXinWithdrawBillCriteria.getState() != null) {
+          predicate.getExpressions().add(
+                  cb.equal(r.get("state"),
+                          weiXinWithdrawBillCriteria.getState()));
+        }
+
+        if (weiXinWithdrawBillCriteria.getStartDate() != null && weiXinWithdrawBillCriteria.getStartDate() != "") {
+          predicate.getExpressions().add(
+                  cb.between(r.get("createdDate"), new Date(weiXinWithdrawBillCriteria.getStartDate()),
+                          new Date(weiXinWithdrawBillCriteria.getEndDate())));
+        }
+
+        if (weiXinWithdrawBillCriteria.getPartnerName() != null&&!"".equals(weiXinWithdrawBillCriteria.getPartnerName())) {
+          predicate.getExpressions().add(
+                  cb.equal(r.get("partner").get("partnerName"),
+                          weiXinWithdrawBillCriteria.getPartnerName()));
+        }
+
+        if (weiXinWithdrawBillCriteria.getPartnerSid() != null&&!"".equals(weiXinWithdrawBillCriteria.getPartnerSid())) {
+          predicate.getExpressions().add(
+                  cb.equal(r.get("partner").get("partnerSid"),
+                          weiXinWithdrawBillCriteria.getPartnerSid()));
+        }
+        return predicate;
+      }
+    };
+  }
+public WeiXinWithdrawBill findById(Long id){
+    return weixinWithdrawBillRepository.findOne(id);
+}
+
+
+public void rejectConfirm(Long id){
+  WeiXinWithdrawBill weiXinWithdrawBill=weixinWithdrawBillRepository.findOne(id);
+
+  PartnerWallet partnerWallet=partnerWalletRepository.findByPartner(weiXinWithdrawBill.getPartner());
+  PartnerWalletOnline partnerWalletOnline=partnerWalletOnlineRepository.findByPartner(weiXinWithdrawBill.getPartner());
+  weiXinWithdrawBill.setState(2);
+  weixinWithdrawBillRepository.save(weiXinWithdrawBill);
+  if (weiXinWithdrawBill.getOfflineWallet() != 0) {
+    PartnerWalletLog partnerWalletLog=new PartnerWalletLog();
+    partnerWalletLog.setOrderSid(weiXinWithdrawBill.getWithdrawBillSid());
+    partnerWalletLog.setAfterChangeMoney(partnerWallet.getAvailableBalance()+weiXinWithdrawBill.getOfflineWallet());
+    partnerWalletLog.setBeforeChangeMoney(partnerWallet.getAvailableBalance());
+    partnerWalletLog.setCreateDate(new Date());
+    partnerWalletLog.setType(15005l);
+    partnerWalletLog.setPartnerId(weiXinWithdrawBill.getPartner().getId());
+    partnerWalletLogRepository.save(partnerWalletLog);
+    partnerWallet.setAvailableBalance(partnerWallet.getAvailableBalance()+weiXinWithdrawBill.getOfflineWallet());
+    partnerWallet.setTotalWithdrawals(partnerWallet.getTotalWithdrawals()-weiXinWithdrawBill.getOfflineWallet());
+    partnerWalletRepository.save(partnerWallet);
+  }
+  if (weiXinWithdrawBill.getOnlineWallet() != 0) {
+    PartnerWalletOnlineLog partnerWalletOnlineLog=new PartnerWalletOnlineLog();
+    partnerWalletOnlineLog.setPartnerId(weiXinWithdrawBill.getPartner().getId());
+    partnerWalletOnlineLog.setType(16005l);
+    partnerWalletOnlineLog.setBeforeChangeMoney(partnerWalletOnline.getAvailableBalance());
+    partnerWalletOnlineLog.setAfterChangeMoney(partnerWalletOnline.getAvailableBalance()+weiXinWithdrawBill.getOnlineWallet());
+    partnerWalletOnlineLog.setOrderSid(weiXinWithdrawBill.getWithdrawBillSid());
+    partnerWalletOnlineLog.setChangeMoney(weiXinWithdrawBill.getOnlineWallet());
+    partnerWalletOnlineLog.setCreateDate(new Date());
+    partnerWalletOnlineLogRepository.save(partnerWalletOnlineLog);
+    partnerWalletOnline.setAvailableBalance(partnerWalletOnline.getAvailableBalance()+weiXinWithdrawBill.getOnlineWallet());
+    partnerWalletOnline.setTotalWithdrawals(partnerWalletOnline.getTotalWithdrawals()-weiXinWithdrawBill.getOnlineWallet());
+    partnerWalletOnline.setLastUpdate(new Date());
+    partnerWalletOnlineRepository.save(partnerWalletOnline);
+  }
+}
+
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+  public Long findPartnerOnWithdrawalByPartnerId(Long id) {
+    return weixinWithdrawBillRepository.findPartnerOnWithdrawalByPartnerId(id);
+  }
+
+
+
 }

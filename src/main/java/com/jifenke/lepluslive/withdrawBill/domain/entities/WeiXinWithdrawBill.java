@@ -6,14 +6,7 @@ import com.jifenke.lepluslive.user.domain.entities.WeiXinUser;
 
 import java.util.Date;
 
-import javax.persistence.Column;
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.UniqueConstraint;
+import javax.persistence.*;
 
 /**
  * Created by xf on 2016/9/18.
@@ -51,6 +44,8 @@ public class WeiXinWithdrawBill {
     @Column(unique=true)
     private String mchBillno; //商户订单号 每生成一个结算单就会对应一个唯一随机号 不可修改!!!
 
+    @Version
+    private Long version = 0L;
 
     public String getMchBillno() {
         return mchBillno;
@@ -149,4 +144,11 @@ public class WeiXinWithdrawBill {
         this.withdrawBillSid = withdrawBillSid;
     }
 
+    public Long getVersion() {
+        return version;
+    }
+
+    public void setVersion(Long version) {
+        this.version = version;
+    }
 }

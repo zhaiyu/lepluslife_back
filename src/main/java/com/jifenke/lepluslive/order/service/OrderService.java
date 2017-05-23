@@ -196,6 +196,11 @@ public class OrderService {
               cb.equal(r.get("transmitWay"),
                        orderCriteria.getTransmitWay()));
         }
+        if (orderCriteria.getSource() != null) {
+          predicate.getExpressions().add(
+              cb.equal(r.get("source"),
+                       orderCriteria.getSource()));
+        }
         if (orderCriteria.getOrderSid() != null) {
           predicate.getExpressions().add(
               cb.like(r.get("orderSid"), "%" + orderCriteria.getOrderSid() + "%"));

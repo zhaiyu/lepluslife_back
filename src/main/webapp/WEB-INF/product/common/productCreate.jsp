@@ -272,6 +272,14 @@
             </div>
         </div>
         <div>
+            <div>合伙人返佣(展示用)</div>
+            <div class="w-prace">
+                <input type="number" placeholder="返佣金额" onblur="noNumbers(event,0)"
+                       id="backPartner"
+                       value="${product.backPartner / 100}"/>
+            </div>
+        </div>
+        <div>
             <div>轮播图(宽高比:750*600)</div>
             <div class="banner">
                 <c:forEach items="${scrollList}" var="scroll" step="1"
@@ -576,6 +584,12 @@
             return
         }
         product.customSale = $("#customSale").val();
+        //展示用返佣
+        var backPartner = $("#backPartner").val();
+        if (backPartner == null || backPartner == "") {
+            backPartner = 0;
+        }
+        product.backPartner = backPartner * 100;
         //轮播图
         var scrollList = $(".banner > div");
         if (scrollList.length < 1) {
