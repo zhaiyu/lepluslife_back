@@ -3,18 +3,9 @@ package com.jifenke.lepluslive.order.domain.entities;
 import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
 import com.jifenke.lepluslive.partner.domain.entities.Partner;
 import com.jifenke.lepluslive.partner.domain.entities.PartnerManager;
-import org.hibernate.annotations.NotFound;
-import org.hibernate.annotations.NotFoundAction;
 
+import javax.persistence.*;
 import java.util.Date;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToOne;
-import javax.persistence.Table;
 
 /**
  * Created by wcg on 16/6/22.
@@ -27,7 +18,6 @@ public class OffLineOrderShare {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
-  @NotFound(action = NotFoundAction.IGNORE)
   @OneToOne
   private OffLineOrder offLineOrder;
 
