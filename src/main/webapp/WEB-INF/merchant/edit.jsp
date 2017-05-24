@@ -165,6 +165,16 @@
                            placeholder="请输入锁定会员的名额上限，不能低于当前已锁定会员"/>
                 </div>
             </div>
+
+            <div class="MODInput_row">
+                <div class="Mod-2">分润权限</div>
+                <div class="Mod-5">
+                    <input type="radio"  id="openOnLineShare" value="0"/>
+                    <span>开启线上分润</span>
+                    <input type="radio"  id="openOffLineShare" value="0"/>
+                    <span>开启线下分润</span>
+                </div>
+            </div>
             <div class="MODInput_row">
                 <div class="Mod-2">红包收取权限</div>
                 <div class="Mod-5">
@@ -633,6 +643,13 @@
             }
             $("input[name=pt-ljCommission]").val(${merchant.ljCommission});
             $("input[name=pt-scoreBRebate]").val(${merchant.scoreBRebate})
+        }
+
+        if(${scanPayWay.openOnLineShare==1}){
+            $("#openOnLineShare").attr("checked", true);
+        }
+        if(${scanPayWay.openOffLineShare==1}){
+            $("#openOffLineShare").attr("checked", true);
         }
     } else {
         $('#contact').val('${merchantUser.linkMan}');
@@ -1949,6 +1966,19 @@
                 merchantSettlementStore.allianceSettlementId = allianceSettlement.val();
             }
         }
+        //分润权限
+        if($('#openOnLineShare').attr('checked')){
+            merchantScanPayWay.openOnLineShare=1;
+        }else {
+            merchantScanPayWay.openOnLineShare=0;
+        }
+        if($('#openOffLineShare').attr('checked')){
+            merchantScanPayWay.openOffLineShare=1;
+        }else {
+            merchantScanPayWay.openOffLineShare=0;
+        }
+
+
         /*********************************************     ******************************************************************/
         var merchantDto = {};
         merchantDto.merchant = merchant;
