@@ -74,6 +74,7 @@
                                 <th class="text-center">状态</th>
                                 <th class="text-center">缩略图</th>
                                 <th class="text-center">库存</th>
+                                <th class="text-center">利润</th>
                                 <th class="text-center">操作</th>
                             </tr>
                             </thead>
@@ -104,6 +105,10 @@
                                     </td>
                                     <td class="text-center"><img src="${productSpec.picture}"></td>
                                     <td class="text-center">${productSpec.repository}</td>
+                                    <td class="text-center"><fmt:formatNumber
+                                            type="number" value="${productSpec.profit/100}"
+                                            pattern="0.00"
+                                            maxFractionDigits="2"/></td>
                                     <td class="text-center">
                                         <button type="button" class="btn btn-default createWarn"
                                                 onclick="editProductSpecNumber(${productSpec.id},1)">
@@ -195,6 +200,14 @@
                         <div class="col-sm-4">
                             <input type="text" class="form-control" id="repository"
                                    placeholder="请输入初始库存">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="profit" class="col-sm-3 control-label">利润(元)</label>
+
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="profit"
+                                   placeholder="单规格利润" value="0">
                         </div>
                     </div>
                     <div class="form-group">
@@ -393,6 +406,7 @@
                 $("#price").val(data.price / 100);
                 $("#minPrice").val(data.minPrice / 100);
                 $("#minScore").val(data.minScore / 100);
+                $("#profit").val(data.profit / 100);
                 $("#toMerchant").val(data.toMerchant / 100);
                 $("#toPartner").val(data.toPartner / 100);
                 $("#repository").val(data.repository);
@@ -406,6 +420,7 @@
             $("#price").val("");
             $("#minPrice").val("");
             $("#minScore").val("");
+            $("#profit").val("");
             $("#toMerchant").val("");
             $("#toPartner").val("");
             $("#repository").val("");
@@ -420,6 +435,7 @@
         productSpec.price = Math.round($("#price").val() * 100);
         productSpec.minPrice = Math.round($("#minPrice").val() * 100);
         productSpec.minScore = Math.round($("#minScore").val() * 100);
+        productSpec.profit = Math.round($("#profit").val() * 100);
         productSpec.toMerchant = Math.round($("#toMerchant").val() * 100);
         productSpec.toPartner = Math.round($("#toPartner").val() * 100);
         productSpec.repository = $("#repository").val();

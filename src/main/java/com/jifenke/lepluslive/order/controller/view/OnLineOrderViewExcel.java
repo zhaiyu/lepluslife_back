@@ -70,12 +70,14 @@ public class OnLineOrderViewExcel extends AbstractExcelView {
     excelHeader.createCell(17).setCellValue("是否已付款(1=是)");
     excelHeader.createCell(18).setCellValue("订单类型");
     excelHeader.createCell(19).setCellValue("支付公众号");
+    excelHeader.createCell(20).setCellValue("商品利润");
   }
 
   public void setExcelRows(HSSFSheet excelSheet, List<OnLineOrder> orderList) {
 
     int record = 1;
     int payState = 0;
+    Integer profit = 0;
     for (OnLineOrder order : orderList) {
       HSSFRow excelRow = excelSheet.createRow(record++);
       excelRow.createCell(0).setCellValue(order.getOrderSid());
@@ -122,6 +124,7 @@ public class OnLineOrderViewExcel extends AbstractExcelView {
       //商品信息
       List<OrderDetail> details = order.getOrderDetails();
       StringBuffer infoBuffer = new StringBuffer();
+      profit = 0;
       for (OrderDetail detail : details) {
         infoBuffer.append("+")
             .append(detail.getProduct() != null ? detail.getProduct().getName() : "null")
@@ -129,6 +132,11 @@ public class OnLineOrderViewExcel extends AbstractExcelView {
             detail.getProductSpec() != null ? detail.getProductSpec().getSpecDetail() : "null")
             .append(")X")
             .append(detail.getProductNumber() != null ? detail.getProductNumber() : "null");
+        if (detail.getProductSpec() != null) {
+          profit +=
+              (detail.getProductSpec().getProfit() != null ? detail.getProductSpec().getProfit()
+                                                           : 0);
+        }
 //        info +=
 //            "+" + detail.getProduct().getName() + "(" + detail.getProductSpec().getSpecDetail()
 //            + ")X" + detail.getProductNumber();
@@ -178,6 +186,7 @@ public class OnLineOrderViewExcel extends AbstractExcelView {
       } else {
         excelRow.createCell(19).setCellValue("乐加生活");
       }
+      excelRow.createCell(20).setCellValue(profit / 100.0);
     }
   }
 }
