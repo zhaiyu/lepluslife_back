@@ -90,9 +90,15 @@ public class ShareService {
                   cb.like(r.get("lockPartnerManager").get("name"),  "%" +shareCriteria.getLockPartnerManager()+ "%"));
         }
         if (shareCriteria.getType() != null) {
-          predicate.getExpressions().add(
-                  cb.equal(r.get("type"),
-                           shareCriteria.getType()));
+
+
+          if(shareCriteria.getType()==1){
+            predicate.getExpressions().add(cb.or(cb.equal(r.get("type"),1),cb.equal(r.get("type"),4),r.get("type").isNull()));
+          }
+          if(shareCriteria.getType()==2){
+            predicate.getExpressions().add(cb.or(cb.equal(r.get("type"),2),cb.equal(r.get("type"),3)));
+          }
+
         }
 
         return predicate;
