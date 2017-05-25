@@ -33,9 +33,9 @@ public class MerchantScanPayWay {
   @Column(nullable = false, unique = true)
   private Long merchantId;  //门店ID=Merchant.id
 
-  private Integer openOnLineShare; //0关闭 1开启门店线上分润
+  private Integer openOnLineShare=0; //0关闭 1开启门店线上分润
 
-  private Integer openOffLineShare; //0关闭 1开启门店线下分润
+  private Integer openOffLineShare=0; //0关闭 1开启门店线下分润
 
   public Integer getOpenOnLineShare() {
     return openOnLineShare;
