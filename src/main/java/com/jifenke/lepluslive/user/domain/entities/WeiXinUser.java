@@ -1,6 +1,8 @@
 package com.jifenke.lepluslive.user.domain.entities;
 
 
+import com.fasterxml.jackson.annotation.JsonBackReference;
+
 import java.util.Date;
 
 import javax.persistence.Cacheable;
@@ -83,7 +85,7 @@ public class WeiXinUser {
   public LeJiaUser getLeJiaUser() {
     return leJiaUser;
   }
-
+  @JsonBackReference
   public void setLeJiaUser(LeJiaUser leJiaUser) {
     this.leJiaUser = leJiaUser;
   }
