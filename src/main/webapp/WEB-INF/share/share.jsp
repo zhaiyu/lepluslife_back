@@ -81,10 +81,9 @@
           </div>
         </div>
         <ul id="myTab" class="nav nav-tabs">
-          <li class="active"><a href="#tab1" data-toggle="tab">全部订单分润</a></li>
-          <li><a href="#tab1" data-toggle="tab">扫码订单分润</a></li>
-          <li><a href="#tab1" data-toggle="tab">POS订单分润</a></li>
-          <li><a href="#tab1" data-toggle="tab">APP订单分润</a></li>
+          <li class="active"><a href="#tab1" data-toggle="tab" onclick="getOffLineOrderShareByType()">全部订单分润</a></li>
+          <li><a href="#tab1" data-toggle="tab" onclick="getOffLineOrderShareByType(1)">扫码订单分润</a></li>
+          <li><a href="#tab1" data-toggle="tab" onclick="getOffLineOrderShareByType(2)">POS订单分润</a></li>
         </ul>
         <div id="myTabContent" class="tab-content">
           <div class="tab-pane fade in active" id="tab1">
@@ -242,6 +241,15 @@
 
     getOffLineOrderShareByAjax(shareCriteria);
   })
+  function getOffLineOrderShareByType(type) {
+      shareCriteria.offset = 1;
+      if(type!=null&&type!=""){
+          shareCriteria.type = type;
+      }else {
+          shareCriteria.type = null;
+      }
+      getOffLineOrderShareByAjax(shareCriteria);
+  }
   function getOffLineOrderShareByAjax(shareCriteria) {
     shareContent.innerHTML = "";
     $.ajax({
