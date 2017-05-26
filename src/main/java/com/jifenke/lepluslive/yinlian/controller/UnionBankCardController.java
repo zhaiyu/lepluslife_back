@@ -6,6 +6,7 @@ import com.jifenke.lepluslive.user.domain.entities.BankCard;
 import com.jifenke.lepluslive.user.domain.entities.LeJiaUser;
 import com.jifenke.lepluslive.user.service.BankCardService;
 import com.jifenke.lepluslive.user.service.UserService;
+import com.jifenke.lepluslive.yinlian.controller.view.UnionBankCardViewExcel;
 import com.jifenke.lepluslive.yinlian.domain.criteria.UnionBankCardCriteria;
 import com.jifenke.lepluslive.yinlian.domain.entities.UnionBankCard;
 import com.jifenke.lepluslive.yinlian.service.UnionBankCardService;
@@ -35,6 +36,9 @@ public class UnionBankCardController {
 
     @Inject
     private BankCardService bankCardService;
+
+    @Inject
+    private UnionBankCardViewExcel unionBankCardViewExcel;
 
 
     @RequestMapping("/unionBankCardPage")
@@ -118,6 +122,31 @@ public class UnionBankCardController {
 
 
     }
+
+    @RequestMapping(value = "/export", method = RequestMethod.POST)
+    public ModelAndView exporeExcel(UnionBankCardCriteria unionBankCardCriteria) {
+        if (unionBankCardCriteria.getOffset() == null) {
+            unionBankCardCriteria.setOffset(1);
+        }
+        Page page = unionBankCardService.findUnionBankCardByPage(unionBankCardCriteria, 10000);
+
+        List<UnionBankCard> list = page.getContent();
+        List<BankCard> bankCards = new ArrayList<>();
+        Map map = new HashMap();
+        for (UnionBankCard unionBankCard : list) {
+            String bankNumber = unionBankCard.getNumber();
+            BankCard bankCard = bankCardService.findByNumber(bankNumber);
+            bankCards.add(bankCard);
+        }
+        map.put("bankCards", bankCards);
+        map.put("unionBankCardList",page.getContent());
+        Map map1 = new HashMap();
+        map1.put("resultMap",map);
+        return new ModelAndView(unionBankCardViewExcel, map1);
+    }
+
+
+
 
 
 }

@@ -203,6 +203,9 @@
                     <div class="tcdPageCode" style="display: inline;">
                     </div>
                     <div style="display: inline;"> 共有 <span id="totalElements"></span> 个</div>
+                    <button class="btn btn-primary pull-right" style="margin-top: 5px"
+                            onclick="exportExcel()">导出excel
+                    </button>
                 </div>
             </div>
         </div>
@@ -620,6 +623,27 @@
         }
         criteria.orderBy = $("#orderBy").val();
         criteria.desc = $("#Desc").val();
+    }
+    
+    
+    function exportExcel() {
+        condition();
+        post("/manage/product/common/export", criteria);
+    }
+    function post(URL, PARAMS) {
+        var temp = document.createElement("form");
+        temp.action = URL;
+        temp.method = "post";
+        temp.style.display = "none";
+        for (var x in PARAMS) {
+            var opt = document.createElement("textarea");
+            opt.name = x;
+            opt.value = PARAMS[x];
+            temp.appendChild(opt);
+        }
+        document.body.appendChild(temp);
+        temp.submit();
+        return temp;
     }
 
     function putOn(id) {
