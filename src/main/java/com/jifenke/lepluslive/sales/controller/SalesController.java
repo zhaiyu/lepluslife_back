@@ -1,21 +1,21 @@
 package com.jifenke.lepluslive.sales.controller;
 
-import com.jifenke.lepluslive.global.util.LejiaResult;
 import com.jifenke.lepluslive.global.util.MvUtil;
 import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
 import com.jifenke.lepluslive.merchant.service.MerchantService;
+import com.jifenke.lepluslive.sales.controller.view.SalesStaffViewExcel;
 import com.jifenke.lepluslive.sales.domain.entities.SalesStaff;
 import com.jifenke.lepluslive.sales.service.SalesService;
-
-import org.springframework.data.domain.Page;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.inject.Inject;
-
-import java.util.HashSet;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Created by lss on 2016/8/10.
@@ -28,7 +28,8 @@ public class SalesController {
   private SalesService salesService;
   @Inject
   private MerchantService merchantService;
-
+  @Inject
+  private SalesStaffViewExcel salesStaffViewExcel;
   @RequestMapping(value = "/sales")
   public ModelAndView findSalesStaffPage(Model model) {
 
@@ -113,6 +114,15 @@ public class SalesController {
     salesStaff.setName(newSalesStaffName);
     salesService.saveStaff(salesStaff);
     return new ModelAndView("redirect:/manage/sales");
+  }
+
+  @RequestMapping(value = "/sales/exportExcel", method = RequestMethod.POST)
+  public ModelAndView exportExcel() {
+
+    List<SalesStaff> salesStaffList = salesService.findAllSaleStaff();
+    Map map = new HashMap();
+    map.put("salesStaffList", salesStaffList);
+    return new ModelAndView(salesStaffViewExcel, map);
   }
 
 }

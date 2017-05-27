@@ -154,6 +154,9 @@
                 <div class="tcdPageCode" style="display: inline;">
                 </div>
                 <div style="display: inline;"> 共有 <span id="totalElements"></span> 个</div>
+                <button class="btn btn-primary pull-right" style="margin-top: 5px"
+                        onclick="exportExcel()">导出excel
+                </button>
             </div>
         </div>
     </div>
@@ -327,7 +330,51 @@
 
         getUnionBankCardByAjax(unionBankCardCriteria);
     }
+    function exportExcel() {
+        unionBankCardCriteria.offset = 1;
+        var dateStr = $('#date-end span').text().split("-");
+        if (dateStr != null && dateStr != '') {
+            var startDate = dateStr[0].replace(/-/g, "/");
+            var endDate = dateStr[1].replace(/-/g, "/");
+            unionBankCardCriteria.startDate = startDate;
+            unionBankCardCriteria.endDate = endDate;
+        }
 
+        if ($("#user_sid").val() != "" && $("#user_sid").val() != null) {
+            unionBankCardCriteria.userSid = $("#user_sid").val();
+        } else {
+            unionBankCardCriteria.userSid = null;
+        }
+
+        if ($("#bank_number").val() != "" && $("#bank_number").val() != null) {
+            unionBankCardCriteria.number = $("#bank_number").val();
+        } else {
+            unionBankCardCriteria.number = null;
+        }
+
+        if ($("#register-source").val() != "" && $("#register-source").val() != null) {
+            unionBankCardCriteria.registerWay = $("#register-source").val();
+        } else {
+            unionBankCardCriteria.registerWay = null;
+        }
+
+        post("/manage/unionBankCard/export", unionBankCardCriteria);
+    }
+    function post(URL, PARAMS) {
+        var temp = document.createElement("form");
+        temp.action = URL;
+        temp.method = "post";
+        temp.style.display = "none";
+        for (var x in PARAMS) {
+            var opt = document.createElement("textarea");
+            opt.name = x;
+            opt.value = PARAMS[x];
+            temp.appendChild(opt);
+        }
+        document.body.appendChild(temp);
+        temp.submit();
+        return temp;
+    }
     function getUnionBankCardByAjax() {
         unionBankCardContent.innerHTML = "";
 

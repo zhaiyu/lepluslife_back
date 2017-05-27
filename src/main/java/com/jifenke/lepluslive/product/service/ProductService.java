@@ -83,7 +83,7 @@ public class ProductService {
    * @param criteria 查询条件
    */
   @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-  public Map findCommonProductByPage(ProductCriteria criteria) {
+  public Map findCommonProductByPage(ProductCriteria criteria,Integer limit) {
     String order = "id";
     Sort sort = null;
     if (criteria.getOrderBy() != null) {
@@ -119,7 +119,7 @@ public class ProductService {
     Page<Product>
         page =
         productRepository.findAll(getWhereClause(criteria),
-                                  new PageRequest(criteria.getOffset() - 1, 10, sort));
+                                  new PageRequest(criteria.getOffset() - 1, limit, sort));
     List<Product> list = page.getContent();
     Map<String, Object> result = new HashMap<>();
     List<Map> productList = new ArrayList<>();

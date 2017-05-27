@@ -4,6 +4,7 @@ import com.jifenke.lepluslive.global.util.LejiaResult;
 import com.jifenke.lepluslive.global.util.MvUtil;
 import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
 import com.jifenke.lepluslive.merchant.service.MerchantService;
+import com.jifenke.lepluslive.yinlian.controller.view.UnionPayStoreViewExcel;
 import com.jifenke.lepluslive.yinlian.domain.criteria.UnionPayStoreCriteria;
 import com.jifenke.lepluslive.yinlian.domain.entities.MerchantUnionPos;
 import com.jifenke.lepluslive.yinlian.domain.entities.UnionPayStore;
@@ -34,6 +35,9 @@ public class UnionPayStoreController {
 
   @Inject
   private MerchantService merchantService;
+
+  @Inject
+  private UnionPayStoreViewExcel unionPayStoreViewExcel;
 
   /**
    * 新建或更新银商门店信息   2017/01/18
@@ -124,6 +128,15 @@ public class UnionPayStoreController {
     return LejiaResult.ok(map);
   }
 
-
+  @RequestMapping(value = "/export", method = RequestMethod.POST)
+  public ModelAndView exporeExcel(UnionPayStoreCriteria unionPayStoreCriteria) {
+    if (unionPayStoreCriteria.getOffset() == null) {
+      unionPayStoreCriteria.setOffset(1);
+    }
+    Page page = unionPayStoreService.findUnionPayStoreByPage(unionPayStoreCriteria,10000);
+    Map map = new HashMap();
+    map.put("unionPayStoreList", page.getContent());
+    return new ModelAndView(unionPayStoreViewExcel, map);
+  }
 
 }
