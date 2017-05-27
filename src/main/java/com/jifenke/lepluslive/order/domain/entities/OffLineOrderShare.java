@@ -1,8 +1,11 @@
+
 package com.jifenke.lepluslive.order.domain.entities;
 
+import com.jifenke.lepluslive.fuyou.domain.entities.ScanCodeOrder;
 import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
 import com.jifenke.lepluslive.partner.domain.entities.Partner;
 import com.jifenke.lepluslive.partner.domain.entities.PartnerManager;
+import com.jifenke.lepluslive.yinlian.domain.entities.UnionPosOrder;
 
 import java.util.Date;
 
@@ -28,6 +31,17 @@ public class OffLineOrderShare {
   @OneToOne
   private OffLineOrder offLineOrder;
 
+  @OneToOne
+  private PosOrder posOrder;
+
+  @OneToOne
+  private UnionPosOrder unionPosOrder;
+
+  @OneToOne
+  private ScanCodeOrder scanCodeOrder;
+
+  private Integer type; //1 代表线下订单分润 2代表中慧pos订单分润 3 银联pos  4 代表富友线下订单分润
+
   private Long shareMoney;
 
   private Long toTradePartner = 0L;
@@ -44,11 +58,22 @@ public class OffLineOrderShare {
 
   private Date createDate = new Date();
 
+  public UnionPosOrder getUnionPosOrder() {
+    return unionPosOrder;
+  }
+
+  public void setUnionPosOrder(UnionPosOrder unionPosOrder) {
+    this.unionPosOrder = unionPosOrder;
+  }
+
   @ManyToOne
   private Partner tradePartner;
 
   @ManyToOne
   private PartnerManager tradePartnerManager;
+
+  @ManyToOne
+  private Merchant tradeMerchant;
 
   @ManyToOne
   private Merchant lockMerchant;
@@ -59,6 +84,37 @@ public class OffLineOrderShare {
   @ManyToOne
   private PartnerManager lockPartnerManager;
 
+  public PosOrder getPosOrder() {
+    return posOrder;
+  }
+
+  public void setPosOrder(PosOrder posOrder) {
+    this.posOrder = posOrder;
+  }
+
+  public Integer getType() {
+    return type;
+  }
+
+  public void setType(Integer type) {
+    this.type = type;
+  }
+
+  public ScanCodeOrder getScanCodeOrder() {
+    return scanCodeOrder;
+  }
+
+  public void setScanCodeOrder(ScanCodeOrder scanCodeOrder) {
+    this.scanCodeOrder = scanCodeOrder;
+  }
+
+  public Merchant getTradeMerchant() {
+    return tradeMerchant;
+  }
+
+  public void setTradeMerchant(Merchant tradeMerchant) {
+    this.tradeMerchant = tradeMerchant;
+  }
 
   public Long getShareMoney() {
     return shareMoney;

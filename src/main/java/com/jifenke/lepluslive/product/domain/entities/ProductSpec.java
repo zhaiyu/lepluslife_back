@@ -48,6 +48,8 @@ public class ProductSpec {
 
   private Integer minScore = 0;  //兑换最低所需积分
 
+  private Integer profit = 0;  //利润
+
   private Integer saleNumber = 0; //销售量
 
   private Integer state = 1;
@@ -158,5 +160,13 @@ public class ProductSpec {
 
   public void setToPartner(Long toPartner) {
     this.toPartner = toPartner;
+  }
+
+  public Integer getProfit() {
+    return profit;
+  }
+
+  public void setProfit(Integer profit) {
+    this.profit = profit;
   }
 }

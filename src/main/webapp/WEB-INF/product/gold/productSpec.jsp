@@ -73,6 +73,7 @@
                                 <th class="text-center">状态</th>
                                 <th class="text-center">缩略图</th>
                                 <th class="text-center">库存</th>
+                                <th class="text-center">利润</th>
                                 <th class="text-center">操作</th>
                             </tr>
                             </thead>
@@ -93,6 +94,10 @@
                                     </td>
                                     <td class="text-center"><img src="${productSpec.picture}"></td>
                                     <td class="text-center">${productSpec.repository}</td>
+                                    <td class="text-center"><fmt:formatNumber
+                                            type="number" value="${productSpec.profit/100}"
+                                            pattern="0.00"
+                                            maxFractionDigits="2"/></td>
                                     <td class="text-center">
                                         <button type="button" class="btn btn-default createWarn"
                                                 onclick="editProductSpecNumber(${productSpec.id},1)">
@@ -177,6 +182,14 @@
                         <div class="col-sm-4">
                             <input type="text" class="form-control" id="repository"
                                    placeholder="请输入初始库存">
+                        </div>
+                    </div>
+                    <div class="form-group">
+                        <label for="profit" class="col-sm-3 control-label">利润(元)</label>
+
+                        <div class="col-sm-4">
+                            <input type="text" class="form-control" id="profit"
+                                   placeholder="单规格利润" value="0">
                         </div>
                     </div>
                     <div class="form-group">
@@ -359,6 +372,7 @@
                 $("#price").val(data.price / 100);
 
                 $("#minScore").val(data.minScore / 100);
+                $("#profit").val(data.profit / 100);
 
                 $("#repository").val(data.repository);
                 $("#createSpecWarn").modal("show");
@@ -371,7 +385,7 @@
             $("#price").val("");
 
             $("#minScore").val("");
-
+            $("#profit").val("");
             $("#repository").val("");
             $("#createSpecWarn").modal("show");
         }
@@ -387,6 +401,7 @@
         productSpec.toMerchant = 0;
         productSpec.toPartner = 0;
         productSpec.repository = $("#repository").val();
+        productSpec.profit = Math.round($("#profit").val() * 100);
         var specId = $('#specId').val();
         if (specId != null || specId != "") {
             productSpec.id = specId;

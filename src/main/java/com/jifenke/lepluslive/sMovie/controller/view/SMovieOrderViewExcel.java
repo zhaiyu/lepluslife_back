@@ -83,9 +83,25 @@ public class SMovieOrderViewExcel extends AbstractExcelView {
             excelRow.createCell(5).setCellValue(order.getTrueScore() / 100.0);
             excelRow.createCell(6).setCellValue(order.getTotalPrice() / 100.0);
             excelRow.createCell(7).setCellValue(order.getPayBackA() / 100.0);
-            excelRow.createCell(8).setCellValue(sdf.format(order.getDateCreated()));
-            excelRow.createCell(9).setCellValue(sdf.format(order.getDateCompleted()));
-            excelRow.createCell(10).setCellValue(sdf.format(order.getDateUsed()));
+            if(order.getDateCreated()!=null){
+                excelRow.createCell(8).setCellValue(sdf.format(order.getDateCreated()));
+            }else {
+                excelRow.createCell(8).setCellValue("--");
+            }
+            if(order.getDateCompleted()!=null){
+                excelRow.createCell(9).setCellValue(sdf.format(order.getDateCompleted()));
+            }else {
+                excelRow.createCell(9).setCellValue("--");
+            }
+
+            if(order.getDateUsed()!=null){
+                excelRow.createCell(10).setCellValue(sdf.format(order.getDateUsed()));
+            }else {
+                excelRow.createCell(10).setCellValue("--");
+            }
+
+
+
             if (order.getsMovieTerminal() != null) {
                 excelRow.createCell(11).setCellValue(order.getsMovieTerminal().getMovieName());
             } else {

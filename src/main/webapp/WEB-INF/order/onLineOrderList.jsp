@@ -108,6 +108,14 @@
                         </select>
                     </div>
                     <div class="form-group col-md-2">
+                        <label for="source">支付公众号</label>
+                        <select class="form-control" id="source">
+                            <option value="-1">全部分类</option>
+                            <option value="1">乐加生活</option>
+                            <option value="2">乐加臻品商城</option>
+                        </select>
+                    </div>
+                    <div class="form-group col-md-2">
                         <label for="phoneNumber">买家手机号</label>
                         <input type="text" id="phoneNumber" class="form-control"
                                placeholder="请输入买家手机号"/>
@@ -761,6 +769,12 @@
             onLineOrderCriteria.payOrigin = payOrigin;
         } else {
             onLineOrderCriteria.payOrigin = null;
+        }
+        var source = $("#source").val();
+        if (source != -1) {
+            onLineOrderCriteria.source = source;
+        } else {
+            onLineOrderCriteria.source = null;
         }
         var payWay = $("#payWay").val();
         if (payWay != -1) {

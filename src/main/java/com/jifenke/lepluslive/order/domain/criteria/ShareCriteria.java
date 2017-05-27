@@ -27,6 +27,16 @@ public class ShareCriteria {
 
   private Integer offset;
 
+  private Integer type;  //1=扫码分润   2=pos分润
+
+  public Integer getType() {
+    return type;
+  }
+
+  public void setType(Integer type) {
+    this.type = type;
+  }
+
   public Integer getOffset() {
     return offset;
   }

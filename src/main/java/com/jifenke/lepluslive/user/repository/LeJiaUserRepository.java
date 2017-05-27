@@ -96,4 +96,10 @@ public interface LeJiaUserRepository extends JpaRepository<LeJiaUser, Long> {
 
   @Query(value = "SELECT * from  le_jia_user where user_sid=?1", nativeQuery = true)
   LeJiaUser findUserBySid(String sid);
+
+
+  @Query(value = "SELECT user_sid from le_jia_user where wei_xin_user_id=?1", nativeQuery = true)
+  String findUserByWeiXinId(Long id);
+
+
 }

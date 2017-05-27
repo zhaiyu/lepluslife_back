@@ -46,7 +46,7 @@ public class WxTemMsgService {
   /**
    * 根据temId不同，发送不同的消息 keys  封装参数
    */
-  public void sendTemMessage(String openId, Long temId, String[] keys, Serializable id) {
+  public void sendTemMessage(String openId, Long temId, Long wxId, String[] keys, Serializable id) {
 
     WxTemMsg wxTemMsg = wxTemMsgRepository.findOne(temId);
 
@@ -81,15 +81,15 @@ public class WxTemMsgService {
     param.put("url", wxTemMsg.getUrl() + id);
     param.put("data", map2);
 
-    sendTemplateMessage(param,7L);
+    sendTemplateMessage(param, wxId);
   }
-
 
 
   /**
    * 根据temId不同，发送不同的消息 keys  封装参数
    */
-  public void sendTemMessage(String openId, Long temId, String[] keys, Serializable sid, HashMap<String, Object> map2) {
+  public void sendTemMessage(String openId, Long temId, String[] keys, Serializable sid,
+                             HashMap<String, Object> map2) {
 
     WxTemMsg wxTemMsg = wxTemMsgRepository.findOne(temId);
 
@@ -156,7 +156,7 @@ public class WxTemMsgService {
     param.put("url", wxTemMsg.getUrl());
     param.put("data", map2);
 
-    sendTemplateMessage(param,7L);
+    sendTemplateMessage(param, 7L);
   }
 
 

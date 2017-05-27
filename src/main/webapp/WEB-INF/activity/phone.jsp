@@ -373,6 +373,9 @@
                                 <button class="btn btn-primary" style="margin-top: 24px"
                                         onclick="searchOrderByCriteria()">查询
                                 </button>
+                                <button class="btn btn-primary" style="margin-top: 24px"
+                                        onclick="exportExcel()">导出excel
+                                </button>
                             </div>
                         </div>
                         <table class="table table-bordered table-hover">
@@ -1844,6 +1847,72 @@
             criteria.orderId = null;
         }
         getOrderList();
+    }
+
+    //*****条件导出话费订单*****
+    function exportExcel() {
+        criteria.currPage = 1;
+        init1 = 1;
+        if ($("#state").val() != -1) {
+            criteria.state = $("#state").val();
+        } else {
+            criteria.state = null;
+        }
+        if ($("#orderType").val() != -1) {
+            criteria.type = $("#orderType").val();
+        } else {
+            criteria.type = null;
+        }
+        var dateStr = $('.date-end span').text().split("-");
+        if (dateStr != null && dateStr != '') {
+            var startDate = dateStr[0].replace(/-/g, "/");
+            var endDate = dateStr[1].replace(/-/g, "/");
+            criteria.startDate = startDate;
+            criteria.endDate = endDate;
+        }
+        if ($("#recharge-phone").val() != "" && $("#recharge-phone").val() != null) {
+            criteria.phone = $("#recharge-phone").val();
+        } else {
+            criteria.phone = null;
+        }
+        if ($("#recharge-person").val() != "" && $("#recharge-person").val() != null) {
+            criteria.userSid = $("#recharge-person").val();
+        } else {
+            criteria.userSid = null;
+        }
+        if ($("#worth").val() != -1) {
+            criteria.worth = $("#worth").val();
+        } else {
+            criteria.worth = null;
+        }
+        if ($("#calls-ID").val() != "" && $("#calls-ID").val() != null) {
+            criteria.ruleId = $("#calls-ID").val();
+        } else {
+            criteria.ruleId = null;
+        }
+        if ($("#orderId").val() != "" && $("#orderId").val() != null) {
+            criteria.orderId = $("#orderId").val();
+        } else {
+            criteria.orderId = null;
+        }
+        post("/manage/phone/exportExcel", criteria);
+
+    }
+    function post(URL, PARAMS) {
+        var temp = document.createElement("form");
+        temp.action = URL;
+        temp.method = "post";
+        temp.style.display = "none";
+        for (var x in PARAMS) {
+            var opt = document.createElement("textarea");
+            opt.name = x;
+            opt.value = PARAMS[x];
+            // alert(opt.name)
+            temp.appendChild(opt);
+        }
+        document.body.appendChild(temp);
+        temp.submit();
+        return temp;
     }
     //*****条件查询产品*****
     function searchRuleByCriteria() {
