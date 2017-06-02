@@ -53,6 +53,10 @@ public class ActivityPhoneOrderExcel extends AbstractExcelView {
         excelHeader.createCell(7).setCellValue("充值时间");
         excelHeader.createCell(8).setCellValue("红包奖励");
         excelHeader.createCell(9).setCellValue("状态");
+        excelHeader.createCell(10).setCellValue("现金");
+        excelHeader.createCell(11).setCellValue("金币");
+        excelHeader.createCell(12).setCellValue("手续费");
+        excelHeader.createCell(13).setCellValue("乐加入账");
     }
 
 
@@ -104,6 +108,10 @@ public class ActivityPhoneOrderExcel extends AbstractExcelView {
             }else {
                 excelRow.createCell(9).setCellValue("--");
             }
+            excelRow.createCell(10).setCellValue(activityPhoneOrder.getTruePrice()/100.0);
+            excelRow.createCell(11).setCellValue(activityPhoneOrder.getTrueScoreB()/100.0);
+            excelRow.createCell(12).setCellValue(Math.ceil(activityPhoneOrder.getTruePrice()*0.006)/100.0);
+            excelRow.createCell(13).setCellValue((activityPhoneOrder.getTruePrice()-Math.ceil(activityPhoneOrder.getTruePrice()*0.006))/100.0);
         }
     }
 
