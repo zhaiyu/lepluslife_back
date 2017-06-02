@@ -129,8 +129,18 @@ public class MerchantController {
     model.addAttribute("rebateStage", dictionaryService.findDictionaryById(50L).getValue());
     //新加内容 01/10
     //获取商户所有的商户号
+    List<MerchantSettlement>
+        settlementList =
+        merchantSettlementService.findByMerchantUser(merchantUserId);
     model.addAttribute("settlementList",
-                       merchantSettlementService.findByMerchantUser(merchantUserId));
+                       settlementList);
+    if(settlementList.size()==0){
+      model.addAttribute("display_show",
+                         false);
+    }else {
+      model.addAttribute("display_show",
+                         true);
+    }
     return MvUtil.go("/merchant/edit");
   }
 
@@ -155,9 +165,17 @@ public class MerchantController {
     model.addAttribute("sales", salesStaffList);
     //新加内容 01/10
     //获取商户所有的商户号
+    List<MerchantSettlement> settlementList = merchantSettlementService
+        .findByMerchantUser(merchant.getMerchantUser().getId());
     if (merchant.getMerchantUser() != null) {
-      model.addAttribute("settlementList", merchantSettlementService
-          .findByMerchantUser(merchant.getMerchantUser().getId()));
+      model.addAttribute("settlementList", settlementList);
+    }
+    if(settlementList.size()==0){
+      model.addAttribute("display_show",
+                         false);
+    }else {
+      model.addAttribute("display_show",
+                         true);
     }
     //获取门店结算方式和使用商户号信息 (没有就创建)
     model.addAttribute("scanPayWay", merchantScanPayWayService.findByMerchantId(id));

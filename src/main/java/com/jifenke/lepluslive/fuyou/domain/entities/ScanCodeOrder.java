@@ -67,8 +67,7 @@ public class ScanCodeOrder {
   private String merchantRate;  //商户号当时的佣金费率
 
   @NotNull
-  @ManyToOne
-  private Category orderType;//订单类型
+  private Long orderType;//订单类型
 
   @NotNull
   private Long totalPrice = 0L;
@@ -172,11 +171,11 @@ public class ScanCodeOrder {
     this.source = source;
   }
 
-  public Category getOrderType() {
+  public Long getOrderType() {
     return orderType;
   }
 
-  public void setOrderType(Category orderType) {
+  public void setOrderType(Long orderType) {
     this.orderType = orderType;
   }
 
