@@ -2,8 +2,11 @@ package com.jifenke.lepluslive.score.controller;
 
 import com.jifenke.lepluslive.global.util.LejiaResult;
 import com.jifenke.lepluslive.global.util.MvUtil;
+import com.jifenke.lepluslive.score.controller.view.ScoreCDetailExcel;
 import com.jifenke.lepluslive.score.domain.criteria.ScoreCriteria;
+import com.jifenke.lepluslive.score.domain.criteria.ScoreDetailCriteria;
 import com.jifenke.lepluslive.score.service.ScoreCService;
+import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,6 +28,11 @@ public class ScoreCController {
 
     @Inject
     private ScoreCService scoreCService;
+
+    @Inject
+    private ScoreCDetailExcel scoreCDetailExcel;
+
+
 
 
     @RequestMapping(value = "/scoreCPage", method = RequestMethod.GET)
@@ -89,11 +97,11 @@ public class ScoreCController {
         dataMap.put("totalPages", totalPages);
         dataMap.put("totalElements", objects.size());
         dataMap.put("scoreCStatistics", scoreCStatistics);
-
-
-        long sendScoreC = scoreCService.findSendScoreCByDate(scoreCriteria.getStartDate(), scoreCriteria.getEndDate());
-        long useScoreC = scoreCService.findUseScoreCByDate(scoreCriteria.getStartDate(), scoreCriteria.getEndDate());
-        long handScoreC=useScoreC+sendScoreC;
+        long sendScoreC = 0l;
+        long useScoreC = 0l;
+        sendScoreC = scoreCService.findSendScoreCByDate(scoreCriteria.getStartDate(), scoreCriteria.getEndDate());
+        useScoreC = scoreCService.findUseScoreCByDate(scoreCriteria.getStartDate(), scoreCriteria.getEndDate());
+        long handScoreC = useScoreC + sendScoreC;
         dataMap.put("sendScoreC", sendScoreC);
         dataMap.put("useScoreC", useScoreC);
         dataMap.put("handScoreC", handScoreC);
@@ -113,14 +121,14 @@ public class ScoreCController {
         } else {
             int pageStartCount = scoreCriteria.getOffset() * 10;
             List<Object[]> objects2 = new ArrayList<Object[]>();
-
-            if (objectsSize < pageStartCount + 10) {
+            int totalPages = (int) Math.ceil(objects.size() / 10.0);
+            if (scoreCriteria.getOffset()==totalPages) {
                 for (int i = 0; i < objectsSize - pageStartCount + 10; i++) {
-                    objects2.add(objects.get(pageStartCount - objectsSize - 1 + i));
+                    objects2.add(objects.get(pageStartCount - 10 + i));
                 }
             } else {
                 for (int i = 0; i < 10; i++) {
-                    objects2.add(objects.get(pageStartCount - 1 + i));
+                    objects2.add(objects.get(pageStartCount - 10 + i));
                 }
             }
             return objects2;
@@ -129,17 +137,34 @@ public class ScoreCController {
     }
 
 
-
-
-    @RequestMapping(value = "/serchScoreCDetail", method = RequestMethod.POST)
-    public
-    @ResponseBody
-    LejiaResult serchScoreCDetail(@RequestBody ScoreCriteria scoreCriteria) {
-       if(scoreCriteria.getOffset()==null){
-           scoreCriteria.setOffset(1);
-       }
-        return LejiaResult.ok();
+    @RequestMapping(value = "/serchScoreCDetail", method = RequestMethod.GET)
+    public ModelAndView serchScoreCDetail(Model model, String time) {
+        model.addAttribute("time", time);
+        return MvUtil.go("/score/scoreCDetailPage");
     }
 
+
+    @RequestMapping(value = "/getScoreCDetailByAjax", method = RequestMethod.POST)
+    public
+    @ResponseBody
+    LejiaResult getScoreCDetailByAjax(@RequestBody ScoreDetailCriteria scoreDetailCriteria) {
+        if (scoreDetailCriteria.getOffset() == null) {
+            scoreDetailCriteria.setOffset(1);
+        }
+        Page page = scoreCService.findScoreCDetailAll(scoreDetailCriteria, 10);
+        return LejiaResult.ok(page);
+    }
+
+
+    @RequestMapping(value = "/scoreCDetailExport", method = RequestMethod.POST)
+    public ModelAndView scoreCDetailExport(ScoreDetailCriteria scoreDetailCriteria) {
+        if (scoreDetailCriteria.getOffset() == null) {
+            scoreDetailCriteria.setOffset(1);
+        }
+        Page page = scoreCService.findScoreCDetailAll(scoreDetailCriteria, 10000);
+        Map map = new HashMap();
+        map.put("scoreCDetailList", page.getContent());
+        return new ModelAndView(scoreCDetailExcel, map);
+    }
 
 }

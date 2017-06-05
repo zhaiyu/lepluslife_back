@@ -40,12 +40,12 @@ public interface ScoreCRepository extends JpaRepository<ScoreC, Long> {
 
 
 
-    @Query(value = "SELECT SUM(number) as sendScore from scorec_detail where number>0 and  DATE_FORMAT(date_created,'%Y%m%d')>=?1 and  DATE_FORMAT(date_created,'%Y%m%d')<=?2", nativeQuery = true)
-    long findSendScoreCByDate(String startDate,String endDate);
+    @Query(value = "SELECT if(SUM(number) IS NULL,0,SUM(number)) as sendScore from scorec_detail where number>0 and  DATE_FORMAT(date_created,'%Y%m%d')>=?1 and  DATE_FORMAT(date_created,'%Y%m%d')<=?2", nativeQuery = true)
+    Long findSendScoreCByDate(String startDate,String endDate);
 
 
-    @Query(value = "SELECT SUM(number) as sendScore from scorec_detail where number<0 and  DATE_FORMAT(date_created,'%Y%m%d')>=?1 and  DATE_FORMAT(date_created,'%Y%m%d')<=?2", nativeQuery = true)
-    long findUseScoreCByDate(String startDate,String endDate);
+    @Query(value = "SELECT if(SUM(number) IS NULL,0,SUM(number)) as sendScore from scorec_detail where number<0 and  DATE_FORMAT(date_created,'%Y%m%d')>=?1 and  DATE_FORMAT(date_created,'%Y%m%d')<=?2", nativeQuery = true)
+    Long findUseScoreCByDate(String startDate,String endDate);
 
 
 }
