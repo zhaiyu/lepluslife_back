@@ -190,6 +190,9 @@
                             </c:forEach>
                             </tbody>
                         </table>
+                        <button class="btn btn-primary pull-right" style="margin-top: 5px"
+                                onclick="exportPartnerManagerExcel()">导出excel
+                        </button>
                     </div>
                 </div>
             </div>
@@ -670,6 +673,9 @@
             }
         }
         return fmt;
+    }
+    function exportPartnerManagerExcel() {
+        post("/manage/sales/exportExcel");
     }
 </script>
 </body>

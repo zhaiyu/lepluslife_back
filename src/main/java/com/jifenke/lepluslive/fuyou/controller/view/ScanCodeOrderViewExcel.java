@@ -117,7 +117,7 @@ public class ScanCodeOrderViewExcel extends AbstractExcelView {
       } else {
         excelRow.createCell(9).setCellValue(s[7]);
       }
-      switch (order.getOrderType().getId().intValue()) {
+      switch (order.getOrderType().intValue()) {
         case 12001:
           excelRow.createCell(10).setCellValue(s[8]);
           break;

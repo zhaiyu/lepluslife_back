@@ -264,10 +264,10 @@ s<%--
                         </tr>
                     </c:forEach>
                     </thead>
-
                 </table>
-
-
+                <button class="btn btn-primary pull-right" style="margin-top: 5px"
+                        onclick="exportSalesExcel()">导出excel
+                </button>
                 <div class="tcdPageCode" style="display: inline;">
                 </div>
             </div>
@@ -310,7 +310,25 @@ s<%--
         }
 
     }
-
+function exportSalesExcel() {
+    post("/manage/sales/exportExcel");
+}
+    function post(URL, PARAMS) {
+        var temp = document.createElement("form");
+        temp.action = URL;
+        temp.method = "post";
+        temp.style.display = "none";
+        for (var x in PARAMS) {
+            var opt = document.createElement("textarea");
+            opt.name = x;
+            opt.value = PARAMS[x];
+            // alert(opt.name)
+            temp.appendChild(opt);
+        }
+        document.body.appendChild(temp);
+        temp.submit();
+        return temp;
+    }
 </script>
 </body>
 </html>

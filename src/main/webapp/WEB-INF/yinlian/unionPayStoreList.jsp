@@ -153,6 +153,9 @@
                 <div class="tcdPageCode" style="display: inline;">
                 </div>
                 <div style="display: inline;"> 共有 <span id="totalElements"></span> 个</div>
+                <button class="btn btn-primary pull-right" style="margin-top: 5px"
+                        onclick="exportExcel()">导出excel
+                </button>
             </div>
         </div>
     </div>
@@ -728,7 +731,45 @@
         getUnionPayStoreByAjax(unionPayStoreCriteria);
     }
 
+    function exportExcel() {
+        unionPayStoreCriteria.offset = 1;
+        var dateStr = $('#date-end span').text().split("-");
+        if (dateStr != null && dateStr != '') {
+            var startDate = dateStr[0].replace(/-/g, "/");
+            var endDate = dateStr[1].replace(/-/g, "/");
+            unionPayStoreCriteria.startDate = startDate;
+            unionPayStoreCriteria.endDate = endDate;
+        }
 
+        if ($("#merchant-sid").val() != "" && $("#merchant-sid").val() != null) {
+            unionPayStoreCriteria.merchantSid = $("#merchant-sid").val();
+        } else {
+            unionPayStoreCriteria.merchantSid = null;
+        }
+
+        if ($("#shop_number").val() != "" && $("#shop_number").val() != null) {
+            unionPayStoreCriteria.shopNumber = $("#shop_number").val();
+        } else {
+            unionPayStoreCriteria.shopNumber = null;
+        }
+        post("/manage/unionPayStore/export", unionPayStoreCriteria);
+    }
+
+    function post(URL, PARAMS) {
+        var temp = document.createElement("form");
+        temp.action = URL;
+        temp.method = "post";
+        temp.style.display = "none";
+        for (var x in PARAMS) {
+            var opt = document.createElement("textarea");
+            opt.name = x;
+            opt.value = PARAMS[x];
+            temp.appendChild(opt);
+        }
+        document.body.appendChild(temp);
+        temp.submit();
+        return temp;
+    }
 </script>
 </body>
 </html>
