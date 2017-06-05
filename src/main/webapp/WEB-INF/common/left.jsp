@@ -302,6 +302,7 @@
                 <a href='/manage/merchant_data'>商户数据</a>
                 <a href='/manage/scoreAAccountPage'>红包账户</a>
                 <a href='/manage/transactionAnalysisPage'>交易分析</a>
+                <a href='/manage/scoreC/scoreCPage'>金币统计</a>
             </div>
         </li>
         <li><h4 class="M6"><span></span>短信平台</h4>
@@ -362,7 +363,7 @@
             $(".none7").slideDown(300);
         }
         if (url.indexOf("/manage/member_data") != -1 || url.indexOf("/manage/merchant_data")
-                                                        != -1|| url.indexOf("/manage/scoreAAccountPage") != -1||url.indexOf("/manage/transactionAnalysisPage") != -1) {
+                                                        != -1|| url.indexOf("/manage/scoreAAccountPage") != -1||url.indexOf("/manage/transactionAnalysisPage") != -1||url.indexOf("/manage/scoreC/scoreCPage")!=-1) {
             $(".none9").parent('li').addClass('selected');
             $(".none9").slideDown(300);
         }
