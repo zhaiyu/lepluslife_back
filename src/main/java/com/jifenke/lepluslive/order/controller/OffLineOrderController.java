@@ -12,7 +12,9 @@ import com.jifenke.lepluslive.order.domain.criteria.FinancialCriteria;
 import com.jifenke.lepluslive.order.domain.criteria.OLOrderCriteria;
 import com.jifenke.lepluslive.order.domain.entities.FinancialStatistic;
 import com.jifenke.lepluslive.order.domain.entities.OffLineOrder;
+import com.jifenke.lepluslive.order.domain.entities.OffLineOrderShare;
 import com.jifenke.lepluslive.order.service.OffLineOrderService;
+import com.jifenke.lepluslive.order.service.ShareService;
 import com.jifenke.lepluslive.weixin.service.WxTemMsgService;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
@@ -53,6 +55,9 @@ public class OffLineOrderController {
 
     @Inject
     private MerchantWeiXinUserService merchantWeiXinUserService;
+
+    @Inject
+    private ShareService shareService;
 
     private StringBuffer sb = new StringBuffer();
 

@@ -234,6 +234,8 @@
                             href='/manage/user'>会员管理</a> </shiro:hasPermission>
                     <shiro:hasPermission name="SalesStaff:query"> <a
                             href='/manage/sales'>销售人员</a> </shiro:hasPermission>
+                    <shiro:hasPermission name="partner:query"> <a
+                            href='/manage/partner'>合伙人</a> </shiro:hasPermission>
                 </div>
             </li>
         </shiro:hasPermission>

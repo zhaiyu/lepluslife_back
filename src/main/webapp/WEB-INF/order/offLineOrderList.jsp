@@ -139,12 +139,12 @@
                                 <th>红包使用</th>
                                 <th>支付方式</th>
                                 <th>实际支付</th>
-                                <th>佣金(手续费)</th>
+                                <th>佣金</th>
                                 <th>商户应入账</th>
                                 <th>第三方手续费</th>
-                                <th>发放红包</th>
+                                <th>发金币</th>
                                 <th>分润金额</th>
-                                <th>发放积分</th>
+                                <th>发鼓励金</th>
                                 <th>状态</th>
                                 <th>操作</th>
                             </tr>
@@ -340,18 +340,18 @@
                            contentStr +=
                            '<td>' + payToMerchant + '</td>'
                            contentStr += '<td>' + content[i].wxCommission / 100 + '</td>'
-                           contentStr += '<td>' + content[i].rebate / 100 + '</td>';
-                           var share = 0;
-                           if (content[i].rebateWay != 1 && content[i].rebateWay!=3) {
+                           contentStr += '<td>' + content[i].scoreC / 100 + '</td>';
+                           var share = content[i].shareMoney/100.0;
+                           /*if (content[i].rebateWay != 1 && content[i].rebateWay!=3) {
                                share = 0;
                            } else {
                                share =
                                (content[i].ljCommission - content[i].wxCommission
                                 - content[i].rebate) / 100;
-                           }
+                           }*/
                            contentStr +=
                            '<td>' + share + '</td>'
-                           contentStr += '<td>' + content[i].scoreB + '</td>'
+                           contentStr += '<td>' + content[i].rebate /100.0+ '</td>'
                            if (content[i].state == 0) {
                                contentStr += '<td>未付款</td>';
                                contentStr +=

@@ -1,7 +1,9 @@
 package com.jifenke.lepluslive.order.controller.view;
 
 import com.jifenke.lepluslive.order.domain.entities.OffLineOrder;
+import com.jifenke.lepluslive.order.domain.entities.OffLineOrderShare;
 import com.jifenke.lepluslive.order.repository.OffLineOrderRepository;
+import com.jifenke.lepluslive.order.repository.OffLineOrderShareRepository;
 import com.jifenke.lepluslive.user.domain.entities.LeJiaUser;
 
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -28,7 +30,8 @@ import javax.servlet.http.HttpServletResponse;
 public class OrderViewExcel extends AbstractExcelView {
 
   @Inject
-  OffLineOrderRepository offLineOrderRepository;
+  private OffLineOrderRepository offLineOrderRepository;
+
 
   @Override
   protected void buildExcelDocument(Map<String, Object> map, HSSFWorkbook hssfWorkbook,
@@ -74,9 +77,9 @@ public class OrderViewExcel extends AbstractExcelView {
     excelHeader.createCell(17).setCellValue("手续费补贴"); //
     excelHeader.createCell(18).setCellValue("佣金纯收入"); //
     excelHeader.createCell(19).setCellValue("会员高签收入"); //
-    excelHeader.createCell(20).setCellValue("发放红包");
+    excelHeader.createCell(20).setCellValue("发放鼓励金");
     excelHeader.createCell(21).setCellValue("分润金额");
-    excelHeader.createCell(22).setCellValue("发放积分");
+    excelHeader.createCell(22).setCellValue("发放金币");
     excelHeader.createCell(23).setCellValue("状态");
     excelHeader.createCell(24).setCellValue("订单类型");
     excelHeader.createCell(25).setCellValue("城市");
@@ -217,13 +220,18 @@ public class OrderViewExcel extends AbstractExcelView {
         excelRow.createCell(19).setCellValue("--");
       }
       excelRow.createCell(20).setCellValue(order.getRebate() / 100.0);
-      if (order.getRebateWay() != 1) {
+      if(order.getShareMoney()!=null) {
+        excelRow.createCell(21).setCellValue(order.getShareMoney()/100.0);
+      }else {
+        excelRow.createCell(21).setCellValue(0L);
+      }
+      /*if (order.getRebateWay() != 1) {
         excelRow.createCell(21).setCellValue(0);
       } else {
         excelRow.createCell(21).setCellValue(
             (order.getLjCommission() - order.getWxCommission() - order.getRebate()) / 100.0);
-      }
-      excelRow.createCell(22).setCellValue(order.getScoreB());
+      }*/
+      excelRow.createCell(22).setCellValue(order.getScoreC()/100.0);
       if (order.getState() == 0) {
         excelRow.createCell(23).setCellValue("未支付");
       } else {
