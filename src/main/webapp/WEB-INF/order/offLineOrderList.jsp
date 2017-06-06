@@ -155,7 +155,9 @@
                     </div>
                     <div class="tcdPageCode" style="display: inline;">
                     </div>
-                    <div style="display: inline;"> 共有 <span id="totalElements"></span> 个</div>
+                    <div style="display: inline;"> 共有 <span id="totalElements"></span> 个&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;跳转至&nbsp;
+                        <input id="toPage" type="text" style="width:60px" onkeyup="this.value=this.value.replace(/[^0-9]/g,'')" onafterpaste="this.value=this.value.replace(/[^0-9]/g,'')"/>&nbsp;页
+                        <button class="btn btn-primary" style="width:50px;" onclick="searchOrderByPage()">GO</button></div>
                     <button class="btn btn-primary pull-right" style="margin-top: 5px"
                             onclick="exportExcel()">导出excel
                     </button>
@@ -433,6 +435,7 @@
         }
         return fmt;
     }
+    // 根据条件进行查询
     function searchOrderByCriteria() {
         olOrderCriteria.offset = 1;
         init1 = 1;
@@ -483,6 +486,65 @@
         }
         getOffLineOrderByAjax(olOrderCriteria);
     }
+    //  跳转到指定页
+    function searchOrderByPage() {
+        var pageNum = $("#toPage").val();
+        if(pageNum==null||pageNum=='') {
+            alert("请输入目标页数 ^_^ ！");
+            return;
+        }
+        olOrderCriteria.offset = pageNum;
+        flag = true;
+        //lss 2016/07/19 订单金额大于等于
+        olOrderCriteria.amount = $('#customer-amount').val() * 100;
+        var dateStr = $('#date-end span').text().split("-");
+        var startDate = null;
+        var endDate = null;
+        if(dateStr.length>0 && dateStr[0]!=null&&dateStr[0]!='') {
+            startDate = dateStr[0].replace(/-/g, "/");
+            endDate = dateStr[1].replace(/-/g, "/");
+            olOrderCriteria.startDate = startDate;
+            olOrderCriteria.endDate = endDate;
+        }
+        if ($("#pay-style").val() != 0) {
+            olOrderCriteria.payWay = $("#pay-style").val();
+        } else {
+            olOrderCriteria.payWay = null;
+        }
+        if ($("#order-source").val() != 0) {
+            olOrderCriteria.orderSource = $("#order-source").val();
+        } else {
+            olOrderCriteria.orderSource = null;
+        }
+        if ($("#customer-ID").val() != "" && $("#customer-ID").val() != null) {
+            olOrderCriteria.userSid = $("#customer-ID").val();
+        } else {
+            olOrderCriteria.userSid = null;
+        }
+        if ($("#customer-tel").val() != "" && $("#customer-tel").val() != null) {
+            olOrderCriteria.phoneNumber = $("#customer-tel").val();
+        } else {
+            olOrderCriteria.phoneNumber = null;
+        }
+        if ($("#merchant-name").val() != "" && $("#merchant-name").val() != null) {
+            olOrderCriteria.merchant = $("#merchant-name").val();
+        } else {
+            olOrderCriteria.merchant = null;
+        }
+        // zxf  2016/09/02   设置订单分类、id查询条件
+        if ($("#order-ID").val() != "" && $("#order-ID").val() != null) {
+            olOrderCriteria.orderSid = $("#order-ID").val();
+        } else {
+            olOrderCriteria.orderSid = null;
+        }
+        if ($("#remote-style").val() != "" && $("#remote-style").val() != null) {
+            olOrderCriteria.rebateWay = $("#remote-style").val();
+        } else {
+            olOrderCriteria.rebateWay = null;
+        }
+        getOffLineOrderByAjax(olOrderCriteria);
+    }
+
     function searchOrderByState(state) {
         olOrderCriteria.offset = 1;
         if (state != null) {

@@ -110,7 +110,10 @@
           </div>
           <div class="tcdPageCode" style="display: inline;">
           </div>
-          <div style="display: inline;"> 共有 <span id="totalElements"></span> 个</div>
+          <div style="display: inline;"> 共有 <span id="totalElements"></span> 个&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;跳转至&nbsp;
+            <input id="toPage" type="text" style="width:60px" onkeyup="this.value=this.value.replace(/[^0-9]/g,'')" onafterpaste="this.value=this.value.replace(/[^0-9]/g,'')"/>&nbsp;页
+            <button class="btn btn-primary" style="width:50px;" onclick="searchShareByPage()">GO</button>
+          </div>
           <button class="btn btn-primary pull-right" style="margin-top: 5px"
                   onclick="exportExcel()">导出excel
           </button>
@@ -199,7 +202,7 @@
       $("#createWarn").modal("toggle");
     });
     $(document).ready(function (){
-      $('#date-end span').html(moment().subtract('hours', 1).format('YYYY/MM/DD HH:mm:ss') + ' - ' + moment().format('YYYY/MM/DD HH:mm:ss'));
+//      $('#date-end span').html(moment().subtract('hours', 1).format('YYYY/MM/DD HH:mm:ss') + ' - ' + moment().format('YYYY/MM/DD HH:mm:ss'));
       $('#date-end').daterangepicker({
                                        maxDate : moment(), //最大时间
 //                                       dateLimit : {
@@ -407,6 +410,7 @@
     }
     return fmt;
   }
+  // 根据条件查询
   function searchShareByCriteria() {
     shareCriteria.offset = 1;
     init1 = 1;
@@ -455,7 +459,61 @@
     }
     getOffLineOrderShareByAjax(shareCriteria);
   }
-
+  // 跳转到指定页面
+  function searchShareByPage() {
+      var pageNum = $("#toPage").val();
+      if(pageNum==null||pageNum=='') {
+          alert("请输入目标页数 ^_^ ！");
+          return;
+      }
+      shareCriteria.offset = pageNum;
+      flag = true;
+      var dateStr = $('#date-end span').text().split("-");
+      var startDate = null;
+      var endDate = null;
+      if(dateStr.length>0 && dateStr[0]!=null&&dateStr[0]!='') {
+           startDate = dateStr[0].replace(/-/g, "/");
+           endDate = dateStr[1].replace(/-/g, "/");
+          shareCriteria.startDate = startDate;
+          shareCriteria.endDate = endDate;
+      }
+      if ($("#customer-ID").val() != "" && $("#customer-ID").val() != null) {
+          shareCriteria.userSid = $("#customer-ID").val();
+      } else {
+          shareCriteria.userSid = null;
+      }
+      if ($("#customer-tel").val() != "" && $("#customer-tel").val() != null) {
+          shareCriteria.userPhone = $("#customer-tel").val();
+      } else {
+          shareCriteria.userPhone = null;
+      }
+      if ($("#merchant-name").val() != "" && $("#merchant-name").val() != null) {
+          shareCriteria.bindMerchant = $("#merchant-name").val();
+      } else {
+          shareCriteria.bindMerchant = null;
+      }
+      if ($("#bindPartner").val() != "" && $("#bindPartner").val() != null) {
+          shareCriteria.bindPartner = $("#bindPartner").val();
+      } else {
+          shareCriteria.bindPartner = null;
+      }
+      if ($("#tradeMerchant").val() != "" && $("#tradeMerchant").val() != null) {
+          shareCriteria.tradeMerchant = $("#tradeMerchant").val();
+      } else {
+          shareCriteria.tradeMerchant = null;
+      }
+      if ($("#tradePartner").val() != "" && $("#tradePartner").val() != null) {
+          shareCriteria.tradePartner = $("#tradePartner").val();
+      } else {
+          shareCriteria.tradePartner = null;
+      }
+      if ($("#orderSid").val() != "" && $("#orderSid").val() != null) {
+          shareCriteria.orderSid = $("#orderSid").val();
+      } else {
+          shareCriteria.orderSid = null;
+      }
+      getOffLineOrderShareByAjax(shareCriteria);
+  }
   function exportExcel() {
     shareCriteria.offset = 1;
     var dateStr = $('#date-end span').text().split("-");

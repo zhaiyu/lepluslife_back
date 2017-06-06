@@ -110,7 +110,10 @@
 
                     <div class="tcdPageCode" style="display: inline;">
                     </div>
-                    <div style="display: inline;"> 共有 <span id="totalElements"></span> 个</div>
+                    <div style="display: inline;"> 共有 <span id="totalElements"></span> 个&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;跳转至&nbsp;
+                        <input id="toPage" type="text" style="width:60px" onkeyup="this.value=this.value.replace(/[^0-9]/g,'')" onafterpaste="this.value=this.value.replace(/[^0-9]/g,'')"/>&nbsp;页
+                        <button class="btn btn-primary" style="width:50px;" onclick="searchFinancialByPage()">GO</button>
+                    </div>
 
                     <button class="btn btn-primary pull-right" style="margin-top: 5px"
                             onclick="exportExcel()">导出表格
@@ -454,11 +457,16 @@
         }
         return fmt;
     }
+    // 根据条件查询
     function searchFinancialByCriteria() {
         init1 = 1;
         var dateStr = $('#date-end span').text().split("-");
-        var startDate = dateStr[0].replace(/-/g, "/");
-        var endDate = dateStr[1].replace(/-/g, "/");
+        var startDate = null;
+        var endDate = null;
+        if(dateStr.length>0 && dateStr[0]!=null&&dateStr[0]!='') {
+            startDate = dateStr[0].replace(/-/g, "/");
+            endDate = dateStr[1].replace(/-/g, "/");
+        }
         if (financialCriteria.state == 0) {
             financialCriteria.startDate = startDate;
             financialCriteria.endDate = endDate;
@@ -472,6 +480,38 @@
         } else {
             financialCriteria.merchant = null;
         }
+        getFinancialByAjax(financialCriteria);
+    }
+    //  跳转到指定页数
+    function searchFinancialByPage() {
+        var pageNum = $("#toPage").val();
+        if(pageNum==null||pageNum=='') {
+            alert("请输入目标页数 ^_^ ！");
+            return;
+        }
+        financialCriteria.offset = pageNum;
+        flag = true;
+        var dateStr = $('#date-end span').text().split("-");
+        var startDate = null;
+        var endDate = null;
+        if(dateStr.length>0 && dateStr[0]!=null&&dateStr[0]!='') {
+             startDate = dateStr[0].replace(/-/g, "/");
+            endDate = dateStr[1].replace(/-/g, "/");
+        }
+        if (financialCriteria.state == 0) {
+            financialCriteria.startDate = startDate;
+            financialCriteria.endDate = endDate;
+        }
+        if (financialCriteria.state == 1) {
+            financialCriteria.transferStartDate = startDate;
+            financialCriteria.transferEndDate = endDate;
+        }
+        if ($("#merchant-name").val() != "" && $("#merchant-name").val() != null) {
+            financialCriteria.merchant = $("#merchant-name").val();
+        } else {
+            financialCriteria.merchant = null;
+        }
+        console.log(JSON.stringify(financialCriteria))
         getFinancialByAjax(financialCriteria);
     }
     function searchFinancialByState(state) {
