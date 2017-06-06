@@ -249,12 +249,13 @@
         </div>
 
         <div>
-            <div>价格(展示用)</div>
+            <div>价格(商品列表页使用)</div>
             <div class="w-prace">
-                <span>所需金币：</span>
+                <%--<span>所需金币：</span>
                 <input type="number" placeholder="所需金币" onblur="noNumbers(event,0)"
                        id="productMinScore"
-                       value="${product.minScore / 100}"/><span> 最低价格：</span>
+                       value="${product.minScore / 100}"/>--%>
+                <span> 零售价(展示用)：</span>
                 <input type="number" placeholder="需支付的金额" onblur="noNumbers(event,2)"
                        id="productMinPrice"
                        value="${product.minPrice/100}"/>
@@ -557,26 +558,23 @@
                 product.freePrice = freePrice * 100;
             }
         }
-        //展示用金币
-        var minScore = $("#productMinScore").val();
-        if (minScore == null || minScore == "") {
-            alert("请输入最低金币");
-            $("#productMinScore").focus();
-            return
-        }
-        product.minScore = minScore * 100;
-        if ($("#productMinPrice").val() == "") {
-            alert("请输入支付价格");
+        //零售价和市场价
+        var minPrice = $("#productMinPrice").val();
+        if (minPrice == null || minPrice == "") {
+            alert("请输入零售价");
             $("#productMinPrice").focus();
             return
         }
-        product.minPrice = $("#productMinPrice").val() * 100;
-        if ($("#productPrice").val() == "") {
+        product.minPrice = minPrice * 100;
+        var maxPrice = $("#productPrice").val();
+        if (maxPrice == null || maxPrice == "") {
             alert("请输入市场价");
             $("#productPrice").focus();
             return
         }
-        product.price = $("#productPrice").val() * 100;
+        product.price = maxPrice * 100;
+        //展示用金币
+        product.minScore = (maxPrice - minPrice) * 100;
         //自定义初始销量
         if ($("#customSale").val() == "") {
             alert("请输入初始销量");
