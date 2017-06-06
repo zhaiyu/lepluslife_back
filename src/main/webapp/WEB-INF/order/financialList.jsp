@@ -511,7 +511,7 @@
         } else {
             financialCriteria.merchant = null;
         }
-        console.log(JSON.stringify(financialCriteria))
+//        console.log(JSON.stringify(financialCriteria))
         getFinancialByAjax(financialCriteria);
     }
     function searchFinancialByState(state) {

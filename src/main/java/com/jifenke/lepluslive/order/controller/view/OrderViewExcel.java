@@ -63,12 +63,12 @@ public class OrderViewExcel extends AbstractExcelView {
     excelHeader.createCell(4).setCellValue("消费者手机号");
     excelHeader.createCell(5).setCellValue("消费者编号");
     excelHeader.createCell(6).setCellValue("订单金额");
-    excelHeader.createCell(7).setCellValue("红包使用");
+    excelHeader.createCell(7).setCellValue("鼓励金使用");
     excelHeader.createCell(8).setCellValue("支付方式");
     excelHeader.createCell(9).setCellValue("实际支付");
     excelHeader.createCell(10).setCellValue("货币手续费"); //
-    excelHeader.createCell(11).setCellValue("红包手续费"); //
-    excelHeader.createCell(12).setCellValue("红包补贴"); //
+    excelHeader.createCell(11).setCellValue("鼓励金手续费"); //
+    excelHeader.createCell(12).setCellValue("鼓励金补贴"); //
     excelHeader.createCell(13).setCellValue("佣金");
     excelHeader.createCell(14).setCellValue("商户应入账");
     //15
@@ -87,7 +87,7 @@ public class OrderViewExcel extends AbstractExcelView {
     excelHeader.createCell(27).setCellValue("消费者类别");
     excelHeader.createCell(28).setCellValue("交易完成日期");
     excelHeader.createCell(29).setCellValue("商户应入账(微信渠道)");
-    excelHeader.createCell(30).setCellValue("商户应入账(红包渠道)");
+    excelHeader.createCell(30).setCellValue("商户应入账(鼓励金渠道)");
 
   }
 

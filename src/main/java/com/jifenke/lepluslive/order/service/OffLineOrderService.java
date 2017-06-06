@@ -1,10 +1,11 @@
 package com.jifenke.lepluslive.order.service;
 
 import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
-import com.jifenke.lepluslive.merchant.domain.entities.MerchantRebatePolicy;
+import com.jifenke.lepluslive.merchant.repository.MerchantRepository;
 import com.jifenke.lepluslive.merchant.service.MerchantService;
 import com.jifenke.lepluslive.order.domain.criteria.FinancialCriteria;
 import com.jifenke.lepluslive.order.domain.criteria.OLOrderCriteria;
+import com.jifenke.lepluslive.order.domain.criteria.OrderCriteria;
 import com.jifenke.lepluslive.order.domain.entities.FinancialRevise;
 import com.jifenke.lepluslive.order.domain.entities.FinancialStatistic;
 import com.jifenke.lepluslive.order.domain.entities.OffLineOrder;
@@ -15,6 +16,7 @@ import com.jifenke.lepluslive.order.repository.OffLineOrderRepository;
 import com.jifenke.lepluslive.order.repository.PosOrderRepository;
 import com.jifenke.lepluslive.user.domain.entities.LeJiaUser;
 
+import com.jifenke.lepluslive.user.repository.LeJiaUserRepository;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -65,6 +67,12 @@ public class OffLineOrderService {
 
   @Inject
   private EntityManager entityManager;
+
+  @Inject
+  private LeJiaUserRepository leJiaUserRepository;
+
+  @Inject
+  private MerchantRepository merchantRepository;
 
   public Page findOrderByPage(OLOrderCriteria orderCriteria, Integer limit) {
     Sort sort = new Sort(Sort.Direction.DESC, "createdDate");
@@ -352,5 +360,94 @@ public class OffLineOrderService {
             "select sum(scorec) from off_line_order where scorec>0 and state = 1 and complete_date > '2017-04-01 00:00:00'");
     List<BigDecimal> resultList = nativeQuery.getResultList();
     return resultList.get(0).longValue();
+  }
+
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+  public List<Object[]> countOrderMoney(OLOrderCriteria orderCriteria) {
+    StringBuffer sql = new StringBuffer();
+     sql.append(" select count(*),IFNULL(sum(total_price),0),IFNULL(sum(true_score),0),IFNULL(sum(true_pay),0) from off_line_order ");
+    sql.append(" where 1=1 ");
+    //  日期
+    String start = orderCriteria.getStartDate();
+    String end = orderCriteria.getEndDate();
+    if(start!=null&&end!=null) {
+      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+      String startDate = sdf.format(new Date(start));
+      String endDate = sdf.format(new Date(end));
+      sql.append(" and ");
+      sql.append("  complete_date BETWEEN '"+startDate+ "' and  '"+endDate+"'");
+    }
+    // 状态
+    if (orderCriteria.getState() != null) {
+      sql.append(" and ");
+      sql.append(" state = "+orderCriteria.getState());
+    }
+    // 支付方式
+    if (orderCriteria.getPayWay() != null) {
+      if (orderCriteria.getPayWay() == 1) {// 微信
+        sql.append(" and ");
+        sql.append("  (pay_way_id = "+1+" or pay_way_id = "+3+")");
+      } else { //  鼓励金
+        sql.append(" and ");
+        sql.append("  (pay_way_id = "+2+" or pay_way_id = "+4+")");
+      }
+    }
+    //  用户 Sid
+    if (!"".equals(orderCriteria.getUserSid()) && orderCriteria.getUserSid() != null) {
+      LeJiaUser leJiaUser = leJiaUserRepository.findUserBySid(orderCriteria.getOrderSid());
+      sql.append(" and ");
+      sql.append("  le_jia_user_id = "+leJiaUser.getId());
+    }
+    // 订单类型
+    if (orderCriteria.getRebateWay() != null) {
+      sql.append(" and ");
+      sql.append("  rebate_way = "+orderCriteria.getRebateWay());
+    }
+    //  金额大于等于
+    if (orderCriteria.getAmount() != null) {
+      sql.append(" and ");
+      sql.append("  total_price >= "+orderCriteria.getAmount());
+    }
+    //  订单编号
+    if (!"".equals(orderCriteria.getOrderSid()) && orderCriteria.getOrderSid() != null) {
+      sql.append(" and ");
+      sql.append("  order_sid = "+orderCriteria.getOrderSid());
+    }
+    //  订单来源
+    if (orderCriteria.getOrderSource() != null) {
+      if (orderCriteria.getOrderSource() == 1) {//APP
+        sql.append(" and ");
+        sql.append("  (pay_way_id = "+3+" or pay_way_id  = "+4+")");
+      } else { //公众号
+        sql.append(" and ");
+        sql.append("  (pay_way_id = "+1+" or pay_way_id  = "+2+")");
+      }
+    }
+    // 商户
+    if (orderCriteria.getMerchant() != null && orderCriteria.getMerchant() != "") {
+      Merchant merchant = null;
+      if (orderCriteria.getMerchant().matches("^\\d{1,6}$")) {
+        merchant = merchantRepository.findByMerchantSid(orderCriteria.getMerchant()).get();
+        sql.append(" and ");
+        sql.append("  merchant_id = "+merchant.getId());
+      } else {
+        List<Merchant> merchants = merchantRepository.findByName(orderCriteria.getMerchant());
+        if(merchants!=null && merchants.size()>0) {
+          merchant = merchants.get(0);
+          sql.append(" and ");
+          sql.append("  merchant_id = "+merchant.getId());
+        }
+      }
+    }
+    // 用户电话
+    if(orderCriteria.getPhoneNumber()!=null) {
+      LeJiaUser leJiaUser = leJiaUserRepository.findUserByPhoneNumber(orderCriteria.getPhoneNumber());
+      if(leJiaUser!=null) {
+        sql.append(" and ");
+        sql.append("  le_jia_user_id = "+leJiaUser.getId());
+      }
+    }
+    List<Object[]> resultList = entityManager.createNativeQuery(sql.toString()).getResultList();
+    return resultList;
   }
 }

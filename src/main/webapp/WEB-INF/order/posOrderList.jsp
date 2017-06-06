@@ -157,7 +157,10 @@
                     </div>
                     <div class="tcdPageCode" style="display: inline;">
                     </div>
-                    <div style="display: inline;"> 共有 <span id="totalElements"></span> 个</div>
+                    <div style="display: inline;"> 共有 <span id="totalElements"></span> 个&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;跳转至&nbsp;
+                        <input id="toPage" type="text" style="width:60px" onkeyup="this.value=this.value.replace(/[^0-9]/g,'')" onafterpaste="this.value=this.value.replace(/[^0-9]/g,'')"/>&nbsp;页
+                        <button class="btn btn-primary" style="width:50px;" onclick="searchPosOrderByPage()">GO</button>
+                    </div>
                 </div>
             </div>
         </div>
@@ -479,6 +482,56 @@
         }
     }
 
+    //  跳转到指定页
+    function searchPosOrderByPage(type) {
+        var pageNum = $("#toPage").val();
+        if(pageNum==null||pageNum=='') {
+            alert("请输入目标页数 ^_^ ！");
+            return;
+        }
+        posOrderCriteria.offset = pageNum;
+        var dateStr = $('#date-end span').text().split("-");
+        if (dateStr != null && dateStr != '') {
+            var startDate = dateStr[0].replace(/-/g, "/");
+            var endDate = dateStr[1].replace(/-/g, "/");
+            posOrderCriteria.startDate = startDate;
+            posOrderCriteria.endDate = endDate;
+        }
+        if ($("#locationCity").val() != "" && $("#locationCity").val() != null) {
+            posOrderCriteria.merchantLocation = $("#locationCity").val();
+        } else {
+            posOrderCriteria.merchantLocation = null;
+        }
+        if ($("#orderType").val() != 0) {
+            posOrderCriteria.rebateWay = $("#orderType").val();
+        } else {
+            posOrderCriteria.rebateWay = null;
+        }
+        if ($("#tradeFlag").val() != "" && $("#tradeFlag").val() != null) {
+            posOrderCriteria.tradeFlag = $("#tradeFlag").val();
+        } else {
+            posOrderCriteria.tradeFlag = null;
+        }
+        if ($("#merchant-name").val() != "" && $("#merchant-name").val() != null) {
+            posOrderCriteria.merchant = $("#merchant-name").val();
+        } else {
+            posOrderCriteria.merchant = null;
+        }
+        if ($("#userSid").val() != "" && $("#userSid").val() != null) {
+            posOrderCriteria.userSid = $("#userSid").val();
+        } else {
+            posOrderCriteria.userSid = null;
+        }
+
+        if ($("#userPhone").val() != "" && $("#userPhone").val() != null) {
+            posOrderCriteria.userPhone = $("#userPhone").val();
+        } else {
+            posOrderCriteria.userPhone = null;
+        }
+        if(type != 1){
+            getPosOrderByAjax(posOrderCriteria);
+        }
+    }
 
     function billingDownload() {
         location.href="/manage/billingDownload"

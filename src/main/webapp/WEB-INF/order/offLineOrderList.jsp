@@ -59,7 +59,7 @@
                         <select class="form-control" id="pay-style">
                             <option value="0">全部支付方式</option>
                             <option value="1">微信支付</option>
-                            <option value="2">红包支付</option>
+                            <option value="2">鼓励金支付</option>
                         </select>
                     </div>
                     <div class="form-group col-md-3">
@@ -126,6 +126,7 @@
                     </li>
                 </ul>
                 <div id="myTabContent" class="tab-content">
+                    <div id="dataDisplay"></div>
                     <div class="tab-pane fade in active" id="tab1">
                         <table class="table table-bordered table-hover">
                             <thead>
@@ -136,7 +137,7 @@
                                 <th>商户名称</th>
                                 <th>消费者信息</th>
                                 <th>订单金额</th>
-                                <th>红包使用</th>
+                                <th>鼓励金使用</th>
                                 <th>支付方式</th>
                                 <th>实际支付</th>
                                 <th>佣金</th>
@@ -272,7 +273,8 @@
                    data: JSON.stringify(olOrderCriteria),
                    contentType: "application/json",
                    success: function (data) {
-                       var page = data.data;
+                       var page = data.data.page;
+                       var countData = data.data.countData;
                        var content = page.content;
                        var totalPage = page.totalPages;
                        $("#totalElements").html(page.totalElements);
@@ -287,6 +289,9 @@
                            initPage(1, totalPage);
                        }
                        var orderContent = document.getElementById("orderContent");
+                       var dataDisplay = document.getElementById("dataDisplay");
+                       dataDisplay.innerHTML='【检索订单列表=》订单总数=<span style="color: red">'+page.totalElements+'</span>单; 订单总额=<span style="color: red">'+(countData[0][1]/100.0)+'</span>元; 消耗鼓励金总额=<span style="color: red">'+(countData[0][2]/100.0)+'</span>元;消耗货币总额 =<span style="color: red">'+(countData[0][3]/100.0)+'</span>元】';
+//                       console.log(JSON.stringify(countData));
                        for (i = 0; i < content.length; i++) {
                            var contentStr = '<tr><td>' + content[i].orderSid + '</td>';
                            if (content[i].rebateWay == 0) {

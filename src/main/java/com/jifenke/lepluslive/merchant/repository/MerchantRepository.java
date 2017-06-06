@@ -57,4 +57,7 @@ public interface MerchantRepository extends JpaRepository<Merchant, Long> {
    * @param merchantUser 商户
    */
   List<Merchant> findByMerchantUser(MerchantUser merchantUser);
+
+  @Query(value = "SELECT * FROM merchant WHERE name=?1",nativeQuery = true)
+  List<Merchant> findByName(String name);
 }
