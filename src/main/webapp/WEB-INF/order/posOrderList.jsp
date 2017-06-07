@@ -101,7 +101,6 @@
                     </div>
                     <div class="form-group col-md-3"></div>
                 </div>
-                <div id="dataDisplay"></div>
                 <ul id="myTab" class="nav nav-tabs">
                     <li><a href="#tab1" data-toggle="tab" onclick="searchOrderByState()">全部订单</a>
                     </li>
@@ -109,12 +108,13 @@
                                           onclick="searchOrderByState(1)">已支付</a></li>
                     <li><a href="#tab3" data-toggle="tab" onclick="searchOrderByState(0)">未支付</a>
                     </li>
-                    <li><a href="#tab3" data-toggle="tab">现金记账</a>
-                    </li>
+                    <%--<li><a href="#tab3" data-toggle="tab">现金记账</a>--%>
+                    <%--</li>--%>
                     <li style="float: right"><button type="button" class="btn btn-primary createLocation" onclick="reconciliationDifferences();">对账差错记录</button></li>
                     <li style="float: right;margin-right: 10px;"><button type="button" class="btn btn-primary createLocation" onclick="billingDownload();">掌富对账单下载</button></li>
                     <li style="float: right;margin-right: 10px;"><button type="button" class="btn btn-primary createLocation" onclick="exportPosOrderData();">报表导出</button></li>
                 </ul>
+                <div id="dataDisplay"></div>
                 <div id="myTabContent" class="tab-content">
                     <div class="tab-pane fade in active" id="tab1">
                         <table class="table table-bordered table-hover">

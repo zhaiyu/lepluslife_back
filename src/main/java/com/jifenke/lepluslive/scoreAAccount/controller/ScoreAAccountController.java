@@ -320,6 +320,11 @@ public class ScoreAAccountController {
         }
         List<Object[]> distributionList = scoreAAccountService.findScoreaDistribution(startDate, endDate);
         List<Object[]> pageList = new ArrayList<Object[]>();
+        Long totalMoney = 0L;
+        for (Object[] objects : distributionList) {
+            Long money = new Long(objects[1].toString());
+            totalMoney+=money;
+        }
         int offset = scoreAAccountDistributionCriteria.getOffset();
         int totalElements = distributionList.size();
         double totalPages = Math.ceil(totalElements / 5.0);
@@ -332,6 +337,7 @@ public class ScoreAAccountController {
         dataMap.put("totalPages", totalPages);
         dataMap.put("totalElements", totalElements);
         dataMap.put("content", pageList);
+        dataMap.put("totalMoney", totalMoney);
         return LejiaResult.ok(dataMap);
     }
     //折线图
@@ -532,6 +538,26 @@ public class ScoreAAccountController {
         }
         lDate.add(endDate);//把结束时间加入集合
         return lDate;
+    }
+
+    /**
+     *  2017/06/07   根据日期统计顶部红包数据
+     */
+    @RequestMapping(value = "/scoreAAccount/countByDate", method = RequestMethod.POST)
+    @ResponseBody
+    public LejiaResult findScoreAByDate(@RequestBody ScoreAAccountCriteria criteria) {
+        Map model = new HashedMap();
+        Long presentHoldScorea=scoreAAccountService.findPresentHoldScorea();
+        Long issueScorea=scoreAAccountService.findIssueScorea();
+        Long useScorea=scoreAAccountService.findUseScorea();
+        Long ljCommission=scoreAAccountService.findLjCommission();
+        Long shareMoney=scoreAAccountService.findShareMoney();
+        model.put("presentHoldScorea",presentHoldScorea);
+        model.put("issueScorea",issueScorea);
+        model.put("useScorea",useScorea);
+        model.put("ljCommission",ljCommission);
+        model.put("shareMoney",shareMoney);
+        return LejiaResult.ok(model);
     }
 }
 //

@@ -504,6 +504,11 @@ public class PosOrderService {
             sql.append(" and ");
             sql.append("  po.trade_flag = " + orderCriteria.getTradeFlag());
         }
+        // 状态
+        if (orderCriteria.getState() != null) {
+            sql.append(" and ");
+            sql.append(" po.state = "+orderCriteria.getState());
+        }
         // 所在城市
         if (orderCriteria.getMerchantLocation() != null) {
             sql.append(" and ");
