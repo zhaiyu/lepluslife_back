@@ -101,6 +101,7 @@
                     </div>
                     <div class="form-group col-md-3"></div>
                 </div>
+                <div id="dataDisplay"></div>
                 <ul id="myTab" class="nav nav-tabs">
                     <li><a href="#tab1" data-toggle="tab" onclick="searchOrderByState()">全部订单</a>
                     </li>
@@ -299,8 +300,11 @@
                    data: JSON.stringify(posOrderCriteria),
                    contentType: "application/json",
                    success: function (data) {
-                       var page = data.data;
+                       var countData = data.data.countData;
+                       var page = data.data.page;
                        content = page.content;
+                       var dataDisplay = document.getElementById("dataDisplay");
+                       dataDisplay.innerHTML='【检索订单列表=》订单总数=<span style="color: red">'+page.totalElements+'</span>单; 订单总额=<span style="color: red">'+(countData[0][1]/100.0)+'</span>元; 消耗鼓励金总额=<span style="color: red">'+(countData[0][2]/100.0)+'</span>元;消耗货币总额 =<span style="color: red">'+(countData[0][3]/100.0)+'</span>元】';
                        var totalPage = page.totalPages;
                        $("#totalElements").html(page.totalElements);
                        if (totalPage == 0) {

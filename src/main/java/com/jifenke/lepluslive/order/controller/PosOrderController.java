@@ -53,7 +53,11 @@ public class PosOrderController {
             posOrderCriteria.setOffset(1);
         }
         Page page = posOrderService.findOrderByPage(posOrderCriteria, 10);
-        return LejiaResult.ok(page);
+        List<Object[]> countData = posOrderService.countOrderMoney(posOrderCriteria);
+        Map map = new HashMap();
+        map.put("page",page);
+        map.put("countData",countData);
+        return LejiaResult.ok(map);
     }
 
     @RequestMapping(value = "/pos_daily_bill/content/{offset}", method = RequestMethod.GET)
