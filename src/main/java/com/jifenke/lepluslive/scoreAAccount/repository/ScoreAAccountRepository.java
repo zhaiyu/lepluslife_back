@@ -67,6 +67,11 @@ public interface ScoreAAccountRepository extends JpaRepository<ScoreAAccount,Lon
   Long findShareMoney();
 
 
+  /**
+   * 用户持有金币数
+   */
+  @Query(value = "SELECT SUM(total_score) FROM scorec ", nativeQuery = true)
+  Long findPresentHoldScorec();
 
   @Query(value = "SELECT origin,SUM(number) from scorea_detail  WHERE number>0 AND date_created between ?1 and ?2 GROUP BY origin", nativeQuery = true)
   List<Object[]> findScoreaDistribution(String startDate,String endDate);

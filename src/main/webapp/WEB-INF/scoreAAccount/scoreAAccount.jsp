@@ -66,13 +66,13 @@
                                    placeholder="截止时间">
                         </div>
                         <div class="Mod-2">
-                           <%-- <button class="ModButton ModButton_ordinary ModRadius"
+                           <button class="ModButton ModButton_ordinary ModRadius"
                                     onclick="searchTotalScoreAByDate()">筛选查询
-                            </button>--%>
+                            </button>
                         </div>
                     </div>
                 </div>
-                <div class="topDataShow">
+                <div class="topDataShow" id="scoreTotal">
                     <div>
                         <div><img src="${resourceUrl}/images/hb.png" alt=""></div>
                         <div>
@@ -826,7 +826,7 @@
         drawMyChart();
     }
     //  2017/6/7  根据日期查询红包数据
-    /*function searchTotalScoreAByDate() {
+    function searchTotalScoreAByDate() {
         var thisEndDate = $("#HB_data-endTime").val();
         if(thisEndDate==''||thisEndDate==null) {
             alert("请选择截止日期");
@@ -836,15 +836,29 @@
         criteria.endDate = thisEndDate;
         $.ajax({
             type: "post",
-            url: "/manage/scoreAAccount/geMyChartByAjax",
+            url: "/manage/scoreAAccount/dailyTotal",
             async: false,
             data: JSON.stringify(criteria),
             contentType: "application/json",
-            success: function (data) {
-
+            success: function (response) {
+                if(response.status==200) {
+                    var data = response.data;
+                    var scoreTotal = document.getElementById("scoreTotal");
+                    scoreTotal.innerHTML="";
+                    scoreTotal.innerHTML+='<div><div><img src="${resourceUrl}/images/hb.png" alt=""></div><div><p>消费者持有鼓励金</p>'+
+                        '<p>'+(data.totalScoreA/100.0)+'</p></div></div>'+
+                        '<div> <div><img src="${resourceUrl}/images/hb.png" alt=""></div> <div><p>累计发放鼓励金</p>'+
+                        '<p>'+(data.provideScoreA/100.0)+'</p> </div></div>'+
+                        '<div><div><img src="${resourceUrl}/images/hb.png" alt=""></div><div>'+
+                        '<p>消费已使用鼓励金</p><p>'+(-data.usedScoreA/100.0)+'</p>'+
+                        '</div></div><div><div><img src="${resourceUrl}/images/yj.png" alt=""></div>'+
+                        '<div><p>累计佣金收入</p><p>'+(data.commissionIncome/100.0)+'</p></div></div>';
+                }else {
+                    alert(response.msg)
+                }
             }
         });
-    }*/
+    }
 </script>
 </body>
 </html>

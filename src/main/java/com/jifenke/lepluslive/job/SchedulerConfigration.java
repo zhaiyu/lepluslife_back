@@ -136,9 +136,33 @@ public class SchedulerConfigration {
     return tigger;
   }
 
+  /**
+   *  定时保存当天账户汇总记录
+   */
 
+  @Bean(name = "socreDailyTotalDetail")
+  public JobDetailFactoryBean socreDailyTotalDetail() {
+    JobDetailFactoryBean bean = new JobDetailFactoryBean();
+    bean.setJobClass(ScoreDailyTotalJob.class);
+    bean.setDurability(false);
+    return bean;
+  }
+  @Bean(name = "socreDailyTotalTrigger")
+  public CronTriggerFactoryBean scoreDailyTotalCronTriggerBean() {
+    CronTriggerFactoryBean tigger = new CronTriggerFactoryBean();
+    tigger.setJobDetail(socreDailyTotalDetail().getObject());
+    try {
+      tigger.setCronExpression("0 0 0 * * ?");  // 每天凌晨执行
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return tigger;
+  }
 
-
+  /**
+   *    工厂  -  设置定时任务须在此配置
+   * @return
+   */
   @Bean
   public SchedulerFactoryBean schedulerFactory() {
     Collection<String> activeProfiles = Arrays.asList(env.getActiveProfiles());
@@ -150,9 +174,12 @@ public class SchedulerConfigration {
       bean.setDataSource(dataSource);
       bean.setTriggers(cronTriggerBean().getObject(), wxCronTriggerBean().getObject(),
                        scoreAAccountAddCronTriggerBean().getObject(),
-                       scanCodeCronTriggerBean().getObject(), monitorScoreCTriggerBean().getObject());
+                       scanCodeCronTriggerBean().getObject(), monitorScoreCTriggerBean().getObject(),
+                       scoreDailyTotalCronTriggerBean().getObject());
       bean.setSchedulerName("orderConfrim");
     }
     return bean;
   }
+
+
 }

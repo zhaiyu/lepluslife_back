@@ -9,7 +9,9 @@ import com.jifenke.lepluslive.order.service.ShareService;
 import com.jifenke.lepluslive.score.domain.criteria.ScoreDetailCriteria;
 import com.jifenke.lepluslive.score.domain.entities.ScoreA;
 import com.jifenke.lepluslive.score.domain.entities.ScoreADetail;
+import com.jifenke.lepluslive.score.domain.entities.ScoreDailyTotal;
 import com.jifenke.lepluslive.score.service.ScoreADetailService;
+import com.jifenke.lepluslive.score.service.ScoreDailyTotalService;
 import com.jifenke.lepluslive.scoreAAccount.controller.view.ScoreAAccountDetailViewExcel;
 import com.jifenke.lepluslive.scoreAAccount.controller.view.ScoreAAccountViewExcel;
 import com.jifenke.lepluslive.scoreAAccount.domain.criteria.ScoreAAccountCriteria;
@@ -50,6 +52,9 @@ public class ScoreAAccountController {
 
   @Inject
   private ScoreAAccountDetailViewExcel scoreAAccountDetailViewExcel;
+
+  @Inject
+  private ScoreDailyTotalService scoreDailyTotalService;
 
   @RequestMapping(value = "/scoreAAccountPage", method = RequestMethod.GET)
   public ModelAndView scoreAAccountPage(Model model) {
@@ -543,21 +548,17 @@ public class ScoreAAccountController {
     /**
      *  2017/06/07   根据日期统计顶部红包数据
      */
-    @RequestMapping(value = "/scoreAAccount/countByDate", method = RequestMethod.POST)
+    @RequestMapping(value = "/scoreAAccount/dailyTotal", method = RequestMethod.POST)
     @ResponseBody
     public LejiaResult findScoreAByDate(@RequestBody ScoreAAccountCriteria criteria) {
-        Map model = new HashedMap();
-        Long presentHoldScorea=scoreAAccountService.findPresentHoldScorea();
-        Long issueScorea=scoreAAccountService.findIssueScorea();
-        Long useScorea=scoreAAccountService.findUseScorea();
-        Long ljCommission=scoreAAccountService.findLjCommission();
-        Long shareMoney=scoreAAccountService.findShareMoney();
-        model.put("presentHoldScorea",presentHoldScorea);
-        model.put("issueScorea",issueScorea);
-        model.put("useScorea",useScorea);
-        model.put("ljCommission",ljCommission);
-        model.put("shareMoney",shareMoney);
-        return LejiaResult.ok(model);
+        String endDate = criteria.getEndDate();
+        Date date = new Date(endDate);
+        ScoreDailyTotal dailyTotal = scoreDailyTotalService.findByDeadLine(date);
+        if(dailyTotal!=null) {
+            return LejiaResult.ok(dailyTotal);
+        }else {
+            return LejiaResult.build(400,"该日暂无记录数据 ^_^ ！");
+        }
     }
 }
 //
