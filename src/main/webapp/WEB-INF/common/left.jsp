@@ -176,9 +176,9 @@
             <li><h4 class="M2"><span></span>臻品商城</h4>
 
                 <div class="list-item none none2">
-                    <shiro:hasPermission name="topic:query">
+                   <%-- <shiro:hasPermission name="topic:query">
                         <a href="/manage/topic">专题模块</a>
-                    </shiro:hasPermission>
+                    </shiro:hasPermission>--%>
                     <shiro:hasPermission name="product:query">
                         <a href="/manage/product">臻品商城</a>
                     </shiro:hasPermission>
