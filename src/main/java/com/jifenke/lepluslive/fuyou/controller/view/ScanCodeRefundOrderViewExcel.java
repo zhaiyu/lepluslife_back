@@ -80,10 +80,10 @@ public class ScanCodeRefundOrderViewExcel extends AbstractExcelView {
       HSSFRow excelRow = excelSheet.createRow(record++);
       excelRow.createCell(0).setCellValue(refundOrder.getRefundOrderSid());
       excelRow.createCell(1).setCellValue(order.getOrderSid());
-      excelRow.createCell(2).setCellValue(order.getMerchantNum());
-      excelRow.createCell(3).setCellValue(order.getMerchantRate());
+      excelRow.createCell(2).setCellValue(order.getScanCodeOrderExt().getMerchantNum());
+      excelRow.createCell(3).setCellValue(order.getScanCodeOrderExt().getMerchantRate().toString());
       excelRow.createCell(4).setCellValue(order.getMerchant().getName());
-      excelRow.createCell(5).setCellValue(order.getMerchantUserId());
+      excelRow.createCell(5).setCellValue(order.getScanCodeOrderExt().getMerchantUserId());
       excelRow.createCell(6).setCellValue(sdf.format(refundOrder.getCompleteDate()));
       excelRow.createCell(7).setCellValue(sdf.format(order.getCompleteDate()));
       excelRow.createCell(8).setCellValue(order.getTruePay() / 100.0);

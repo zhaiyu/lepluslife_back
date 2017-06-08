@@ -117,7 +117,7 @@ public class ShareService {
    *
    * @param orderId 订单ID
    */
-  public OffLineOrderShare findByScanCodeOrder(String orderId) {
+  public OffLineOrderShare findByScanCodeOrder(Long orderId) {
     return offLineOrderShareRepository.findByScanCodeOrder(orderId);
   }
 }
