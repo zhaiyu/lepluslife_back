@@ -170,7 +170,10 @@ public void addScoreAAccountData(List<String> list) {
   public Long findPresentHoldScorea() {
     return  scoreAAccountRepository.findPresentHoldScorea();
   }
-
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+  public Long findPresentHoldScorea(Date start,Date end) {
+    return  scoreAAccountRepository.findPresentHoldScoreaByDate(start,end);
+  }
   @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
   public Long findIssueScorea() {
     return  scoreAAccountRepository.findIssueScorea();

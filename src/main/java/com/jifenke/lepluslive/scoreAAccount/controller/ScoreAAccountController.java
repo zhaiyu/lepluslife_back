@@ -9,7 +9,9 @@ import com.jifenke.lepluslive.order.service.ShareService;
 import com.jifenke.lepluslive.score.domain.criteria.ScoreDetailCriteria;
 import com.jifenke.lepluslive.score.domain.entities.ScoreA;
 import com.jifenke.lepluslive.score.domain.entities.ScoreADetail;
+import com.jifenke.lepluslive.score.domain.entities.ScoreDailyTotal;
 import com.jifenke.lepluslive.score.service.ScoreADetailService;
+import com.jifenke.lepluslive.score.service.ScoreDailyTotalService;
 import com.jifenke.lepluslive.scoreAAccount.controller.view.ScoreAAccountDetailViewExcel;
 import com.jifenke.lepluslive.scoreAAccount.controller.view.ScoreAAccountViewExcel;
 import com.jifenke.lepluslive.scoreAAccount.domain.criteria.ScoreAAccountCriteria;
@@ -50,6 +52,9 @@ public class ScoreAAccountController {
 
   @Inject
   private ScoreAAccountDetailViewExcel scoreAAccountDetailViewExcel;
+
+  @Inject
+  private ScoreDailyTotalService scoreDailyTotalService;
 
   @RequestMapping(value = "/scoreAAccountPage", method = RequestMethod.GET)
   public ModelAndView scoreAAccountPage(Model model) {
@@ -320,6 +325,11 @@ public class ScoreAAccountController {
         }
         List<Object[]> distributionList = scoreAAccountService.findScoreaDistribution(startDate, endDate);
         List<Object[]> pageList = new ArrayList<Object[]>();
+        Long totalMoney = 0L;
+        for (Object[] objects : distributionList) {
+            Long money = new Long(objects[1].toString());
+            totalMoney+=money;
+        }
         int offset = scoreAAccountDistributionCriteria.getOffset();
         int totalElements = distributionList.size();
         double totalPages = Math.ceil(totalElements / 5.0);
@@ -332,6 +342,7 @@ public class ScoreAAccountController {
         dataMap.put("totalPages", totalPages);
         dataMap.put("totalElements", totalElements);
         dataMap.put("content", pageList);
+        dataMap.put("totalMoney", totalMoney);
         return LejiaResult.ok(dataMap);
     }
     //折线图
@@ -532,6 +543,22 @@ public class ScoreAAccountController {
         }
         lDate.add(endDate);//把结束时间加入集合
         return lDate;
+    }
+
+    /**
+     *  2017/06/07   根据日期统计顶部红包数据
+     */
+    @RequestMapping(value = "/scoreAAccount/dailyTotal", method = RequestMethod.POST)
+    @ResponseBody
+    public LejiaResult findScoreAByDate(@RequestBody ScoreAAccountCriteria criteria) {
+        String endDate = criteria.getEndDate();
+        Date date = new Date(endDate);
+        ScoreDailyTotal dailyTotal = scoreDailyTotalService.findByDeadLine(date);
+        if(dailyTotal!=null) {
+            return LejiaResult.ok(dailyTotal);
+        }else {
+            return LejiaResult.build(400,"该日暂无记录数据 ^_^ ！");
+        }
     }
 }
 //

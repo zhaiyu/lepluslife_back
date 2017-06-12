@@ -53,29 +53,44 @@
     <div id="leftIframe">
         <%@include file="../common/left.jsp" %>
     </div>
-
     <div class="m-right">
         <div class="main">
             <div class="container-fluid">
-                <div class="topDataShow">
+                <div class="MODInput_row">
+                    <div class="Mod-6" style="margin: 10px 0">
+                        <div class="ModLabel ModRadius-left">截止日期</div>
+                        <div class="Mod-6" style="margin-top: -2px">
+                         <%--   <input id="HB_data-startTime" class="laydate-icon layer-date ModRadius-right"
+                                   placeholder="起始时间">--%>
+                            <input id="HB_data-endTime" class="laydate-icon layer-date ModRadius"
+                                   placeholder="截止时间">
+                        </div>
+                        <div class="Mod-2">
+                           <button class="ModButton ModButton_ordinary ModRadius"
+                                    onclick="searchTotalScoreAByDate()">筛选查询
+                            </button>
+                        </div>
+                    </div>
+                </div>
+                <div class="topDataShow" id="scoreTotal">
                     <div>
                         <div><img src="${resourceUrl}/images/hb.png" alt=""></div>
                         <div>
-                            <p>消费者当前持有红包</p>
+                            <p>消费者当前持有鼓励金</p>
                             <p>${presentHoldScorea/100}</p>
                         </div>
                     </div>
                     <div>
                         <div><img src="${resourceUrl}/images/hb.png" alt=""></div>
                         <div>
-                            <p>累计发放红包</p>
+                            <p>累计发放鼓励金</p>
                             <p>${issueScorea/100}</p>
                         </div>
                     </div>
                     <div>
                         <div><img src="${resourceUrl}/images/hb.png" alt=""></div>
                         <div>
-                            <p>消费已使用红包</p>
+                            <p>消费已使用鼓励金</p>
                             <p>${-useScorea/100}</p>
                         </div>
                     </div>
@@ -86,13 +101,13 @@
                             <p>${ljCommission/100}</p>
                         </div>
                     </div>
-                    <div>
-                        <div><img src="${resourceUrl}/images/jf.png" alt=""></div>
-                        <div>
-                            <p>分润后积分收入</p>
-                            <p>${shareMoney/100}</p>
-                        </div>
-                    </div>
+                    <%--  <div>
+                          <div><img src="${resourceUrl}/images/jf.png" alt=""></div>
+                          <div>
+                              <p>分润后积分收入</p>
+                              <p>${shareMoney/100}</p>
+                          </div>
+                      </div>--%>
                 </div>
                 <ul id="myTab" class="nav nav-tabs">
                     <li><a href="#tab1" data-toggle="tab" onclick="getScoreaTrend()">红包数据趋势</a></li>
@@ -113,7 +128,9 @@
                                 </div>
                             </div>
                             <div class="Mod-2">
-                                <button class="ModButton ModButton_ordinary ModRadius" onclick="searchScoreAAccountByCriteria()">筛选查询</button>
+                                <button class="ModButton ModButton_ordinary ModRadius"
+                                        onclick="searchScoreAAccountByCriteria()">筛选查询
+                                </button>
                             </div>
                         </div>
                         <div class="eCharts">
@@ -194,11 +211,11 @@
                                                 </tbody>
                                             </table>
                                         </div>
+                                        <div style="margin-left:120px;">汇总: <span id="totalCount" style="color:red"></span></div>
                                         <nav class="pull-right">
                                             <div class="tcdPageCode" style="display: inline;">
                                             </div>
                                             <div style="display: inline;"> 共有 <span id="totalElements"></span> 个</div>
-
                                         </nav>
                                     </div>
                                 </div>
@@ -218,12 +235,12 @@
 
 <script>
 
-//红包分布
+    //红包分布
     var distributionFlag = true;
     var distributionInit1 = 0;
     var scoreAAccountDistributionCriteria = {};
 
-//红包数据趋势
+    //红包数据趋势
     var scoreAAccountCriteria = {};
     var flag = true;
     var init1 = 0;
@@ -236,7 +253,7 @@
         getScoreAAccountByAjax(scoreAAccountCriteria);
         drawMyChart();
     });
-//红包数据趋势
+    //红包数据趋势
     function getScoreAAccountByAjax(scoreAAccountCriteria) {
         scoreAAccountContent.innerHTML = "";
         $.ajax({
@@ -249,10 +266,10 @@
                 var page = data.data;
                 var content = page.content;
                 var totalPage = page.totalPages;
-                var useScoreA=page.useScoreA/100;
-                var issuedScoreA=page.issuedScoreA/100;
-                var commissionIncome=page.commissionIncome/100;
-                var jfkShare=page.jfkShare/100;
+                var useScoreA = page.useScoreA / 100;
+                var issuedScoreA = page.issuedScoreA / 100;
+                var commissionIncome = page.commissionIncome / 100;
+                var jfkShare = page.jfkShare / 100;
                 $("#totalElements2").html(page.totalElements);
                 if (totalPage == 0) {
                     totalPage = 1;
@@ -265,114 +282,113 @@
                     initPage2(1, totalPage);
                 }
 
-                var totalData=document.getElementById("totalData");
+                var totalData = document.getElementById("totalData");
                 var totalDataStr = '';
-                for ( i = 0; i < content.length; i++) {
+                for (i = 0; i < content.length; i++) {
                     var contentStr = '<tr>';
                     contentStr +=
-                            '<td><span>'
-                            + new Date(content[i].changeDate).format('yyyy-MM-dd')
-                            + '</span></td>';
+                        '<td><span>'
+                        + new Date(content[i].changeDate).format('yyyy-MM-dd')
+                        + '</span></td>';
 
 
-                    contentStr += '<td>' + '￥'+content[i].useScoreA / 100 +'('+ content[i].settlementAmount / 100+')'+ '</td>';
-                    contentStr += '<td>' +  '￥'+content[i].issuedScoreA / 100 + '</td>';
-                    contentStr += '<td>' +  '￥'+content[i].commissionIncome / 100 + '</td>';
-                    contentStr += '<td>' +  '￥'+content[i].jfkShare / 100 + '</td>';
+                    contentStr += '<td>' + '￥' + content[i].useScoreA / 100 + '(' + content[i].settlementAmount / 100 + ')' + '</td>';
+                    contentStr += '<td>' + '￥' + content[i].issuedScoreA / 100 + '</td>';
+                    contentStr += '<td>' + '￥' + content[i].commissionIncome / 100 + '</td>';
+                    contentStr += '<td>' + '￥' + content[i].jfkShare / 100 + '</td>';
                     contentStr +=
-                            '<td><input type="hidden" class="id-hidden" value="' + new Date(content[i].changeDate).format('yyyy-MM-dd')+'"><button class="btn btn-primary serchScoreAAccountDetail")">查看详情</button></td>';
+                        '<td><input type="hidden" class="id-hidden" value="' + new Date(content[i].changeDate).format('yyyy-MM-dd') + '"><button class="btn btn-primary serchScoreAAccountDetail")">查看详情</button></td>';
                     contentStr += '</tr>';
                     scoreAAccountContent.innerHTML += contentStr;
                 }
-                totalDataStr='所选时段内使用红包￥'+useScoreA+',累计发放红包￥'+issuedScoreA+',累计佣金收入￥'+commissionIncome+',分润后积分客累计收入￥'+jfkShare;
-                totalData.innerHTML='';
-                totalData.innerHTML+= totalDataStr;
+                totalDataStr = '所选时段内使用红包￥' + useScoreA + ',累计发放红包￥' + issuedScoreA + ',累计佣金收入￥' + commissionIncome + ',分润后积分客累计收入￥' + jfkShare;
+                totalData.innerHTML = '';
+                totalData.innerHTML += totalDataStr;
                 $(".serchScoreAAccountDetail").each(function (i) {
                     $(".serchScoreAAccountDetail").eq(i).bind("click", function () {
                         var time = $(this).parent().find(".id-hidden").val();
                         location.href =
-                                "/manage/serchScoreAAccountDetailPage?time=" + time;
+                            "/manage/serchScoreAAccountDetailPage?time=" + time;
                     });
                 });
             }
         });
     }
-//红包数据趋势
-function initPage2(page, totalPage) {
-    $('.tcdPageCode2').unbind();
-    $(".tcdPageCode2").createPage({
-        pageCount: totalPage,
-        current: page,
-        backFn: function (p) {
-            scoreAAccountCriteria.offset = p;
-            init1 = 0;
-            getScoreAAccountByAjax(scoreAAccountCriteria);
+    //红包数据趋势
+    function initPage2(page, totalPage) {
+        $('.tcdPageCode2').unbind();
+        $(".tcdPageCode2").createPage({
+            pageCount: totalPage,
+            current: page,
+            backFn: function (p) {
+                scoreAAccountCriteria.offset = p;
+                init1 = 0;
+                getScoreAAccountByAjax(scoreAAccountCriteria);
+            }
+        });
+    }
+    function exportExcel() {
+
+
+        if (scoreAAccountCriteria.startDate == null) {
+            scoreAAccountCriteria.startDate = null;
         }
-    });
-}
-function exportExcel() {
+        if (scoreAAccountCriteria.endDate == null) {
+            scoreAAccountCriteria.endDate = null;
+        }
+        if (scoreAAccountCriteria.useScoreA == null) {
+            scoreAAccountCriteria.useScoreA = null;
+        }
+        if (scoreAAccountCriteria.IssuedScoreA == null) {
+            scoreAAccountCriteria.IssuedScoreA = null;
+        }
+        if (scoreAAccountCriteria.commissionIncome == null) {
+            scoreAAccountCriteria.commissionIncome = null;
+        }
+        if (scoreAAccountCriteria.commissionIncome == null) {
+            scoreAAccountCriteria.commissionIncome = null;
+        }
+        post("/manage/scoreAAccount/export", scoreAAccountCriteria);
+    }
 
-
-    if (scoreAAccountCriteria.startDate == null) {
-        scoreAAccountCriteria.startDate = null;
-    }
-    if (scoreAAccountCriteria.endDate == null) {
-        scoreAAccountCriteria.endDate = null;
-    }
-    if (scoreAAccountCriteria.useScoreA == null) {
-        scoreAAccountCriteria.useScoreA = null;
-    }
-    if (scoreAAccountCriteria.IssuedScoreA == null) {
-        scoreAAccountCriteria.IssuedScoreA = null;
-    }
-    if (scoreAAccountCriteria.commissionIncome == null) {
-        scoreAAccountCriteria.commissionIncome = null;
-    }
-    if (scoreAAccountCriteria.commissionIncome == null) {
-        scoreAAccountCriteria.commissionIncome = null;
-    }
-    post("/manage/scoreAAccount/export", scoreAAccountCriteria);
-}
-
-Date.prototype.format = function (fmt) {
-    var o = {
-        "M+": this.getMonth() + 1, //月份
-        "d+": this.getDate(), //日
-        "h+": this.getHours() % 12 == 0 ? 12 : this.getHours() % 12, //小时
-        "H+": this.getHours(), //小时
-        "m+": this.getMinutes(), //分
-        "s+": this.getSeconds(), //秒
-        "q+": Math.floor((this.getMonth() + 3) / 3), //季度
-        "S": this.getMilliseconds() //毫秒
-    };
-    var week = {
-        "0": "\u65e5",
-        "1": "\u4e00",
-        "2": "\u4e8c",
-        "3": "\u4e09",
-        "4": "\u56db",
-        "5": "\u4e94",
-        "6": "\u516d"
-    };
-    if (/(y+)/.test(fmt)) {
-        fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
-    }
-    if (/(E+)/.test(fmt)) {
-        fmt =
-                fmt.replace(RegExp.$1,
-                        ((RegExp.$1.length > 1) ? (RegExp.$1.length > 2 ? "\u661f\u671f" : "\u5468")
-                                : "") + week[this.getDay() + ""]);
-    }
-    for (var k in o) {
-        if (new RegExp("(" + k + ")").test(fmt)) {
+    Date.prototype.format = function (fmt) {
+        var o = {
+            "M+": this.getMonth() + 1, //月份
+            "d+": this.getDate(), //日
+            "h+": this.getHours() % 12 == 0 ? 12 : this.getHours() % 12, //小时
+            "H+": this.getHours(), //小时
+            "m+": this.getMinutes(), //分
+            "s+": this.getSeconds(), //秒
+            "q+": Math.floor((this.getMonth() + 3) / 3), //季度
+            "S": this.getMilliseconds() //毫秒
+        };
+        var week = {
+            "0": "\u65e5",
+            "1": "\u4e00",
+            "2": "\u4e8c",
+            "3": "\u4e09",
+            "4": "\u56db",
+            "5": "\u4e94",
+            "6": "\u516d"
+        };
+        if (/(y+)/.test(fmt)) {
+            fmt = fmt.replace(RegExp.$1, (this.getFullYear() + "").substr(4 - RegExp.$1.length));
+        }
+        if (/(E+)/.test(fmt)) {
             fmt =
+                fmt.replace(RegExp.$1,
+                    ((RegExp.$1.length > 1) ? (RegExp.$1.length > 2 ? "\u661f\u671f" : "\u5468")
+                        : "") + week[this.getDay() + ""]);
+        }
+        for (var k in o) {
+            if (new RegExp("(" + k + ")").test(fmt)) {
+                fmt =
                     fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr((""
                     + o[k]).length)));
+            }
         }
+        return fmt;
     }
-    return fmt;
-}
-
 
 
     var BingChart = echarts.init(document.getElementById('HB-distributedEchart-main'));
@@ -410,13 +426,13 @@ Date.prototype.format = function (fmt) {
         pieChart();
         getScoreaDistributionByCriteria();
     }
-    function getScoreaTrend(){
+    function getScoreaTrend() {
         drawMyChart();
         getScoreaDistributionByAjax(scoreAAccountDistributionCriteria);
     }
     function getScoreaDistributionByCriteria() {
         distributionInit1 = 1;
-        scoreAAccountDistributionCriteria.offset=1;
+        scoreAAccountDistributionCriteria.offset = 1;
         scoreAAccountDistributionCriteria.startDate = $("#HB-distributed-startTime").val();
         scoreAAccountDistributionCriteria.endDate = $("#HB-distributed-endTime").val();
         if (scoreAAccountDistributionCriteria.startDate == "") {
@@ -450,63 +466,66 @@ Date.prototype.format = function (fmt) {
                     initPage(1, totalPage);
                 }
                 var content = data.data.content;
+                var countTotalMoney = data.data.totalMoney/100.0;
+                var totalCount = document.getElementById("totalCount");    // 汇总
+                totalCount.innerHTML = countTotalMoney;
                 for (i = 0; i < content.length; i++) {
                     var contentStr = '<tr>';
                     if (content[i][0] == 0) {
-                        contentStr += '<td>' + '关注送红包' + '</td>'
-                        contentStr += '<td>' + content[i][1] / 100 + '</td>'
+                        contentStr += '<td>' + '关注送红包' + '</td>';
+                        contentStr += '<td>' + content[i][1] / 100 + '</td>';
                     }
                     if (content[i][0] == 1) {
-                        contentStr += '<td>' + '线上返还' + '</td>'
-                        contentStr += '<td>' + content[i][1] / 100 + '</td>'
+                        contentStr += '<td>' + '线上返还' + '</td>';
+                        contentStr += '<td>' + content[i][1] / 100 + '</td>';
                     }
                     if (content[i][0] == 2) {
-                        contentStr += '<td>' + '线上消费' + '</td>'
-                        contentStr += '<td>' + content[i][1] / 100 + '</td>'
+                        contentStr += '<td>' + '线上消费' + '</td>';
+                        contentStr += '<td>' + content[i][1] / 100 + '</td>';
                     }
                     if (content[i][0] == 3) {
-                        contentStr += '<td>' + '线下消费' + '</td>'
-                        contentStr += '<td>' + content[i][1] / 100 + '</td>'
+                        contentStr += '<td>' + '线下消费' + '</td>';
+                        contentStr += '<td>' + content[i][1] / 100 + '</td>';
                     }
                     if (content[i][0] == 4) {
-                        contentStr += '<td>' + '线下返还' + '</td>'
-                        contentStr += '<td>' + content[i][1] / 100 + '</td>'
+                        contentStr += '<td>' + '线下返还' + '</td>';
+                        contentStr += '<td>' + content[i][1] / 100 + '</td>';
                     }
                     if (content[i][0] == 5) {
-                        contentStr += '<td>' + '活动返还' + '</td>'
-                        contentStr += '<td>' + content[i][1] / 100 + '</td>'
+                        contentStr += '<td>' + '活动返还' + '</td>';
+                        contentStr += '<td>' + content[i][1] / 100 + '</td>';
                     }
                     if (content[i][0] == 6) {
-                        contentStr += '<td>' + '运动' + '</td>'
-                        contentStr += '<td>' + content[i][1] / 100 + '</td>'
+                        contentStr += '<td>' + '运动' + '</td>';
+                        contentStr += '<td>' + content[i][1] / 100 + '</td>';
                     }
                     if (content[i][0] == 7) {
-                        contentStr += '<td>' + '摇一摇' + '</td>'
-                        contentStr += '<td>' + content[i][1] / 100 + '</td>'
+                        contentStr += '<td>' + '摇一摇' + '</td>';
+                        contentStr += '<td>' + content[i][1] / 100 + '</td>';
                     }
                     if (content[i][0] == 8) {
-                        contentStr += '<td>' + 'APP分享' + '</td>'
-                        contentStr += '<td>' + content[i][1] / 100 + '</td>'
+                        contentStr += '<td>' + 'APP分享' + '</td>';
+                        contentStr += '<td>' + content[i][1] / 100 + '</td>';
                     }
                     if (content[i][0] == 9) {
-                        contentStr += '<td>' + '线下支付完成页注册会员' + '</td>'
-                        contentStr += '<td>' + content[i][1] / 100 + '</td>'
+                        contentStr += '<td>' + '线下支付完成页注册会员' + '</td>';
+                        contentStr += '<td>' + content[i][1] / 100 + '</td>';
                     }
                     if (content[i][0] == 10) {
-                        contentStr += '<td>' + '合伙人发福利' + '</td>'
-                        contentStr += '<td>' + content[i][1] / 100 + '</td>'
+                        contentStr += '<td>' + '合伙人发福利' + '</td>';
+                        contentStr += '<td>' + content[i][1] / 100 + '</td>';
                     }
                     if (content[i][0] == 11) {
-                        contentStr += '<td>' + '临时活动' + '</td>'
-                        contentStr += '<td>' + content[i][1] / 100 + '</td>'
+                        contentStr += '<td>' + '临时活动' + '</td>';
+                        contentStr += '<td>' + content[i][1] / 100 + '</td>';
                     }
                     if (content[i][0] == 13) {
-                        contentStr += '<td>' + '充话费发送包' + '</td>'
-                        contentStr += '<td>' + content[i][1] / 100 + '</td>'
+                        contentStr += '<td>' + '充话费发送包' + '</td>';
+                        contentStr += '<td>' + content[i][1] / 100 + '</td>';
                     }
                     if (content[i][0] == 14001) {
-                        contentStr += '<td>' + '退款' + '</td>'
-                        contentStr += '<td>' + content[i][1] / 100 + '</td>'
+                        contentStr += '<td>' + '退款' + '</td>';
+                        contentStr += '<td>' + content[i][1] / 100 + '</td>';
                     }
                     contentStr += '</tr>';
                     scoreaDistributionContent.innerHTML += contentStr;
@@ -515,7 +534,7 @@ Date.prototype.format = function (fmt) {
         });
     }
 
-//红包发放分布
+    //红包发放分布
     function initPage(page, totalPage) {
         scoreAAccountDistributionCriteria.startDate = $("#HB-distributed-startTime").val();
         scoreAAccountDistributionCriteria.endDate = $("#HB-distributed-endTime").val();
@@ -579,10 +598,33 @@ Date.prototype.format = function (fmt) {
             start.max = datas; //结束日选好后，重置开始日的最大日期
         }
     };
+  /*  var start3 = {
+        elem: '#HB_data-startTime',
+        format: 'YYYY/MM/DD',
+        max: '2099-06-16', //最大日期
+        istime: false,
+        istoday: false,
+        choose: function (datas) {
+            end.min = datas; //开始日选好后，重置结束日的最小日期
+            end.start = datas //将结束日的初始值设定为开始日
+        }
+    };*/
+    var end3 = {
+        elem: '#HB_data-endTime',
+        format: 'YYYY/MM/DD',
+        max: '2099-06-16',
+        istime: false,
+        istoday: false,
+        choose: function (datas) {
+            start.max = datas; //结束日选好后，重置开始日的最大日期
+        }
+    };
     laydate(start);
     laydate(end);
     laydate(start2);
     laydate(end2);
+//    laydate(start3);
+    laydate(end3);
     // 基于准备好的dom，初始化echarts实例，折线图
     var myChart = echarts.init(document.getElementById('HB_trendechart-main'));
     myChart.setOption({
@@ -606,7 +648,7 @@ Date.prototype.format = function (fmt) {
         }
     });
 
-    function drawMyChart(){
+    function drawMyChart() {
         scoreAAccountCriteria.startDate = $("#HB_trend-startTime").val();
         scoreAAccountCriteria.endDate = $("#HB_trend-endTime").val();
         if (scoreAAccountCriteria.startDate == "") {
@@ -624,11 +666,11 @@ Date.prototype.format = function (fmt) {
             success: function (data) {
                 myChart.setOption({
                     legend: {
-                        data: ['使用红包金额', '发送红包金额', '佣金收入','分润后积分客收入']
+                        data: ['使用红包金额', '发送红包金额', '佣金收入', '分润后积分客收入']
                     },
                     xAxis: {
                         boundaryGap: false,
-                        data:(function () {
+                        data: (function () {
                             var res = [];
                             var len = data.data.dateStrList.length;
                             while (len--) {
@@ -639,7 +681,7 @@ Date.prototype.format = function (fmt) {
                             return res;
                         })()
                     },
-                    series:[
+                    series: [
                         {
                             type: 'line',
                             name: '使用红包金额',
@@ -731,7 +773,7 @@ Date.prototype.format = function (fmt) {
                             var len = data.data.nameList.length;
                             while (len--) {
                                 res.push(
-                                        data.data.nameList[len]
+                                    data.data.nameList[len]
                                 );
                             }
                             return res;
@@ -773,16 +815,50 @@ Date.prototype.format = function (fmt) {
         temp.submit();
         return temp;
     }
-function searchScoreAAccountByCriteria() {
-    scoreAAccountCriteria.offset = 1;
-    init1 = 1;
+    function searchScoreAAccountByCriteria() {
+        scoreAAccountCriteria.offset = 1;
+        init1 = 1;
 
-    scoreAAccountCriteria.startDate = $("#HB_trend-startTime").val();
-    scoreAAccountCriteria.endDate = $("#HB_trend-endTime").val();
+        scoreAAccountCriteria.startDate = $("#HB_trend-startTime").val();
+        scoreAAccountCriteria.endDate = $("#HB_trend-endTime").val();
 
-    getScoreAAccountByAjax(scoreAAccountCriteria);
-    drawMyChart();
-}
+        getScoreAAccountByAjax(scoreAAccountCriteria);
+        drawMyChart();
+    }
+    //  2017/6/7  根据日期查询红包数据
+    function searchTotalScoreAByDate() {
+        var thisEndDate = $("#HB_data-endTime").val();
+        if(thisEndDate==''||thisEndDate==null) {
+            alert("请选择截止日期");
+            return;
+        }
+        var criteria = {};
+        criteria.endDate = thisEndDate;
+        $.ajax({
+            type: "post",
+            url: "/manage/scoreAAccount/dailyTotal",
+            async: false,
+            data: JSON.stringify(criteria),
+            contentType: "application/json",
+            success: function (response) {
+                if(response.status==200) {
+                    var data = response.data;
+                    var scoreTotal = document.getElementById("scoreTotal");
+                    scoreTotal.innerHTML="";
+                    scoreTotal.innerHTML+='<div><div><img src="${resourceUrl}/images/hb.png" alt=""></div><div><p>消费者持有鼓励金</p>'+
+                        '<p>'+(data.totalScoreA/100.0)+'</p></div></div>'+
+                        '<div> <div><img src="${resourceUrl}/images/hb.png" alt=""></div> <div><p>累计发放鼓励金</p>'+
+                        '<p>'+(data.provideScoreA/100.0)+'</p> </div></div>'+
+                        '<div><div><img src="${resourceUrl}/images/hb.png" alt=""></div><div>'+
+                        '<p>消费已使用鼓励金</p><p>'+(-data.usedScoreA/100.0)+'</p>'+
+                        '</div></div><div><div><img src="${resourceUrl}/images/yj.png" alt=""></div>'+
+                        '<div><p>累计佣金收入</p><p>'+(data.commissionIncome/100.0)+'</p></div></div>';
+                }else {
+                    alert(response.msg)
+                }
+            }
+        });
+    }
 </script>
 </body>
 </html>

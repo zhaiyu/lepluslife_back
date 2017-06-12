@@ -4,6 +4,7 @@ import com.jifenke.lepluslive.order.domain.entities.OffLineOrderShare;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
 import org.apache.poi.hssf.usermodel.HSSFWorkbook;
+import org.apache.poi.ss.util.CellRangeAddress;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.view.document.AbstractExcelView;
 
@@ -44,6 +45,18 @@ public class OffLineOrderShareExcel extends AbstractExcelView {
 
 
     public void setExcelHeader(HSSFSheet excelSheet) {
+        // 合并单元格
+        CellRangeAddress cra1=new CellRangeAddress(0,0, 6, 7);
+        CellRangeAddress cra2=new CellRangeAddress(0, 0, 8, 9);
+        CellRangeAddress cra3=new CellRangeAddress(0, 0, 10, 11);
+        CellRangeAddress cra4=new CellRangeAddress(0, 0, 12, 13);
+        CellRangeAddress cra5=new CellRangeAddress(0, 0, 14, 15);
+        //在sheet里增加合并单元格
+        excelSheet.addMergedRegion(cra1);
+        excelSheet.addMergedRegion(cra2);
+        excelSheet.addMergedRegion(cra3);
+        excelSheet.addMergedRegion(cra4);
+        excelSheet.addMergedRegion(cra5);
         HSSFRow excelHeader = excelSheet.createRow(0);
         excelHeader.createCell(0).setCellValue("订单号");
         excelHeader.createCell(1).setCellValue("交易完成时间");
@@ -52,15 +65,14 @@ public class OffLineOrderShareExcel extends AbstractExcelView {
         excelHeader.createCell(4).setCellValue("分润金额");
         excelHeader.createCell(5).setCellValue("交易商户");
         excelHeader.createCell(6).setCellValue("交易商户所在合伙人分润");
-        excelHeader.createCell(7).setCellValue("交易合伙人管理员分润");
-        excelHeader.createCell(8).setCellValue("会员绑定商户分润");
-        excelHeader.createCell(9).setCellValue("会员绑定合伙人分润");
-        excelHeader.createCell(10).setCellValue("绑定合伙人管理员分润");
-        excelHeader.createCell(11).setCellValue("积分客分润");
+        excelHeader.createCell(8).setCellValue("交易合伙人管理员分润");
+        excelHeader.createCell(10).setCellValue("会员绑定商户分润");
+        excelHeader.createCell(12).setCellValue("会员绑定合伙人分润");
+        excelHeader.createCell(14).setCellValue("绑定合伙人管理员分润");
+        excelHeader.createCell(16).setCellValue("积分客分润");
     }
 
     public void setExcelRows(HSSFSheet excelSheet, List<OffLineOrderShare> offLineOrderShareList) {
-
         int record = 1;
         for (OffLineOrderShare share : offLineOrderShareList) {
             HSSFRow excelRow = excelSheet.createRow(record++);
@@ -97,25 +109,32 @@ public class OffLineOrderShareExcel extends AbstractExcelView {
             }else{
                 excelRow.createCell(5).setCellValue("--");
             }
-            excelRow.createCell(6).setCellValue(share.getTradePartner().getName()+"("+share.getToTradePartner()/100.0+")");
-            excelRow.createCell(7).setCellValue(share.getTradePartnerManager().getName()+"("+share.getToTradePartnerManager()/100.0+")");
+            excelRow.createCell(6).setCellValue(share.getTradePartner().getName());
+            excelRow.createCell(7).setCellValue(share.getToTradePartner()/100.0);
+            excelRow.createCell(8).setCellValue(share.getTradePartnerManager().getName());
+            excelRow.createCell(9).setCellValue(share.getToTradePartnerManager()/100.0);
             if(share.getLockMerchant()!=null){
-                excelRow.createCell(8).setCellValue(share.getLockMerchant().getName()+"("+share.getToLockMerchant()/100.0+")");
-            }else {
-                excelRow.createCell(8).setCellValue("--");
-            }
-            if(share.getLockPartner()!=null){
-                excelRow.createCell(9).setCellValue(share.getLockPartner().getName()+"("+share.getToLockPartner()/100.0+")");
-            }else{
-                excelRow.createCell(9).setCellValue("--");
-            }
-            if(share.getLockPartnerManager()!=null){
-                excelRow.createCell(10).setCellValue(share.getLockPartnerManager().getName()+"("+share.getToLockPartnerManager()+")");
+                excelRow.createCell(10).setCellValue(share.getLockMerchant().getName());
+                excelRow.createCell(11).setCellValue(share.getToLockMerchant()/100.0);
             }else {
                 excelRow.createCell(10).setCellValue("--");
+                excelRow.createCell(11).setCellValue("--");
             }
-            excelRow.createCell(11).setCellValue(share.getToLePlusLife()/100.0);
-
+            if(share.getLockPartner()!=null){
+                excelRow.createCell(12).setCellValue(share.getLockPartner().getName());
+                excelRow.createCell(13).setCellValue(share.getToLockPartner()/100.0);
+            }else{
+                excelRow.createCell(12).setCellValue("--");
+                excelRow.createCell(13).setCellValue("--");
+            }
+            if(share.getLockPartnerManager()!=null){
+                excelRow.createCell(14).setCellValue(share.getLockPartnerManager().getName());
+                excelRow.createCell(15).setCellValue(share.getToLockPartnerManager()/100.0);
+            }else {
+                excelRow.createCell(14).setCellValue("--");
+                excelRow.createCell(15).setCellValue("--");
+            }
+            excelRow.createCell(16).setCellValue(share.getToLePlusLife()/100.0);
         }
     }
 

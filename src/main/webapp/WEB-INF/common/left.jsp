@@ -205,34 +205,37 @@
             </div>
         </li>
         <shiro:hasPermission name="order:query">
-            <li><h4 class="M4"><span></span>交易结算</h4>
-
+            <li><h4 class="M4"><span></span>财务模块</h4>
                 <div class="list-item none none1">
                     <shiro:hasPermission name="offLineOrder:query"> <a
                             href='/manage/offLineOrder'>扫码订单</a> </shiro:hasPermission>
                     <shiro:hasPermission name="financial:query"> <a
-                            href='/manage/financial'>财务结算</a> </shiro:hasPermission>
+                            href='/manage/financial'>扫码结算</a> </shiro:hasPermission>
                     <shiro:hasPermission name="share:query"> <a
                             href='/manage/offLineOrder/share'>佣金分润</a> </shiro:hasPermission>
+                    <shiro:hasPermission name="partner:query"> <a
+                            href='/manage/partner'>合伙人</a> </shiro:hasPermission>
                     <a
                             href='/manage/pos_order'>pos订单</a>
                     <a href='/manage/scanCodeOrder/goOrderPage'>富友扫码</a>
                     <a href='/manage/refund/goRefundPage'>富友退款单</a>
                     <a href='/manage/statement/goStatementPage'>富友结算</a>
+                    <a href='/manage/withdrawBill'>手动提现审核</a>
+                    <a href='/manage/weiXinWithdrawBill/weiXinWithdrawBillList'>公众号提现审核</a>
+                    <a href='/manage/fillingBillApply'>充值申请</a>
                 </div>
             </li>
         </shiro:hasPermission>
 
         <shiro:hasPermission name="lj_user:query">
             <li><h4 class="M6"><span></span>人员管理</h4>
-
                 <div class="list-item none none4">
                     <shiro:hasPermission name="lj_user:query"> <a
                             href='/manage/user'>会员管理</a> </shiro:hasPermission>
-                    <shiro:hasPermission name="partner:query"> <a
-                            href='/manage/partner'>合伙人</a> </shiro:hasPermission>
                     <shiro:hasPermission name="SalesStaff:query"> <a
                             href='/manage/sales'>销售人员</a> </shiro:hasPermission>
+                    <shiro:hasPermission name="partner:query"> <a
+                            href='/manage/partner'>合伙人</a> </shiro:hasPermission>
                 </div>
             </li>
         </shiro:hasPermission>
@@ -271,15 +274,12 @@
                 </div>
             </li>
         </shiro:hasPermission>
-
-        <li><h4 class="M6"><span></span>审核流程</h4>
+        <%--<li><h4 class="M6"><span></span>审核流程</h4>
 
             <div class="list-item none none8">
-                <a href='/manage/withdrawBill'>手动提现审核</a>
-                <a href='/manage/weiXinWithdrawBill/weiXinWithdrawBillList'>公众号提现审核</a>
-                <a href='/manage/fillingBillApply'>充值申请</a>
+
             </div>
-        </li>
+        </li>--%>
         <shiro:hasPermission name="system_config:query">
             <li><h4 class="M6"><span></span>系统设置</h4>
 
@@ -314,7 +314,6 @@
         </li>
         <li><h4 class="M6"><span></span>运营中心</h4>
             <div class="list-item none none11">
-
                 <a href='/manage/productSecKill/overview'>秒杀概览</a>
                 <a href='/manage/productSecKill_time'>秒杀时段</a>
                 <a href='/manage/productSecKill/editPage'>秒杀商品</a>
@@ -327,10 +326,11 @@
     $(function () {
         var url = window.location.href;
         if (url.indexOf("withdrawBill") != -1||url.indexOf("fillingBillApply") != -1||url.indexOf("weiXinWithdrawBill/weiXinWithdrawBillList")!=-1) {
-            $(".none8").parent('li').addClass('selected');
-            $(".none8").slideDown(300);
+            $(".none1").parent('li').addClass('selected');
+            $(".none1").slideDown(300);
         }
-        if (url.indexOf("offLineOrder") != -1 || url.indexOf("financial") != -1 || url.indexOf("/manage/pos_order") != -1) {
+        if (url.indexOf("partner") != -1||url.indexOf("offLineOrder") != -1 || url.indexOf("financial") != -1 || url.indexOf("/manage/pos_order") != -1
+            ||url.indexOf("/manage/scanCodeOrder/goOrderPage")!=-1||url.indexOf("/manage/refund/goRefundPage")!=-1||url.indexOf("/manage/statement/goStatementPage")!=-1) {
             $(".none1").parent('li').addClass('selected');
             $(".none1").slideDown(300);
         }
@@ -339,7 +339,11 @@
             $(".none2").slideDown(300);
         }
         if ( url.indexOf("/manage/printer")!=-1|| url.indexOf("/manage/merchant") != -1 || url.indexOf("merchantRec") != -1
-             || url.indexOf("/manage/pos") != -1 || url.indexOf("/manage/merchant_data") != -1) {
+              || url.indexOf("/manage/merchant_data") != -1) {
+            $(".none3").parent('li').addClass('selected');
+            $(".none3").slideDown(300);
+        }
+        if (url.indexOf("/manage/pos") != -1 && url.indexOf("/manage/pos_order") == -1) {
             $(".none3").parent('li').addClass('selected');
             $(".none3").slideDown(300);
         }
@@ -347,8 +351,7 @@
             $(".none5").parent('li').addClass('selected');
             $(".none5").slideDown(300);
         }
-        if (url.indexOf("partner") != -1 || url.indexOf("/manage/user") != -1
-            || url.indexOf("sales") != -1) {
+        if (url.indexOf("/manage/user") != -1 || url.indexOf("sales") != -1) {
             $(".none4").parent('li').addClass('selected');
             $(".none4").slideDown(300);
         }
