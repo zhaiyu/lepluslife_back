@@ -290,7 +290,8 @@
                        }
                        var orderContent = document.getElementById("orderContent");
                        var dataDisplay = document.getElementById("dataDisplay");
-                       dataDisplay.innerHTML='【检索订单列表=》订单总数=<span style="color: red">'+page.totalElements+'</span>单; 订单总额=<span style="color: red">'+(countData[0][1]/100.0)+'</span>元; 消耗鼓励金总额=<span style="color: red">'+(countData[0][2]/100.0)+'</span>元;消耗货币总额 =<span style="color: red">'+(countData[0][3]/100.0)+'</span>元】';
+                       dataDisplay.innerHTML='【检索订单列表=》订单总数=<span style="color: red">'+page.totalElements+'</span>单; 订单总额=<span style="color: red">'+(countData[0][1]/100.0)+'</span>元;商户应入账 =<span style="color: red">'+(countData[0][4]/100.0)+'</span>元;佣金手续费 =<span style="color: red">'+(countData[0][5]/100.0)+'</span>元;'+
+                           '消耗鼓励金总额=<span style="color: red">'+(countData[0][2]/100.0)+'</span>元;消耗货币总额 =<span style="color: red">'+(countData[0][3]/100.0)+'</span>元】';
 //                       console.log(JSON.stringify(countData));
                        for (i = 0; i < content.length; i++) {
                            var contentStr = '<tr><td>' + content[i].orderSid + '</td>';

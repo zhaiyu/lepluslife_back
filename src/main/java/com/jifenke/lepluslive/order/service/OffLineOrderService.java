@@ -365,7 +365,7 @@ public class OffLineOrderService {
   @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
   public List<Object[]> countOrderMoney(OLOrderCriteria orderCriteria) {
     StringBuffer sql = new StringBuffer();
-    sql.append(" select count(*),IFNULL(sum(total_price),0),IFNULL(sum(true_score),0),IFNULL(sum(true_pay),0) from off_line_order ");
+    sql.append(" select count(*),IFNULL(sum(total_price),0),IFNULL(sum(true_score),0),IFNULL(sum(true_pay),0),IFNULL(sum(transfer_money),0),IFNULL(sum(wx_commission),0) from off_line_order ");
     sql.append(" where 1=1 ");
     //  日期
     String start = orderCriteria.getStartDate();

@@ -466,7 +466,7 @@ public class PosOrderService {
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public List<Object[]> countOrderMoney(PosOrderCriteria orderCriteria) {
         StringBuffer sql = new StringBuffer();
-        sql.append(" select count(*),IFNULL(sum(total_price),0),IFNULL(sum(true_score),0),IFNULL(sum(true_pay),0) from pos_order po,merchant m ");
+        sql.append(" select count(*),IFNULL(sum(total_price),0),IFNULL(sum(true_score),0),IFNULL(sum(true_pay),0),IFNULL(sum(transfer_money),0),IFNULL(sum(wx_commission),0) from pos_order po,merchant m ");
         sql.append(" where po.merchant_id = m.id ");
         String start = orderCriteria.getStartDate();
         String end = orderCriteria.getEndDate();

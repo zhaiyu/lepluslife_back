@@ -70,6 +70,9 @@ public class OffLineOrderShareExcel extends AbstractExcelView {
         excelHeader.createCell(12).setCellValue("会员绑定合伙人分润");
         excelHeader.createCell(14).setCellValue("绑定合伙人管理员分润");
         excelHeader.createCell(16).setCellValue("积分客分润");
+        excelHeader.createCell(17).setCellValue("发放金币");
+        excelHeader.createCell(18).setCellValue("分润金额");
+        excelHeader.createCell(19).setCellValue("发放鼓励金");
     }
 
     public void setExcelRows(HSSFSheet excelSheet, List<OffLineOrderShare> offLineOrderShareList) {
@@ -135,6 +138,15 @@ public class OffLineOrderShareExcel extends AbstractExcelView {
                 excelRow.createCell(15).setCellValue("--");
             }
             excelRow.createCell(16).setCellValue(share.getToLePlusLife()/100.0);
+            if(share.getOffLineOrder()!=null) {
+                excelRow.createCell(17).setCellValue(share.getOffLineOrder().getScoreC() / 100.0);
+                excelRow.createCell(18).setCellValue(share.getOffLineOrder().getShareMoney() / 100.0);
+                excelRow.createCell(19).setCellValue(share.getOffLineOrder().getRebate() / 100.0);
+            }else {
+                excelRow.createCell(17).setCellValue(0L);
+                excelRow.createCell(18).setCellValue(share.getShareMoney());
+                excelRow.createCell(19).setCellValue(0L);
+            }
         }
     }
 
