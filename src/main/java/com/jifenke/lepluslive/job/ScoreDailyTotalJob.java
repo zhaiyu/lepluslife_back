@@ -8,7 +8,6 @@ import org.quartz.SchedulerException;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.ApplicationContext;
-import org.springframework.stereotype.Component;
 
 /**
  * ScoreDailyTotalJob
@@ -16,10 +15,9 @@ import org.springframework.stereotype.Component;
  * @author XF
  * @date 2017/6/8
  */
-@Component
 public class ScoreDailyTotalJob implements Job {
 
-    private static final Logger log = LoggerFactory.getLogger(OffLineOrderJob.class);
+    private static final Logger log = LoggerFactory.getLogger(ScoreDailyTotalJob.class);
 
     @Override
     public void execute(JobExecutionContext context) throws JobExecutionException {

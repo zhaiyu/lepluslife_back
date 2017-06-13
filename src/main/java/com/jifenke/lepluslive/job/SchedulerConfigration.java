@@ -2,6 +2,7 @@ package com.jifenke.lepluslive.job;
 
 import com.jifenke.lepluslive.global.config.Constants;
 
+import com.jifenke.lepluslive.score.domain.entities.ScoreDailyTotal;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -148,7 +149,7 @@ public class SchedulerConfigration {
     return bean;
   }
   @Bean(name = "socreDailyTotalTrigger")
-  public CronTriggerFactoryBean scoreDailyTotalCronTriggerBean() {
+  public CronTriggerFactoryBean socreDailyTotalTriggerBean() {
     CronTriggerFactoryBean tigger = new CronTriggerFactoryBean();
     tigger.setJobDetail(socreDailyTotalDetail().getObject());
     try {
@@ -175,7 +176,7 @@ public class SchedulerConfigration {
       bean.setTriggers(cronTriggerBean().getObject(), wxCronTriggerBean().getObject(),
                        scoreAAccountAddCronTriggerBean().getObject(),
                        scanCodeCronTriggerBean().getObject(), monitorScoreCTriggerBean().getObject(),
-                       scoreDailyTotalCronTriggerBean().getObject());
+                       socreDailyTotalTriggerBean().getObject());
       bean.setSchedulerName("orderConfrim");
     }
     return bean;
