@@ -260,4 +260,44 @@ public class GrouponProduct {
   public void setShareToTradePartnerManager(Long shareToTradePartnerManager) {
     this.shareToTradePartnerManager = shareToTradePartnerManager;
   }
+
+  public Long getSellVolume() {
+    return sellVolume;
+  }
+
+  public void setSellVolume(Long sellVolume) {
+    this.sellVolume = sellVolume;
+  }
+
+  public String getExplainPicture() {
+    return explainPicture;
+  }
+
+  public void setExplainPicture(String explainPicture) {
+    this.explainPicture = explainPicture;
+  }
+
+  public Integer getRefundType() {
+    return refundType;
+  }
+
+  public void setRefundType(Integer refundType) {
+    this.refundType = refundType;
+  }
+
+  public String getInstruction() {
+    return instruction;
+  }
+
+  public void setInstruction(String instruction) {
+    this.instruction = instruction;
+  }
+
+  public Long getCharge() {
+    return charge;
+  }
+
+  public void setCharge(Long charge) {
+    this.charge = charge;
+  }
 }
