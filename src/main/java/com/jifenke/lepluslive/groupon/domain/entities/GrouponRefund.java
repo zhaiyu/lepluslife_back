@@ -24,7 +24,7 @@ public class GrouponRefund {
   private Long id;
 
   @OneToOne
-  private GrouponCode grouponCode;
+  private GrouponOrder grouponOrder;
 
   private Integer state; //0 未完成 1 完成 2 驳回
 
