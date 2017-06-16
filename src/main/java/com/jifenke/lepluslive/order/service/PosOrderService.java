@@ -162,15 +162,13 @@ public class PosOrderService {
                 truePayCommission =
                 truePay.subtract(new BigDecimal(transferMoney).multiply(new BigDecimal(100))).longValue();
         if (posOrder != null) {//订单存在
+            if("1".equals(paidResult)){
+
             if (posOrder.getState() == 1 && posOrder.getTruePay() == truePay.longValue()
                     && truePayCommission
                     .equals(posOrder.getTruePayCommission())) {
                 return merchant;
             } else {
-                posOrder.setTruePay(truePay.longValue());
-                posOrder.setTruePayCommission(truePayCommission);
-                posOrder.setState(1);
-                posOrderRepository.save(posOrder);
                 //记录差错日志
                 PosErrorLog posErrorLog = new PosErrorLog();
                 posErrorLog.setCreateDate(date);
@@ -182,7 +180,33 @@ public class PosOrderService {
                 posErrorLog.setRemoteTruePay(truePay.longValue());
                 posErrorLog.setPosDailyBill(posDailyBill);
                 posErrorLogRepository.save(posErrorLog);
+
+                posOrder.setTruePay(truePay.longValue());
+                posOrder.setTruePayCommission(truePayCommission);
+                posOrder.setState(1);
+                posOrderRepository.save(posOrder);
                 return posOrder.getMerchant();
+            }
+            }else if("0".equals(paidResult)){ //对账单显示未结算
+                if(posOrder.getState()==1){ //但是posorder显示完成
+                    PosErrorLog posErrorLog = new PosErrorLog();
+                    posErrorLog.setCreateDate(date);
+                    posErrorLog.setOrderSid(orderSid);
+                    posErrorLog.setLocalState(posOrder.getState());
+                    posErrorLog.setLocalCommission(posOrder.getTruePayCommission());
+                    posErrorLog.setLocalTruePay(posOrder.getTruePay());
+                    posErrorLog.setRemoteCommission(truePayCommission);
+                    posErrorLog.setRemoteTruePay(truePay.longValue());
+                    posErrorLog.setPosDailyBill(posDailyBill);
+                    posErrorLog.setRemoteState(0);
+                    posErrorLogRepository.save(posErrorLog);
+
+                    posOrder.setTruePay(truePay.longValue());
+                    posOrder.setTruePayCommission(truePayCommission);
+                    posOrder.setState(0);
+                    posOrderRepository.save(posOrder);
+                    return posOrder.getMerchant();
+                }
             }
         } else {//订单不存在
             posOrder.setTruePay(truePay.longValue());
@@ -213,6 +237,7 @@ public class PosOrderService {
             posErrorLogRepository.save(posErrorLog);
             return merchant;
         }
+        return null;
     }
 
     /**
