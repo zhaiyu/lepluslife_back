@@ -1,16 +1,14 @@
 package com.jifenke.lepluslive.printer.service;
 
 import com.google.common.collect.Lists;
+
 import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
 import com.jifenke.lepluslive.merchant.repository.MerchantRepository;
 import com.jifenke.lepluslive.printer.domain.MD5;
 import com.jifenke.lepluslive.printer.domain.criteria.PrinterCriteria;
-import com.jifenke.lepluslive.printer.domain.entities.MeasurementUrl;
 import com.jifenke.lepluslive.printer.domain.entities.Printer;
-import com.jifenke.lepluslive.printer.domain.entities.Receipt;
-import com.jifenke.lepluslive.printer.repository.MeasurementRepository;
 import com.jifenke.lepluslive.printer.repository.PrinterRepository;
-import net.sf.json.JSONObject;
+
 import org.apache.http.Consts;
 import org.apache.http.HttpEntity;
 import org.apache.http.NameValuePair;
@@ -30,17 +28,26 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.io.BufferedReader;
+import java.io.IOException;
+import java.io.InputStream;
+import java.io.InputStreamReader;
+import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
+import java.net.HttpURLConnection;
+import java.net.URL;
+import java.util.Date;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
+import java.util.Set;
+import java.util.TreeMap;
+
 import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.io.*;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLDecoder;
-import java.net.URLEncoder;
-import java.util.*;
 
 /**
  * Created by lss on 16-12-22.

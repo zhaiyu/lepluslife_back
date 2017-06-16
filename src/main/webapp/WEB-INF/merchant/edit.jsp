@@ -1830,6 +1830,8 @@
                 merchant.scoreARebate = scoreARebate;                                               // 导流订单红包
                 merchantRebatePolicy.importScoreBScale = importScoreBScale;                         // 导流订单积分返点
                 merchantRebatePolicy.importScoreCScale = importScoreCScale;                         // 导流订单积分返点
+                merchantRebatePolicy.userScoreCScale = importScoreCScale;                         // 导流订单积分返点
+                merchantRebatePolicy.userScoreCScaleB = importScoreCScale;                         // 导流订单积分返点
                 merchantRebatePolicy.importShareScale = importShareScale;                         // 导流订单积分返点
                 merchantRebatePolicy.commissionPolicy = 0
                 merchantRebatePolicy.memberShareScale = memberShareScale;                         // 导流订单积分返点
