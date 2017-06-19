@@ -32,10 +32,10 @@ public class GrouponProductService {
      *  根据条件查询团购产品
      *  Created by xf on 2017-06-16.
      */
-    @Transactional(readOnly = true,propagation = Propagation.REQUIRED)
-    public Page<GrouponProduct> findByCriteria(GrouponProductCriteria criteria,Integer limit) {
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
+    public Page<GrouponProduct> findByCriteria(GrouponProductCriteria criteria, Integer limit) {
         Sort sort = new Sort(Sort.Direction.DESC, "createdDate");
-        return grouponProductRepository.findAll(getWhereClause(criteria),new PageRequest(criteria.getOffset()-1,limit,sort));
+        return grouponProductRepository.findAll(getWhereClause(criteria), new PageRequest(criteria.getOffset() - 1, limit, sort));
     }
 
     public static Specification<GrouponProduct> getWhereClause(GrouponProductCriteria criteria) {
@@ -43,32 +43,33 @@ public class GrouponProductService {
             @Override
             public Predicate toPredicate(Root<GrouponProduct> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 Predicate predicate = cb.conjunction();
-                if(criteria.getMerchantUser()!=null) {
+                if (criteria.getMerchantUser() != null) {
                     // 商户
                     if (criteria.getMerchantUser().matches("^\\d{1,6}$")) {
                         predicate.getExpressions().add(
-                                cb.equal(root.<Merchant>get("merchantUser").get("id"),criteria.getMerchantUser()));
+                                cb.equal(root.<Merchant>get("merchantUser").get("id"), criteria.getMerchantUser()));
                     } else {
                         predicate.getExpressions().add(
                                 cb.like(root.<Merchant>get("merchantUser").get("name"),
                                         "%" + criteria.getMerchantUser() + "%"));
                     }
-                    // 团购SID
-                    if(criteria.getSid()!=null) {
-                        predicate.getExpressions().add(
-                                cb.equal(root.get("sid"),criteria.getSid()));
-                    }
-                    // 团购名称
-                    if(criteria.getName()!=null) {
-                        predicate.getExpressions().add(
-                                cb.like(root.get("name"),"%"+criteria.getName()+"%"));
-                    }
-                    // 团购全部状态
-                    if(criteria.getState()!=null) {
-                        predicate.getExpressions().add(
-                                cb.equal(root.get("state"),criteria.getState()));
-                    }
                 }
+                // 团购SID
+                if (criteria.getSid() != null) {
+                    predicate.getExpressions().add(
+                            cb.equal(root.get("sid"), criteria.getSid()));
+                }
+                // 团购名称
+                if (criteria.getName() != null) {
+                    predicate.getExpressions().add(
+                            cb.like(root.get("name"), "%" + criteria.getName() + "%"));
+                }
+                // 团购全部状态
+                if (criteria.getState() != null) {
+                    predicate.getExpressions().add(
+                            cb.equal(root.get("state"), criteria.getState()));
+                }
+
                 return predicate;
             }
         };
