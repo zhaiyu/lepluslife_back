@@ -121,4 +121,67 @@ public class GrouponOrder {
     this.rebateScorec = rebateScorec;
   }
 
+  public String getOrderId() {
+    return orderId;
+  }
+
+  public void setOrderId(String orderId) {
+    this.orderId = orderId;
+  }
+
+  public Date getCreateDate() {
+    return createDate;
+  }
+
+  public void setCreateDate(Date createDate) {
+    this.createDate = createDate;
+  }
+
+  public Date getCompleteDate() {
+    return completeDate;
+  }
+
+  public void setCompleteDate(Date completeDate) {
+    this.completeDate = completeDate;
+  }
+
+  public Long getState() {
+    return state;
+  }
+
+  public void setState(Long state) {
+    this.state = state;
+  }
+
+  public Long getOrderType() {
+    return orderType;
+  }
+
+  public void setOrderType(Long orderType) {
+    this.orderType = orderType;
+  }
+
+  public GrouponProduct getGrouponProduct() {
+    return grouponProduct;
+  }
+
+  public void setGrouponProduct(GrouponProduct grouponProduct) {
+    this.grouponProduct = grouponProduct;
+  }
+
+  public Integer getPayOrigin() {
+    return payOrigin;
+  }
+
+  public void setPayOrigin(Integer payOrigin) {
+    this.payOrigin = payOrigin;
+  }
+
+  public List<GrouponCode> getGrouponCodes() {
+    return grouponCodes;
+  }
+
+  public void setGrouponCodes(List<GrouponCode> grouponCodes) {
+    this.grouponCodes = grouponCodes;
+  }
 }

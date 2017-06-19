@@ -164,4 +164,68 @@ public class GrouponCode {
   public void setShareToTradePartnerManager(Long shareToTradePartnerManager) {
     this.shareToTradePartnerManager = shareToTradePartnerManager;
   }
+
+  public Date getStartDate() {
+    return startDate;
+  }
+
+  public void setStartDate(Date startDate) {
+    this.startDate = startDate;
+  }
+
+  public Long getTotalPrice() {
+    return totalPrice;
+  }
+
+  public void setTotalPrice(Long totalPrice) {
+    this.totalPrice = totalPrice;
+  }
+
+  public Long getCommission() {
+    return commission;
+  }
+
+  public void setCommission(Long commission) {
+    this.commission = commission;
+  }
+
+  public Long getTrasnferMoney() {
+    return trasnferMoney;
+  }
+
+  public void setTrasnferMoney(Long trasnferMoney) {
+    this.trasnferMoney = trasnferMoney;
+  }
+
+  public Integer getCodeType() {
+    return codeType;
+  }
+
+  public void setCodeType(Integer codeType) {
+    this.codeType = codeType;
+  }
+
+  public Merchant getMerchant() {
+    return merchant;
+  }
+
+  public void setMerchant(Merchant merchant) {
+    this.merchant = merchant;
+  }
+
+  public Date getCheckDate() {
+    return checkDate;
+  }
+
+  public void setCheckDate(Date checkDate) {
+    this.checkDate = checkDate;
+  }
+
+  public String getMerchantUser() {
+    return merchantUser;
+  }
+
+  public void setMerchantUser(String merchantUser) {
+    this.merchantUser = merchantUser;
+  }
 }

@@ -6,7 +6,9 @@ import com.jifenke.lepluslive.groupon.domain.entities.GrouponProduct;
 import com.jifenke.lepluslive.groupon.service.GrouponProductService;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.ResponseBody;
 
 import javax.inject.Inject;
 
@@ -26,7 +28,8 @@ public class GrouponProductController {
      * Created by xf on 2017-06-16.
      */
     @RequestMapping("/grouponProduct/findByCriteria")
-    public LejiaResult findByCriteria(GrouponProductCriteria productCriteria) {
+    @ResponseBody
+    public LejiaResult findByCriteria(@RequestBody GrouponProductCriteria productCriteria) {
         if(productCriteria.getOffset()==null) {
             productCriteria.setOffset(1);
         }
