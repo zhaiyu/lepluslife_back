@@ -1,6 +1,7 @@
 package com.jifenke.lepluslive.groupon.controller;
 
 import com.jifenke.lepluslive.global.util.LejiaResult;
+import com.jifenke.lepluslive.groupon.controller.dto.GrouponProductDto;
 import com.jifenke.lepluslive.groupon.domain.criteria.GrouponProductCriteria;
 import com.jifenke.lepluslive.groupon.domain.entities.GrouponProduct;
 import com.jifenke.lepluslive.groupon.service.GrouponProductService;
@@ -35,5 +36,20 @@ public class GrouponProductController {
         }
         Page<GrouponProduct> page = grouponProductService.findByCriteria(productCriteria,10);
         return LejiaResult.ok(page);
+    }
+
+    /**
+     * 新建产品
+     * Created by xf on 2017-06-20.
+     */
+    @RequestMapping("/grouponProduct/save")
+    @ResponseBody
+    public LejiaResult saveProduct(@RequestBody GrouponProductDto grouponProductDto) {
+        boolean result = grouponProductService.saveProduct(grouponProductDto);
+        if(result) {
+            return LejiaResult.ok();
+        }else {
+            return LejiaResult.build(500,"保存失败，请联系系统管理员！");
+        }
     }
 }

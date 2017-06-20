@@ -1,0 +1,14 @@
+package com.jifenke.lepluslive.groupon.repository;
+
+import com.jifenke.lepluslive.groupon.domain.entities.GrouponMerchant;
+import org.springframework.data.jpa.repository.JpaRepository;
+
+/**
+ * GrouponMerchantRepository
+ *  团购产品对应门店
+ * @author XF
+ * @date 2017/6/20
+ */
+public interface GrouponMerchantRepository extends JpaRepository<GrouponMerchant,Long> {
+
+}

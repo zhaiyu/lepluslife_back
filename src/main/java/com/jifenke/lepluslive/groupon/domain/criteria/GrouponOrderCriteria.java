@@ -10,7 +10,7 @@ public class GrouponOrderCriteria {
     private String sid;                     // 订单SID
     private String productSid;                 // 团购SID
     private String name;                    // 团购名称
-    private Integer state;                  // 团购状态  0下架 1 上架
+    private Integer orderState;                  // 团购状态  0下架 1 上架
     private Integer offset;                 // 页数
     private Integer type;                   // 页数
 
@@ -38,12 +38,12 @@ public class GrouponOrderCriteria {
         this.name = name;
     }
 
-    public Integer getState() {
-        return state;
+    public Integer getOrderState() {
+        return orderState;
     }
 
-    public void setState(Integer state) {
-        this.state = state;
+    public void setOrderState(Integer orderState) {
+        this.orderState = orderState;
     }
 
     public Integer getOffset() {

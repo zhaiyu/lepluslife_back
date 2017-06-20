@@ -1,9 +1,21 @@
 package com.jifenke.lepluslive.groupon.service;
 
+import com.jifenke.lepluslive.groupon.controller.dto.GrouponProductDto;
 import com.jifenke.lepluslive.groupon.domain.criteria.GrouponProductCriteria;
+import com.jifenke.lepluslive.groupon.domain.entities.GrouponMerchant;
 import com.jifenke.lepluslive.groupon.domain.entities.GrouponProduct;
+import com.jifenke.lepluslive.groupon.domain.entities.GrouponProductDetail;
+import com.jifenke.lepluslive.groupon.domain.entities.GrouponScrollPicture;
+import com.jifenke.lepluslive.groupon.repository.GrouponMerchantRepository;
+import com.jifenke.lepluslive.groupon.repository.GrouponProductDetailRepository;
 import com.jifenke.lepluslive.groupon.repository.GrouponProductRepository;
+import com.jifenke.lepluslive.groupon.repository.GrouponScrollPictureRepository;
 import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
+import com.jifenke.lepluslive.merchant.domain.entities.MerchantUser;
+import com.jifenke.lepluslive.merchant.repository.MerchantRepository;
+import com.jifenke.lepluslive.merchant.repository.MerchantUserRepository;
+import com.sun.org.apache.regexp.internal.RE;
+import org.apache.commons.lang.RandomStringUtils;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -17,6 +29,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.util.List;
 
 /**
  * 团购产品 Service
@@ -27,6 +40,16 @@ import javax.persistence.criteria.Root;
 public class GrouponProductService {
     @Inject
     private GrouponProductRepository grouponProductRepository;
+    @Inject
+    private MerchantUserRepository merchantUserRepository;
+    @Inject
+    private MerchantRepository merchantRepository;
+    @Inject
+    private GrouponMerchantRepository grouponMerchantRepository;
+    @Inject
+    private GrouponProductDetailRepository grouponProductDetailRepository;
+    @Inject
+    private GrouponScrollPictureRepository grouponScrollPictureRepository;
 
     /***
      *  根据条件查询团购产品
@@ -74,4 +97,52 @@ public class GrouponProductService {
             }
         };
     }
+
+    /***
+     *  新建保存团购产品
+     *  Created by xf on 2017-06-20.
+     */
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
+    public boolean saveProduct(GrouponProductDto grouponProductDto) {
+        try {
+            //   保存产品
+            GrouponProduct product = grouponProductDto.getGrouponProduct();
+            product.setState(1);
+            MerchantUser merchantUser = merchantUserRepository.findOne(product.getMerchantUser().getId());
+            product.setMerchantUser(merchantUser);
+            grouponProductRepository.save(product);
+            //   保存产品门店对应关系
+            List<Merchant> merchantList = grouponProductDto.getMerchantList();
+            if (merchantList != null || merchantList.size() > 0) {
+                for (Merchant merchant : merchantList) {
+                    GrouponMerchant grouponMerchant = new GrouponMerchant();
+                    Merchant existMerchant = merchantRepository.findOne(merchant.getId());
+                    grouponMerchant.setMerchant(existMerchant);
+                    grouponMerchant.setGrouponProduct(product);
+                    grouponMerchantRepository.save(grouponMerchant);
+                }
+            }
+            //   保存产品详情图
+            List<GrouponProductDetail> detailList = grouponProductDto.getDelDetailList();
+            for (GrouponProductDetail grouponProductDetail : detailList) {
+                String random = RandomStringUtils.random(6, "1234567890");
+                grouponProductDetail.setSid(new Integer(random));
+                grouponProductDetail.setDescription(product.getDescription());
+                grouponProductDetailRepository.save(grouponProductDetail);
+            }
+            //   保存商品轮播图
+            List<GrouponScrollPicture> scorePictureList = grouponProductDto.getDelScrollList();
+            for (GrouponScrollPicture grouponScrollPicture : scorePictureList) {
+                String picSid = RandomStringUtils.random(6, "1234567890");
+                grouponScrollPicture.setDescription(product.getDescription());
+                grouponScrollPicture.setSid(new Integer(picSid));
+                grouponScrollPictureRepository.save(grouponScrollPicture);
+            }
+            return true;
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return false;
+        }
+    }
+
 }

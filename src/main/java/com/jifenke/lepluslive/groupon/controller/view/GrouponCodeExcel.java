@@ -115,7 +115,7 @@ public class GrouponCodeExcel extends AbstractExcelView {
             }
             // 下单时间
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-            excelRow.createCell(13).setCellValue(sdf.format(code.getStartDate()));
+            excelRow.createCell(13).setCellValue(sdf.format(code.getCreateDate()));
             //  支付完成时间
             if (code.getCheckDate() != null) {
                 excelRow.createCell(14).setCellValue(sdf.format(code.getCheckDate()));

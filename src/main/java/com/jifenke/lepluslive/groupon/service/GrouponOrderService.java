@@ -59,9 +59,9 @@ public class GrouponOrderService {
                             cb.like(root.get("grouponProduct").get("name"), "%" + criteria.getName() + "%"));
                 }
                 // 订单状态  0 未付款 1 已完成
-                if (criteria.getState() != null) {
+                if (criteria.getOrderState() != null) {
                     predicate.getExpressions().add(
-                            cb.equal(root.get("state"), criteria.getState()));
+                            cb.equal(root.get("orderState"), criteria.getOrderState()));
                 }
                 //  订单编号
                 if(criteria.getSid()!=null) {

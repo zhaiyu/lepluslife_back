@@ -91,11 +91,13 @@ public class GrouponOrderExcel extends AbstractExcelView {
             excelRow.createCell(9).setCellValue(order.getRebateScorea() / 100.0);
             //  送金币
             excelRow.createCell(10).setCellValue(order.getRebateScorec() / 100.0);
-            //  状态 0 未付款 1 已完成
-            if (order.getState() == 0) {
-                excelRow.createCell(11).setCellValue("未付款");
+            //  状态 orderState 0=待使用  1=已使用  2=退款
+            if (order.getOrderState() == 0) {
+                excelRow.createCell(11).setCellValue("待使用");
             } else if (order.getState() == 1) {
-                excelRow.createCell(11).setCellValue("已完成");
+                excelRow.createCell(11).setCellValue("已使用");
+            }else {
+                excelRow.createCell(11).setCellValue("退款");
             }
             // 下单时间
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
