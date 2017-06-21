@@ -2,6 +2,7 @@ package com.jifenke.lepluslive.groupon.domain.entities;
 
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantUser;
 
+import java.util.Date;
 import java.util.List;
 
 import javax.persistence.Entity;
@@ -44,7 +45,7 @@ public class GrouponProduct {
 
   private Long normalPrice=0L; //普通团购价格
 
-  private Long ljPrice=0L; //乐加团购价格
+  private Long ljPrice=0L; //乐加会员团购价格
 
   private Long normalStorage=0L; //普通库存
 
@@ -299,5 +300,15 @@ public class GrouponProduct {
 
   public void setCharge(Long charge) {
     this.charge = charge;
+  }
+
+  private Date createDate;          //  创建时间
+
+  public Date getCreateDate() {
+    return createDate;
+  }
+
+  public void setCreateDate(Date createDate) {
+    this.createDate = createDate;
   }
 }

@@ -1,6 +1,7 @@
 package com.jifenke.lepluslive.groupon.controller;
 
 import com.jifenke.lepluslive.global.util.LejiaResult;
+import com.jifenke.lepluslive.global.util.MvUtil;
 import com.jifenke.lepluslive.groupon.controller.dto.GrouponProductDto;
 import com.jifenke.lepluslive.groupon.domain.criteria.GrouponProductCriteria;
 import com.jifenke.lepluslive.groupon.domain.entities.GrouponProduct;
@@ -10,8 +11,12 @@ import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.inject.Inject;
+import java.util.HashMap;
+import java.util.List;
+import java.util.Map;
 
 /**
  *  团购产品 Controller
@@ -25,6 +30,22 @@ public class GrouponProductController {
     private GrouponProductService grouponProductService;
 
     /**
+     *  跳转到列表页面
+     *  Created by xf on 2017-06-21.
+     */
+    @RequestMapping("/grouponProduct/list")
+    public ModelAndView toListPage() {
+        return MvUtil.go("/groupon/productList");
+    }
+    /**
+     *  跳转到添加页面
+     *  Created by xf on 2017-06-21.
+     */
+    @RequestMapping("/grouponProduct/add")
+    public ModelAndView toAddPage() {
+        return MvUtil.go("/groupon/productAdd");
+    }
+    /**
      * 分页展示
      * Created by xf on 2017-06-16.
      */
@@ -35,7 +56,14 @@ public class GrouponProductController {
             productCriteria.setOffset(1);
         }
         Page<GrouponProduct> page = grouponProductService.findByCriteria(productCriteria,10);
-        return LejiaResult.ok(page);
+        List<GrouponProduct> products = page.getContent();
+        Map<String,Object> data = new HashMap<>();
+        data.put("data",page);
+        if(products!=null&&products.size()>0) {
+            List<Long> merchants = grouponProductService.countMerchantByProducts(products);
+            data.put("bindMerchants",merchants);
+        }
+        return LejiaResult.ok(data);
     }
 
     /**

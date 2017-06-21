@@ -5,7 +5,6 @@ import com.jifenke.lepluslive.activity.service.ActivityPhoneOrderService;
 import com.jifenke.lepluslive.barcode.service.BarcodeService;
 import com.jifenke.lepluslive.fuyou.service.ScanCodeOrderService;
 import com.jifenke.lepluslive.global.config.Constants;
-import com.jifenke.lepluslive.global.util.LejiaResult;
 import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
 import com.jifenke.lepluslive.merchant.repository.MerchantRepository;
 import com.jifenke.lepluslive.merchant.service.MerchantService;
@@ -23,7 +22,6 @@ import com.jifenke.lepluslive.user.repository.LeJiaUserRepository;
 import com.jifenke.lepluslive.user.repository.WeiXinUserRepository;
 import com.jifenke.lepluslive.yinlian.domain.entities.UnionPayStore;
 import com.jifenke.lepluslive.yinlian.service.UnionPayStoreService;
-
 import org.junit.Test;
 import org.junit.runner.RunWith;
 import org.springframework.boot.test.IntegrationTest;
@@ -32,21 +30,17 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
+import javax.inject.Inject;
 import java.io.BufferedReader;
 import java.io.DataOutputStream;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
 import java.net.URLEncoder;
-import java.text.ParseException;
 import java.text.SimpleDateFormat;
-import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.TreeMap;
-
-import javax.inject.Inject;
 
 /**
  * Created by wcg on 16/4/15.
@@ -282,4 +276,5 @@ public class ttt {
 
     }
   }
+
 }

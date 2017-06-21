@@ -36,7 +36,7 @@ public class GrouponCodeService {
      */
     @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
     public Page<GrouponCode> findByCriteria(GrouponCodeCriteria criteria, Integer limit) {
-        Sort sort = new Sort(Sort.Direction.DESC, "createdDate");
+        Sort sort = new Sort(Sort.Direction.DESC, "createDate");
         return grouponCodeRepository.findAll(getWhereClause(criteria), new PageRequest(criteria.getOffset() - 1, limit, sort));
     }
 

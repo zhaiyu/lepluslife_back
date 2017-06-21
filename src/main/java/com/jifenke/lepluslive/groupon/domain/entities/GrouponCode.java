@@ -32,7 +32,7 @@ public class GrouponCode {
 
     private String sid = MvUtil.getRandomNumber(12);
 
-    private Integer state = -1; //-1 未付款 0 未使用  1 已使用 2退款中 3 退款  4过期
+    private Integer state = -1; //-1 未付款 0 未使用  1 已使用 2退款中 3 已退款  4过期
 
     @ManyToOne
     private GrouponProduct grouponProduct;

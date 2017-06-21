@@ -29,6 +29,7 @@ import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -57,7 +58,7 @@ public class GrouponProductService {
      */
     @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
     public Page<GrouponProduct> findByCriteria(GrouponProductCriteria criteria, Integer limit) {
-        Sort sort = new Sort(Sort.Direction.DESC, "createdDate");
+        Sort sort = new Sort(Sort.Direction.DESC, "createDate");
         return grouponProductRepository.findAll(getWhereClause(criteria), new PageRequest(criteria.getOffset() - 1, limit, sort));
     }
 
@@ -96,6 +97,18 @@ public class GrouponProductService {
                 return predicate;
             }
         };
+    }
+    /**
+     *  统计团购产品下绑定门店数
+     */
+    @Transactional(readOnly = true,propagation = Propagation.REQUIRED)
+    public List<Long> countMerchantByProducts(List<GrouponProduct> products) {
+        List<Long> bindMerchants = new ArrayList<>();
+        for (GrouponProduct product : products) {
+            Long count = grouponMerchantRepository.countGrouponMerchantByGrouponProduct(product);
+            bindMerchants.add(count);
+        }
+        return bindMerchants;
     }
 
     /***

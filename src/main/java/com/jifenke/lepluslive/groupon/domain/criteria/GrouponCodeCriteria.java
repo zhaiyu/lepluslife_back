@@ -12,7 +12,7 @@ public class GrouponCodeCriteria {
     private String productName;     // 团购名称
     private Long orderType;         // 订单类型
     private Integer state;          // 状态
-    private Integer offset;                 // 页数
+    private Integer offset;         // 页数
 
 
     public String getOrderSid() {
