@@ -6,8 +6,10 @@ import com.jifenke.lepluslive.global.util.MvUtil;
 import com.jifenke.lepluslive.groupon.domain.entities.GrouponCode;
 import com.jifenke.lepluslive.groupon.domain.entities.GrouponOrder;
 import com.jifenke.lepluslive.groupon.domain.entities.GrouponProduct;
+import com.jifenke.lepluslive.groupon.domain.entities.GrouponRefund;
 import com.jifenke.lepluslive.groupon.repository.GrouponCodeRepository;
 import com.jifenke.lepluslive.groupon.repository.GrouponOrderRepository;
+import com.jifenke.lepluslive.groupon.repository.GrouponRefundRepository;
 import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantRebatePolicy;
 import com.jifenke.lepluslive.merchant.domain.entities.RebateStage;
@@ -101,6 +103,8 @@ public class ttttt {
     private GrouponOrderRepository grouponOrderRepository;
     @Inject
     private GrouponCodeRepository grouponCodeRepository;
+    @Inject
+    private GrouponRefundRepository grouponRefundRepository;
 
     //  添加测试数据
     @Test
@@ -238,20 +242,37 @@ public class ttttt {
 
     @Test
     public void grouponRefund() {
-        List<GrouponCode> all = grouponCodeRepository.findAll();
+        List<GrouponOrder> all = grouponOrderRepository.findAll();
         for (int i = 0; i < all.size(); i++) {
             if(i%2!=0) {
-                GrouponCode grouponCode = all.get(i);
-                GrouponProduct pro1= new GrouponProduct();
-                pro1.setId(1L);
-                grouponCode.setGrouponProduct(pro1);
-                grouponCodeRepository.save(grouponCode);
+                GrouponOrder order = all.get(i);
+                GrouponRefund r1= new GrouponRefund();
+                if(i<10) {
+                    r1.setState(0);
+                }else {
+                    r1.setState(2);
+                    r1.setCompleteDate(new Date());
+                }
+                r1.setGrouponOrder(order);
+                r1.setRecycleScorea(100L);
+                r1.setRecycleScorec(100L);
+                r1.setRefundNum(100);
+                r1.setReturnScorea(1000L);
+                r1.setReturnTruePay(1000L);
+                grouponRefundRepository.save(r1);
             }else {
-                GrouponCode grouponCode = all.get(i);
-                GrouponProduct pro2= new GrouponProduct();
-                pro2.setId(2L);
-                grouponCode.setGrouponProduct(pro2);
-                grouponCodeRepository.save(grouponCode);
+                //0 退款中 1 退款完成 2 退款驳回
+                GrouponOrder order = all.get(i);
+                GrouponRefund r2= new GrouponRefund();
+                r2.setState(1);
+                r2.setCompleteDate(new Date());
+                r2.setGrouponOrder(order);
+                r2.setRecycleScorea(100L);
+                r2.setRecycleScorec(100L);
+                r2.setRefundNum(100);
+                r2.setReturnScorea(1000L);
+                r2.setReturnTruePay(1000L);
+                grouponRefundRepository.save(r2);
             }
         }
     }

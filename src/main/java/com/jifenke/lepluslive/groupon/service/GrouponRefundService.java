@@ -47,24 +47,29 @@ public class GrouponRefundService {
             public Predicate toPredicate(Root<GrouponRefund> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 Predicate predicate = cb.conjunction();
                 //  订单编号
-                if(criteria.getOrderSid()!=null) {
+                if(criteria.getOrderSid()!=null&&!"".equals(criteria.getOrderSid())) {
                     predicate.getExpressions().add(
                             cb.like(root.get("grouponOrder").get("orderSid"), "%" + criteria.getOrderSid() + "%"));
                 }
                 // 团购SID
-                if (criteria.getProductSid() != null) {
+                if (criteria.getProductSid() != null&&!"".equals(criteria.getProductSid())) {
                     predicate.getExpressions().add(
                             cb.like(root.get("grouponOrder").get("grouponProduct").get("sid"), "%" + criteria.getProductSid() + "%"));
                 }
                 // 团购名称
-                if (criteria.getProductName() != null) {
+                if (criteria.getProductName() != null&&!"".equals(criteria.getProductSid())) {
                     predicate.getExpressions().add(
                             cb.like(root.get("grouponOrder").get("grouponProduct").get("name"), "%" + criteria.getProductName() + "%"));
                 }
-                // 订单状态  0=待使用  1=已使用  2=退款
+                //  订单类型  0 普通订单 1 乐加订单
+                if(criteria.getOrderType()!=null) {
+                    predicate.getExpressions().add(
+                            cb.equal(root.get("grouponOrder").get("orderType"), criteria.getOrderType()));
+                }
+                // 订单状态  0 退款中 1 退款完成 2 退款驳回
                 if (criteria.getState()!= null) {
                     predicate.getExpressions().add(
-                            cb.equal(root.get("orderState"), criteria.getState()));
+                            cb.equal(root.get("state"), criteria.getState()));
                 }
                 return predicate;
             }

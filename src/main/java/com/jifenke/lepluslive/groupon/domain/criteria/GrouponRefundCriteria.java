@@ -13,7 +13,7 @@ public class GrouponRefundCriteria {
     private String orderSid;        //  订单编号
     private String productSid;      //  团购ID
     private String productName;     // 产品名称
-    private String orderType;       // 订单类型
+    private Long orderType;       // 订单类型
     private Integer state;          // 状态
     private Integer offset;                 // 页数
 
@@ -41,11 +41,11 @@ public class GrouponRefundCriteria {
         this.productName = productName;
     }
 
-    public String getOrderType() {
+    public Long getOrderType() {
         return orderType;
     }
 
-    public void setOrderType(String orderType) {
+    public void setOrderType(Long orderType) {
         this.orderType = orderType;
     }
 

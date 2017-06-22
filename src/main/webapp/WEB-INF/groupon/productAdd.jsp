@@ -18,16 +18,23 @@
     <!-- 上述3个meta标签*必须*放在最前面，任何其他内容都*必须*跟随其后！ -->
     <title>乐+生活 后台模板管理系统</title>
     <link href="${resourceUrl}/css/bootstrap.min.css" rel="stylesheet">
-    <link rel="stylesheet" href="${resourceUrl}/css/daterangepicker-bs3.css">
     <link type="text/css" rel="stylesheet" href="${resourceUrl}/css/commonCss.css"/>
     <link type="text/css" rel="stylesheet" href="${resourceUrl}/css/jquery.page.css"/>
+    <link type="text/css" rel="stylesheet" href="${resourceUrl}/css/reset.css"/>
+    <link type="text/css" rel="stylesheet" href="${resourceUrl}/css/combo.select.css"/>
+    <link type="text/css" rel="stylesheet" href="${resourceUrl}/css/Mod/ModInput.css"/>
+    <link type="text/css" rel="stylesheet" href="${resourceUrl}/css/Mod/ModCommon.css"/>
+    <link type="text/css" rel="stylesheet" href="${resourceUrl}/css/create-edit-store.css"/>
     <script type="text/javascript" src="${resourceUrl}/js/jquery-2.0.3.min.js"></script>
-
     <script type="text/javascript" src="${resourceUrl}/js/html5shiv.min.js"></script>
     <script type="text/javascript" src="${resourceUrl}/js/respond.min.js"></script>
     <script type="text/javascript" src="${resourceUrl}/js/vendor/jquery.ui.widget.js"></script>
     <script type="text/javascript" src="${resourceUrl}/js/jquery.iframe-transport.js"></script>
-    <script type="text/javascript" src="${resourceUrl}/js/jquery.fileupload.js"></script>
+    <script type="text/javascript" src="${resourceUrl}/js/jquery.fileupload.js"></script
+    <script src="${resourceUrl}/js/bootstrap.min.js"></script>
+    <script src="${resourceUrl}/js/daterangepicker.js"></script>
+    <script src="${resourceUrl}/js/moment.min.js"></script>
+    <script src="${resourceUrl}/js/jquery.page.js"></script>
 
 </head>
 <style>
