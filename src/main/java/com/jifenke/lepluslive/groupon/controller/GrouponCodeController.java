@@ -13,6 +13,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -73,12 +74,12 @@ public class GrouponCodeController {
      *  导出 Excel
      *  Created by xf on 2017-06-19.
      */
-    @RequestMapping("/grouponCode/export")
-    public ModelAndView export(@RequestBody GrouponCodeCriteria codeCriteria) {
+    @RequestMapping(value = "/grouponCode/export",method = RequestMethod.POST)
+    public ModelAndView export(GrouponCodeCriteria codeCriteria) {
         if(codeCriteria.getOffset()==null) {
             codeCriteria.setOffset(1);
         }
-        Page<GrouponCode> page = grouponCodeService.findByCriteria(codeCriteria,10);
+        Page<GrouponCode> page = grouponCodeService.findByCriteria(codeCriteria,10000);
         Map map = new HashMap();
         map.put("codeList", page.getContent());
         return new ModelAndView(grouponCodeExcel, map);

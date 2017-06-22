@@ -18,6 +18,7 @@ import java.util.Map;
 /**
  * GrouponOrderExcel
  * 团购订单 Excel
+ *
  * @author XF
  * @date 2017/6/19
  */
@@ -75,9 +76,7 @@ public class GrouponOrderExcel extends AbstractExcelView {
                 excelRow.createCell(3).setCellValue("乐加订单");
             }
             // 数量
-            if (order.getGrouponCodes() != null) {
-                excelRow.createCell(4).setCellValue(order.getGrouponCodes().size());
-            }
+            excelRow.createCell(4).setCellValue(order.getBuyNum());
             excelRow.createCell(5).setCellValue(order.getTotalPrice() / 100.0);
             excelRow.createCell(6).setCellValue(order.getScorea() / 100.0);
             excelRow.createCell(7).setCellValue(order.getTruePay() / 100.0);
@@ -96,7 +95,7 @@ public class GrouponOrderExcel extends AbstractExcelView {
                 excelRow.createCell(11).setCellValue("待使用");
             } else if (order.getState() == 1) {
                 excelRow.createCell(11).setCellValue("已使用");
-            }else {
+            } else {
                 excelRow.createCell(11).setCellValue("退款");
             }
             // 下单时间

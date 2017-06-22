@@ -5,13 +5,7 @@ import com.jifenke.lepluslive.user.domain.entities.LeJiaUser;
 import java.util.Date;
 import java.util.List;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.OneToMany;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * Created by wcg on 2017/6/14.
@@ -56,9 +50,13 @@ public class GrouponOrder {
 
     private Integer payOrigin = 0; //0 公众号 1 app
 
-    @OneToMany
+    @OneToMany(fetch = FetchType.EAGER, cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "grouponOrder")
     private List<GrouponCode> grouponCodes; //一个订单可能对应多个团购码
 
+    //以下为冗余字段
+    private Date expiredDate; //过期时间
+
+    private Integer buyNum = 1;  //购买数量
 
     public Long getId() {
         return id;
@@ -194,5 +192,21 @@ public class GrouponOrder {
 
     public void setOrderState(Integer orderState) {
         this.orderState = orderState;
+    }
+
+    public Date getExpiredDate() {
+        return expiredDate;
+    }
+
+    public void setExpiredDate(Date expiredDate) {
+        this.expiredDate = expiredDate;
+    }
+
+    public Integer getBuyNum() {
+        return buyNum;
+    }
+
+    public void setBuyNum(Integer buyNum) {
+        this.buyNum = buyNum;
     }
 }

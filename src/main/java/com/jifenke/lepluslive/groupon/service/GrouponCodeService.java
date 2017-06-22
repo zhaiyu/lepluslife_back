@@ -46,12 +46,12 @@ public class GrouponCodeService {
             public Predicate toPredicate(Root<GrouponCode> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 Predicate predicate = cb.conjunction();
                 // 团购SID
-                if (criteria.getProductSid() != null) {
+                if (criteria.getProductSid() != null&&!"".equals(criteria.getProductSid())) {
                     predicate.getExpressions().add(
                             cb.like(root.get("grouponProduct").get("sid"), "%" + criteria.getProductSid() + "%"));
                 }
                 // 团购名称
-                if (criteria.getProductName() != null) {
+                if (criteria.getProductName() != null&&!"".equals(criteria.getProductName())) {
                     predicate.getExpressions().add(
                             cb.like(root.get("grouponProduct").get("name"), "%" + criteria.getProductName() + "%"));
                 }
@@ -61,7 +61,7 @@ public class GrouponCodeService {
                             cb.equal(root.get("state"), criteria.getState()));
                 }
                 //  订单编号
-                if(criteria.getOrderSid()!=null) {
+                if(criteria.getOrderSid()!=null&&!"".equals(criteria.getOrderSid())) {
                     predicate.getExpressions().add(
                             cb.like(root.get("grouponOrder").get("sid"), "%" + criteria.getOrderSid() + "%"));
                 }

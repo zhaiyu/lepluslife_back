@@ -12,6 +12,7 @@ import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -61,12 +62,12 @@ public class GrouponOrderController {
      *  导出 Excel
      *  Created by xf on 2017-06-19.
      */
-    @RequestMapping("/grouponOrder/export")
-    public ModelAndView export(@RequestBody GrouponOrderCriteria orderCriteria) {
+    @RequestMapping(value = "/grouponOrder/export",method = RequestMethod.POST)
+    public ModelAndView export(GrouponOrderCriteria orderCriteria) {
         if(orderCriteria.getOffset()==null) {
             orderCriteria.setOffset(1);
         }
-        Page<GrouponOrder> page = grouponOrderService.findByCriteria(orderCriteria,10);
+        Page<GrouponOrder> page = grouponOrderService.findByCriteria(orderCriteria,10000);
         Map map = new HashMap();
         map.put("orderList", page.getContent());
         return new ModelAndView(grouponOrderExcel, map);

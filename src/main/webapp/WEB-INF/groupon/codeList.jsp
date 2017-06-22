@@ -93,7 +93,7 @@
         <div class="ModLine ModRadius"></div>
         <div class="merchant_management-table">
             <div class="merchant_management-addButton">
-                <button class="ModButton ModButton_ordinary ModRadius">导出表格</button>
+                <button class="ModButton ModButton_ordinary ModRadius" onclick="exportExcel()">导出表格</button>
             </div>
             <div class="toggleTable">
                 <div id="toggleContent" class="tab-content">
@@ -327,6 +327,56 @@
                 getCodeByAjax(codeCriteria);
             }
         });
+    }
+    //  导出 Excel
+    function post(URL, PARAMS) {
+        var temp = document.createElement("form");
+        temp.action = URL;
+        temp.method = "post";
+        temp.style.display = "none";
+        for (var x in PARAMS) {
+            var opt = document.createElement("textarea");
+            opt.name = x;
+            opt.value = PARAMS[x];
+            // alert(opt.name)
+            temp.appendChild(opt);
+        }
+        document.body.appendChild(temp);
+        temp.submit();
+        return temp;
+    }
+    function exportExcel() {
+        //  订单SID
+        if($("#orderSid").val()!=null&&$("#orderSid").val()!='') {
+            codeCriteria.orderSid = $("#orderSid").val();
+        }else {
+            codeCriteria.orderSid  = null;
+        }
+        //  团购 ID
+        if($("#productSid").val()!=null&&$("#productSid").val()!='') {
+            codeCriteria.productSid = $("#productSid").val();
+        }else {
+            codeCriteria.productSid = null;
+        }
+        //  团购名称
+        if($("#productName").val()!=null&&$("#productName").val()!='') {
+            codeCriteria.productName = $("#productName").val();
+        }else {
+            codeCriteria.productName = null;
+        }
+        //  订单类型
+        if($("#orderType").val()!=null&&$("#orderType").val()!=-1) {
+            codeCriteria.orderType = $("#orderType").val();
+        }else {
+            codeCriteria.orderType = null;
+        }
+        //  状态
+        if($("#state").val()!=null&&$("#state").val()!=-2) {
+            codeCriteria.state = $("#state").val();
+        }else {
+            codeCriteria.state = null;
+        }
+        post("/manage/grouponCode/export", codeCriteria);
     }
 </script>
 </html>

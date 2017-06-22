@@ -3,8 +3,11 @@ package com.jifenke.lepluslive.groupon.controller;
 import com.jifenke.lepluslive.global.util.LejiaResult;
 import com.jifenke.lepluslive.global.util.MvUtil;
 import com.jifenke.lepluslive.groupon.domain.criteria.GrouponOrderCriteria;
+import com.jifenke.lepluslive.groupon.domain.criteria.GrouponRefundCriteria;
 import com.jifenke.lepluslive.groupon.domain.entities.GrouponOrder;
+import com.jifenke.lepluslive.groupon.domain.entities.GrouponRefund;
 import com.jifenke.lepluslive.groupon.service.GrouponOrderService;
+import com.jifenke.lepluslive.groupon.service.GrouponRefundService;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -25,25 +28,25 @@ import javax.inject.Inject;
 public class GrouponRefundController {
 
     @Inject
-    private GrouponOrderService grouponOrderService;
+    private GrouponRefundService grouponRefundService;
 
     /**
      *  跳转到列表页面
      *  Created by xf on 2017-06-21.
      */
-    @RequestMapping("/grouponOrder/refundList")
+    @RequestMapping("/refundOrder/refundList")
     public ModelAndView toListPage() {
         return MvUtil.go("/groupon/refundList");
     }
 
 
-    @RequestMapping("/grouponOrder/refundOrder")
+    @RequestMapping("/refundOrder/findByCriteria")
     @ResponseBody
-    public LejiaResult findByCriteria(@RequestBody GrouponOrderCriteria orderCriteria) {
-        if(orderCriteria.getOffset()==null) {
-            orderCriteria.setOffset(1);
+    public LejiaResult findByCriteria(@RequestBody GrouponRefundCriteria refundCriteria) {
+        if(refundCriteria.getOffset()==null) {
+            refundCriteria.setOffset(1);
         }
-        Page<GrouponOrder> page = grouponOrderService.findByCriteria(orderCriteria,10);
+        Page<GrouponRefund> page = grouponRefundService.findByCriteria(refundCriteria,10);
         return LejiaResult.ok(page);
     }
 }

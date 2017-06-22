@@ -39,7 +39,7 @@ public class GrouponOrderService {
      */
     @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
     public Page<GrouponOrder> findByCriteria(GrouponOrderCriteria criteria, Integer limit) {
-        Sort sort = new Sort(Sort.Direction.DESC, "createdDate");
+        Sort sort = new Sort(Sort.Direction.DESC, "createDate");
         return grouponOrderRepository.findAll(getWhereClause(criteria), new PageRequest(criteria.getOffset() - 1, limit, sort));
     }
 
@@ -54,24 +54,24 @@ public class GrouponOrderService {
                              cb.like(root.get("grouponProduct").get("sid"), "%" + criteria.getProductSid() + "%"));
                 }
                 // 团购名称
-                if (criteria.getName() != null) {
+                if (criteria.getProductName() != null) {
                     predicate.getExpressions().add(
-                            cb.like(root.get("grouponProduct").get("name"), "%" + criteria.getName() + "%"));
+                            cb.like(root.get("grouponProduct").get("name"), "%" + criteria.getProductName() + "%"));
                 }
-                // 订单状态  0 未付款 1 已完成
+                // 订单状态  0=待使用  1=已使用  2=退款
                 if (criteria.getOrderState() != null) {
                     predicate.getExpressions().add(
                             cb.equal(root.get("orderState"), criteria.getOrderState()));
                 }
                 //  订单编号
-                if(criteria.getSid()!=null) {
+                if(criteria.getOrderSid()!=null) {
                     predicate.getExpressions().add(
-                            cb.like(root.get("sid"), "%" + criteria.getSid() + "%"));
+                            cb.like(root.get("orderSid"), "%" + criteria.getOrderSid() + "%"));
                 }
                 //  订单类型  0 普通订单 1 乐加订单
-                if(criteria.getType()!=null) {
+                if(criteria.getOrderType()!=null) {
                     predicate.getExpressions().add(
-                            cb.equal(root.get("orderType"), criteria.getType()));
+                            cb.equal(root.get("orderType"), criteria.getOrderType()));
                 }
                 return predicate;
             }
