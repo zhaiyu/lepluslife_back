@@ -1777,7 +1777,7 @@
                     merchant.memberCommission = $("input[name=lm-ljCommission]").val();                  // 会员订单费率
                 }
                 if (hydd == 0) {                       //  会员订单费率： 普通费率
-                    merchant.memberCommission = ljBrokerage;
+                    merchant.memberCommission = $("input[name=lm-ljCommission]").val();
                 }
                 var policy = $("input[name='policy']:checked").val();
                 if (policy == 1) {                     //   成本差全额
