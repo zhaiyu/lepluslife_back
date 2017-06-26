@@ -202,10 +202,8 @@
             <div class="MODInput_row">
                 <div class="Mod-2">可用门店</div>
                 <div class="Mod-5">
-                    <select class="hhr">
-                        <option value="0">请选择可用门店</option>
-                        <option value="1">1</option>
-                        <option value="2">2</option>
+                    <select class="hhr" id="selMcu">
+                        <option value="-1">请选择可用门店</option>
                     </select>
                 </div>
             </div>
@@ -391,6 +389,8 @@
     var scrollNum = 1;       // 轮播图数量
     var detailNum = 1;       // 详情图数量
     var delScrollList = [], delDetailList = [];
+    //  模糊检索商户
+    loadMerchantUser();
     //    图片上传
     bindFileUpload("displayPictureUpload", "displayPicture")
     bindFileUpload("explainPictureUpload", "explainPicture")
@@ -523,6 +523,8 @@
         }
     });
 
+
+
     //锁定门店多选框
     setTimeout(function () {
         $(".option-item").click(function () {
@@ -536,25 +538,34 @@
             });
         });
     }, 1000);
-
     function changeCheck() {
-        $(".checkArea").empty();
-        $(".checkArea").append(
-            $("<div></div>").append(
-                $('<input>').attr("type", "checkbox").attr("class", "allCheck")
-            ).append(
-                $("<span></span>").html("全部选择")
-            )
-        );
-        for (var i = 0; i < 10; i++) {
-            $(".checkArea").append(
-                $("<div></div>").append(
-                    $('<input>').attr("type", "checkbox")
-                ).append(
-                    $("<span></span>").html("选择" + i)
-                )
-            );
-        }
+        var id = $("#selMcu").val()
+        $.ajax({
+            type: "get",
+            url: "/manage/merchant/findByMU?id="+id,
+            async: false,
+            success: function (result) {
+                var list = result.data;
+                $(".checkArea").empty();
+                $(".checkArea").append(
+                        $("<div></div>").append(
+                                $('<input>').attr("type", "checkbox").attr("class", "allCheck")
+                        ).append(
+                                $("<span></span>").html("全部选择")
+                        )
+                );
+                for(var i=0;i<list.length;i++) {
+                    $(".checkArea").append(
+                            $("<div></div>").append(
+                                    $('<input>').attr("type", "checkbox").attr("value",list[i].id)
+                            ).append(
+                                    $("<span></span>").html(list[i].name)
+                            )
+                    );
+                }
+            }
+        });
+
     }
 
     //  保存或更新
@@ -774,7 +785,19 @@
         console.log(JSON.stringify(delDetailList));
         return true;
     }
-
+    function loadMerchantUser() {
+        $.ajax({
+            type: "get",
+            url: "/manage/merchantUser/findAll",
+            async: false,
+            success: function (result) {
+                var list = result.data;
+                for(var i=0;i<list.length;i++) {
+                    $("#selMcu").append("<option value="+list[i].id+">"+list[i].name+"</option>");
+                }
+            }
+        });
+    }
 </script>
 
 </html>

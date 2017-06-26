@@ -384,5 +384,15 @@ public class MerchantController {
     return MvUtil.go("/merchant/merchantPosManage");
   }
 
+  /**
+   *  查询商户下面所有门店
+   */
+  @RequestMapping(value = "/merchant/findByMU",method = RequestMethod.GET)
+  @ResponseBody
+  public LejiaResult findByMerchantUser(Long id) {
+    MerchantUser merchantUser = merchantUserService.findById(id);
+    List<Map<String, Object>> list = merchantService.findByMerchantUser(merchantUser);
+    return LejiaResult.ok(list);
+  }
 
 }

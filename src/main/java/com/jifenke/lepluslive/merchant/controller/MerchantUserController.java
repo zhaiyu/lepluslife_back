@@ -253,4 +253,14 @@ public class MerchantUserController {
         merchantUserService.deleteMerchantUser(id);
         return LejiaResult.ok();
     }
+
+    /**
+     *  获取所有商户  2017/06/26
+     */
+    @RequestMapping(value="/merchantUser/findAll",method = RequestMethod.GET)
+    @ResponseBody
+    public LejiaResult findAllMerchantUser() {
+        List<MerchantUser> merchantUserList = merchantUserService.findAllManager();
+        return LejiaResult.ok(merchantUserList);
+    }
 }
