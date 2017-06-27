@@ -90,7 +90,7 @@
         <div class="ModLine ModRadius"></div>
         <div class="merchant_management-table">
             <div class="merchant_management-addButton">
-                <button class="ModButton ModButton_ordinary ModRadius">添加</button>
+                <button class="ModButton ModButton_ordinary ModRadius" onclick="productAdd()">添加</button>
             </div>
             <div class="toggleTable">
                 <div id="toggleContent" class="tab-content">
@@ -168,16 +168,16 @@
                 var totalPage = page.totalPages;
                 var content = "";
                 for (i = 0; i < list.length; i++) {
-                    content+='<tr><td>'+list[i].sid+'</td><td>'+list[i].name+'</td><td>'+list[i].merchantUser.name+'</td>'+
+                    content+='<tr><td>'+list[i].id+'</td><td>'+list[i].name+'</td><td>'+list[i].merchantUser.name+'</td>'+
                         '<td>'+bindMerchants[i]+'家</td><td>￥'+(list[i].normalPrice/100.0)+'</td><td>￥'+(list[i].ljPrice/100.0)+'</td><td>￥'+(list[i].ljCommission/100.0)+'</td><td>￥'+(list[i].rebateScorea/100.0)+'</td>'+
-                        '<td>'+list[i].rebateScorec/100.0+'</td><td>'+list[i].normalStorage/100.0+'</td><td>'+list[i].ljStorage/100.0+'</td>';
+                        '<td>'+list[i].rebateScorec/100.0+'</td><td>'+list[i].normalStorage+'</td><td>'+list[i].ljStorage+'</td>';
                     if(list[i].state==0) {
                         content+='<td>已下架</td>';
-                        content+='<td><input type="button" class="btn btn-xs btn-primary select-btn createWarn" value="编辑">'+
+                        content+='<td><input type="button" class="btn btn-xs btn-primary select-btn createWarn" value="编辑" onclick="productEdit('+list[i].id+')">'+
                             '<input type="button" class="btn btn-xs btn-danger select-btn createWarn" value="上架"></td></tr> ';
                     }else{
                         content+='<td>已上架</td>';
-                        content+='<td><input type="button" class="btn btn-xs btn-primary select-btn createWarn" value="编辑">'+
+                        content+='<td><input type="button" class="btn btn-xs btn-primary select-btn createWarn" value="编辑" onclick="productEdit('+list[i].id+')">'+
                             '<input type="button" class="btn btn-xs btn-danger select-btn createWarn" value="下架"></td></tr> ';
                     }
                 }
@@ -197,6 +197,14 @@
                 getProductByAjax(productCriteria);
             }
         });
+    }
+    // 跳转至添加页面
+    function productAdd() {
+        location.href="/manage/grouponProduct/add";
+    }
+    // 跳转到编辑页面
+    function productEdit(id) {
+        location.href="/manage/grouponProduct/edit?id="+id;
     }
 </script>
 </html>

@@ -1,5 +1,6 @@
 package com.jifenke.lepluslive.groupon.service;
 
+import com.jifenke.lepluslive.global.util.MvUtil;
 import com.jifenke.lepluslive.groupon.controller.dto.GrouponProductDto;
 import com.jifenke.lepluslive.groupon.domain.criteria.GrouponProductCriteria;
 import com.jifenke.lepluslive.groupon.domain.entities.GrouponMerchant;
@@ -23,6 +24,8 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.servlet.ModelAndView;
 
 import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
@@ -30,6 +33,7 @@ import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
 import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 
 /**
@@ -121,6 +125,8 @@ public class GrouponProductService {
             //   保存产品
             GrouponProduct product = grouponProductDto.getGrouponProduct();
             product.setState(1);
+            product.setCreateDate(new Date());
+            product.setSid(MvUtil.getOrderNumber());
             MerchantUser merchantUser = merchantUserRepository.findOne(product.getMerchantUser().getId());
             product.setMerchantUser(merchantUser);
             grouponProductRepository.save(product);
@@ -137,18 +143,20 @@ public class GrouponProductService {
             }
             //   保存产品详情图
             List<GrouponProductDetail> detailList = grouponProductDto.getDelDetailList();
-            for (GrouponProductDetail grouponProductDetail : detailList) {
-                String random = RandomStringUtils.random(6, "1234567890");
-                grouponProductDetail.setSid(new Integer(random));
+            for(int j=0;j<detailList.size();j++) {
+                GrouponProductDetail grouponProductDetail = detailList.get(j);
                 grouponProductDetail.setDescription(product.getDescription());
+                grouponProductDetail.setSid(new Integer(j+1));
+                grouponProductDetail.setGrouponProduct(product);
                 grouponProductDetailRepository.save(grouponProductDetail);
             }
             //   保存商品轮播图
             List<GrouponScrollPicture> scorePictureList = grouponProductDto.getDelScrollList();
-            for (GrouponScrollPicture grouponScrollPicture : scorePictureList) {
-                String picSid = RandomStringUtils.random(6, "1234567890");
+            for(int i=0;i<scorePictureList.size();i++) {
+                GrouponScrollPicture grouponScrollPicture = scorePictureList.get(i);
                 grouponScrollPicture.setDescription(product.getDescription());
-                grouponScrollPicture.setSid(new Integer(picSid));
+                grouponScrollPicture.setSid(new Integer(i+1));
+                grouponScrollPicture.setGrouponProduct(product);
                 grouponScrollPictureRepository.save(grouponScrollPicture);
             }
             return true;
@@ -158,4 +166,11 @@ public class GrouponProductService {
         }
     }
 
+    /**
+     *  根据 ID 查找商品
+     */
+    @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
+    public GrouponProduct findById(Long productId) {
+        return grouponProductRepository.findOne(productId);
+    }
 }

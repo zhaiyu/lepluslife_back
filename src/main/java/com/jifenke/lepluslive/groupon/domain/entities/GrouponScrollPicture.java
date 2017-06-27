@@ -55,4 +55,11 @@ public class GrouponScrollPicture {
     this.picture = picture;
   }
 
+  public GrouponProduct getGrouponProduct() {
+    return grouponProduct;
+  }
+
+  public void setGrouponProduct(GrouponProduct grouponProduct) {
+    this.grouponProduct = grouponProduct;
+  }
 }
