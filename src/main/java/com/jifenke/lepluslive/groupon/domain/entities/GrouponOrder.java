@@ -32,6 +32,7 @@ public class GrouponOrder {
 
   private Date completeDate;
 
+  @ManyToOne
   private LeJiaUser leJiaUser;
 
   private Long totalPrice=0L;

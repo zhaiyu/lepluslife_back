@@ -40,13 +40,13 @@ public class ProductSpec {
   private Long version = 0L;
 
   @NotNull
-  private Long price;   //市场价
+  private Long price;   //售价
 
   @Column(name = "min_price")
   @NotNull
-  private Long minPrice; //购买最低金额
+  private Long minPrice; //购买最低金额 = price - minScore
 
-  private Integer minScore = 0;  //兑换最低所需积分
+  private Integer minScore = 0;  //兑换最低所需金币
 
   private Integer profit = 0;  //利润
 
@@ -57,6 +57,10 @@ public class ProductSpec {
   private Long toMerchant = 0L; //绑定商户返佣金额
 
   private Long toPartner = 0L;  //绑定合伙人返佣金额
+
+  private Integer costPrice = 0;  //成本价
+
+  private Integer otherPrice = 0;  //其他费用
 
   public Long getVersion() {
     return version;
@@ -168,5 +172,21 @@ public class ProductSpec {
 
   public void setProfit(Integer profit) {
     this.profit = profit;
+  }
+
+  public Integer getOtherPrice() {
+    return otherPrice;
+  }
+
+  public void setOtherPrice(Integer otherPrice) {
+    this.otherPrice = otherPrice;
+  }
+
+  public Integer getCostPrice() {
+    return costPrice;
+  }
+
+  public void setCostPrice(Integer costPrice) {
+    this.costPrice = costPrice;
   }
 }

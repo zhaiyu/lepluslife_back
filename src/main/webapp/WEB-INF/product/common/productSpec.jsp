@@ -68,69 +68,109 @@
                             <thead>
                             <tr>
                                 <th class="text-center">单品ID</th>
-                                <th class="text-center">规格品类</th>
-                                <th class="text-center">正常价格</th>
-                                <th class="text-center">最低价格</th>
+                                <th class="text-center">名称</th>
+                                <th class="text-center">售价</th>
+                                <th class="text-center">成本价</th>
+                                <th class="text-center">相关费用</th>
+                                <th class="text-center">实付</th>
+                                <th class="text-center">返鼓励金</th>
+                                <th class="text-center">总分润</th>
+                                <th class="text-center">TO商家</th>
+                                <th class="text-center">TO商圈</th>
+                                <th class="text-center">TO城市</th>
+                                <th class="text-center">TO积分客</th>
                                 <th class="text-center">状态</th>
                                 <th class="text-center">缩略图</th>
                                 <th class="text-center">库存</th>
-                                <th class="text-center">利润</th>
                                 <th class="text-center">操作</th>
                             </tr>
                             </thead>
                             <tbody>
-                            <c:forEach items="${productSpecs}" var="productSpec">
+                            <c:forEach items="${policyList}" var="policy">
                                 <tr class="active">
-                                    <td class="text-center">${productSpec.id}</td>
-                                    <td class="text-center">${productSpec.specDetail}</td>
+                                    <td class="text-center">${policy.productSpec.id}</td>
+                                    <td class="text-center">${policy.productSpec.specDetail}</td>
                                     <td class="text-center"><fmt:formatNumber
-                                            type="number" value="${productSpec.price/100}"
+                                            type="number" value="${policy.productSpec.price/100}"
                                             pattern="0.00"
                                             maxFractionDigits="2"/></td>
                                     <td class="text-center"><fmt:formatNumber
-                                            type="number" value="${productSpec.minPrice/100}"
+                                            type="number"
+                                            value="${policy.productSpec.costPrice/100}"
+                                            pattern="0.00"
+                                            maxFractionDigits="2"/></td>
+                                    <td class="text-center"><fmt:formatNumber
+                                            type="number"
+                                            value="${policy.productSpec.otherPrice/100}"
+                                            pattern="0.00"
+                                            maxFractionDigits="2"/></td>
+                                    <td class="text-center"><fmt:formatNumber
+                                            type="number" value="${policy.productSpec.minPrice/100}"
                                             pattern="0.00"
                                             maxFractionDigits="2"/>元+<fmt:formatNumber
-                                            type="number" value="${productSpec.minScore/100}"
+                                            type="number" value="${policy.productSpec.minScore/100}"
                                             pattern="0.00"
                                             maxFractionDigits="2"/>金币
                                     </td>
+                                    <td class="text-center"><fmt:formatNumber
+                                            type="number" value="${policy.rebateScore/100}"
+                                            pattern="0.00"
+                                            maxFractionDigits="2"/></td>
+                                    <td class="text-center"><fmt:formatNumber
+                                            type="number" value="${policy.commission/100}"
+                                            pattern="0.00"
+                                            maxFractionDigits="2"/></td>
+                                    <td class="text-center"><fmt:formatNumber
+                                            type="number" value="${policy.toMerchant/100}"
+                                            pattern="0.00"
+                                            maxFractionDigits="2"/></td>
+                                    <td class="text-center"><fmt:formatNumber
+                                            type="number" value="${policy.toPartner/100}"
+                                            pattern="0.00"
+                                            maxFractionDigits="2"/></td>
+                                    <td class="text-center"><fmt:formatNumber
+                                            type="number" value="${policy.toPartnerManager/100}"
+                                            pattern="0.00"
+                                            maxFractionDigits="2"/></td>
+                                    <td class="text-center"><fmt:formatNumber
+                                            type="number" value="${policy.toLePlusLife/100}"
+                                            pattern="0.00"
+                                            maxFractionDigits="2"/></td>
+
                                     <td class="text-center">
-                                        <c:if test="${productSpec.state==1}">
+                                        <c:if test="${policy.productSpec.state==1}">
                                             已上架
                                         </c:if>
-                                        <c:if test="${productSpec.state==0}">
+                                        <c:if test="${policy.productSpec.state==0}">
                                             <font color="red">已下架</font>
                                         </c:if>
                                     </td>
-                                    <td class="text-center"><img src="${productSpec.picture}"></td>
-                                    <td class="text-center">${productSpec.repository}</td>
-                                    <td class="text-center"><fmt:formatNumber
-                                            type="number" value="${productSpec.profit/100}"
-                                            pattern="0.00"
-                                            maxFractionDigits="2"/></td>
+                                    <td class="text-center"><img
+                                            src="${policy.productSpec.picture}"></td>
+                                    <td class="text-center">${policy.productSpec.repository}</td>
                                     <td class="text-center">
                                         <button type="button" class="btn btn-default createWarn"
-                                                onclick="editProductSpecNumber(${productSpec.id},1)">
+                                                onclick="editProductSpecNumber(${policy.productSpec.id},1)">
                                             进库
                                         </button>
                                         <button type="button" class="btn btn-default createWarn"
-                                                onclick="editProductSpecNumber(${productSpec.id},0)">
+                                                onclick="editProductSpecNumber(${policy.productSpec.id},0)">
                                             出库
                                         </button>
                                         <button type="button" class="btn btn-default createWarn"
-                                                onclick="editProductSpec(${productSpec.id})">编辑
+                                                onclick="editProductSpec(${policy.productSpec.id})">
+                                            编辑
                                         </button>
-                                        <c:if test="${productSpec.state==1}">
+                                        <c:if test="${policy.productSpec.state==1}">
                                             <button type="button" class="btn btn-default upWarn"
                                                     data-target="#upWarn"
-                                                    onclick="putOff(${productSpec.id})">下架
+                                                    onclick="putOff(${policy.productSpec.id})">下架
                                             </button>
                                         </c:if>
-                                        <c:if test="${productSpec.state==0}">
+                                        <c:if test="${policy.productSpec.state==0}">
                                             <button type="button" class="btn btn-default downWarn"
                                                     data-target="#downWarn"
-                                                    onclick="putOn(${productSpec.id})">
+                                                    onclick="putOn(${policy.productSpec.id})">
                                                 上架
                                             </button>
                                         </c:if>
@@ -171,7 +211,7 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="price" class="col-sm-3 control-label">市场价</label>
+                        <label for="price" class="col-sm-3 control-label">售价</label>
 
                         <div class="col-sm-4">
                             <input type="text" class="form-control" id="price"
@@ -179,19 +219,19 @@
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="minPrice" class="col-sm-3 control-label">最低价格</label>
+                        <label for="costPrice" class="col-sm-3 control-label">成本价</label>
 
                         <div class="col-sm-4">
-                            <input type="text" class="form-control" id="minPrice"
-                                   placeholder="请输入最低价格">
+                            <input type="text" class="form-control" id="costPrice"
+                                   placeholder="请输入成本价">
                         </div>
                     </div>
                     <div class="form-group">
-                        <label for="minScore" class="col-sm-3 control-label">可用金币</label>
+                        <label for="otherPrice" class="col-sm-3 control-label">相关费用</label>
 
                         <div class="col-sm-4">
-                            <input type="text" class="form-control" id="minScore"
-                                   placeholder="请输入可用金币">
+                            <input type="text" class="form-control" id="otherPrice"
+                                   placeholder="请输入相关费用">
                         </div>
                     </div>
                     <div class="form-group">
@@ -200,30 +240,6 @@
                         <div class="col-sm-4">
                             <input type="text" class="form-control" id="repository"
                                    placeholder="请输入初始库存">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="profit" class="col-sm-3 control-label">利润(元)</label>
-
-                        <div class="col-sm-4">
-                            <input type="text" class="form-control" id="profit"
-                                   placeholder="单规格利润" value="0">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="toMerchant" class="col-sm-3 control-label">商户返佣金额(元)</label>
-
-                        <div class="col-sm-4">
-                            <input type="text" class="form-control" id="toMerchant"
-                                   placeholder="商户返佣金额" value="0">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <label for="toPartner" class="col-sm-3 control-label">合伙人返佣金额(元)</label>
-
-                        <div class="col-sm-4">
-                            <input type="text" class="form-control" id="toPartner"
-                                   placeholder="合伙人返佣金额" value="0">
                         </div>
                     </div>
                     <div class="form-group">
@@ -404,58 +420,52 @@
                 $("#picture").attr("src", data.picture);
                 $("#specDetail").val(data.specDetail);
                 $("#price").val(data.price / 100);
-                $("#minPrice").val(data.minPrice / 100);
-                $("#minScore").val(data.minScore / 100);
-                $("#profit").val(data.profit / 100);
-                $("#toMerchant").val(data.toMerchant / 100);
-                $("#toPartner").val(data.toPartner / 100);
+                $("#costPrice").val(data.costPrice / 100);
+                $("#otherPrice").val(data.otherPrice / 100);
                 $("#repository").val(data.repository);
                 $("#createSpecWarn").modal("show");
             });
-
         } else {
             $('#specId').val("");
             $("#picture").attr("src", "");
             $("#specDetail").val("");
             $("#price").val("");
-            $("#minPrice").val("");
-            $("#minScore").val("");
-            $("#profit").val("");
-            $("#toMerchant").val("");
-            $("#toPartner").val("");
+            $("#costPrice").val("");
+            $("#otherPrice").val("");
             $("#repository").val("");
             $("#createSpecWarn").modal("show");
         }
     }
 
     function submit() {
-        var productSpec = {};
-        productSpec.picture = $("#picture").attr("src");
-        productSpec.specDetail = $("#specDetail").val();
-        productSpec.price = Math.round($("#price").val() * 100);
-        productSpec.minPrice = Math.round($("#minPrice").val() * 100);
-        productSpec.minScore = Math.round($("#minScore").val() * 100);
-        productSpec.profit = Math.round($("#profit").val() * 100);
-        productSpec.toMerchant = Math.round($("#toMerchant").val() * 100);
-        productSpec.toPartner = Math.round($("#toPartner").val() * 100);
-        productSpec.repository = $("#repository").val();
+        var productSpecDto = {};
+        productSpecDto.picture = $("#picture").attr("src");
+        productSpecDto.specDetail = $("#specDetail").val();
+        productSpecDto.repository = $("#repository").val();
+        productSpecDto.price = $("#price").val();
+        productSpecDto.costPrice = $("#costPrice").val();
+        productSpecDto.otherPrice = $("#otherPrice").val();
         var specId = $('#specId').val();
         if (specId != null || specId != "") {
-            productSpec.id = specId;
+            productSpecDto.id = specId;
         }
         var product = {};
         product.id = ${product.id};
-        productSpec.product = product;
+        productSpecDto.product = product;
         $.ajax({
                    type: "post",
                    url: "/manage/productSpec",
                    contentType: "application/json",
-                   data: JSON.stringify(productSpec),
+                   data: JSON.stringify(productSpecDto),
                    success: function (data) {
-                       setTimeout(function () {
-                           location.href =
-                               "/manage/product/specManage?id=${product.id}";
-                       }, 0);
+                       if (data.status == 200) {
+                           setTimeout(function () {
+                               location.href =
+                                   "/manage/product/specManage?id=${product.id}";
+                           }, 0);
+                       } else {
+                           alert(data.msg);
+                       }
                    }
                });
     }
