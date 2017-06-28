@@ -24,9 +24,6 @@ public class OnLineOrderShare {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
-  @OneToOne
-  private OnLineOrder onLineOrder;
-
   private Long shareMoney = 0L;  //=toLockMerchant + toLockPartner
 
   private Long toLockMerchant = 0L;
@@ -79,14 +76,6 @@ public class OnLineOrderShare {
 
   public void setId(Long id) {
     this.id = id;
-  }
-
-  public OnLineOrder getOnLineOrder() {
-    return onLineOrder;
-  }
-
-  public void setOnLineOrder(OnLineOrder onLineOrder) {
-    this.onLineOrder = onLineOrder;
   }
 
   public Long getToLockMerchant() {

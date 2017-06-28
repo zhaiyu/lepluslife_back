@@ -26,8 +26,13 @@ public class GrouponOrder {
 
     private Date completeDate;
 
+<<<<<<< HEAD
     @ManyToOne
     private LeJiaUser leJiaUser;
+=======
+  @ManyToOne
+  private LeJiaUser leJiaUser;
+>>>>>>> 6488037ed48caf70979d4f9e12c55c8ab2aa22c8
 
     private Long totalPrice = 0L;
 

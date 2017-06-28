@@ -1,8 +1,9 @@
 package com.jifenke.lepluslive.product.service;
 
 import com.jifenke.lepluslive.global.util.LejiaResult;
+import com.jifenke.lepluslive.product.controller.dto.ProductSpecDto;
 import com.jifenke.lepluslive.product.domain.entities.Product;
-import com.jifenke.lepluslive.product.domain.entities.ProductDetail;
+import com.jifenke.lepluslive.product.domain.entities.ProductRebatePolicy;
 import com.jifenke.lepluslive.product.domain.entities.ProductSpec;
 import com.jifenke.lepluslive.product.domain.entities.ProductSpecLog;
 import com.jifenke.lepluslive.product.repository.ProductSpecLogRepository;
@@ -12,12 +13,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.awt.image.BufferedImage;
-import java.net.HttpURLConnection;
-import java.net.URL;
+import java.math.BigDecimal;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
-import javax.imageio.ImageIO;
 import javax.inject.Inject;
 
 /**
@@ -32,6 +32,9 @@ public class ProductSpecService {
 
   @Inject
   private ProductSpecLogRepository productSpecLogRepository;
+
+  @Inject
+  private ProductRebatePolicyService productRebatePolicyService;
 
   public ProductSpec findProductSpecById(Integer id) {
 
@@ -51,31 +54,46 @@ public class ProductSpecService {
     return productSpecRepository.findAllByProductAndState(product, 1);
   }
 
-  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-  public void editProductSpec(ProductSpec productSpec) {
+  /**
+   * 新增或编辑规格 2017/6/26
+   *
+   * @param productSpecDto 规格包装类
+   */
+  @Transactional(propagation = Propagation.REQUIRED)
+  public void editProductSpec(ProductSpecDto productSpecDto) throws Exception {
 
     ProductSpec origin = null;
-    if (productSpec.getId() != null) {
-      origin = productSpecRepository.findOne(productSpec.getId());
+    ProductRebatePolicy policy = null;
+    if (productSpecDto.getId() != null) {
+      origin = productSpecRepository.findOne(productSpecDto.getId());
+      policy = productRebatePolicyService.findByProductSpec(origin);
     } else {
       origin = new ProductSpec();
       origin.setState(1);
+      policy = new ProductRebatePolicy();
+      policy.setProductSpec(origin);
     }
-    origin.setSpecDetail(productSpec.getSpecDetail());
-    origin.setRepository(productSpec.getRepository());
-    origin.setPrice(productSpec.getPrice());
-    origin.setMinPrice(productSpec.getMinPrice());
-    origin.setMinScore(productSpec.getMinScore());
-    origin.setProfit(productSpec.getProfit());
-    origin.setToMerchant(productSpec.getToMerchant());
-    origin.setToPartner(productSpec.getToPartner());
-    origin.setPicture(productSpec.getPicture());
-    origin.setProduct(productSpec.getProduct());
+    origin.setSpecDetail(productSpecDto.getSpecDetail());
+    origin.setRepository(productSpecDto.getRepository());
+    origin.setPicture(productSpecDto.getPicture());
+    origin.setProduct(productSpecDto.getProduct());
 
+    Map<String, Long> result = getRebateMap(productSpecDto);
+
+    origin.setPrice(result.get("price"));
+    origin.setCostPrice(result.get("costPrice").intValue());
+    origin.setOtherPrice(result.get("otherPrice").intValue());
+    origin.setPrice(result.get("price"));
+    origin.setMinPrice(result.get("minPrice"));
+    origin.setMinScore(result.get("minScore").intValue());
+    origin.setProfit(result.get("toLePlusLife").intValue());
+    origin.setToMerchant(result.get("toMerchant"));
+    origin.setToPartner(result.get("toPartner"));
     productSpecRepository.save(origin);
+    productRebatePolicyService.saveRebatePolicy(result, policy);
   }
 
-  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  @Transactional(propagation = Propagation.REQUIRED)
   public LejiaResult editRepository(ProductSpecLog productSpecLog) {
     ProductSpec spec = productSpecRepository.findOne(productSpecLog.getProductSpec().getId());
     if (spec == null) {
@@ -116,6 +134,90 @@ public class ProductSpecService {
     productSpec.setState(0);
     productSpecRepository.save(productSpec);
     return LejiaResult.build(200, "成功下架商品规格");
+  }
+
+  /**
+   * 计算规格对应的分润等数据  2017/6/26
+   */
+  private Map<String, Long> getRebateMap(ProductSpecDto dto) throws Exception {
+
+    Map<String, Long> result = new HashMap<>();
+    BigDecimal X100 = new BigDecimal(100);
+
+    BigDecimal totalPrice = new BigDecimal(dto.getPrice());
+    BigDecimal costPrice = new BigDecimal(dto.getCostPrice());
+    BigDecimal otherPrice = new BigDecimal(dto.getOtherPrice());
+    long minScore = 0L;
+    long minPrice = 0L;
+    long rebateScore = 0L;
+    long toMerchant = 0L;
+    long toPartner = 0L;
+    long toPartnerManager = 0L;
+    long toLePlusLife = 0L;
+
+    //毛利润
+    BigDecimal profit = totalPrice.subtract(costPrice).subtract(otherPrice);
+
+    long price = totalPrice.multiply(X100).longValue();
+    long commission = 0;
+    if (profit.doubleValue() < 0) {
+      throw new RuntimeException("金额填写有误");
+    }
+
+    try {
+      if (profit.doubleValue() != 0) {
+        //可用金币
+        BigDecimal minScoreDecimal = profit.multiply(BigDecimal.valueOf(0.3))
+            .setScale(0, BigDecimal.ROUND_HALF_UP);
+        minScore = minScoreDecimal.multiply(X100).longValue();
+        minPrice = price - minScore; //实付
+        //返鼓励金
+        BigDecimal
+            rebateScoreDecimal =
+            profit.multiply(BigDecimal.valueOf(0.1)).setScale(2, BigDecimal.ROUND_HALF_UP);
+        rebateScore = rebateScoreDecimal.multiply(X100).longValue();
+
+        //分润总金额
+        BigDecimal
+            totalCommission =
+            profit.subtract(minScoreDecimal).subtract(rebateScoreDecimal);
+        commission = totalCommission.multiply(X100).longValue();
+        //锁定商家合伙人
+        toMerchant =
+            totalCommission.multiply(BigDecimal.valueOf(0.4)).setScale(2, BigDecimal.ROUND_HALF_UP)
+                .multiply(X100).longValue();
+        //锁定商圈合伙人
+        toPartner =
+            totalCommission.multiply(BigDecimal.valueOf(0.3)).setScale(2, BigDecimal.ROUND_HALF_UP)
+                .multiply(X100).longValue();
+        //锁定城市合伙人
+        toPartnerManager =
+            totalCommission.multiply(BigDecimal.valueOf(0.15)).setScale(2, BigDecimal.ROUND_HALF_UP)
+                .multiply(X100).longValue();
+        //积分客
+        toLePlusLife = commission - toMerchant - toPartner - toPartnerManager;
+      } else {
+        minPrice = price;
+      }
+    } catch (Exception e) {
+      e.printStackTrace();
+      throw new RuntimeException();
+    }
+
+    result.put("price", price);
+    result.put("minScore", minScore);
+    result.put("minPrice", minPrice);
+    result.put("costPrice", costPrice.multiply(X100).longValue());
+    result.put("otherPrice", otherPrice.multiply(X100).longValue());
+
+    result.put("rebateScore", rebateScore);
+    result.put("commission", commission);
+    result.put("toMerchant", toMerchant);
+    result.put("toPartner", toPartner);
+    result.put("toPartnerManager", toPartnerManager);
+    result.put("toLePlusLife", toLePlusLife);
+
+    return result;
   }
 
 }

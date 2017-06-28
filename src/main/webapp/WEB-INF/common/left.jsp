@@ -240,9 +240,10 @@
             </li>
         </shiro:hasPermission>
         <shiro:hasPermission name="app_manage:query">
-            <li><h4 class="M6"><span></span>APP管理</h4>
+            <li><h4 class="M6"><span></span>内容管理</h4>
 
                 <div class="list-item none none5">
+                    <%--<a href='/manage/site/list'>站点管理</a>--%>
                     <shiro:hasPermission name="app_manage:query"> <a
                             href='/manage/banner?type=1'>APP推荐</a> </shiro:hasPermission>
                     <a href='/manage/start_ad'>启动广告管理</a>
@@ -312,6 +313,7 @@
                 <a href='/manage/shortMessagesListPage'>发送记录</a>
             </div>
         </li>
+<<<<<<< HEAD
         <li><h4 class="M6"><span></span>运营中心</h4>
             <div class="list-item none none11">
                 <a href='/manage/productSecKill/overview'>秒杀概览</a>
@@ -319,6 +321,8 @@
                 <a href='/manage/productSecKill/editPage'>秒杀商品</a>
             </div>
         </li>
+=======
+>>>>>>> 6488037ed48caf70979d4f9e12c55c8ab2aa22c8
     </ul>
 </div>
 <script>navList(12);</script>
