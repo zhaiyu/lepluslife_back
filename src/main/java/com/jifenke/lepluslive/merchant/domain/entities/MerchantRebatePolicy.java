@@ -23,47 +23,47 @@ public class MerchantRebatePolicy {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
-  private Integer commissionPolicy; //佣金策略 0 固定策略 1 阶段性策略
+  private Integer commissionPolicy=0; //佣金策略 0 固定策略 1 阶段性策略
 
-  private Integer rebatePolicy; //红包策略 0 普通策略 1 开启鼓励金
+  private Integer rebatePolicy=0; //红包策略 0 普通策略 1 开启鼓励金
 
   private Long merchantId;
 
-  private Integer rebateFlag; //是否开启会员订单scoreBRebate     0-不开启（按比例）  1-开启（全部） 2-不开启
+  private Integer rebateFlag=0; //是否开启会员订单scoreBRebate     0-不开启（按比例）  1-开启（全部） 2-不开启
 
-  private BigDecimal importScoreBScale;//导流订单发放积分策略    【导流订单积分】
+  private BigDecimal importScoreBScale=new BigDecimal(0);//导流订单发放积分策略    【导流订单积分】
 
-  private BigDecimal importScoreCScale; //导流订单发放金币策略    【导流订单金币】
+  private BigDecimal importScoreCScale=new BigDecimal(0); //导流订单发放金币策略    【导流订单金币】
 
-  private BigDecimal userScoreBScale;//会员订单按比例发放积分策略返积分比  【会员订单-比例-积分】
+  private BigDecimal userScoreBScale=new BigDecimal(0);//会员订单按比例发放积分策略返积分比  【会员订单-比例-积分】
 
-  private BigDecimal userScoreCScale;//会员订单按比例发放积分策略返积分比  【会员订单-比例-积分】
+  private BigDecimal userScoreCScale=new BigDecimal(0);//会员订单按比例发放积分策略返积分比  【会员订单-比例-积分】
 
-  private BigDecimal userScoreBScaleB;//会员订单全额发放积分策略返积分比   【会员订单-全额-积分】
+  private BigDecimal userScoreBScaleB=new BigDecimal(0);//会员订单全额发放积分策略返积分比   【会员订单-全额-积分】
 
-  private BigDecimal userScoreCScaleB;//会员订单全额发放积分策略返积分比   【会员订单-全额-积分】
+  private BigDecimal userScoreCScaleB=new BigDecimal(0);//会员订单全额发放积分策略返积分比   【会员订单-全额-积分】
 
-  private BigDecimal userScoreAScale;//会员订单按比例发放积分策略返红包比  【会员订单-比例-红包】
+  private BigDecimal userScoreAScale=new BigDecimal(0);//会员订单按比例发放积分策略返红包比  【会员订单-比例-红包】
 
-  private BigDecimal importShareScale; //导流订单分润百分比
+  private BigDecimal importShareScale=new BigDecimal(0); //导流订单分润百分比
 
-  private BigDecimal memberShareScale; //导流订单分润百分比
+  private BigDecimal memberShareScale=new BigDecimal(0); //导流订单分润百分比
 
-  private Integer stageOne;//0%~20%
+  private Integer stageOne=0;//0%~20%
 
-  private Integer stageTwo;//20%~40%
+  private Integer stageTwo=0;//20%~40%
 
-  private Integer stageThree;//40%·60%
+  private Integer stageThree=0;//40%·60%
 
-  private Integer stageFour;//60%~80%
+  private Integer stageFour=0;//60%~80%
 
-  private Integer regionOne; //区间一 0%～regionOne%
+  private Integer regionOne=0; //区间一 0%～regionOne%
 
-  private Integer regionTwo; //区间二 regionOne%～regionTwo%
+  private Integer regionTwo=0; //区间二 regionOne%～regionTwo%
 
-  private Integer regionThree;  //区间三 regionTwo%～regionThree%
+  private Integer regionThree=0;  //区间三 regionTwo%～regionThree%
 
-  private Integer regionFour;//区间4 regionThree%～regionFour%
+  private Integer regionFour=0;//区间4 regionThree%～regionFour%
 
   @OneToMany(fetch = FetchType.LAZY, mappedBy = "merchantRebatePolicy")
   private List<CommissionStage> commissionStages;

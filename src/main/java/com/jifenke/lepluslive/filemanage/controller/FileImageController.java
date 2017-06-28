@@ -138,11 +138,11 @@ public class FileImageController {
         for (int rowNum = 0; rowNum <= hssfSheet.getLastRowNum(); rowNum++) {
           HSSFRow hssfRow = hssfSheet.getRow(rowNum);
           if (hssfRow != null) {
-            String posId = getValue(hssfRow.getCell(3));
+            String posId = getValue(hssfRow.getCell(12));
             String orderSid = getValue(hssfRow.getCell(6));
             String paidMoney = getValue(hssfRow.getCell(7));
             String transferMoney = getValue(hssfRow.getCell(8));
-            String paidResult = getValue(hssfRow.getCell(9));
+            String paidResult = getValue(hssfRow.getCell(13));
             String completeDate = getValue(hssfRow.getCell(11));
             Merchant merchant = posOrderService
                 .checkOrder(posId, orderSid, paidMoney, transferMoney, paidResult, completeDate,

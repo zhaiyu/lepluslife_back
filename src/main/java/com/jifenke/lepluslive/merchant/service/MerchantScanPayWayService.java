@@ -66,6 +66,8 @@ public class MerchantScanPayWayService {
       db_scanPayWay.setCommission(scanPayWay.getCommission());
       db_scanPayWay.setLastUpdate(date);
       db_scanPayWay.setType(scanPayWay.getType());
+      db_scanPayWay.setOpenOffLineShare(scanPayWay.getOpenOffLineShare());
+      db_scanPayWay.setOpenOnLineShare(scanPayWay.getOpenOnLineShare());
       repository.save(db_scanPayWay);
     } catch (Exception e) {
       e.printStackTrace();

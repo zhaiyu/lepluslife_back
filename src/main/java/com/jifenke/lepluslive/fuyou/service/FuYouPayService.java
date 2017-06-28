@@ -36,11 +36,11 @@ public class FuYouPayService {
     SortedMap<String, Object> params = new TreeMap<>();
     params.put("version", "1.0");
     params.put("ins_cd", Constants.FUYOU_INS_CD);//机构号
-    params.put("mchnt_cd", order.getMerchantNum());//商户号
+    params.put("mchnt_cd", order.getScanCodeOrderExt().getMerchantNum());//商户号
     params.put("term_id", MvUtil.getRandomNumber(8));//终端号, 随机八位
     params.put("mchnt_order_no", order.getOrderSid());
     params.put("random_str", MvUtil.getRandomStr(32));//随机字符串
-    if (order.getChannel() == 0) {//订单类型:1=ALIPAY|0=WECHAT
+    if (order.getScanCodeOrderExt().getUseAliPay() == 0) {//订单类型:1=ALIPAY|0=WECHAT
       params.put("order_type", "WECHAT");
     } else {
       params.put("order_type", "ALIPAY");

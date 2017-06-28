@@ -98,6 +98,7 @@ public class WeiXinWithdrawBillController {
             try {
                 weiXinWithdrawBillService.rejectConfirm(id);
             } catch (Exception e) {
+                e.printStackTrace();
                 return LejiaResult.build(500, "error");
             }
             return LejiaResult.ok();

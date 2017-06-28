@@ -1,5 +1,6 @@
 package com.jifenke.lepluslive.job;
 
+import com.jifenke.lepluslive.groupon.service.GrouponStatisticService;
 import com.jifenke.lepluslive.order.service.FinanicalStatisticService;
 import com.jifenke.lepluslive.order.service.OffLineOrderService;
 
@@ -44,6 +45,10 @@ public class OffLineOrderJob implements Job {
     FinanicalStatisticService
         finanicalStatisticService =
         (FinanicalStatisticService) applicationContext.getBean("finanicalStatisticService");
+
+    GrouponStatisticService
+        grouponStatisticService =
+        (GrouponStatisticService) applicationContext.getBean("grouponStatisticService");
     Calendar calendar = Calendar.getInstance();
     calendar.setTime(new Date());
     calendar.add(Calendar.DAY_OF_MONTH, -1);
@@ -66,6 +71,6 @@ public class OffLineOrderJob implements Job {
         log.error("商户ID为" + object[0] + "的商户统计出现问题");
       }
     }
-
+    grouponStatisticService.statistic(start,end);
   }
 }

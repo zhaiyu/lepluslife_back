@@ -160,7 +160,7 @@ public class ScanCodeStatementService {
           ScanCodeSettleOrder
               settleOrder =
               settleOrderRepository
-                  .findByMerchantNumAndTradeDate(order.getMerchantNum(), tradeDate);
+                  .findByMerchantNumAndTradeDate(order.getScanCodeOrderExt().getMerchantNum(), tradeDate);
           if (settleOrder != null) {
             settleOrder.setRefundMoney(settleOrder.getRefundMoney() + order.getTransferMoney());
             settleOrder.setTransferMoney(settleOrder.getTransferMoney() - order.getTransferMoney());

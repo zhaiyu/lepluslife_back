@@ -123,7 +123,7 @@ public class ScanCodeOrderService {
     Merchant merchant = order.getMerchant();
     result.put("merchant", merchant);
     //获取该商户使用的商户号今日可退款金额和红包
-    Object[] o = repository.countByMerchantNumToday(order.getMerchantNum(), begin, date).get(0);
+    Object[] o = repository.countByMerchantNumToday(order.getScanCodeOrderExt().getMerchantNum(), begin, date).get(0);
     Map<String, Object> canRefund = new HashMap<>();
     canRefund.put("totalPrice", o[0] == null ? 0 : o[0]);
     canRefund.put("truePay", o[1] == null ? 0 : o[1]);
@@ -202,7 +202,7 @@ public class ScanCodeOrderService {
     ScoreA scoreA = scoreAService.findScoreAByWeiXinUser(leJiaUser);
     ScoreB scoreB = scoreBService.findScoreBByWeiXinUser(leJiaUser);
     //获取该商户使用的商户号今日可退款金额和红包
-    Object[] o = repository.countByMerchantNumToday(order.getMerchantNum(), begin, date).get(0);
+    Object[] o = repository.countByMerchantNumToday(order.getScanCodeOrderExt().getMerchantNum(), begin, date).get(0);
     Long canRefundScore = o[2] == null ? 0L : Long.valueOf(o[2].toString());
     if (canRefundScore < order.getTrueScore()) {
       result.put("status", 1001);
@@ -284,7 +284,7 @@ public class ScanCodeOrderService {
     ScanCodeRefundOrder refundOrder = scanCodeRefundOrderService.findByScanCodeOrder(order);
     if (refundOrder == null) {
       refundOrder = new ScanCodeRefundOrder();
-      refundOrder.setMerchantNum(order.getMerchantNum());
+      refundOrder.setMerchantNum(order.getScanCodeOrderExt().getMerchantNum());
       refundOrder.setScanCodeOrder(order);
       if (orderShare != null) {
         refundOrder.setOrderShareId(orderShare.getId());
@@ -297,7 +297,7 @@ public class ScanCodeOrderService {
     try {
       scanCodeRefundOrderService.saveOrder(refundOrder);
       Map<String, String> map = null;
-      if (order.getPayment() == 1) {
+      if (order.getScanCodeOrderExt().getUseAliPay() == 0&&order.getScanCodeOrderExt().getUseWeixin()==0) {
         map = new HashMap<>();
         map.put("result_code", "000000");
         map.put("transaction_id", "" + date.getTime());

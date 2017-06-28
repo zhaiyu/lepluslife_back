@@ -1,20 +1,22 @@
 package com.jifenke.lepluslive.product.controller;
 
-import com.jifenke.lepluslive.banner.domain.entities.Banner;
+import com.jifenke.lepluslive.global.util.LejiaResult;
 import com.jifenke.lepluslive.global.util.MvUtil;
 import com.jifenke.lepluslive.product.controller.dto.LimitProductDto;
-import com.jifenke.lepluslive.product.controller.dto.ProductDto;
-import com.jifenke.lepluslive.product.domain.entities.*;
+import com.jifenke.lepluslive.product.controller.view.GoldProductViewExcel;
+import com.jifenke.lepluslive.product.controller.view.ProductViewExcel;
+import com.jifenke.lepluslive.product.domain.entities.Product;
+import com.jifenke.lepluslive.product.domain.entities.ProductCriteria;
+import com.jifenke.lepluslive.product.domain.entities.ProductDetail;
+import com.jifenke.lepluslive.product.domain.entities.ProductShare;
+import com.jifenke.lepluslive.product.domain.entities.ProductType;
+import com.jifenke.lepluslive.product.domain.entities.ScrollPicture;
 import com.jifenke.lepluslive.product.service.ProductRebatePolicyService;
 import com.jifenke.lepluslive.product.service.ProductService;
-import com.jifenke.lepluslive.global.util.LejiaResult;
-import com.jifenke.lepluslive.global.util.PaginationUtil;
 import com.jifenke.lepluslive.product.service.ProductShareService;
-import com.jifenke.lepluslive.product.service.ProductSpecService;
 import com.jifenke.lepluslive.product.service.ScrollPictureService;
 import com.jifenke.lepluslive.weixin.service.CategoryService;
 
-import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.PathVariable;
@@ -27,6 +29,7 @@ import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
 import java.util.Date;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -46,7 +49,10 @@ public class ProductController {
   private ScrollPictureService scrollPictureService;
 
   @Inject
-  private ProductSpecService productSpecService;
+  private ProductViewExcel productViewExcel;
+
+  @Inject
+  private GoldProductViewExcel goldProductViewExcel;
 
   @Inject
   private CategoryService categoryService;
@@ -74,7 +80,7 @@ public class ProductController {
    */
   @RequestMapping(value = "/product/ajaxList", method = RequestMethod.POST)
   public LejiaResult ajaxList(@RequestBody ProductCriteria criteria) {
-    return LejiaResult.ok(productService.findCommonProductByPage(criteria));
+    return LejiaResult.ok(productService.findCommonProductByPage(criteria,10));
   }
 
   @RequestMapping(value = "/product/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -230,7 +236,32 @@ public class ProductController {
 
     }
 
+  }
 
+  @RequestMapping(value = "/product/common/export", method = RequestMethod.POST)
+  public ModelAndView exportExcel(ProductCriteria productCriteria) {
+    if (productCriteria.getOffset() == null) {
+      productCriteria.setOffset(1);
+    }
+    Map<String, Object> result=productService.findCommonProductByPage(productCriteria,10000);
+
+    Map map = new HashMap();
+    map.put("result",result);
+
+    return new ModelAndView(productViewExcel, map);
+  }
+
+  @RequestMapping(value = "/product/gold/export", method = RequestMethod.POST)
+  public ModelAndView exportGoldExcel(ProductCriteria productCriteria) {
+    if (productCriteria.getOffset() == null) {
+      productCriteria.setOffset(1);
+    }
+    Map<String, Object> goldResult=productService.findCommonProductByPage(productCriteria,10000);
+
+    Map map = new HashMap();
+    map.put("goldResult",goldResult);
+
+    return new ModelAndView(goldProductViewExcel, map);
   }
 
 }

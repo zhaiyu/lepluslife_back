@@ -20,5 +20,5 @@ public interface OffLineOrderShareRepository extends JpaRepository<OffLineOrderS
   OffLineOrderShare findOneByOrderId(Long orderId);
 
   @Query(value = "SELECT * FROM off_line_order_share WHERE scan_code_order_id = ?1", nativeQuery = true)
-  OffLineOrderShare findByScanCodeOrder(String orderId);
+  OffLineOrderShare findByScanCodeOrder(Long orderId);
 }

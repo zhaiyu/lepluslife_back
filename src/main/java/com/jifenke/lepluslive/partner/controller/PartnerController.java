@@ -3,12 +3,10 @@ package com.jifenke.lepluslive.partner.controller;
 import com.jifenke.lepluslive.global.util.LejiaResult;
 import com.jifenke.lepluslive.global.util.MvUtil;
 import com.jifenke.lepluslive.partner.controller.dto.PartnerDto;
+import com.jifenke.lepluslive.partner.controller.view.PartnerManagerViewExcel;
 import com.jifenke.lepluslive.partner.controller.view.PartnerViewExcel;
 import com.jifenke.lepluslive.partner.domain.criteria.PartnerCriteria;
-import com.jifenke.lepluslive.partner.domain.entities.Partner;
-import com.jifenke.lepluslive.partner.domain.entities.PartnerManager;
-import com.jifenke.lepluslive.partner.domain.entities.PartnerWallet;
-import com.jifenke.lepluslive.partner.domain.entities.PartnerWalletOnline;
+import com.jifenke.lepluslive.partner.domain.entities.*;
 import com.jifenke.lepluslive.partner.service.PartnerManagerService;
 import com.jifenke.lepluslive.partner.service.PartnerService;
 
@@ -53,6 +51,10 @@ public class PartnerController {
 
     @Inject
     private UserService userService;
+
+
+    @Inject
+    private PartnerManagerViewExcel partnerManagerViewExcel;
 
 
     @RequestMapping(value = "/partner")
@@ -193,6 +195,15 @@ public class PartnerController {
         Map map = new HashMap();
         map.put("partnerList", page.getContent());
         return new ModelAndView(partnerViewExcel, map);
+    }
+
+    @RequestMapping(value = "/cityPartner/exportExcel", method = RequestMethod.POST)
+    public ModelAndView exportExcel() {
+
+        List<PartnerManagerWallet> partnerManagerWalletList=partnerService.findAllPartnerManagerByWallet();
+        Map map = new HashMap();
+        map.put("partnerManagerWalletList", partnerManagerWalletList);
+        return new ModelAndView(partnerManagerViewExcel, map);
     }
 
 

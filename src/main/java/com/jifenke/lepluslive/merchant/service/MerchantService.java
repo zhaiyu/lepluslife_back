@@ -278,13 +278,15 @@ public class MerchantService {
             merchantBankRepository.save(merchantBank);
             origin.setMerchantBank(merchantBank);
         } else {
-            MerchantBank newBank = new MerchantBank();
-            newBank.setBankNumber(bank.getBankNumber());
-            newBank.setBankName(bank.getBankName());
-            newBank.setType(bank.getType());
-            newBank.setPayee(bank.getPayee());
-            merchantBankRepository.save(newBank);
-            origin.setMerchantBank(newBank);
+            if(bank!=null){
+                MerchantBank newBank = new MerchantBank();
+                newBank.setBankNumber(bank.getBankNumber());
+                newBank.setBankName(bank.getBankName());
+                newBank.setType(bank.getType());
+                newBank.setPayee(bank.getPayee());
+                merchantBankRepository.save(newBank);
+                origin.setMerchantBank(newBank);
+            }
         }
         origin.setMerchantPhone(merchant.getMerchantPhone());
         origin.setMerchantProtocols(merchant.getMerchantProtocols());

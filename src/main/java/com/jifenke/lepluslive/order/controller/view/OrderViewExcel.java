@@ -179,12 +179,12 @@ public class OrderViewExcel extends AbstractExcelView {
           excelRow.createCell(17).setCellValue(0);
         }else {
           commissionSubsidy =dLjCommission-scoreaCommissionCharge-Math.round(((truePay*6/1000.0))*100)/100.0;
-          excelRow.createCell(17).setCellValue(commissionSubsidy);
+          excelRow.createCell(17).setCellValue(commissionSubsidy<=0?commissionSubsidy:0);
         }
 
       }else{
         commissionSubsidy =dLjCommission-scoreaCommissionCharge-Math.round(((truePay*6/1000.0))*100)/100.0;
-        excelRow.createCell(17).setCellValue(commissionSubsidy);
+        excelRow.createCell(17).setCellValue(commissionSubsidy<=0?commissionSubsidy:0);
       }
       //佣金纯收入
       if (order.getRebateWay() == 1) {

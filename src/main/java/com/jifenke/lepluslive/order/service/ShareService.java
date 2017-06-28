@@ -89,6 +89,17 @@ public class ShareService {
           predicate.getExpressions().add(
                   cb.like(r.get("lockPartnerManager").get("name"),  "%" +shareCriteria.getLockPartnerManager()+ "%"));
         }
+        if (shareCriteria.getType() != null) {
+
+
+          if(shareCriteria.getType()==1){
+            predicate.getExpressions().add(cb.or(cb.equal(r.get("type"),1),cb.equal(r.get("type"),4),r.get("type").isNull()));
+          }
+          if(shareCriteria.getType()==2){
+            predicate.getExpressions().add(cb.or(cb.equal(r.get("type"),2),cb.equal(r.get("type"),3)));
+          }
+
+        }
 
         return predicate;
       }
@@ -106,7 +117,7 @@ public class ShareService {
    *
    * @param orderId 订单ID
    */
-  public OffLineOrderShare findByScanCodeOrder(String orderId) {
+  public OffLineOrderShare findByScanCodeOrder(Long orderId) {
     return offLineOrderShareRepository.findByScanCodeOrder(orderId);
   }
 }

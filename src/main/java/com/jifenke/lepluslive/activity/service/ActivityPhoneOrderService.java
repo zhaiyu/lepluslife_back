@@ -221,10 +221,10 @@ public class ActivityPhoneOrderService {
    * 按条件查询话费订单列表  16/10/27
    */
   @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-  public Page findByCriteria(PhoneOrderCriteria criteria) {
+  public Page findByCriteria(PhoneOrderCriteria criteria,Integer limit) {
     Sort sort = new Sort(Sort.Direction.DESC, "createDate");
     return repository.findAll(getWhereClause(criteria),
-                              new PageRequest(criteria.getCurrPage() - 1, 10, sort));
+                              new PageRequest(criteria.getCurrPage() - 1, limit, sort));
   }
 
   //封装查询条件   16/10/27  

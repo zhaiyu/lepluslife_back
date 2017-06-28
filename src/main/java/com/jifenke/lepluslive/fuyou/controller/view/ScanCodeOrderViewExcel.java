@@ -103,13 +103,13 @@ public class ScanCodeOrderViewExcel extends AbstractExcelView {
         excelRow.createCell(3).setCellValue(sdf.format(order.getCompleteDate()));
         excelRow.createCell(4).setCellValue(sdf2.format(order.getCompleteDate()));
       }
-      if (order.getSource() == 0) {
+      if (order.getScanCodeOrderExt().getSource() == 0) {
         excelRow.createCell(5).setCellValue(s[1]);
       } else {
         excelRow.createCell(5).setCellValue(s[2]);
       }
       excelRow.createCell(6).setCellValue(order.getMerchant().getName());
-      excelRow.createCell(7).setCellValue(order.getMerchantUserId());
+      excelRow.createCell(7).setCellValue(order.getScanCodeOrderExt().getMerchantUserId());
       leJiaUser = order.getLeJiaUser();
       excelRow.createCell(8).setCellValue(leJiaUser.getUserSid());
       if (leJiaUser.getPhoneNumber() != null) {
@@ -117,7 +117,7 @@ public class ScanCodeOrderViewExcel extends AbstractExcelView {
       } else {
         excelRow.createCell(9).setCellValue(s[7]);
       }
-      switch (order.getOrderType().getId().intValue()) {
+      switch (order.getOrderType().intValue()) {
         case 12001:
           excelRow.createCell(10).setCellValue(s[8]);
           break;
@@ -139,18 +139,12 @@ public class ScanCodeOrderViewExcel extends AbstractExcelView {
         default:
           excelRow.createCell(10).setCellValue(s[6]);
       }
-      switch (order.getPayment()) {
-        case 0:
-          excelRow.createCell(11).setCellValue(s[14]);
-          break;
-        case 1:
-          excelRow.createCell(11).setCellValue(s[15]);
-          break;
-        case 2:
-          excelRow.createCell(11).setCellValue(s[16]);
-          break;
-        default:
-          excelRow.createCell(11).setCellValue(s[6]);
+      if(order.getScanCodeOrderExt().getUseAliPay()==0&&order.getScanCodeOrderExt().getUseWeixin()==0){
+        excelRow.createCell(11).setCellValue("纯红包");
+      }else if(order.getScanCodeOrderExt().getUseScoreA()==1&&(order.getScanCodeOrderExt().getUseWeixin()==1||order.getScanCodeOrderExt().getUseAliPay()==1)){
+        excelRow.createCell(11).setCellValue("混合支付");
+      }else {
+        excelRow.createCell(11).setCellValue("纯现金");
       }
       excelRow.createCell(12).setCellValue(order.getTotalPrice() / 100.0);
       excelRow.createCell(13).setCellValue(order.getTrueScore() / 100.0);

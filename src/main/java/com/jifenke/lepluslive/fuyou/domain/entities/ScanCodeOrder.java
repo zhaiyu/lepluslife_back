@@ -1,21 +1,20 @@
 package com.jifenke.lepluslive.fuyou.domain.entities;
 
 import com.jifenke.lepluslive.global.util.MvUtil;
-
 import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
 import com.jifenke.lepluslive.user.domain.entities.LeJiaUser;
-import com.jifenke.lepluslive.weixin.domain.entities.Category;
-
-import org.hibernate.annotations.GenericGenerator;
 
 import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
 import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
 import javax.persistence.Id;
 import javax.persistence.ManyToOne;
+import javax.persistence.OneToOne;
 import javax.persistence.Table;
+import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
 /**
@@ -26,15 +25,14 @@ import javax.validation.constraints.NotNull;
 public class ScanCodeOrder {
 
   @Id
-  @GeneratedValue(generator = "system-uuid")
-  @GenericGenerator(name = "system-uuid", strategy = "uuid")
-  private String id;
+  @GeneratedValue(strategy = GenerationType.AUTO)
+  private Long id;
 
   private String orderSid = MvUtil.getOrderNumber();
 
   private String orderCode;  //第三方渠道流水号
 
-  private String settleDate;  //第三方支付完成时间 yyyyMMddHHmmss
+  private String settleDate;  //第三方支付完成时间
 
   private Date createdDate;
 
@@ -49,26 +47,10 @@ public class ScanCodeOrder {
   private Merchant merchant;
 
   @NotNull
-  private Long merchantUserId;  //门店对应的商户ID
-
-  @NotNull
-  private Integer channel = 0;  //支付渠道  0=微信|1=支付宝
-
-  private Integer source = 0;   //支付来源  0=WAP|1=APP
-
-  @NotNull
-  private Integer payment = 0;  //付款方式  0=纯现金|1=纯红包|2=混合
-
-  @NotNull
   private Integer state = 0; //支付状态  0=未支付|1=已支付|2=已退款
 
-  private String merchantNum;  //该订单使用的富友商户号
-
-  private String merchantRate;  //商户号当时的佣金费率
-
   @NotNull
-  @ManyToOne
-  private Category orderType;//订单类型
+  private Long orderType;//订单类型
 
   @NotNull
   private Long totalPrice = 0L;
@@ -85,15 +67,12 @@ public class ScanCodeOrder {
 
   private Long scoreCommission = 0L; //红包部分佣金
 
-  private Long wxCommission = 0L; //微信手续费(分润用)=totalPrice*0.6%
-
-  private Long wxTrueCommission = 0L;  //微信实际手续费(对积分客)=truePay*0.35%
 
   private Long rebate = 0L; //返利红包
 
-  private Long scoreB = 0L; //发放积分
+  private Long scoreC = 0L; //返金币数 = commission*40%
 
-  private Long share = 0L;  //待分润金额(对于导流订单和会员订单)=commission-rebate-wxCommission>=0
+  private Long share = 0L;  //待分润金额(对于导流订单和会员订单)=commission*60%
 
   private Long transferMoney = 0L; //商户实际入账(包括现金和红包)=transferMoneyFromTruePay+transferMoneyFromScore
 
@@ -106,14 +85,28 @@ public class ScanCodeOrder {
   @Column(nullable = false, length = 10)
   private String lePayCode; //四位数支付码
 
-  private Long ljProfit = 0L;//每笔订单的额外收入=最多发放红包-实际发放红包
+  @OneToOne
+  private ScanCodeOrderExt scanCodeOrderExt;
 
-  public Long getLjProfit() {
-    return ljProfit;
+  private Long sumPrice; //totalprice+优惠金额
+
+  @Version
+  private Long version;
+
+  public Long getVersion() {
+    return version;
   }
 
-  public void setLjProfit(Long ljProfit) {
-    this.ljProfit = ljProfit;
+  public void setVersion(Long version) {
+    this.version = version;
+  }
+
+  public Long getSumPrice() {
+    return sumPrice;
+  }
+
+  public void setSumPrice(Long sumPrice) {
+    this.sumPrice = sumPrice;
   }
 
   public Long getTransferMoneyFromTruePay() {
@@ -132,21 +125,6 @@ public class ScanCodeOrder {
     this.orderCode = orderCode;
   }
 
-  public String getMerchantNum() {
-    return merchantNum;
-  }
-
-  public void setMerchantNum(String merchantNum) {
-    this.merchantNum = merchantNum;
-  }
-
-  public String getMerchantRate() {
-    return merchantRate;
-  }
-
-  public void setMerchantRate(String merchantRate) {
-    this.merchantRate = merchantRate;
-  }
 
   public Long getShare() {
     return share;
@@ -164,19 +142,12 @@ public class ScanCodeOrder {
     this.messageState = messageState;
   }
 
-  public Integer getSource() {
-    return source;
-  }
 
-  public void setSource(Integer source) {
-    this.source = source;
-  }
-
-  public Category getOrderType() {
+  public Long getOrderType() {
     return orderType;
   }
 
-  public void setOrderType(Category orderType) {
+  public void setOrderType(Long orderType) {
     this.orderType = orderType;
   }
 
@@ -188,12 +159,20 @@ public class ScanCodeOrder {
     this.transferMoney = transferMoney;
   }
 
-  public String getId() {
+  public Long getId() {
     return id;
   }
 
-  public void setId(String id) {
+  public void setId(Long id) {
     this.id = id;
+  }
+
+  public Long getScoreC() {
+    return scoreC;
+  }
+
+  public void setScoreC(Long scoreC) {
+    this.scoreC = scoreC;
   }
 
   public String getOrderSid() {
@@ -214,6 +193,14 @@ public class ScanCodeOrder {
 
   public Date getCompleteDate() {
     return completeDate;
+  }
+
+  public Long getLjCommission() {
+    return this.getCommission();
+  }
+
+  public Long getWxCommission() {
+    return scanCodeOrderExt.getThirdCommission();
   }
 
   public void setCompleteDate(Date completeDate) {
@@ -242,38 +229,6 @@ public class ScanCodeOrder {
 
   public void setRefundDate(Date refundDate) {
     this.refundDate = refundDate;
-  }
-
-  public Long getMerchantUserId() {
-    return merchantUserId;
-  }
-
-  public void setMerchantUserId(Long merchantUserId) {
-    this.merchantUserId = merchantUserId;
-  }
-
-  public Integer getChannel() {
-    return channel;
-  }
-
-  public void setChannel(Integer channel) {
-    this.channel = channel;
-  }
-
-  public Integer getPayment() {
-    return payment;
-  }
-
-  public void setPayment(Integer payment) {
-    this.payment = payment;
-  }
-
-  public Long getWxTrueCommission() {
-    return wxTrueCommission;
-  }
-
-  public void setWxTrueCommission(Long wxTrueCommission) {
-    this.wxTrueCommission = wxTrueCommission;
   }
 
   public Long getTransferMoneyFromScore() {
@@ -340,12 +295,8 @@ public class ScanCodeOrder {
     this.trueScore = trueScore;
   }
 
-  public Long getWxCommission() {
-    return wxCommission;
-  }
-
-  public void setWxCommission(Long wxCommission) {
-    this.wxCommission = wxCommission;
+  public Long getScoreB() {
+    return null;
   }
 
   public Long getRebate() {
@@ -354,14 +305,6 @@ public class ScanCodeOrder {
 
   public void setRebate(Long rebate) {
     this.rebate = rebate;
-  }
-
-  public Long getScoreB() {
-    return scoreB;
-  }
-
-  public void setScoreB(Long scoreB) {
-    this.scoreB = scoreB;
   }
 
   public Integer getState() {
@@ -379,4 +322,21 @@ public class ScanCodeOrder {
   public void setSettleDate(String settleDate) {
     this.settleDate = settleDate;
   }
+
+  public ScanCodeOrderExt getScanCodeOrderExt() {
+    return scanCodeOrderExt;
+  }
+
+  public void setScanCodeOrderExt(ScanCodeOrderExt scanCodeOrderExt) {
+    this.scanCodeOrderExt = scanCodeOrderExt;
+  }
+
+  public void setWxCommission(long wxCommission) {
+    scanCodeOrderExt.setThirdCommission(wxCommission);
+  }
+
+  public void setWxTrueCommission(long wxTrueCommission) {
+    scanCodeOrderExt.setThirdTrueCommission(wxTrueCommission);
+  }
+
 }
