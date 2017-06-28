@@ -322,4 +322,23 @@ public class GrouponProductService {
         }
     }
 
+    /**
+     *  根据sid查找商品
+     *   Created by xf on 2017-06-28.
+     */
+    @Transactional(readOnly = true,propagation = Propagation.REQUIRED)
+    public GrouponProduct findBySid(String sid) {
+        return grouponProductRepository.findBySid(sid);
+    }
+
+    /**
+     *   修改商品状态
+     *   Created by xf on 2017-06-28.
+     */
+    @Transactional(readOnly = false,propagation = Propagation.REQUIRED)
+    public boolean changeState(GrouponProduct grouponProduct,Integer state) {
+        grouponProduct.setState(state);
+        grouponProductRepository.save(grouponProduct);
+        return true;
+    }
 }

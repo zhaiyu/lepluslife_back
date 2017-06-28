@@ -132,5 +132,35 @@ public class GrouponProductController {
         }
     }
 
+    /**
+     *  下架商品
+     *  Created by xf on 2017-06-28.
+     */
+    @RequestMapping(value = "/grouponProduct/down", method = RequestMethod.GET)
+    @ResponseBody
+    public LejiaResult productDown(String sid) {
+        GrouponProduct product = grouponProductService.findBySid(sid);
+        if(product==null) {
+            return LejiaResult.build(400,"下架失败");
+        }else {
+            grouponProductService.changeState(product,0);
+            return LejiaResult.ok();
+        }
+    }
+    /**
+     *   上架商品
+     *   Created by xf on 2017-06-28.
+     */
+    @RequestMapping(value = "/grouponProduct/up", method = RequestMethod.GET)
+    @ResponseBody
+    public LejiaResult productUp(String sid) {
+        GrouponProduct product = grouponProductService.findBySid(sid);
+        if(product==null) {
+            return LejiaResult.build(400,"上架失败");
+        }else {
+            grouponProductService.changeState(product,1);
+            return LejiaResult.ok();
+        }
+    }
 
 }

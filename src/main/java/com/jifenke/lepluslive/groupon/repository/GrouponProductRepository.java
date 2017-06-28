@@ -11,6 +11,9 @@ import org.springframework.data.jpa.repository.JpaRepository;
  * 团购产品 Repository
  * Created by xf on 17-6-16.
  */
-public interface GrouponProductRepository  extends JpaRepository<GrouponProduct,Long>{
+public interface GrouponProductRepository extends JpaRepository<GrouponProduct, Long> {
+
     Page findAll(Specification<GrouponProduct> whereClause, Pageable pageRequest);
+
+    GrouponProduct findBySid(String sid);
 }

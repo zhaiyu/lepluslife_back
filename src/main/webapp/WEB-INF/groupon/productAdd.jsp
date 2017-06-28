@@ -26,6 +26,7 @@
     <link type="text/css" rel="stylesheet" href="${resourceUrl}/css/Mod/ModInput.css"/>
     <link type="text/css" rel="stylesheet" href="${resourceUrl}/css/Mod/ModCommon.css"/>
     <link type="text/css" rel="stylesheet" href="${resourceUrl}/css/create-edit-store.css"/>
+    <link rel="stylesheet" href="${resourceUrl}/css/daterangepicker-bs3.css">
     <!--JS-->
     <script type="text/javascript" src="${resourceUrl}/js/html5shiv.min.js"></script>
     <script type="text/javascript" src="${resourceUrl}/js/jquery-2.0.3.min.js"></script>
@@ -38,6 +39,8 @@
     <script type="text/javascript" src="${resourceUrl}/js/jquery.combo.select.js"></script>
     <script type="text/javascript" src="${resourceUrl}/js/Mod/RetainDecimalFor2.js"></script>
     <script src="${resourceUrl}/js/global/plugins/bootstrap-touchspin/bootstrap.touchspin.js"></script>
+    <script src="${resourceUrl}/js/moment.min.js"></script>
+    <script src="${resourceUrl}/js/daterangepicker.js"></script>
 </head>
 <style>
     .fixClear:after {
@@ -290,8 +293,13 @@
             </div>
             <div class="MODInput_row jdrq">
                 <div class="Mod-2"></div>
-                <div class="Mod-5">
-                    <input id="validity2" style="width: 20%" type="text" value="${product.validity}"><span>前使用（填写方式如：2017-1-1）</span>
+                <div class="Mod-2">
+                    <%--<input id="validity2" style="width: 20%" type="text" value="${product.validity}"><span>前使用（填写方式如：2017-1-1）</span>--%>
+                    <div id="date-end" class="form-control">
+                        <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
+                        <span id="validity2"><c:if test="${product.validityType==1}">${product.validity}</c:if></span>
+                        <b class="caret"></b>
+                    </div>
                 </div>
             </div>
             <div class="MODInput_row">
@@ -411,7 +419,7 @@
             <div class="MODInput_row">
                 <div class="Mod-2">乐+库存</div>
                 <div class="Mod-5">
-                    <input id="ljStorage" type="number" class="create_edit-input" value="${product.ljStorage/100.0}"/>
+                    <input id="ljStorage" type="number" class="create_edit-input" value="${product.ljStorage}"/>
                 </div>
             </div>
             <div class="MODInput_row ModButtonMarginDown">
@@ -434,11 +442,11 @@
     var HtmlType = 0;       //  页面类型：创建页面=0 ; 编辑页面=1;
     var refundType = "${product.refundType}";      //  0 随时退 1 不可退
     var validityType = "${product.validityType}";     //  有效期类型 0 相对日期 1 绝对日期
-    var reservationType = "${reservation}";         // 0 不需要预约
+    var reservationType = "${product.reservation}";         // 0 不需要预约
     var grouponProductDto = {};
     var grouponProduct = {};
-    var scrollNum = "${detailSize}";       // 轮播图数量
-    var detailNum = "${scrollSize}";       // 详情图数量
+    var scrollNum = "${detailSize==null?1:detailSize}";       // 轮播图数量
+    var detailNum = "${scrollSize==null?1:scrollSize}";       // 详情图数量
     var delScrollList = [], delDetailList = [], merchantList = [];
     //  模糊检索商户
     loadMerchantUser();
@@ -501,7 +509,6 @@
     });
     $(".addScrollBtn").click(function () {
         scrollNum++;
-        var currId = "banner" + scrollNum;
         var picture = "scrollPicture" + scrollNum;
         var pictureUpload = "scrollPictureUpload" + scrollNum;
         var btn = "scrollUpdate" + scrollNum;
@@ -524,7 +531,6 @@
     });
     $(".addDetailBtn").click(function () {
         detailNum++;
-        var currId = "banner" + detailNum;
         var picture = "detailPicture" + detailNum;
         var pictureUpload = "detailPictureUpload" + detailNum;
         var btn = "detailUpdate" + detailNum;
@@ -719,11 +725,12 @@
             }
         } else {
             //  绝对期限
-            if ($("#validity2").val() != null && $("#validity2").val() != '') {
-                grouponProduct.validity = $("#validity2").val();
+            if ($("#validity2").text() != null && $("#validity2").text() != '') {
+                var dateStr = $('#date-end span').text();
+                grouponProduct.validity = dateStr;
                 grouponProduct.validityType = 1;
             } else {
-                alert("请输入使用期限~" + $("#validity2").val());
+                alert("请输入使用期限~");
                 return false;
             }
         }
@@ -925,6 +932,50 @@
     function productList() {
         location.href = "/manage/grouponProduct/list";
     }
+    // 日期加载
+    $(document).ready(function () {
+        $('#date-end').daterangepicker({
+            maxDate: moment(), //最大时间
+            showDropdowns: true,
+            showWeekNumbers: false, //是否显示第几周
+            timePicker: true, //是否显示小时和分钟
+            timePickerIncrement: 60, //时间的增量，单位为分钟
+            timePicker12Hour: false, //是否使用12小时制来显示时间
+            ranges: {
+                '最近1小时': [moment().subtract('hours', 1),
+                    moment()],
+                '今日': [moment().startOf('day'), moment()],
+                '昨日': [moment().subtract('days',
+                    1).startOf('day'),
+                    moment().subtract('days',
+                        1).endOf('day')],
+                '最近7日': [moment().subtract('days', 6), moment()],
+                '最近30日': [moment().subtract('days', 29),
+                    moment()]
+            },
+            opens: 'right', //日期选择框的弹出位置
+            buttonClasses: ['btn btn-default'],
+            applyClass: 'btn-small btn-primary blue',
+            cancelClass: 'btn-small',
+            format: 'YYYY-MM-DD', //控件中from和to 显示的日期格式
+            separator: ' to ',
+            locale: {
+                applyLabel: '确定',
+                cancelLabel: '取消',
+                fromLabel: '起始时间',
+                toLabel: '结束时间',
+                customRangeLabel: '自定义',
+                daysOfWeek: ['日', '一', '二', '三', '四', '五', '六'],
+                monthNames: ['一月', '二月', '三月', '四月', '五月', '六月',
+                    '七月', '八月', '九月', '十月', '十一月',
+                    '十二月'],
+                firstDay: 1
+            }
+        }, function (start, end, label) {//格式化日期显示框
+            $('#date-end span').html(start.format('YYYY-MM-DD') + '~'
+                + end.format('YYYY-MM-DD'));
+        });
+    });
 </script>
 
 </html>

@@ -174,11 +174,11 @@
                     if(list[i].state==0) {
                         content+='<td>已下架</td>';
                         content+='<td><input type="button" class="btn btn-xs btn-primary select-btn createWarn" value="编辑" onclick="productEdit('+list[i].id+')">'+
-                            '<input type="button" class="btn btn-xs btn-danger select-btn createWarn" value="上架"></td></tr> ';
+                            '<input type="button" class="btn btn-xs btn-danger select-btn createWarn" value="上架" onclick="prodUp('+list[i].sid+')"></td></tr> ';
                     }else{
                         content+='<td>已上架</td>';
                         content+='<td><input type="button" class="btn btn-xs btn-primary select-btn createWarn" value="编辑" onclick="productEdit('+list[i].id+')">'+
-                            '<input type="button" class="btn btn-xs btn-danger select-btn createWarn" value="下架"></td></tr> ';
+                            '<input type="button" class="btn btn-xs btn-danger select-btn createWarn" value="下架"  onclick="prodDown('+list[i].sid+')"></td></tr> ';
                     }
                 }
                 initPage(productCriteria.offset, totalPage);
@@ -205,6 +205,42 @@
     // 跳转到编辑页面
     function productEdit(id) {
         location.href="/manage/grouponProduct/edit?id="+id;
+    }
+    //   上架
+    function  prodUp(sid) {
+        var sure = confirm("请问是否要上架该商品");
+        if(sure) {
+            $.ajax({
+                type: "get",
+                url: "/manage/grouponProduct/up?sid="+sid,
+                success: function (result) {
+                    if(result.status==200) {
+                        alert("上架成功 ^_^");
+                        location.href="/manage/grouponProduct/list";
+                    }else {
+                        alert(result.msg);
+                    }
+                }
+            });
+        }
+    }
+    //   下架
+    function  prodDown(sid) {
+        var sure = confirm("请问是否要下架该商品");
+        if(sure) {
+            $.ajax({
+                type: "get",
+                url: "/manage/grouponProduct/down?sid="+sid,
+                success: function (result) {
+                    if(result.status==200) {
+                        alert("下架成功 ^_^");
+                        location.href="/manage/grouponProduct/list";
+                    }else {
+                        alert(result.msg);
+                    }
+                }
+            });
+        }
     }
 </script>
 </html>
