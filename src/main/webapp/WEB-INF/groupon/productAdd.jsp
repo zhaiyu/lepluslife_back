@@ -180,7 +180,8 @@
                                         <input id="scrollPictureId${scroll.sid}" type="hidden" value="${scroll.id}"/>
                                     </div>
                                     <div id="scrollUpdate${scroll.sid}" class="update">点击上传</div>
-                                    <div><input id="scrollPictureUpload${scroll.sid}" class="form-control" name="file" type="file"
+                                    <div><input id="scrollPictureUpload${scroll.sid}" class="form-control" name="file"
+                                                type="file"
                                                 data-url="/manage/file/saveImage"></div>
                                 </div>
                             </c:forEach>
@@ -207,11 +208,12 @@
                             <c:forEach var="detail" items="${productDetails}" step="1">
                                 <div>
                                     <div>
-                                        <img id="scrollPicture${detail.sid}" src="${detail.picture}" alt="">
-                                        <input id="scrollPictureId${detail.sid}" type="hidden" value="${detail.id}"/>
+                                        <img id="detailPicture${detail.sid}" src="${detail.picture}" alt="">
+                                        <input id="detailPictureId${detail.sid}" type="hidden" value="${detail.id}"/>
                                     </div>
-                                    <div id="scrollUpdate${detail.sid}" class="update">点击上传</div>
-                                    <div><input id="scrollPictureUpload${detail.sid}" class="form-control" name="file" type="file"
+                                    <div id="detailUpdate${detail.sid}" class="update">点击上传</div>
+                                    <div><input id="detailPictureUpload${detail.sid}" class="form-control" name="file"
+                                                type="file"
                                                 data-url="/manage/file/saveImage"></div>
                                 </div>
                             </c:forEach>
@@ -233,7 +235,7 @@
             <div class="MODInput_row">
                 <div class="Mod-2">可用门店</div>
                 <div class="Mod-5">
-                    <select class="hhr" id="selMcu" value="product.merchantUser.id">
+                    <select class="hhr" id="selMcu" value="${product.merchantUser.id}">
                         <option value="-1">请选择可用门店</option>
                     </select>
                 </div>
@@ -241,7 +243,14 @@
             <div class="MODInput_row">
                 <div class="Mod-2"></div>
                 <div class="Mod-5 checkArea fixClear">
-
+                    <c:if test="${product!=null}">
+                        <div>
+                            <input type="checkbox" class="allCheck" value="0"/><span>全部选择</span><br/>
+                            <c:forEach var="gm" items="${merchants}" step="1">
+                                <input type="checkbox" name="merchant" value="${gm.merchant.id}" checked="true"/><span>${gm.merchant.name}</span><br/>
+                            </c:forEach>
+                        </div>
+                    </c:if>
                 </div>
             </div>
             <div class="MODInput_row create_edit-contractType">
@@ -254,7 +263,8 @@
             <div class="MODInput_row yy">
                 <div class="Mod-2"></div>
                 <div class="Mod-5">
-                    <span>提前</span><input id="reservation" style="width: 20%" type="number" value="${product.reservation}"><span>天预约</span>
+                    <span>提前</span><input id="reservation" style="width: 20%" type="number"
+                                          value="${product.reservation}"><span>天预约</span>
                 </div>
             </div>
             <div class="MODInput_row create_edit-contractType">
@@ -313,31 +323,34 @@
             <div class="MODInput_row">
                 <div class="Mod-2">团购原价</div>
                 <div class="Mod-5">
-                    <input id="originPrice" type="number" class="create_edit-input"  value="${product.originPrice/100.0}"/>
+                    <input id="originPrice" type="number" class="create_edit-input"
+                           value="${product.originPrice/100.0}"/>
                 </div>
             </div>
             <div class="MODInput_row">
                 <div class="Mod-2">普通团购价</div>
                 <div class="Mod-5">
-                    <input id="normalPrice" type="number" class="create_edit-input"  value="${product.normalPrice/100.0}"/>
+                    <input id="normalPrice" type="number" class="create_edit-input"
+                           value="${product.normalPrice/100.0}"/>
                 </div>
             </div>
             <div class="MODInput_row">
                 <div class="Mod-2">普通库存</div>
                 <div class="Mod-5">
-                    <input id="normalStorage" type="number" class="create_edit-input"  value="${product.normalStorage}"/>
+                    <input id="normalStorage" type="number" class="create_edit-input" value="${product.normalStorage}"/>
                 </div>
             </div>
             <div class="MODInput_row">
                 <div class="Mod-2">乐+团购价</div>
                 <div class="Mod-5">
-                    <input id="ljPrice" type="number" class="create_edit-input"  value="${product.ljPrice/100.0}"/>
+                    <input id="ljPrice" type="number" class="create_edit-input" value="${product.ljPrice/100.0}"/>
                 </div>
             </div>
             <div class="MODInput_row">
                 <div class="Mod-2">乐+佣金</div>
                 <div class="Mod-5">
-                    <input id="ljCommission" type="number" class="create_edit-input"  value="${product.ljCommission/100.0}"/>
+                    <input id="ljCommission" type="number" class="create_edit-input"
+                           value="${product.ljCommission/100.0}"/>
                 </div>
             </div>
             <div class="MODInput_row">
@@ -349,43 +362,50 @@
             <div class="MODInput_row">
                 <div class="Mod-2">送鼓励金</div>
                 <div class="Mod-5">
-                    <input id="rebateScorea" type="number" class="create_edit-input"  value="${product.rebateScorea/100.0}"/>
+                    <input id="rebateScorea" type="number" class="create_edit-input"
+                           value="${product.rebateScorea/100.0}"/>
                 </div>
             </div>
             <div class="MODInput_row">
                 <div class="Mod-2">送金币</div>
                 <div class="Mod-5">
-                    <input id="rebateScorec" type="number" class="create_edit-input"  value="${product.rebateScorec/100.0}"/>
+                    <input id="rebateScorec" type="number" class="create_edit-input"
+                           value="${product.rebateScorec/100.0}"/>
                 </div>
             </div>
             <div class="MODInput_row">
                 <div class="Mod-2">会员所在门店分润</div>
                 <div class="Mod-5">
-                    <input id="shareToLockMerchant" type="number" class="create_edit-input"  value="${product.shareToLockMerchant/100.0}"/>
+                    <input id="shareToLockMerchant" type="number" class="create_edit-input"
+                           value="${product.shareToLockMerchant/100.0}"/>
                 </div>
             </div>
             <div class="MODInput_row">
                 <div class="Mod-2">会员锁定天使合伙人分润</div>
                 <div class="Mod-5">
-                    <input id="shareToLockPartner" type="number" class="create_edit-input" value="${product.shareToLockPartner/100.0}"/>
+                    <input id="shareToLockPartner" type="number" class="create_edit-input"
+                           value="${product.shareToLockPartner/100.0}"/>
                 </div>
             </div>
             <div class="MODInput_row">
                 <div class="Mod-2">会员锁定城市合伙人分润</div>
                 <div class="Mod-5">
-                    <input id="shareToLockPartnerManager" type="number" class="create_edit-input" value="${product.shareToLockPartnerManager/100.0}"/>
+                    <input id="shareToLockPartnerManager" type="number" class="create_edit-input"
+                           value="${product.shareToLockPartnerManager/100.0}"/>
                 </div>
             </div>
             <div class="MODInput_row">
                 <div class="Mod-2">核销门店天使合伙人分润</div>
                 <div class="Mod-5">
-                    <input id="shareToTradePartner" type="number" class="create_edit-input" value="${product.shareToTradePartner/100.0}"/>
+                    <input id="shareToTradePartner" type="number" class="create_edit-input"
+                           value="${product.shareToTradePartner/100.0}"/>
                 </div>
             </div>
             <div class="MODInput_row">
                 <div class="Mod-2">核销门店城市合伙人分润</div>
                 <div class="Mod-5">
-                    <input id="shareToTradePartnerManager" type="number" class="create_edit-input" value="${product.shareToTradePartnerManager/100.0}"/>
+                    <input id="shareToTradePartnerManager" type="number" class="create_edit-input"
+                           value="${product.shareToTradePartnerManager/100.0}"/>
                 </div>
             </div>
             <div class="MODInput_row">
@@ -433,13 +453,13 @@
         editProductPricture();
     });
     function editProductPricture() {
-        var productId =  $("#productId").val();
-        if(productId!=null&&productId!='') {
-            for(var i=1;i<=scrollNum;i++) {
-                bindFileUpload("scrollPictureUpload"+i, "scrollPicture"+i)
+        var productId = $("#productId").val();
+        if (productId != null && productId != '') {
+            for (var i = 1; i <= scrollNum; i++) {
+                bindFileUpload("scrollPictureUpload" + i, "scrollPicture" + i)
             }
-            for(var j=1;j<=detailNum;j++) {
-                bindFileUpload("detailPictureUpload"+j, "detailPicture"+j)
+            for (var j = 1; j <= detailNum; j++) {
+                bindFileUpload("detailPictureUpload" + j, "detailPicture" + j)
             }
         }
     }
@@ -615,25 +635,46 @@
 
     //  保存或更新
     function saveOrUpdate() {
+        //  设置参数，校验是否完整
         var flag = setParam();
         if (flag == false) {
             return;
         }
-        // 保存
-        $.ajax({
-            type: "post",
-            url: "/manage/grouponProduct/save",
-            contentType: "application/json",
-            data: JSON.stringify(grouponProductDto),
-            success: function (data) {
-                if(data.status==200) {
-                    alert("添加成功！");
-                    location.href = "/manage/grouponProduct/list";
-                }else {
-                    alert("添加失败！");
+        var productId = $("#productId").val();
+        if(productId!=''&&productId!=null) {
+            //  编辑
+            $.ajax({
+                type: "post",
+                url: "/manage/grouponProduct/saveEdit",
+                contentType: "application/json",
+                data: JSON.stringify(grouponProductDto),
+                success: function (data) {
+                    if (data.status == 200) {
+                        alert("修改成功！");
+                        location.href = "/manage/grouponProduct/list";
+                    } else {
+                        alert("编辑失败！");
+                    }
                 }
-            }
-        });
+            });
+        }else {
+            // 新增
+            $.ajax({
+                type: "post",
+                url: "/manage/grouponProduct/save",
+                contentType: "application/json",
+                data: JSON.stringify(grouponProductDto),
+                success: function (data) {
+                    if (data.status == 200) {
+                        alert("添加成功！");
+                        location.href = "/manage/grouponProduct/list";
+                    } else {
+                        alert("添加失败！");
+                    }
+                }
+            });
+        }
+
     }
     //  设置参数
     function setParam() {
@@ -676,19 +717,19 @@
                 alert("请输入有效天数~");
                 return false;
             }
-        } else  {
+        } else {
             //  绝对期限
             if ($("#validity2").val() != null && $("#validity2").val() != '') {
                 grouponProduct.validity = $("#validity2").val();
                 grouponProduct.validityType = 1;
             } else {
-                alert("请输入使用期限~"+$("#validity2").val());
+                alert("请输入使用期限~" + $("#validity2").val());
                 return false;
             }
         }
         //  团购原价
         if ($("#originPrice").val() != null && $("#originPrice").val() != '') {
-            grouponProduct.originPrice = $("#originPrice").val()*100;
+            grouponProduct.originPrice = $("#originPrice").val() * 100;
         } else {
             alert("请输入团购原价~");
             return false;
@@ -697,7 +738,7 @@
 
         //  普通团购价
         if ($("#normalPrice").val() != null && $("#normalPrice").val() != '') {
-            grouponProduct.normalPrice = $("#normalPrice").val()*100;
+            grouponProduct.normalPrice = $("#normalPrice").val() * 100;
         } else {
             alert("请输入普通团购价~");
             return false;
@@ -711,70 +752,70 @@
         }
         //  乐+团购价
         if ($("#ljPrice").val() != null && $("#ljPrice").val() != '') {
-            grouponProduct.ljPrice = $("#ljPrice").val()*100;
+            grouponProduct.ljPrice = $("#ljPrice").val() * 100;
         } else {
             alert("请输入乐+团购价~");
             return false;
         }
         //  乐+佣金
         if ($("#ljCommission").val() != null && $("#ljCommission").val() != '') {
-            grouponProduct.ljCommission = $("#ljCommission").val()*100;
+            grouponProduct.ljCommission = $("#ljCommission").val() * 100;
         } else {
             alert("请输入乐+佣金~");
             return false;
         }
         //  普通手续费
         if ($("#charge").val() != null && $("#charge").val() != '') {
-            grouponProduct.charge = $("#charge").val()*100;
+            grouponProduct.charge = $("#charge").val() * 100;
         } else {
             alert("请输入普通手续费~");
             return false;
         }
         //  送鼓励金
         if ($("#rebateScorea").val() != null && $("#rebateScorea").val() != '') {
-            grouponProduct.rebateScorea = $("#rebateScorea").val()*100;
+            grouponProduct.rebateScorea = $("#rebateScorea").val() * 100;
         } else {
             alert("请输入送鼓励金~");
             return false;
         }
         //  送金币
         if ($("#rebateScorec").val() != null && $("#rebateScorec").val() != '') {
-            grouponProduct.rebateScorec = $("#rebateScorec").val()*100;
+            grouponProduct.rebateScorec = $("#rebateScorec").val() * 100;
         } else {
             alert("请输入送金币~");
             return false;
         }
         //  会员所在门店分润
         if ($("#shareToLockMerchant").val() != null && $("#shareToLockMerchant").val() != '') {
-            grouponProduct.shareToLockMerchant = $("#shareToLockMerchant").val()*100;
+            grouponProduct.shareToLockMerchant = $("#shareToLockMerchant").val() * 100;
         } else {
             alert("请输入门店分润~");
             return false;
         }
         //  会员锁定天使合伙人分润
         if ($("#shareToLockPartner").val() != null && $("#shareToLockPartner").val() != '') {
-            grouponProduct.shareToLockPartner = $("#shareToLockPartner").val()*100;
+            grouponProduct.shareToLockPartner = $("#shareToLockPartner").val() * 100;
         } else {
             alert("请输入天使合伙人分润~");
             return false;
         }
         //  会员锁定城市合伙人分润
         if ($("#shareToLockPartnerManager").val() != null && $("#shareToLockPartnerManager").val() != '') {
-            grouponProduct.shareToLockPartnerManager = $("#shareToLockPartnerManager").val()*100;
+            grouponProduct.shareToLockPartnerManager = $("#shareToLockPartnerManager").val() * 100;
         } else {
             alert("请输入城市合伙人分润分润~");
             return false;
         }
         //  核销门店天使合伙人分润
         if ($("#shareToTradePartner").val() != null && $("#shareToTradePartner").val() != '') {
-            grouponProduct.shareToTradePartner = $("#shareToTradePartner").val()*100;
+            grouponProduct.shareToTradePartner = $("#shareToTradePartner").val() * 100;
         } else {
             alert("请输入核销门店合伙人分润分润~");
             return false;
         }
         //  核销门店城市合伙人分润
         if ($("#shareToTradePartnerManager").val() != null && $("#shareToTradePartnerManager").val() != '') {
-            grouponProduct.shareToTradePartnerManager = $("#shareToTradePartnerManager").val()*100;
+            grouponProduct.shareToTradePartnerManager = $("#shareToTradePartnerManager").val() * 100;
         } else {
             alert("请输入核销门店城市合伙人分润分润~");
             return false;
@@ -803,7 +844,7 @@
             alert("请选择可用门店~");
             return false;
         }
-        if(merchantList.length<=0) {
+        if (merchantList.length <= 0) {
             alert("请点击复选框选择可用门店~");
             return false;
         }
@@ -815,13 +856,13 @@
             return false;
         }
         if ($("#explainPicture").attr("src") != '') {
-            grouponProduct.explainPicture = $("#explainPicture").attr("src") ;
+            grouponProduct.explainPicture = $("#explainPicture").attr("src");
         } else {
             alert("请上传使用说明图片~");
             return false;
         }
         if ($("#instruction").attr("src") != '') {
-            grouponProduct.instruction = $("#instruction").attr("src") ;
+            grouponProduct.instruction = $("#instruction").attr("src");
         } else {
             alert("请上传购买须知图片~");
             return false;
@@ -861,10 +902,10 @@
             alert("请至少上传一张轮播图~");
             return false;
         }
-        grouponProductDto.grouponProduct=grouponProduct;
-        grouponProductDto.delScrollList=delScrollList;
-        grouponProductDto.delDetailList=delDetailList;
-        grouponProductDto.merchantList=merchantList;
+        grouponProductDto.grouponProduct = grouponProduct;
+        grouponProductDto.delScrollList = delScrollList;
+        grouponProductDto.delDetailList = delDetailList;
+        grouponProductDto.merchantList = merchantList;
         return true;
     }
     function loadMerchantUser() {

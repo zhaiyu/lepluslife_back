@@ -117,4 +117,20 @@ public class GrouponProductController {
     }
 
 
+    /**
+     * 保存修改
+     * Created by xf on 2017-06-20.
+     */
+    @RequestMapping(value = "/grouponProduct/saveEdit", method = RequestMethod.POST)
+    @ResponseBody
+    public LejiaResult saveEdit(@RequestBody GrouponProductDto grouponProductDto) {
+        boolean result = grouponProductService.saveProduct(grouponProductDto);
+        if (result) {
+            return LejiaResult.ok();
+        } else {
+            return LejiaResult.build(500, "保存失败，请联系系统管理员！");
+        }
+    }
+
+
 }

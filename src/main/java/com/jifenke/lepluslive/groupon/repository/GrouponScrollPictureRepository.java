@@ -13,6 +13,7 @@ import java.util.List;
  * @author XF
  * @date 2017/6/20
  */
-public interface GrouponScrollPictureRepository extends JpaRepository<GrouponScrollPicture,Long> {
+public interface GrouponScrollPictureRepository extends JpaRepository<GrouponScrollPicture,Integer> {
     List<GrouponScrollPicture> findByGrouponProduct(GrouponProduct grouponProduct);
+    Long countGrouponScrollPictureByGrouponProduct(GrouponProduct grouponProduct);
 }

@@ -173,4 +173,153 @@ public class GrouponProductService {
     public GrouponProduct findById(Long productId) {
         return grouponProductRepository.findOne(productId);
     }
+
+    /***
+     *  修改保存团购产品
+     *  Created by xf on 2017-06-20.
+     */
+    @Transactional(readOnly = false, propagation = Propagation.REQUIRED)
+    public boolean saveEdit(GrouponProductDto grouponProductDto) {
+        try {
+            //   修改产品
+            GrouponProduct product = grouponProductDto.getGrouponProduct();
+            GrouponProduct existProduct = grouponProductRepository.findOne(product.getId());
+            if(product.getCharge()!=null) {
+                existProduct.setCharge(product.getCharge());
+            }
+            if(product.getShareToLockMerchant()!=null) {
+                existProduct.setShareToLockMerchant(product.getShareToLockMerchant());
+            }
+            if(product.getShareToLockPartner()!=null) {
+                existProduct.setShareToLockPartner(product.getShareToLockPartner());
+            }
+            if(product.getShareToLockPartnerManager()!=null) {
+                existProduct.setShareToLockPartnerManager(product.getShareToLockPartnerManager());
+            }
+            if(product.getShareToTradePartner()!=null) {
+                existProduct.setShareToTradePartner(product.getShareToTradePartner());
+            }
+            if(product.getShareToTradePartnerManager()!=null) {
+                existProduct.setShareToTradePartnerManager(product.getShareToTradePartnerManager());
+            }
+            if(product.getDescription()!=null) {
+                existProduct.setDescription(product.getDescription());
+            }
+            if(product.getLjStorage()!=null) {
+                existProduct.setLjStorage(product.getLjStorage());
+            }
+            if(product.getNormalStorage()!=null) {
+                existProduct.setNormalStorage(product.getNormalStorage());
+            }
+            if(product.getLjPrice()!=null) {
+                existProduct.setLjPrice(product.getLjPrice());
+            }
+            if(product.getNormalPrice()!=null) {
+                existProduct.setNormalPrice(product.getNormalPrice());
+            }
+            if(product.getOriginPrice()!=null) {
+                existProduct.setOriginPrice(product.getOriginPrice());
+            }
+            if(product.getLjCommission()!=null) {
+                existProduct.setLjCommission(product.getLjCommission());
+            }
+            if(product.getDisplayPicture()!=null) {
+                existProduct.setDisplayPicture(product.getDisplayPicture());
+            }
+            if(product.getExplainPicture()!=null) {
+                existProduct.setExplainPicture(product.getExplainPicture());
+            }
+            if(product.getInstruction()!=null) {
+                existProduct.setInstruction(product.getInstruction());
+            }
+            if(product.getName()!=null) {
+                existProduct.setName(product.getName());
+            }
+            if(product.getRebateScorea()!=null) {
+                existProduct.setRebateScorea(product.getRebateScorea());
+            }
+            if(product.getRebateScorec()!=null) {
+                existProduct.setRebateScorec(product.getRebateScorec());
+            }
+            if(product.getRefundType()!=null) {
+                existProduct.setRefundType(product.getRefundType());
+            }
+            if(product.getReservation()!=null) {
+                existProduct.setReservation(product.getReservation());
+            }
+            if(product.getValidity()!=null) {
+                existProduct.setValidity(product.getValidity());
+            }
+            if(product.getValidityType()!=null) {
+                existProduct.setValidityType(product.getValidityType());
+            }
+            if(product.getMerchantUser()!=null) {
+                MerchantUser merchantUser = merchantUserRepository.findOne(product.getMerchantUser().getId());
+                existProduct.setMerchantUser(merchantUser);
+            }
+            grouponProductRepository.save(product);
+            //   修改产品门店对应关系
+            List<Merchant> merchantList = grouponProductDto.getMerchantList();
+            if (merchantList != null || merchantList.size() > 0) {
+                // 删除原有的对应关系
+                List<GrouponMerchant> existMerchants = grouponMerchantRepository.findByGrouponProduct(product);
+                for(int i = 0 ; i<existMerchants.size();i++) {
+                    GrouponMerchant existMerchant = existMerchants.get(i);
+                    grouponMerchantRepository.delete(existMerchant.getId());
+                }
+                //  建立新的对应关系
+                for (Merchant merchant : merchantList) {
+                    GrouponMerchant grouponMerchant = new GrouponMerchant();
+                    Merchant existMerchant = merchantRepository.findOne(merchant.getId());
+                    grouponMerchant.setMerchant(existMerchant);
+                    grouponMerchant.setGrouponProduct(product);
+                    grouponMerchantRepository.save(grouponMerchant);
+                }
+            }
+            //   保存产品详情图
+            List<GrouponProductDetail> detailList = grouponProductDto.getDelDetailList();
+            Long detailSid =  grouponProductDetailRepository.countGrouponProductDetailByGrouponProduct(product);
+            Long scrollSid =  grouponScrollPictureRepository.countGrouponScrollPictureByGrouponProduct(product);
+            for(int j=0;j<detailList.size();j++) {
+                GrouponProductDetail grouponProductDetail = detailList.get(j);
+                //  如果详情已存在 ， 修改图片路径
+                if(grouponProductDetail.getId()!=null) {
+                    GrouponProductDetail existDetial = grouponProductDetailRepository.findOne(grouponProductDetail.getId());
+                    existDetial.setPicture(grouponProductDetail.getPicture());
+                    grouponProductDetailRepository.save(existDetial);
+                }else {
+               //  如果图片不存在，新增图片
+                    GrouponProductDetail newDetial = new GrouponProductDetail();
+                    newDetial.setGrouponProduct(product);
+                    newDetial.setPicture(grouponProductDetail.getPicture());
+                    newDetial.setDescription(product.getDescription());
+                    detailSid++;
+                    newDetial.setSid(detailSid.intValue());
+                    grouponProductDetailRepository.save(newDetial);
+                }
+            }
+            //   保存商品轮播图
+            List<GrouponScrollPicture> scorePictureList = grouponProductDto.getDelScrollList();
+            for(int i=0;i<scorePictureList.size();i++) {
+                GrouponScrollPicture grouponScrollPicture = scorePictureList.get(i);
+                if(grouponScrollPicture.getId()!=null) {
+                    GrouponScrollPicture existScroll = grouponScrollPictureRepository.findOne(grouponScrollPicture.getId());
+                    existScroll.setPicture(existScroll.getPicture());
+                    grouponScrollPictureRepository.save(existScroll);
+                }else {
+                    GrouponScrollPicture newScroll = new GrouponScrollPicture();
+                    scrollSid++;
+                    newScroll.setDescription(product.getDescription());
+                    newScroll.setSid(scrollSid.intValue());
+                    newScroll.setGrouponProduct(product);
+                    grouponScrollPictureRepository.save(newScroll);
+                }
+            }
+            return true;
+        } catch (Exception exception) {
+            exception.printStackTrace();
+            return false;
+        }
+    }
+
 }

@@ -12,6 +12,7 @@ import java.util.List;
  * @author XF
  * @date 2017/6/20
  */
-public interface GrouponProductDetailRepository extends JpaRepository<GrouponProductDetail,Long> {
+public interface GrouponProductDetailRepository extends JpaRepository<GrouponProductDetail,Integer> {
     List<GrouponProductDetail> findByGrouponProduct(GrouponProduct grouponProduct);
+    Long countGrouponProductDetailByGrouponProduct(GrouponProduct grouponProduct);
 }
