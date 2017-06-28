@@ -222,7 +222,7 @@
 
                         <div>
                             <span>邮费</span> <input name="postagePrice"
-                                                   value="${product.postage/100}"><span><br/><br/>满多少包邮</span><input
+                                                   value="${product.postage/100}"><span><br/><br/>满多少包邮(输入0表示无论如何都不包邮)</span><input
                                 name="freePrice"
                                 value="${product.freePrice/100}">
                         </div>
@@ -237,7 +237,7 @@
 
                         <div>
                             <span>邮费</span> <input name="postagePrice"
-                                                   value=""><span><br/><br/>满多少包邮</span><input
+                                                   value=""><span><br/><br/>满多少包邮(输入0表示无论如何都不包邮)</span><input
                                 name="freePrice" value="">
                         </div>
                     </div>
