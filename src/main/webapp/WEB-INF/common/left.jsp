@@ -193,7 +193,7 @@
                 </div>
             </li>
 
-            <li><h4 class="M2"><span></span>乐加团购</h4>
+            <%--<li><h4 class="M2"><span></span>乐加团购</h4>
 
                 <div class="list-item none none13">
                     <shiro:hasPermission name="product:query">
@@ -207,7 +207,7 @@
                     <shiro:hasPermission name="product:query"> <a
                             href='/manage/refundOrder/list'>退款管理</a> </shiro:hasPermission>
                 </div>
-            </li>
+            </li>--%>
         </shiro:hasPermission>
         <shiro:hasPermission name="merchant:query">
         <li><h4 class="M2"><span></span>乐+商户</h4> </shiro:hasPermission>
@@ -355,10 +355,10 @@
             $(".none2").parent('li').addClass('selected');
             $(".none2").slideDown(300);
         }
-        if (url.indexOf("/manage/grouponProduct") != -1|| url.indexOf("/manage/grouponCode") != -1 || url.indexOf("/manage/grouponOrder") != -1 || url.indexOf("/manage/refundOrder") != -1) {
+        /*if (url.indexOf("/manage/grouponProduct") != -1|| url.indexOf("/manage/grouponCode") != -1 || url.indexOf("/manage/grouponOrder") != -1 || url.indexOf("/manage/refundOrder") != -1) {
             $(".none13").parent('li').addClass('selected');
             $(".none13").slideDown(300);
-        }
+        }*/
         if ( url.indexOf("/manage/printer")!=-1|| url.indexOf("/manage/merchant") != -1 || url.indexOf("merchantRec") != -1
               || url.indexOf("/manage/merchant_data") != -1) {
             $(".none3").parent('li').addClass('selected');
