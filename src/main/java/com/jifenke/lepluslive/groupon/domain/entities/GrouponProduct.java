@@ -29,9 +29,9 @@ public class GrouponProduct {
 
   private String description; //简介
 
-  private String explainPicture; //说明图 说明团购商品内容
+  private String explainPicture; //说明图 说明团购商品内容 （详情明细）
 
-  private String displayPicture; //展示图
+  private String displayPicture; //展示图 (列表图)
 
   private Integer reservation=0; //是否需要预约 0 不需要预约 1,2,3..需要提前1,2,3..天预约
 

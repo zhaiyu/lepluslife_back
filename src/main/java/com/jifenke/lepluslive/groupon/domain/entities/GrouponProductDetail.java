@@ -65,5 +65,11 @@ public class GrouponProductDetail {
     this.description = description;
   }
 
+  public GrouponProduct getGrouponProduct() {
+    return grouponProduct;
+  }
 
+  public void setGrouponProduct(GrouponProduct grouponProduct) {
+    this.grouponProduct = grouponProduct;
+  }
 }
