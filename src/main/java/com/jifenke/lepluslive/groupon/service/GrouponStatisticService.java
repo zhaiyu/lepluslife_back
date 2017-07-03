@@ -38,11 +38,9 @@ public class GrouponStatisticService {
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     String starts = sdf.format(start);
     String ends = sdf.format(end);
-//    String starts = "2016-10-18 00:32:16";
-//    String ends = "2016-11-18 23:32:16";
     StringBuffer sql = new StringBuffer();
     sql.append(
-        "select sum(trasnfer_money),merchant_id,count(*) from groupon_code where state = 1 and check_date between '");
+        "select sum(trasnfer_money),merchant_id,count(*),sum(total_price),sum(commission) from groupon_code where state = 1 and check_date between '");
     sql.append(starts);
     sql.append("' and '");
     sql.append(ends);
@@ -54,6 +52,8 @@ public class GrouponStatisticService {
       grouponStatistic.setCheck(Long.parseLong(obj[2].toString()));
       grouponStatistic.setTransferMoney(Long.parseLong(obj[0].toString()));
       grouponStatistic.setBalanceDate(end);
+      grouponStatistic.setCommission(Long.parseLong(obj[4].toString()));
+      grouponStatistic.setTotalMoney(Long.parseLong(obj[3].toString()));
       grouponStatisticRepository.save(grouponStatistic);
     }
 
