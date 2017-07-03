@@ -58,8 +58,11 @@
 
                         <div class="col-sm-4">
                             <select class="form-control" id="partnerManager">
+                                <option value="${partnerInfo.partner.partnerManager.id}">${partnerInfo.partner.partnerManager.name}</option>
                                 <c:forEach items="${partnerManagers}" var="partnerManager">
-                                    <option value="${partnerManager.id}">${partnerManager.name}</option>
+                                    <c:if test="${partnerManager.id != partnerInfo.partner.partnerManager.id}">
+                                        <option value="${partnerManager.id}">${partnerManager.name}</option>
+                                    </c:if>
                                 </c:forEach>
                             </select>
                         </div>
@@ -190,7 +193,7 @@
                         <div class="col-sm-4">
                             <input type="text" onkeyup="this.value=this.value.replace(/\D/g,'')"
                                    class="form-control" id="benefitScoreA"
-                                    >
+                            >
                         </div>
                     </div>
                     <div class="form-group" id="benefitScoreB-parent">
@@ -199,13 +202,13 @@
                         <div class="col-sm-4">
                             <input type="text" onkeyup="this.value=this.value.replace(/\D/g,'')"
                                    class="form-control" id="benefitScoreB"
-                                    >
+                            >
                         </div>
                     </div>
                     <div class="form-group">
                         <div class="col-sm-offset-2 col-sm-4">
                             <button type="button" class="btn btn-primary" id="subPartner"
-                                    >
+                            >
                                 提交
                             </button>
                             <a type="button" class="btn btn-primary btn-return" style="margin:10px;"
@@ -242,7 +245,7 @@
             $("#bankName").val('${partnerInfo.partner.bankName}');
             $("#bankPayee").val('${partnerInfo.partner.payee}');
         }
-        if(${partnerInfo.inviteLimit==0}){
+        if (${partnerInfo.inviteLimit==0}) {
             $('#optionsRadios4').prop("checked", true);
         }
     } else {

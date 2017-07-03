@@ -71,7 +71,6 @@ public class ProductSpecService {
       origin = new ProductSpec();
       origin.setState(1);
       policy = new ProductRebatePolicy();
-      policy.setProductSpec(origin);
     }
     origin.setSpecDetail(productSpecDto.getSpecDetail());
     origin.setRepository(productSpecDto.getRepository());
@@ -89,7 +88,8 @@ public class ProductSpecService {
     origin.setProfit(result.get("toLePlusLife").intValue());
     origin.setToMerchant(result.get("toMerchant"));
     origin.setToPartner(result.get("toPartner"));
-    productSpecRepository.save(origin);
+    ProductSpec save = productSpecRepository.save(origin);
+    policy.setProductSpec(save);
     productRebatePolicyService.saveRebatePolicy(result, policy);
   }
 
