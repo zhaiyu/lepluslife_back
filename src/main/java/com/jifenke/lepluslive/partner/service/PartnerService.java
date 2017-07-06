@@ -227,25 +227,30 @@ public class PartnerService {
         }
     }
 
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+    @Transactional(propagation = Propagation.REQUIRED)
     public void editPartner(PartnerDto partnerDto) {
-        Partner partner = partnerDto.getPartner();
-        Partner origin = partnerRepository.findOne(partner.getId());
-        origin.setName(partner.getName());
-        origin.setBankName(partner.getBankName());
-        origin.setBankNumber(partner.getBankNumber());
-        origin.setMerchantLimit(partner.getMerchantLimit());
-        origin.setUserLimit(partner.getUserLimit());
-        origin.setPartnerManager(partner.getPartnerManager());
-        origin.setPayee(partner.getPayee());
-        origin.setPhoneNumber(partner.getPhoneNumber());
-        origin.setPartnerName(partner.getPartnerName());
-        origin.setBenefitTime(partner.getBenefitTime());
-        merchantService.editPartnerVirtualMerchant(origin);
-        partnerRepository.save(origin);
-        PartnerInfo partnerInfo = partnerInfoRepository.findByPartner(origin);
-        partnerInfo.setInviteLimit(partnerDto.getInviteLimit());
-        partnerInfoRepository.save(partnerInfo);
+        try {
+            Partner partner = partnerDto.getPartner();
+            Partner origin = partnerRepository.findOne(partner.getId());
+            origin.setName(partner.getName());
+            origin.setBankName(partner.getBankName());
+            origin.setBankNumber(partner.getBankNumber());
+            origin.setMerchantLimit(partner.getMerchantLimit());
+            origin.setUserLimit(partner.getUserLimit());
+            origin.setPartnerManager(partner.getPartnerManager());
+            origin.setPayee(partner.getPayee());
+            origin.setPhoneNumber(partner.getPhoneNumber());
+            origin.setPartnerName(partner.getPartnerName());
+            origin.setBenefitTime(partner.getBenefitTime());
+            merchantService.editPartnerVirtualMerchant(origin); //todo:不在给合伙人建立虚拟门店
+            partnerRepository.save(origin);
+            PartnerInfo partnerInfo = partnerInfoRepository.findByPartner(origin);
+            partnerInfo.setInviteLimit(partnerDto.getInviteLimit());
+            partnerInfoRepository.save(partnerInfo);
+        }catch (Exception e){
+            e.printStackTrace();
+        }
+
     }
 
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
