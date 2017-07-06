@@ -801,11 +801,14 @@ public class MerchantService {
         return results;
     }
 
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+    @Transactional(propagation = Propagation.REQUIRED)
     public void editPartnerVirtualMerchant(Partner origin) {
         Merchant merchant = merchantRepository.findByPartnerAndPartnership(origin, 2);
-        merchant.setName(origin.getPartnerName() + "(合伙人)");
-        merchantRepository.save(merchant);
+        if(merchant != null){
+            merchant.setName(origin.getPartnerName() + "(合伙人)");
+            merchantRepository.save(merchant);
+        }
+
     }
 
     /**
