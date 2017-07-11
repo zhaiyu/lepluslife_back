@@ -411,7 +411,7 @@
         productSpec.product = product;
         $.ajax({
                    type: "post",
-                   url: "/manage/productSpec",
+                   url: "/manage/goldProductSpec",
                    contentType: "application/json",
                    data: JSON.stringify(productSpec),
                    success: function (data) {
