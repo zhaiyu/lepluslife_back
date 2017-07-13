@@ -22,7 +22,7 @@ public class MerchantScanPayWay {
   private Long id;
 
   @Column(nullable = false)
-  private Integer type = 1;  //扫码支付方式  0=富友结算|1=乐加结算|2=暂不开通
+  private Integer type = 1;  //扫码支付方式  0=富友结算|1=乐加结算|2=暂不开通|3=易宝结算
 
   private Date createDate;
 
@@ -33,9 +33,9 @@ public class MerchantScanPayWay {
   @Column(nullable = false, unique = true)
   private Long merchantId;  //门店ID=Merchant.id
 
-  private Integer openOnLineShare=0; //0关闭 1开启门店线上分润
+  private Integer openOnLineShare = 0; //0关闭 1开启门店线上分润
 
-  private Integer openOffLineShare=0; //0关闭 1开启门店线下分润
+  private Integer openOffLineShare = 0; //0关闭 1开启门店线下分润
 
   public Integer getOpenOnLineShare() {
     return openOnLineShare;
