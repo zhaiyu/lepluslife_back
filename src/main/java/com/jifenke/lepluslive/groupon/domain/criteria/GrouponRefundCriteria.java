@@ -1,7 +1,5 @@
 package com.jifenke.lepluslive.groupon.domain.criteria;
 
-import io.swagger.models.auth.In;
-
 /**
  * GrouponRefundCriteria
  * 退款单 - 查询条件

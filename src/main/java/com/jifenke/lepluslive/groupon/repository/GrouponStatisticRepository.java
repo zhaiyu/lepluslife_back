@@ -1,7 +1,6 @@
 package com.jifenke.lepluslive.groupon.repository;
 
 import com.jifenke.lepluslive.groupon.domain.entities.GrouponStatistic;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

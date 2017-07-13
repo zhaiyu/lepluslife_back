@@ -31,7 +31,16 @@ public class ProductSpecController {
   }
 
   /**
-   * 新增或修改商品规格
+   * 新增或修改金币商品规格
+   */
+  @RequestMapping(value = "/goldProductSpec", method = RequestMethod.POST)
+  public LejiaResult editProductSpec(@RequestBody ProductSpec productSpec) {
+    productSpecService.editProductSpec(productSpec);
+    return LejiaResult.build(200, "保存成功");
+  }
+
+  /**
+   * 新增或修改臻品规格
    */
   @RequestMapping(value = "/productSpec", method = RequestMethod.POST)
   public LejiaResult createProductSpec(@RequestBody ProductSpecDto productSpecDto) {

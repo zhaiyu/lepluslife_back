@@ -43,6 +43,11 @@
     <script src="${resourceUrl}/js/daterangepicker.js"></script>
 </head>
 <style>
+    img {
+        width: 100%;
+        height: 100%;
+    }
+
     .fixClear:after {
         content: '\20';
         display: block;
@@ -250,7 +255,8 @@
                         <div>
                             <input type="checkbox" class="allCheck" value="0"/><span>全部选择</span><br/>
                             <c:forEach var="gm" items="${merchants}" step="1">
-                                <input type="checkbox" name="merchant" value="${gm.merchant.id}" checked="true"/><span>${gm.merchant.name}</span><br/>
+                                <input type="checkbox" name="merchant" value="${gm.merchant.id}"
+                                       checked="true"/><span>${gm.merchant.name}</span><br/>
                             </c:forEach>
                         </div>
                     </c:if>
@@ -448,6 +454,12 @@
     var scrollNum = "${detailSize==null?1:detailSize}";       // 轮播图数量
     var detailNum = "${scrollSize==null?1:scrollSize}";       // 详情图数量
     var delScrollList = [], delDetailList = [], merchantList = [];
+
+    //  选择框变色
+    $(".ModRadio2 > div").click(function () {
+        $(this).parent().children().removeClass("ModRadius2_active");
+        $(this).addClass("ModRadius2_active");
+    });
     //  模糊检索商户
     loadMerchantUser();
     //    图片上传
@@ -482,8 +494,8 @@
             done: function (e, data) {
                 var resp = data.result;
                 $('#' + picture).attr('src',
-                    '${ossImageReadRoot}/'
-                    + resp.data);
+                        '${ossImageReadRoot}/'
+                        + resp.data);
             }
         });
     }
@@ -514,15 +526,17 @@
         var btn = "scrollUpdate" + scrollNum;
         var imgDiv = $("<div></div>")
         //               .append($("<input>").attr("type", "hidden").attr("value", "").attr("id", currId).attr("style", "margin:5px;"))
-            .append(
-                $("<div></div>").append($("<img>").attr("id", picture))
-            ).append(
-                $("<div></div>").attr("id", btn).html("点击上传")
-            ).append(
-                $("<div></div>").append($("<input>").attr("id", pictureUpload).attr("name", "file").attr("type", "file").attr("class", "form-control").attr("data-url", "/manage/file/saveImage"))
-            ).append(
-                $("<div></div>").html("删除")
-            );
+                .append(
+                        $("<div></div>").append($("<img>").attr("id", picture))
+                ).append(
+                        $("<div></div>").attr("id", btn).html("点击上传")
+                ).append(
+                        $("<div></div>").append($("<input>").attr("id", pictureUpload).attr("name", "file").attr("type", "file").attr("class", "form-control").attr("data-url", "/manage/file/saveImage"))
+                );
+        function delImg(e) {
+            $(e).parent().remove();
+        }
+
         $(this).before(imgDiv);
         bindFileUpload(pictureUpload, picture)
         $("#" + btn).click(function () {
@@ -536,21 +550,21 @@
         var btn = "detailUpdate" + detailNum;
         var imgDiv = $("<div></div>")
         //                        .append($("<input>").attr("type", "hidden").attr("value", "").attr("id", currId).attr("style", "margin:5px;"))
-            .append(
-                $("<div></div>").append($("<img>").attr("id", picture))
-            ).append(
-                $("<div></div>").attr("id", btn).html("点击上传")
-            ).append(
-                $("<div></div>").append($("<input>").attr("id", pictureUpload).attr("name", "file").attr("type", "file").attr("class", "form-control").attr("data-url", "/manage/file/saveImage"))
-            ).append(
-                $("<div></div>").html("删除")
-            );
+                .append(
+                        $("<div></div>").append($("<img>").attr("id", picture))
+                ).append(
+                        $("<div></div>").attr("id", btn).html("点击上传")
+                ).append(
+                        $("<div></div>").append($("<input>").attr("id", pictureUpload).attr("name", "file").attr("type", "file").attr("class", "form-control").attr("data-url", "/manage/file/saveImage"))
+                );
+        // .append($("<div></div>").append("onclick","delImg(this)").html("删除"))
         $(this).before(imgDiv);
         bindFileUpload(pictureUpload, picture);
         $("#" + btn).click(function () {
             $(this).next().children().click();
         });
     });
+
     //  按钮触发事件
     function changeRefundType(num) {
         refundType = num;
@@ -608,9 +622,10 @@
                 }
             });
         });
-    }, 1000);
+    }, 100);
     function changeCheck() {
         var id = $("#selMcu").val();
+        console.log(id);
         $.ajax({
             type: "get",
             url: "/manage/merchant/findByMU?id=" + id,
@@ -619,19 +634,19 @@
                 var list = result.data;
                 $(".checkArea").empty();
                 $(".checkArea").append(
-                    $("<div></div>").append(
-                        $('<input>').attr("type", "checkbox").attr("class", "allCheck").attr("value", 0)
-                    ).append(
-                        $("<span></span>").html("全部选择")
-                    )
+                        $("<div></div>").append(
+                                $('<input>').attr("type", "checkbox").attr("class", "allCheck").attr("value", 0)
+                        ).append(
+                                $("<span></span>").html("全部选择")
+                        )
                 );
                 for (var i = 0; i < list.length; i++) {
                     $(".checkArea").append(
-                        $("<div></div>").append(
-                            $('<input>').attr("type", "checkbox").attr("value", list[i].id).attr("name", "merchant")
-                        ).append(
-                            $("<span></span>").html(list[i].name)
-                        )
+                            $("<div></div>").append(
+                                    $('<input>').attr("type", "checkbox").attr("value", list[i].id).attr("name", "merchant")
+                            ).append(
+                                    $("<span></span>").html(list[i].name)
+                            )
                     );
                 }
             }
@@ -647,7 +662,7 @@
             return;
         }
         var productId = $("#productId").val();
-        if(productId!=''&&productId!=null) {
+        if (productId != '' && productId != null) {
             //  编辑
             $.ajax({
                 type: "post",
@@ -663,7 +678,7 @@
                     }
                 }
             });
-        }else {
+        } else {
             // 新增
             $.ajax({
                 type: "post",
@@ -946,9 +961,9 @@
                     moment()],
                 '今日': [moment().startOf('day'), moment()],
                 '昨日': [moment().subtract('days',
-                    1).startOf('day'),
+                        1).startOf('day'),
                     moment().subtract('days',
-                        1).endOf('day')],
+                            1).endOf('day')],
                 '最近7日': [moment().subtract('days', 6), moment()],
                 '最近30日': [moment().subtract('days', 29),
                     moment()]
@@ -973,7 +988,7 @@
             }
         }, function (start, end, label) {//格式化日期显示框
             $('#date-end span').html(start.format('YYYY-MM-DD') + '~'
-                + end.format('YYYY-MM-DD'));
+                    + end.format('YYYY-MM-DD'));
         });
     });
 </script>

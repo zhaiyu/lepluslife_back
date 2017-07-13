@@ -55,6 +55,35 @@ public class ProductSpecService {
   }
 
   /**
+   * 新增或编辑金币商品规格 2017/6/26
+   *
+   * @param productSpec 规格
+   */
+  @Transactional(propagation = Propagation.REQUIRED)
+  public void editProductSpec(ProductSpec productSpec) {
+
+    ProductSpec origin = null;
+    if (productSpec.getId() != null) {
+      origin = productSpecRepository.findOne(productSpec.getId());
+    } else {
+      origin = new ProductSpec();
+      origin.setState(1);
+    }
+    origin.setSpecDetail(productSpec.getSpecDetail());
+    origin.setRepository(productSpec.getRepository());
+    origin.setPrice(productSpec.getPrice());
+    origin.setMinPrice(productSpec.getMinPrice());
+    origin.setMinScore(productSpec.getMinScore());
+    origin.setProfit(productSpec.getProfit());
+    origin.setToMerchant(productSpec.getToMerchant());
+    origin.setToPartner(productSpec.getToPartner());
+    origin.setPicture(productSpec.getPicture());
+    origin.setProduct(productSpec.getProduct());
+
+    productSpecRepository.save(origin);
+  }
+
+  /**
    * 新增或编辑规格 2017/6/26
    *
    * @param productSpecDto 规格包装类
@@ -71,7 +100,6 @@ public class ProductSpecService {
       origin = new ProductSpec();
       origin.setState(1);
       policy = new ProductRebatePolicy();
-      policy.setProductSpec(origin);
     }
     origin.setSpecDetail(productSpecDto.getSpecDetail());
     origin.setRepository(productSpecDto.getRepository());
@@ -89,7 +117,8 @@ public class ProductSpecService {
     origin.setProfit(result.get("toLePlusLife").intValue());
     origin.setToMerchant(result.get("toMerchant"));
     origin.setToPartner(result.get("toPartner"));
-    productSpecRepository.save(origin);
+    ProductSpec save = productSpecRepository.save(origin);
+    policy.setProductSpec(save);
     productRebatePolicyService.saveRebatePolicy(result, policy);
   }
 

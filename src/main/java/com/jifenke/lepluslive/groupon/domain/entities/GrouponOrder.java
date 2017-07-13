@@ -2,10 +2,9 @@ package com.jifenke.lepluslive.groupon.domain.entities;
 
 import com.jifenke.lepluslive.user.domain.entities.LeJiaUser;
 
+import javax.persistence.*;
 import java.util.Date;
 import java.util.List;
-
-import javax.persistence.*;
 
 /**
  * Created by wcg on 2017/6/14.

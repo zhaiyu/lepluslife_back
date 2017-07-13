@@ -351,9 +351,9 @@
                     ).append(
                             $("<input style='display:none;'>").attr("name",
                                                                     "lm-ljCommission-pt").attr("class",
-                                                                                            "Mod-1 ModRadius create_edit-for2").attr("type",
-                                                                                                                                     "number").attr("step",
-                                                                                                                                                    "0.01")
+                                                                                               "Mod-1 ModRadius create_edit-for2").attr("type",
+                                                                                                                                        "number").attr("step",
+                                                                                                                                                       "0.01")
                     ).append(
                             $("<span style='display:none;'></span>").html("%")
                     ).append(
@@ -1148,9 +1148,9 @@
                                 ).append(
                                         $("<input>").attr("name",
                                                           "lm-ljBrokerage").attr("class",
-                                                                                  "Mod-1 ModRadius create_edit-for2").attr("type",
-                                                                                                                           "number").attr("step",
-                                                                                                                                          "0.01")
+                                                                                 "Mod-1 ModRadius create_edit-for2").attr("type",
+                                                                                                                          "number").attr("step",
+                                                                                                                                         "0.01")
                                 ).append(
                                         $("<span></span>").html("%")
                                 )
@@ -1728,12 +1728,12 @@
                 merchant.ljCommission = null;
                 var ljBrokerage = $("input[name=lm-ljBrokerage]").val();
                 if (ljBrokerage == null || ljBrokerage == "" || ljBrokerage > 100 || ljBrokerage
-                                                                                    < 0) {
-                    if(scanPayWay==1){
+                                                                                     < 0) {
+                    if (scanPayWay == 1) {
                         alert("请输入普通订单费率");
                         return;
-                    }else{
-                        ljBrokerage=0
+                    } else {
+                        ljBrokerage = 0
                     }
 
                 }
@@ -1775,8 +1775,7 @@
                 var hydd = $("input[name='hydd']:checked").val();
                 if (hydd == 1) {                       //  会员订单费率： 佣金费率
                     merchant.memberCommission = $("input[name=lm-ljCommission]").val();                  // 会员订单费率
-                }
-                if (hydd == 0) {                       //  会员订单费率： 普通费率
+                } else {                       //  会员订单费率： 普通费率
                     merchant.memberCommission = $("input[name=lm-ljCommission]").val();
                 }
                 var policy = $("input[name='policy']:checked").val();
@@ -1800,7 +1799,7 @@
                     merchantRebatePolicy.userScoreCScaleB = userScoreCScaleB;      // 会员发放红包 【全额】
                 }
                 if (policy == 0) {                     //   比例发放
-                    var userScoreAScale =0;
+                    var userScoreAScale = 0;
                     if (userScoreAScale == null || userScoreAScale == "" || userScoreAScale > 100
                         || userScoreAScale < 0) {
                         alert("请输入比例发放红包");

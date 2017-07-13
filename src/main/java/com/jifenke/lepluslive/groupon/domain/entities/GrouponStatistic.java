@@ -1,16 +1,10 @@
 package com.jifenke.lepluslive.groupon.domain.entities;
 
+import com.jifenke.lepluslive.global.util.MvUtil;
 import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
 
+import javax.persistence.*;
 import java.util.Date;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
-import javax.persistence.Version;
 
 /**
  * Created by wcg on 2017/6/27.
@@ -28,14 +22,55 @@ public class GrouponStatistic {
 
   private Long check; //核销几笔
 
+  private Long totalMoney;//算上佣金总价
+
+  private Long commission; //佣金
+
   private Long transferMoney; //转账金额
 
   private Date balanceDate = new Date(); //结算日期
 
   private Date completeDate;
 
+  @Column(unique = true)
+  private String sid = MvUtil.getRandomNumber(12);
+
   @Version
   private Long version = 0L;
+
+  private Integer state = 0;
+
+  public Long getTotalMoney() {
+    return totalMoney;
+  }
+
+  public void setTotalMoney(Long totalMoney) {
+    this.totalMoney = totalMoney;
+  }
+
+  public Long getCommission() {
+    return commission;
+  }
+
+  public void setCommission(Long commission) {
+    this.commission = commission;
+  }
+
+  public String getSid() {
+    return sid;
+  }
+
+  public void setSid(String sid) {
+    this.sid = sid;
+  }
+
+  public Integer getState() {
+    return state;
+  }
+
+  public void setState(Integer state) {
+    this.state = state;
+  }
 
   public Long getVersion() {
     return version;

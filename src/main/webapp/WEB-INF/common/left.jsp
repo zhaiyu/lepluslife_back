@@ -176,15 +176,15 @@
             <li><h4 class="M2"><span></span>臻品商城</h4>
 
                 <div class="list-item none none2">
-                   <%-- <shiro:hasPermission name="topic:query">
-                        <a href="/manage/topic">专题模块</a>
-                    </shiro:hasPermission>--%>
+                        <%-- <shiro:hasPermission name="topic:query">
+                             <a href="/manage/topic">专题模块</a>
+                         </shiro:hasPermission>--%>
                     <shiro:hasPermission name="product:query">
                         <a href="/manage/product">臻品商城</a>
                     </shiro:hasPermission>
-                    <%--<shiro:hasPermission name="product:query">--%>
+                        <%--<shiro:hasPermission name="product:query">--%>
                         <%--<a href="/manage/limit?type=1">限量秒杀</a>--%>
-                    <%--</shiro:hasPermission>--%>
+                        <%--</shiro:hasPermission>--%>
                     <shiro:hasPermission name="product:query">
                         <a href="/manage/gold/product">金币商城</a>
                     </shiro:hasPermission>
@@ -193,13 +193,12 @@
                 </div>
             </li>
 
-            <%--<li><h4 class="M2"><span></span>乐加团购</h4>
-
+            <li><h4 class="M2"><span></span>乐加团购</h4>
                 <div class="list-item none none13">
                     <shiro:hasPermission name="product:query">
                         <a href="/manage/grouponProduct/list">团购商品</a>
-                    <shiro:hasPermission name="product:query"> <a
-                            href='/manage/grouponCode/list'>券码管理</a> </shiro:hasPermission>
+                        <shiro:hasPermission name="product:query"> <a
+                                href='/manage/grouponCode/list'>券码管理</a> </shiro:hasPermission>
                     </shiro:hasPermission>
                     <shiro:hasPermission name="product:query">
                         <a href="/manage/grouponOrder/list">团购订单</a>
@@ -207,7 +206,7 @@
                     <shiro:hasPermission name="product:query"> <a
                             href='/manage/refundOrder/list'>退款管理</a> </shiro:hasPermission>
                 </div>
-            </li>--%>
+            </li>
         </shiro:hasPermission>
         <shiro:hasPermission name="merchant:query">
         <li><h4 class="M2"><span></span>乐+商户</h4> </shiro:hasPermission>
@@ -259,7 +258,7 @@
             <li><h4 class="M6"><span></span>内容管理</h4>
 
                 <div class="list-item none none5">
-                    <%--<a href='/manage/site/list'>站点管理</a>--%>
+                        <%--<a href='/manage/site/list'>站点管理</a>--%>
                     <shiro:hasPermission name="app_manage:query"> <a
                             href='/manage/banner?type=1'>APP推荐</a> </shiro:hasPermission>
                     <a href='/manage/start_ad'>启动广告管理</a>
@@ -267,13 +266,13 @@
             </li>
         </shiro:hasPermission>
 
-            <li><h4 class="M6"><span></span>银商POS</h4>
-                <div class="list-item none none12">
-                    <a href='/manage/unionPayStore/unionPayStorePage'>银商门店</a>
-                    <a href='/manage/unionPosOrder/unionPosOrderPage'>银商订单</a>
-                    <a href='/manage/unionBankCard/unionBankCardPage'>会员绑卡</a>
-                </div>
-            </li>
+        <li><h4 class="M6"><span></span>银商POS</h4>
+            <div class="list-item none none12">
+                <a href='/manage/unionPayStore/unionPayStorePage'>银商门店</a>
+                <a href='/manage/unionPosOrder/unionPosOrderPage'>银商订单</a>
+                <a href='/manage/unionBankCard/unionBankCardPage'>会员绑卡</a>
+            </div>
+        </li>
         <shiro:hasPermission name="market_center:query">
             <li><h4 class="M6"><span></span>营销中心</h4>
 
@@ -347,7 +346,7 @@
             $(".none1").slideDown(300);
         }
         if (url.indexOf("partner") != -1||url.indexOf("offLineOrder") != -1 || url.indexOf("financial") != -1 || url.indexOf("/manage/pos_order") != -1
-            ||url.indexOf("/manage/scanCodeOrder/goOrderPage")!=-1||url.indexOf("/manage/refund/goRefundPage")!=-1||url.indexOf("/manage/statement/goStatementPage")!=-1) {
+                ||url.indexOf("/manage/scanCodeOrder/goOrderPage")!=-1||url.indexOf("/manage/refund/goRefundPage")!=-1||url.indexOf("/manage/statement/goStatementPage")!=-1) {
             $(".none1").parent('li').addClass('selected');
             $(".none1").slideDown(300);
         }
@@ -355,12 +354,12 @@
             $(".none2").parent('li').addClass('selected');
             $(".none2").slideDown(300);
         }
-        /*if (url.indexOf("/manage/grouponProduct") != -1|| url.indexOf("/manage/grouponCode") != -1 || url.indexOf("/manage/grouponOrder") != -1 || url.indexOf("/manage/refundOrder") != -1) {
+        if (url.indexOf("/manage/grouponProduct") != -1|| url.indexOf("/manage/grouponCode") != -1 || url.indexOf("/manage/grouponOrder") != -1 || url.indexOf("/manage/refundOrder") != -1) {
             $(".none13").parent('li').addClass('selected');
             $(".none13").slideDown(300);
-        }*/
+        }
         if ( url.indexOf("/manage/printer")!=-1|| url.indexOf("/manage/merchant") != -1 || url.indexOf("merchantRec") != -1
-              || url.indexOf("/manage/merchant_data") != -1) {
+                || url.indexOf("/manage/merchant_data") != -1) {
             $(".none3").parent('li').addClass('selected');
             $(".none3").slideDown(300);
         }
@@ -377,17 +376,17 @@
             $(".none4").slideDown(300);
         }
         if (url.indexOf("codeBurse") != -1 || url.indexOf("initial_order_rebate") != -1
-            || url.indexOf("codePage") != -1|| url.indexOf("sMovieOrder") != -1) {
+                || url.indexOf("codePage") != -1|| url.indexOf("sMovieOrder") != -1) {
             $(".none6").parent('li').addClass('selected');
             $(".none6").slideDown(300);
         }
         if (url.indexOf("/weixin/menu/list") != -1 || url.indexOf("/weixin/reply/list") != -1
-            || url.indexOf("/weixin/imageText") != -1 || url.indexOf("managementUserList") != -1) {
+                || url.indexOf("/weixin/imageText") != -1 || url.indexOf("managementUserList") != -1) {
             $(".none7").parent('li').addClass('selected');
             $(".none7").slideDown(300);
         }
         if (url.indexOf("/manage/member_data") != -1 || url.indexOf("/manage/merchant_data")
-                                                        != -1|| url.indexOf("/manage/scoreAAccountPage") != -1||url.indexOf("/manage/transactionAnalysisPage") != -1||url.indexOf("/manage/scoreC/scoreCPage")!=-1) {
+                != -1|| url.indexOf("/manage/scoreAAccountPage") != -1||url.indexOf("/manage/transactionAnalysisPage") != -1||url.indexOf("/manage/scoreC/scoreCPage")!=-1) {
             $(".none9").parent('li').addClass('selected');
             $(".none9").slideDown(300);
         }
