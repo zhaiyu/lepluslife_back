@@ -1,7 +1,9 @@
 package com.jifenke.lepluslive.yibao.repository;
 
 import com.jifenke.lepluslive.yibao.domain.entities.LedgerSettlement;
-
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**
@@ -9,5 +11,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
  */
 public interface LedgerSettlementRepository extends JpaRepository<LedgerSettlement, Long> {
 
+    Page findAll(Specification<LedgerSettlement> whereClause, Pageable pageRequest);
 
 }
