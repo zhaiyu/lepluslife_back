@@ -39,7 +39,7 @@ public class MerchantUserLedgerController {
 
     model.addAttribute("m", merchantUserServicel.findById(merchantUserId));
     if (ledgerId != null && ledgerId != 0) {
-      model.addAttribute("ledger", merchantUserLedgerService.findById(ledgerId));
+      model.addAttribute("l", merchantUserLedgerService.findById(ledgerId));
     }
 
     return MvUtil.go("/yibao/ledger/edit");

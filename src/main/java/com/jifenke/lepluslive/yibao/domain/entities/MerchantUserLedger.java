@@ -45,6 +45,9 @@ public class MerchantUserLedger {
   @Column(nullable = false, length = 50)
   private String linkman; //联系人姓名
 
+  @Column(nullable = false, length = 11)
+  private String bindMobile;  //绑定手机号
+
   @Column(length = 50)
   private String legalPerson; //法人姓名 当customerType=2时必填
 
@@ -117,6 +120,14 @@ public class MerchantUserLedger {
 
   public void setMinSettleAmount(Integer minSettleAmount) {
     this.minSettleAmount = minSettleAmount;
+  }
+
+  public String getBindMobile() {
+    return bindMobile;
+  }
+
+  public void setBindMobile(String bindMobile) {
+    this.bindMobile = bindMobile;
   }
 
   public String getBankCity() {

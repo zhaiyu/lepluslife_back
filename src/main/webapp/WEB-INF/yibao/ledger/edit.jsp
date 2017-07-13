@@ -73,6 +73,13 @@
                            value="${m.phoneNum}">
                 </div>
             </div>
+            <div class="Mod-10">
+                <div class="ModLabel ModRadius-left">联系人姓名<font></font></div>
+                <div class="Mod-6">
+                    <input id="linkMan" class="ModRadius-right" placeholder="联系人姓名"
+                           value="${l.linkMan}">
+                </div>
+            </div>
 
             <div class="Mod-10">
                 <div class="ModLabel ModRadius-left">所属合伙人</div>
@@ -85,13 +92,7 @@
                     </select>
                 </div>
             </div>
-            <div class="Mod-10">
-                <div class="ModLabel ModRadius-left">负责人姓名</div>
-                <div class="Mod-6">
-                    <input id="linkMan" class="ModRadius-right" placeholder="请输入负责人姓名"
-                           value="${m.linkMan}">
-                </div>
-            </div>
+
 
             <div class="Mod-10">
                 <div class="ModLabel ModRadius-left">主营省市</div>
