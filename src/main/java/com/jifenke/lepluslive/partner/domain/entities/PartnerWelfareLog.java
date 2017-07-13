@@ -23,7 +23,7 @@ public class PartnerWelfareLog {
 
   private String userArray; //用户ID数组
 
-  private String sid = MvUtil.getWithdrawBillSid();
+  private String sid = MvUtil.getOrderNumber();
 
   private Long scoreA;
 

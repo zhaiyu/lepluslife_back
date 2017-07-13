@@ -26,7 +26,7 @@ public class WithdrawBill {
   @GeneratedValue(strategy = GenerationType.AUTO)
   private Long id;
 
-  private String withdrawBillSid = MvUtil.getWithdrawBillSid();
+  private String withdrawBillSid = MvUtil.getOrderNumber();
 
   private String payee;
 
