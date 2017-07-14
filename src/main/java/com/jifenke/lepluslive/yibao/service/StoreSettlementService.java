@@ -37,7 +37,7 @@ public class StoreSettlementService {
      */
     @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
     public Page<StoreSettlement> findByCriteria(StoreSettlementCriteria criteria, Integer limit) {
-        Sort sort = new Sort(Sort.Direction.DESC, "createDate");
+        Sort sort = new Sort(Sort.Direction.DESC, "dateCreated");
         return storeSettlementRepository.findAll(getWhereClause(criteria), new PageRequest(criteria.getOffset() - 1, limit, sort));
     }
 

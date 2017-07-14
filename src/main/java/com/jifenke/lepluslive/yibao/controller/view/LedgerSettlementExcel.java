@@ -1,5 +1,7 @@
 package com.jifenke.lepluslive.yibao.controller.view;
 
+import com.jifenke.lepluslive.merchant.domain.entities.MerchantUser;
+import com.jifenke.lepluslive.merchant.service.MerchantUserService;
 import com.jifenke.lepluslive.yibao.domain.entities.LedgerSettlement;
 import org.apache.poi.hssf.usermodel.HSSFRow;
 import org.apache.poi.hssf.usermodel.HSSFSheet;
@@ -7,6 +9,7 @@ import org.apache.poi.hssf.usermodel.HSSFWorkbook;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.web.servlet.view.document.AbstractExcelView;
 
+import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 import java.io.OutputStream;
@@ -21,6 +24,8 @@ import java.util.Map;
  */
 @Configuration
 public class LedgerSettlementExcel extends AbstractExcelView {
+    @Inject
+    private MerchantUserService merchantUserService;
     @Override
     protected void buildExcelDocument(Map<String, Object> model, HSSFWorkbook workbook, HttpServletRequest request, HttpServletResponse response) throws Exception {
         HSSFSheet sheet = workbook.createSheet("list");
@@ -42,7 +47,7 @@ public class LedgerSettlementExcel extends AbstractExcelView {
         HSSFRow excelHeader = excelSheet.createRow(0);
         excelHeader.createCell(0).setCellValue("通道结算单号");
         excelHeader.createCell(1).setCellValue("易宝商户编号");
-        excelHeader.createCell(2).setCellValue("商户ID");
+        excelHeader.createCell(2).setCellValue("商户名称");
         excelHeader.createCell(3).setCellValue("清算日期");
         excelHeader.createCell(4).setCellValue("日交易转账金额");
         excelHeader.createCell(5).setCellValue("费用承担方");
@@ -61,7 +66,12 @@ public class LedgerSettlementExcel extends AbstractExcelView {
             HSSFRow excelRow = excelSheet.createRow(record++);
             excelRow.createCell(0).setCellValue(settlement.getOrderSid());
             excelRow.createCell(1).setCellValue(settlement.getLedgerNo());
-            excelRow.createCell(2).setCellValue(settlement.getMerchantUserId());
+            if(settlement.getMerchantUserId()!=null) {
+                MerchantUser user = merchantUserService.findById(settlement.getMerchantUserId());
+                excelRow.createCell(2).setCellValue(user.getName());
+            }else {
+                excelRow.createCell(2).setCellValue("--");
+            }
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
             if (settlement.getTradeDate() != null) {
                 excelRow.createCell(3).setCellValue(sdf.format(settlement.getTradeDate()));

@@ -2,6 +2,8 @@ package com.jifenke.lepluslive.yibao.controller;
 
 import com.jifenke.lepluslive.global.util.LejiaResult;
 import com.jifenke.lepluslive.global.util.MvUtil;
+import com.jifenke.lepluslive.merchant.domain.entities.MerchantUser;
+import com.jifenke.lepluslive.merchant.service.MerchantUserService;
 import com.jifenke.lepluslive.yibao.controller.view.LedgerSettlementExcel;
 import com.jifenke.lepluslive.yibao.domain.criteria.LedgerSettlementCriteria;
 import com.jifenke.lepluslive.yibao.domain.entities.LedgerSettlement;
@@ -11,7 +13,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,7 +29,8 @@ public class LedgerSettlementController {
     private LedgerSettlementService ledgerSettlementService;
     @Inject
     private LedgerSettlementExcel ledgerSettlementExcel;
-
+    @Inject
+    private MerchantUserService merchantUserService;
     /**
      * 跳转到列表页面
      * Created by xf on 2017-07-13.
@@ -42,7 +47,17 @@ public class LedgerSettlementController {
             settlementCriteria.setOffset(1);
         }
         Page<LedgerSettlement> page = ledgerSettlementService.findByCriteria(settlementCriteria, 10);
-        return LejiaResult.ok(page);
+        List<LedgerSettlement> settlements = page.getContent();
+        List<MerchantUser> merchantUsers = new ArrayList<>();
+        for (LedgerSettlement settlement : settlements) {
+            Long merchantUserId = settlement.getMerchantUserId();
+            MerchantUser mu = merchantUserService.findById(merchantUserId);
+            merchantUsers.add(mu);
+        }
+        Map map = new HashMap();
+        map.put("page",page);
+        map.put("merchantUsers",merchantUsers);
+        return LejiaResult.ok(map);
     }
 
     /**

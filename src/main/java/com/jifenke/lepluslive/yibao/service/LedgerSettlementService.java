@@ -36,7 +36,7 @@ public class LedgerSettlementService {
    */
   @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
   public Page<LedgerSettlement> findByCriteria(LedgerSettlementCriteria criteria, Integer limit) {
-    Sort sort = new Sort(Sort.Direction.DESC, "createDate");
+    Sort sort = new Sort(Sort.Direction.DESC, "dateCreated");
     return ledgerSettlementRepository.findAll(getWhereClause(criteria), new PageRequest(criteria.getOffset() - 1, limit, sort));
   }
 
