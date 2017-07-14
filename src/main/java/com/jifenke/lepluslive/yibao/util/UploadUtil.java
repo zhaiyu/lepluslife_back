@@ -8,6 +8,8 @@ package com.jifenke.lepluslive.yibao.util;
 //import org.apache.commons.httpclient.methods.multipart.Part;
 //
 //import com.alibaba.fastjson.JSON;
+
+import com.jifenke.lepluslive.global.config.YBConstants;
 import com.jifenke.lepluslive.global.util.JsonUtils;
 //import com.yeepay.g3.app.zgtapi.common.security.AESUtil;
 //import com.yeepay.g3.app.zgtapi.common.security.Digest;
@@ -79,7 +81,8 @@ public class UploadUtil {
         } catch (UnsupportedEncodingException e) {
           throw new IllegalArgumentException("invalid charset : " + charSet);
         }
-      } if (queryString.length() > 0) {
+      }
+      if (queryString.length() > 0) {
         queryString = queryString.substring(0, queryString.length() - 1);
       }
     }
@@ -97,9 +100,10 @@ public class UploadUtil {
     for (String p : person) {
       String filetype = p;
       String key = " jj3Q1h0H86FZ7CD46Z5Nr35p67L199WdkgETx85920n128vi2125T9KY2hzv";
+      String keyForAes = key.substring(0, 16);
       StringBuffer signature = new StringBuffer();
       signature.append(customernumber).append(ledgerno).append(filetype);
-      String hmac = HMacMD5.getHmacMd5Str(key, signature.toString());
+      String hmac = Digest.hmacSign(signature.toString(), YBConstants.SECRET);
       System.out.println(hmac);
       Map<String, Object> dataMap = new HashMap<>();
       dataMap.put("customernumber", customernumber);
@@ -107,7 +111,7 @@ public class UploadUtil {
       dataMap.put("filetype", filetype);
       dataMap.put("hmac", hmac); // hmac 按照 properties 中声明的顺序进行签名
       String dataJsonString = JsonUtils.objectToJson(dataMap); //map 中数据转为 json 格式
-      String content = AESUtil.encrypt(dataJsonString, key);
+      String content = AESUtil.encrypt(dataJsonString, keyForAes);
       Map<String, Object> params = new HashMap<>();
       params.put("customernumber", customernumber);
       params.put("data", content);// 加密 json 格式数据作为 value 赋值给 data 参数
@@ -120,7 +124,8 @@ public class UploadUtil {
             data =
             test.uploadFile(params, "http://o2o.yeepay.com/zgtapi/api/uploadLedgerQualifications");
         String result =
-            AESUtil.decrypt(JsonUtils.jsonToPojo(data, Map.class).get("data").toString(), key);
+            AESUtil.decrypt(JsonUtils.jsonToPojo(data, Map.class).get("data").toString(),
+                            key);
         System.out.println(result);
       } catch (Throwable e) {
         e.printStackTrace();

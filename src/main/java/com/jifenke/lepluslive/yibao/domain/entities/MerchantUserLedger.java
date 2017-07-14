@@ -28,6 +28,8 @@ public class MerchantUserLedger {
 
   private Date dateCreated = new Date();
 
+  private Date dateUpdated = new Date();
+
   @Column(nullable = false, unique = true, length = 50)
   private String ledgerNo;  //易宝的子商户号
 
@@ -80,7 +82,7 @@ public class MerchantUserLedger {
 
   private Integer manualSettle = 0;  //结算方式  0=自动结算||1=手动结算   本期写死是自动结算
 
-  private Integer costSide = 0;   //结算费用承担方  0=积分客|1=子商户
+  private Integer costSide = 0;   //结算费用承担方  0=积分客（主商户）|1=子商户
 
   public Integer getCostSide() {
     return costSide;
@@ -112,6 +114,14 @@ public class MerchantUserLedger {
 
   public void setRiskReserveDay(Integer riskReserveDay) {
     this.riskReserveDay = riskReserveDay;
+  }
+
+  public Date getDateUpdated() {
+    return dateUpdated;
+  }
+
+  public void setDateUpdated(Date dateUpdated) {
+    this.dateUpdated = dateUpdated;
   }
 
   public Integer getMinSettleAmount() {

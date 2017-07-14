@@ -41,6 +41,11 @@
             src="${resourceUrl}/js/layer/laydate/laydate.js"></script>
     <!--echarts-->
     <script type="text/javascript" src="${resourceUrl}/js/echarts.min.js"></script>
+    <style>
+        .fontColor {
+            color: red;
+        }
+    </style>
 </head>
 <body>
 <div id="topIframe">
@@ -57,93 +62,130 @@
         </div>
         <div class="MODInput_row merchant_information-tab6">
             <input type="hidden" id="merchantUserId" value="${m.id}"/>
-            <input type="hidden" id="id" value="${ledger.id}"/>
+            <input type="hidden" id="ledgerId" value="${ledgerId}"/>
 
             <div class="Mod-10">
-                <div class="ModLabel ModRadius-left">积分客商户</div>
+                <div class="ModLabel ModRadius-left">积分客商户<span class="fontColor">*</span></div>
                 <div class="Mod-6">
                     <input id="merchantName" class="ModRadius-right"
                            value="${m.merchantName}" disabled>
                 </div>
             </div>
             <div class="Mod-10">
-                <div class="ModLabel ModRadius-left">绑定手机号</div>
+                <div class="ModLabel ModRadius-left">绑定手机号<span class="fontColor">*</span></div>
                 <div class="Mod-6">
-                    <input id="phoneNum" class="ModRadius-right" placeholder="请输入手机号"
-                           value="${m.phoneNum}">
+                    <input id="bindMobile" class="ModRadius-right" placeholder="请输入手机号"
+                           value="${l.bindMobile}">
                 </div>
             </div>
             <div class="Mod-10">
-                <div class="ModLabel ModRadius-left">联系人姓名<font></font></div>
+                <div class="ModLabel ModRadius-left">联系人姓名<span class="fontColor">*</span></div>
                 <div class="Mod-6">
-                    <input id="linkMan" class="ModRadius-right" placeholder="联系人姓名"
-                           value="${l.linkMan}">
+                    <input id="linkman" class="ModRadius-right" placeholder="联系人姓名"
+                           value="${l.linkman}">
                 </div>
             </div>
-
-            <div class="Mod-10">
-                <div class="ModLabel ModRadius-left">所属合伙人</div>
-                <div class="Mod-6">
-                    <select class="hhr" id="toggle-partner">
-                        <option value="">- 请选择 -</option>
-                        <c:forEach items="${partners}" var="partner">
-                            <option value="${partner.id}">${partner.name}</option>
-                        </c:forEach>
-                    </select>
-                </div>
-            </div>
-
-
-            <div class="Mod-10">
-                <div class="ModLabel ModRadius-left">主营省市</div>
-                <div class="Mod-1" style="margin-left: 2%">
-                    <select class="ModRadius" id="selCity">
-                        <option value=""> -- 请选择 --</option>
-                        <c:forEach items="${citys}" var="city">
-                            <option value="${city.id}">${city.name}</option>
-                        </c:forEach>
-                    </select>
-                </div>
-            </div>
-            <div class="Mod-10">
-                <div class="ModLabel ModRadius-left">会员锁定上限</div>
-                <div class="Mod-2">
-                    <input id="lockLimit" type="number" class="ModRadius-right"
-                           placeholder="会员锁定上限不得小于当前锁定值" value="${m.lockLimit}">
-                </div>
-                <div class="Mod-1">
-                    <span style="line-height: 36px" id="hasLock"></span>
-                </div>
-            </div>
-            <p>佣金结算账户</p>
-
             <div class="Mod-10 merchant_information-filling">
-                <div class="ModLabel ModRadius-left">账户类型</div>
-                <div class="ModRadio2">
-                    <div id="type0" class="ModRadius-left ModRadius2_active">法人私账</div>
-                    <div id="type2" class="ModRadius-right">对公账户</div>
+                <div class="ModLabel ModRadius-left">注册类型<span class="fontColor">*</span></div>
+                <div class="ModRadio2 customerType">
+                    <div id="customerType_2" class="ModRadius-left ModRadius2_active">企业</div>
+                    <div id="customerType_1" class="ModRadius-right">个人</div>
                 </div>
             </div>
-            <p>管理员账号密码</p>
+            <div class="Mod-10">
+                <div class="ModLabel ModRadius-left">签约名<span class="fontColor">*</span></div>
+                <div class="Mod-6">
+                    <input id="signedName" class="ModRadius-right"
+                           placeholder="企业注册时填写企业名称，个人注册时填写个人姓名"
+                           value="${l.signedName}">
+                </div>
+            </div>
+            <div class="Mod-10">
+                <div class="ModLabel ModRadius-left">身份证号<span class="fontColor">*</span></div>
+                <div class="Mod-6">
+                    <input id="idCard" class="ModRadius-right"
+                           placeholder="企业注册时填写法人身份证，个人注册时填写个人身份证"
+                           value="${l.idCard}">
+                </div>
+            </div>
+            <div class="Mod-10">
+                <div class="ModLabel ModRadius-left">营业执照</div>
+                <div class="Mod-6">
+                    <input id="businessLicence" class="ModRadius-right"
+                           placeholder="企业注册时填写"
+                           value="${l.businessLicence}">
+                </div>
+            </div>
+            <div class="Mod-10">
+                <div class="ModLabel ModRadius-left">法人姓名</div>
+                <div class="Mod-6">
+                    <input id="legalPerson" class="ModRadius-right"
+                           placeholder="企业注册时填写"
+                           value="${l.legalPerson}">
+                </div>
+            </div>
+            <div class="Mod-10 merchant_information-filling">
+                <div class="ModLabel ModRadius-left">结算账户类型<span class="fontColor">*</span></div>
+                <div class="ModRadio2 bankAccountType">
+                    <div id="bankAccountType_2" class="ModRadius-left ModRadius2_active">对公</div>
+                    <div id="bankAccountType_1" class="ModRadius-right">对私</div>
+                </div>
+            </div>
+            <div class="Mod-10">
+                <div class="ModLabel ModRadius-left">银行账户号<span class="fontColor">*</span></div>
+                <div class="Mod-6">
+                    <input id="bankAccountNumber" class="ModRadius-right"
+                           placeholder="对公账户号，对私银行卡号（必须为储蓄卡）"
+                           value="${l.bankAccountNumber}">
+                </div>
+            </div>
+            <div class="Mod-10">
+                <div class="ModLabel ModRadius-left">开户行<span class="fontColor">*</span></div>
+                <div class="Mod-6">
+                    <input id="bankName" class="ModRadius-right"
+                           placeholder="请根据数据字典「中国所有银行支行省市库表.xlsx」，填写中文" value="${l.bankName}">
+                </div>
+            </div>
+            <div class="Mod-10">
+                <div class="ModLabel ModRadius-left">开户名<span class="fontColor">*</span></div>
+                <div class="Mod-6">
+                    <input id="accountName" class="ModRadius-right" value="${l.accountName}">
+                </div>
+            </div>
+            <div class="Mod-10">
+                <div class="ModLabel ModRadius-left">开户省<span class="fontColor">*</span></div>
+                <div class="Mod-6">
+                    <input id="bankProvince" class="ModRadius-right"
+                           placeholder="请根据数据字典「易宝省市编号表.xls」，填写中文" value="${l.bankProvince}">
+                </div>
+            </div>
+            <div class="Mod-10">
+                <div class="ModLabel ModRadius-left">开户市<span class="fontColor">*</span></div>
+                <div class="Mod-6">
+                    <input id="bankCity" class="ModRadius-right"
+                           placeholder="请根据数据字典「易宝省市编号表.xls」，填写中文" value="${l.bankCity}">
+                </div>
+            </div>
+            <div class="Mod-10">
+                <div class="ModLabel ModRadius-left">起结金额（元）</div>
+                <div class="Mod-5">
+                    <input id="minSettleAmount" class="ModRadius-right"
+                           placeholder="最小为0.01元"
+                           value="${l.minSettleAmount / 100}">
+                </div>
+            </div>
+            <div class="Mod-10 merchant_information-filling">
+                <div class="ModLabel ModRadius-left">结算费用承担方</div>
+                <div class="ModRadio2 costSide">
+                    <div id="costSide_0" class="ModRadius-left ModRadius2_active">主商户</div>
+                    <div id="costSide_1" class="ModRadius-right">子商户</div>
+                </div>
+            </div>
 
-            <div class="Mod-10">
-                <div class="ModLabel ModRadius-left">登录账号</div>
-                <div class="Mod-6">
-                    <input id="name" class="ModRadius-right" placeholder="4-16位汉字、字母或数字"
-                           value="${m.name}">
-                </div>
-            </div>
-            <div class="Mod-10">
-                <div class="ModLabel ModRadius-left">登录密码</div>
-                <div class="Mod-6">
-                    <input id="password" class="ModRadius-right"
-                           placeholder="4-16位字母或数字">
-                </div>
-            </div>
             <div class="Mod-2">
                 <button class="ModButton ModButton_ordinary ModRadius merchant_information-save"
                         onclick="save()">
-                    保存基本信息
+                    保存信息
                 </button>
             </div>
         </div>
@@ -179,119 +221,165 @@
             "/manage/merchantUser/info/" + $('#merchantUserId').val() + '?li=6';
     }
     var type = 0; //卡类型
+    var customerType = 2; //注册类型  1=PERSON(个人)|| 2=ENTERPRISE(企业)
+    var bankAccountType = 2; //结算账户类型 1=PrivateCash(对私)||2=PublicCash(对公)
+    var costSide = 0; //结算费用承担方  0=积分客（主商户）|1=子商户
+    /*****************注册类型****************************/
+    $(".customerType > div").click(function () {
+        $(".customerType > div").removeClass("ModRadius2_active");
+        $(this).addClass("ModRadius2_active");
+        switch ($(this).html()) {
+            case "个人":
+                customerType = 1;
+                break;
+            case "企业":
+                customerType = 2;
+        }
+    });
+    /*****************结算账户类型****************************/
+    $(".bankAccountType > div").click(function () {
+        $(".bankAccountType > div").removeClass("ModRadius2_active");
+        $(this).addClass("ModRadius2_active");
+        switch ($(this).html()) {
+            case "对私":
+                bankAccountType = 1;
+                break;
+            case "对公":
+                bankAccountType = 2;
+        }
+    });
+    /*****************结算费用承担方****************************/
+    $(".costSide > div").click(function () {
+        $(".costSide > div").removeClass("ModRadius2_active");
+        $(this).addClass("ModRadius2_active");
+        switch ($(this).html()) {
+            case "主商户":
+                costSide = 0;
+                break;
+            case "子商户":
+                costSide = 1;
+        }
+    });
     /*****************保存商户****************************/
     function save() {
-        var id = $('#id').val();
+        var id = $('#ledgerId').val();
+        var merchantUserLedger = {};
+        merchantUserLedger.id = id;
         var merchantUser = {};
-        var merchantName = $("#merchantName").val();
-        var linkMan = $("#linkMan").val();
-        var phoneNum = $("#phoneNum").val();
-        var cardNum = $("#bankNumber").val();
-        var bankName = $("#bankName").val();
-        var payee = $("#payee").val();
-        var lockLimit = $("#lockLimit").val();
-        var name = $("#name").val();
-        var password = $("#password").val();
-        var selCity = $("#selCity").val();
-        var city = {};
-        city.id = selCity;
-        var partner = {};
-        var partnerId = $("#toggle-partner").val();
-        partner.id = partnerId;
-        if (merchantName == null || merchantName == '') {
-            alert("请输入商户名称");
-            return;
-        }
-        if (linkMan == null || linkMan == '') {
-            alert("请输入商户负责人");
-            return;
-        }
-        if (phoneNum == null || phoneNum == '') {
-            alert("请输入绑定手机号");
-            return;
-        }
-        if (name == null || name == '') {
-            alert("请输入登录用户名");
-            return;
-        }
-        if (password == null || password == '' || password.length < 4 || password.length > 16) {
-            if (id == null || id == '') {
-                alert("请输入登录密码（4-16）位");
-                return;
-            } else if (password != '*********************') {
-                alert("请输入登录密码（4-16）位");
-                return;
-            }
-        } else {
-            merchantUser.password = password;
-        }
-        if (cardNum == null || cardNum == '') {
-            alert("请输入佣金结算卡号");
-            return;
-        }
-        if (bankName == null || bankName == '') {
-            alert("请选择开户行");
-            return;
-        }
-        if (payee == null || payee == '') {
-            alert("请输入账户主体");
-            return;
-        }
-        if (lockLimit == null || lockLimit == '' || lockLimit < 0) {
-            alert("请输入具体的会员锁定上限");
-            return;
-        }
-        if (selCity == null || selCity == '') {
-            alert("请选中所在城市");
-            return;
-        }
-        if (partnerId == null || partnerId == '') {
-            alert("请选择合伙人");
-            return;
-        }
-        merchantUser.id = id;
-        merchantUser.merchantName = merchantName;
-        merchantUser.linkMan = linkMan;
-        merchantUser.name = name;
-        merchantUser.phoneNum = phoneNum;
-        merchantUser.lockLimit = lockLimit;
-        var merchantBank = {};
-        merchantBank.bankNumber = cardNum;
-        merchantBank.bankName = bankName;
-        merchantBank.payee = payee;
-        merchantBank.type = type;
-        merchantUser.merchantBank = merchantBank;
-        merchantUser.city = city;
-        merchantUser.partner = partner;
+        merchantUser.id = $('#merchantUserId').val();
+        merchantUserLedger.merchantUser = merchantUser;
+        //填充数据
 
-        //  修改商户信息
-        if (merchantUser.id != null && merchantUser.id != '') {
-            $.ajax({
-                       url: "/manage/merchantUser/edit",
-                       type: "put",
-                       contentType: "application/json",
-                       data: JSON.stringify(merchantUser),
-                       success: function (result) {
-                           alert(result.data);
-                           window.location.href = "/manage/merchantUser/list";
-                       }
-                   });
-            //  保存商户信息
-        } else {
-            if (checkNameRepeat()) {             //  校验用户名是否重复
-                return;
-            }
-            $.ajax({
-                       url: "/manage/merchantUser/create",
-                       type: "post",
-                       contentType: "application/json",
-                       data: JSON.stringify(merchantUser),
-                       success: function (result) {
-                           alert(result.data);
-                           window.location.href = "/manage/merchantUser/list";
-                       }
-                   });
+        //手机号校验
+        var bindMobile = $('#bindMobile').val();
+        if ((!(/^1[3|4|5|6|7|8]\d{9}$/.test(bindMobile)))) {
+            alert("请输入正确的手机号");
+            return false
         }
+        merchantUserLedger.bindMobile = bindMobile.trim();
+        //联系人
+        var linkman = $('#linkman').val();
+        if (!linkman || linkman.trim().length === 0) {
+            alert("联系人不能为空");
+            return false
+        }
+        merchantUserLedger.linkman = linkman.trim();
+        //注册类型
+        merchantUserLedger.customerType = customerType;
+        //签约名
+        var signedName = $('#signedName').val();
+        if (!signedName || signedName.trim().length === 0) {
+            alert("签约名不能为空");
+            return false
+        }
+        merchantUserLedger.signedName = signedName.trim();
+        //身份证号
+        var idCard = $('#idCard').val();
+        if (!idCard || idCard.trim().length !== 18) {
+            alert("身份证号有误");
+            return false
+        }
+        merchantUserLedger.idCard = idCard;
+        if (customerType === 2) {
+            //营业执照号
+            var businessLicence = $('#businessLicence').val();
+            if (!businessLicence || idCard.trim().length === 0) {
+                alert("营业执照号不能为空");
+                return false
+            }
+            merchantUserLedger.businessLicence = businessLicence.trim();
+            //法人姓名
+            var legalPerson = $('#legalPerson').val();
+            if (!legalPerson || legalPerson.trim().length === 0) {
+                alert("法人姓名不能为空");
+                return false
+            }
+            merchantUserLedger.legalPerson = legalPerson.trim();
+        }
+        //结算账户类型
+        merchantUserLedger.bankAccountType = bankAccountType;
+        //银行账户号
+        var bankAccountNumber = $('#bankAccountNumber').val();
+        if (!bankAccountNumber || bankAccountNumber.trim().length === 0) {
+            alert("银行账户号不能为空");
+            return false
+        }
+        merchantUserLedger.bankAccountNumber = bankAccountNumber.trim();
+        //开户行
+        var bankName = $('#bankName').val();
+        if (!bankName || bankName.trim().length === 0) {
+            alert("开户行不能为空");
+            return false
+        }
+        merchantUserLedger.bankName = bankName.trim();
+        //开户名
+        var accountName = $('#accountName').val();
+        if (!accountName || accountName.trim().length === 0) {
+            alert("开户名不能为空");
+            return false
+        }
+        merchantUserLedger.accountName = accountName.trim();
+        //开户省
+        var bankProvince = $('#bankProvince').val();
+        if (!bankProvince || bankProvince.trim().length === 0) {
+            alert("开户省不能为空");
+            return false
+        }
+        merchantUserLedger.bankProvince = bankProvince.trim();
+        //开户市
+        var bankCity = $('#bankCity').val();
+        if (!bankCity || bankCity.trim().length === 0) {
+            alert("开户市不能为空");
+            return false
+        }
+        merchantUserLedger.bankCity = bankCity.trim();
+        //起结金额
+        var minSettleAmount = $('#minSettleAmount').val();
+        if (!minSettleAmount || eval(minSettleAmount) <= 0.01) {
+            alert("请输入大于0.01元的起结金额");
+            return false
+        }
+        merchantUserLedger.minSettleAmount = minSettleAmount * 100;
+        //结算费用承担方
+        merchantUserLedger.costSide = costSide;
+
+        console.log(JSON.stringify(merchantUserLedger));
+
+        $.ajax({
+                   url: "/manage/ledger/edit",
+                   type: "post",
+                   contentType: "application/json",
+                   data: JSON.stringify(merchantUserLedger),
+                   success: function (result) {
+//                       if (result.status === 200) {
+//                           alert("保存成功");
+//                           window.location.href =
+//                               "/manage/merchantUser/info/" + $('#merchantUserId').val() + '?li=6';
+//                       } else {
+//                           alert(result.msg);
+//                       }
+                   }
+               });
     }
 
     function checkNameRepeat() {
@@ -316,58 +404,26 @@
         return flag;
     }
 
-    /*****************选择不同的佣金结算账户JS****************************/
-    function merchant_informationSwitch(val) {
-        switch (val) {
-            case "法人私账":
-                type = 0;
-                $(".ModFilling").remove();
-                $(".merchant_information-filling").after(filling("收款人", "payee"));
-                $(".merchant_information-filling").after(filling("开户支行", "bankName"));
-                $(".merchant_information-filling").after(filling("结算卡号", "bankNumber"));
-                break;
-            case "对公账户":
-                type = 2;
-                $(".ModFilling").remove();
-                $(".merchant_information-filling").after(filling("账户主体", "payee"));
-                $(".merchant_information-filling").after(filling("开户支行", "bankName"));
-                $(".merchant_information-filling").after(filling("账号", "bankNumber"));
-                break;
+    var ledger = '${l}';
+    if (ledger != null && ledger != '') {
+        if (${l.customerType == 1}) {
+            $(".customerType > div").removeClass("ModRadius2_active");
+            $("#customerType_1").addClass("ModRadius2_active");
+            customerType = 1;
         }
-    }
-
-    $(".ModRadio2 > div").click(function () {
-        $(".ModRadio2 > div").removeClass("ModRadius2_active");
-        $(this).addClass("ModRadius2_active");
-        var thisVal = $(this).html();
-        merchant_informationSwitch(thisVal);
-    });
-
-    var m = '${m}';
-    if (m != null && m != '') {
-        $('#password').val('*********************');
-        if (${m.partner != null}) {
-            $("#toggle-partner").val(${m.partner.id});
+        if (${l.bankAccountType == 1}) {
+            $(".bankAccountType > div").removeClass("ModRadius2_active");
+            $("#bankAccountType_1").addClass("ModRadius2_active");
+            bankAccountType = 1;
         }
-        if (${m.city != null}) {
-            $("#selCity").val(${m.city.id});
+        if (${l.costSide == 1}) {
+            $(".costSide > div").removeClass("ModRadius2_active");
+            $("#costSide_1").addClass("ModRadius2_active");
+            costSide = 1;
         }
-        $('#hasLock').html('当前锁定' + ${hasLock == null ? 0 : hasLock});
-        if (${m.merchantBank != null}) {
-            if (${m.merchantBank.type == 0}) {
-                merchant_informationSwitch("法人私账");
-            } else {
-                $(".ModRadio2 > div").removeClass("ModRadius2_active");
-                $('#type2').addClass("ModRadius2_active");
-                merchant_informationSwitch("对公账户");
-            }
-            $('#payee').val('${m.merchantBank.payee}');
-            $('#bankName').val('${m.merchantBank.bankName}');
-            $('#bankNumber').val('${m.merchantBank.bankNumber}');
-        }
-    } else {
-        var reVal = $(".ModRadius2_active").html();
-        merchant_informationSwitch(reVal);
+        $("#idCard").attr('display', true);
+        $("#businessLicence").attr('display', true);
+        $("#accountName").attr('display', true);
     }
 
 </script>
