@@ -1,10 +1,13 @@
 package com.jifenke.lepluslive.yibao.controller;
 
+import com.jifenke.lepluslive.global.util.LejiaResult;
 import com.jifenke.lepluslive.global.util.MvUtil;
 import com.jifenke.lepluslive.merchant.service.MerchantUserService;
+import com.jifenke.lepluslive.yibao.domain.entities.MerchantUserLedger;
 import com.jifenke.lepluslive.yibao.service.MerchantUserLedgerService;
 
 import org.springframework.ui.Model;
+import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestMethod;
 import org.springframework.web.bind.annotation.RequestParam;
@@ -25,7 +28,7 @@ public class MerchantUserLedgerController {
   private MerchantUserLedgerService merchantUserLedgerService;
 
   @Inject
-  private MerchantUserService merchantUserServicel;
+  private MerchantUserService merchantUserService;
 
   /**
    * 跳转到易宝子商户编辑页面  2017/7/13
@@ -37,12 +40,25 @@ public class MerchantUserLedgerController {
   public ModelAndView edit(Model model, @RequestParam Long merchantUserId,
                            @RequestParam Long ledgerId) {
 
-    model.addAttribute("m", merchantUserServicel.findById(merchantUserId));
+    model.addAttribute("m", merchantUserService.findById(merchantUserId));
+    model.addAttribute("ledgerId", ledgerId);
     if (ledgerId != null && ledgerId != 0) {
       model.addAttribute("l", merchantUserLedgerService.findById(ledgerId));
     }
 
     return MvUtil.go("/yibao/ledger/edit");
+  }
+
+  /**
+   * 易宝子商户编辑提交  2017/7/14
+   *
+   * @param merchantUserLedger 易宝子商户
+   */
+  @RequestMapping(value = "/edit", method = RequestMethod.POST)
+  public LejiaResult edit(@RequestBody MerchantUserLedger merchantUserLedger) {
+
+    merchantUserLedgerService.edit(merchantUserLedger);
+    return LejiaResult.ok();
   }
 
 }
