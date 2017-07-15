@@ -32,7 +32,7 @@ public class LedgerRefundOrderController {
      */
     @RequestMapping(value = "/ledger/list", method = RequestMethod.GET)
     public ModelAndView toListPage() {
-        return MvUtil.go("/");
+        return MvUtil.go("/yibao/ledger/refundList");
     }
 
     @RequestMapping(value = "/ledger/findByCriteria", method = RequestMethod.POST)
