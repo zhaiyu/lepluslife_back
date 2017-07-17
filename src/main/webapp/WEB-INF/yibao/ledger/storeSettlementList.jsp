@@ -299,8 +299,8 @@
                                    '<td><span>' + content[i].actualTransfer/100.0 + '</span></td>';
                            contentStr +=
                                    '<td><span>' + content[i].ledgerSid + '</span></td></tr>';
+                           financialContent.innerHTML += contentStr;
                        }
-                       financialContent.innerHTML += contentStr;
                        initPage(settlementCriteria.offset, totalPage);
                    }
                });

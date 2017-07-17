@@ -185,7 +185,7 @@
         dateContent.innerHTML = "";
         $.ajax({
             type: "post",
-            url: "/manage/financial",
+            url: "/manage/settlement/ledger/findByCriteria",
             async: false,
             data: JSON.stringify(settlementCriteria),
             contentType: "application/json",
@@ -264,9 +264,10 @@
                         contentStr += '<td>银行返回打款失败</td>';
                     }
                     contentStr +=
-                            '<td><span>' + content[i].merchant.name + '</span></td></tr>';
+                            '<td><span><a onclick="searchState('+content[i].id+')"></span></td></tr>';
+                    financialContent.innerHTML += contentStr;
                 }
-                financialContent.innerHTML += contentStr;
+
                 initPage(settlementCriteria.offset, totalPage);
             }
         });
@@ -365,23 +366,8 @@
     }
     function exportExcel() {
         setCriteria();
-        post("/manage/financial/export", settlementCriteria);
+        post("/manage/settlement/ledger/export", settlementCriteria);
     }
-    $("#batchTransfer").bind("click", function () {
-        $("#batchTransfer").unbind("click");
-        $(".changeFinancialToTransfer").each(function (i) {
-            $(".changeFinancialToTransfer").eq(i).unbind("click");
-        });
-        $.ajax({
-            type: "post",
-            url: "/manage/financial/batchTransfer",
-            contentType: "application/json",
-            success: function (data) {
-                alert(data.msg);
-                location.href = "/manage/financial";
-            }
-        });
-    })
     function initPage(currPage, totalPage) {
         $('.tcdPageCode').unbind();
         $(".tcdPageCode").createPage({
@@ -394,6 +380,9 @@
                 getFinancialByAjax(settlementCriteria);
             }
         });
+    }
+    function searchState(id) {
+        // TO_DO
     }
 </script>
 </body>
