@@ -55,6 +55,9 @@
                 case 4:
                     showSettlement();
                     break;
+                case 6:
+                    showLedgers();
+                    break;
                 default :
                     alert(index);
             }
@@ -93,11 +96,13 @@
                                    if (m.payWay == 0) {  //富友结算
                                        contentStr += '<td>联盟（' + m.rate + '%）</td>';
                                        contentStr +=
-                                       '<td>富友结算（佣金' + m.alliance + '%,普通' + m.common + '%）</td>';
+                                           '<td>富友结算（佣金' + m.alliance + '%,普通' + m.common
+                                           + '%）</td>';
                                    } else if (m.payWay == 1) {//乐加结算
                                        contentStr += '<td>联盟</td>';
                                        contentStr +=
-                                       '<td>乐加结算（佣金' + m.alliance + '%,普通' + m.common + '%）</td>';
+                                           '<td>乐加结算（佣金' + m.alliance + '%,普通' + m.common
+                                           + '%）</td>';
                                    } else { //暂未开通
                                        contentStr += '<td>联盟</td>';
                                        contentStr += '<td>暂未开通</td>';
@@ -108,10 +113,11 @@
                                contentStr += '<td>' + (m.shop == 1 ? '已上线' : '未上线') + '</td>';
                                contentStr += '<td>' + (m.receipt == 1 ? '已开启' : '未开启') + '</td>';
                                contentStr +=
-                               '<td>' + new Date(m.createDate).format('yyyy-MM-dd HH:mm') + '</td>';
+                                   '<td>' + new Date(m.createDate).format('yyyy-MM-dd HH:mm')
+                                   + '</td>';
                                contentStr +=
-                               '<td><button class="btn btn-primary" onclick="editMerchant(\''
-                               + m.id + '\')">编辑</button></td></tr>';
+                                   '<td><button class="btn btn-primary" onclick="editMerchant(\''
+                                   + m.id + '\')">编辑</button></td></tr>';
                                tab2_content.html(tab2_content.html() + contentStr);
                            }
                        }
@@ -170,12 +176,12 @@
                                contentStr += '<td>' + m.name + '</td>';
                                contentStr += '<td>**************</td>';
                                contentStr +=
-                               '<td><input type="button" class="btn btn-xs btn-primary select-btn Mod-3" value="修改" onclick="editMerchantUser(\''
-                               + m.id + '\')">';
+                                   '<td><input type="button" class="btn btn-xs btn-primary select-btn Mod-3" value="修改" onclick="editMerchantUser(\''
+                                   + m.id + '\')">';
                                if (m.type != 8) {
                                    contentStr +=
-                                   '<input type="button" class="btn btn-xs btn-danger select-btn Mod-3" value="删除" onclick="delMerchantUser(\''
-                                   + m.id + '\')">';
+                                       '<input type="button" class="btn btn-xs btn-danger select-btn Mod-3" value="删除" onclick="delMerchantUser(\''
+                                       + m.id + '\')">';
                                }
                                contentStr += '</td></tr>';
                            }
@@ -206,12 +212,12 @@
                                }
                                contentStr2 += '<td>' + m2.name + '</td>';
                                contentStr2 +=
-                               '<td><span><img class="merchant_information-tableImg" src="'
-                               + w.headImageUrl + '" alt=""></span><span>' + w.nickname
-                               + '</span></td>';
+                                   '<td><span><img class="merchant_information-tableImg" src="'
+                                   + w.headImageUrl + '" alt=""></span><span>' + w.nickname
+                                   + '</span></td>';
                                contentStr2 +=
-                               '<td><input type="button" class="btn btn-xs btn-primary select-btn Mod-3" value="解除绑定" onclick="unbindWeixinUser(\''
-                               + w.id + '\')"></td></tr>';
+                                   '<td><input type="button" class="btn btn-xs btn-primary select-btn Mod-3" value="解除绑定" onclick="unbindWeixinUser(\''
+                                   + w.id + '\')"></td></tr>';
                            }
                            tab3_2_content.html(tab3_2_content.html() + contentStr2);
                            console.log(contentStr);
@@ -303,7 +309,7 @@
                                    var shops = m.names.split('_');
                                    if (shops != null && shops.length > 1) {
                                        contentStr +=
-                                       '<td>' + shops[0] + '等' + shops.length + '家门店</td>';
+                                           '<td>' + shops[0] + '等' + shops.length + '家门店</td>';
                                    } else {
                                        contentStr += '<td>' + m.names + '</td>';
                                    }
@@ -312,13 +318,14 @@
                                contentStr += '<td>' + m.payee + '</td>';
                                contentStr += '<td>' + m.card + '</td>';
                                contentStr +=
-                               '<td>' + m.total / 100 + '（微信' + m.totalByTruePay / 100 + ',红包'
-                               + m.totalByScore / 100 + '）</td>';
+                                   '<td>' + m.total / 100 + '（微信' + m.totalByTruePay / 100 + ',红包'
+                                   + m.totalByScore / 100 + '）</td>';
                                contentStr +=
-                               '<td>' + new Date(m.createDate).format('yyyy-MM-dd HH:mm') + '</td>';
+                                   '<td>' + new Date(m.createDate).format('yyyy-MM-dd HH:mm')
+                                   + '</td>';
                                contentStr +=
-                               '<td><button class="btn btn-primary" onclick="editMerchantNum(\''
-                               + m.id + '\')">编辑</button></td></tr>';
+                                   '<td><button class="btn btn-primary" onclick="editMerchantNum(\''
+                                   + m.id + '\')">编辑</button></td></tr>';
                                tab4_content.html(tab4_content.html() + contentStr);
                            }
                        }
@@ -330,9 +337,144 @@
                 window.location.href = '/manage/m_settlement/edit?merchantUserId=' + merchantUserId;
             } else {
                 window.location.href =
-                '/manage/m_settlement/edit?merchantUserId=' + merchantUserId + '&id='
-                + settlementId;
+                    '/manage/m_settlement/edit?merchantUserId=' + merchantUserId + '&id='
+                    + settlementId;
             }
+        }
+        /******************************获取易宝商户号列表************************************/
+        function showLedgers() {
+            var tab6_content = $('#tab6-content');
+            tab6_content.html('');
+            var criteria = {};
+            criteria.pageSize = 20;
+            criteria.currPage = 1;
+            criteria.merchantUserId = merchantUserId;
+            $.ajax({
+                       type: "post",
+                       url: "/manage/ledger/ajaxList",
+                       contentType: "application/json",
+                       data: JSON.stringify(criteria),
+                       success: function (data) {
+                           var list = data.data.content;
+                           var currContent = '';
+                           for (var i = 0; i < list.length; i++) {
+                               var m = list[i];
+                               var contentStr = '<tr><td>' + m.ledgerNo + '</td>';
+                               contentStr += '<td>' + m.signedName + '</td>';
+                               //注册类型  1=PERSON(个人)|| 2=ENTERPRISE(企业)
+                               if (m.customerType == 1) {
+                                   contentStr += '<td>个人对私</td>';
+                               } else {
+                                   contentStr += '<td>企业对公</td>';
+                               }
+                               contentStr += '<td>' + m.bindMobile + '</td>';
+                               contentStr += '<td>' + m.minSettleAmount / 100 + '</td>';
+                               //结算费用承担方  0=积分客（主商户）|1=子商户
+                               if (m.costSide == 0) {
+                                   contentStr += '<td>积分客</td>';
+                               } else {
+                                   contentStr += '<td>子商户</td>';
+                               }
+                               //状态   -1=冻结|0=激活(审核中)|1=审核成功|其他为审核失败错误码
+                               var stateVal = '';
+                               switch (m.state) {
+                                   case -1:
+                                       stateVal = '冻结';
+                                       break;
+                                   case 0:
+                                       stateVal = '待审核';
+                                       break;
+                                   case 1:
+                                       stateVal = '审核成功';
+                                       break;
+                                   case 2:
+                                       stateVal = '审核失败';
+                                       break;
+                                   default:
+                                       stateVal = m.state + '(未知)';
+                               }
+                               //修改状态  -1=初始化|0=修改审核中|1=修改审核成功|2=修改审核失败
+                               var checkStateVal = '';
+                               switch (m.checkState) {
+                                   case -1:
+                                       checkStateVal = '';
+                                       break;
+                                   case 0:
+                                       checkStateVal = '（修改审核中）';
+                                       break;
+                                   case 1:
+                                       checkStateVal = '';
+                                       break;
+                                   case 2:
+                                       checkStateVal = '（修改失败）';
+                                       break;
+                                   default:
+                                       checkStateVal = '(修改未知)';
+                               }
+                               contentStr +=
+                                   '<td>' + stateVal + '<span style="color: red">' + checkStateVal
+                                   + '</span></td>';
+                               contentStr +=
+                                   '<td><button class="btn btn-primary" onclick="editQualification(\''
+                                   + m.id
+                                   + '\')">资质管理</button><button class="btn btn-primary" onclick="queryBalance(\''
+                                   + m.ledgerNo
+                                   + '\')">余额查询</button><button class="btn btn-primary" onclick="queryState(\''
+                                   + m.id
+                                   + '\')">状态查询</button><button class="btn btn-primary" onclick="editLedger(\''
+                                   + m.id + '\')">编辑</button></td></tr>';
+                               currContent += contentStr;
+                           }
+                           tab6_content.html(currContent);
+                       }
+                   });
+        }
+        /******************************易宝商户号编辑/新建************************************/
+        function editLedger(ledgerId) {
+            if (ledgerId == -1) {
+                location.href = "/manage/ledger/edit?ledgerId=0&merchantUserId=" + merchantUserId;
+            } else {
+                location.href =
+                    "/manage/ledger/edit?ledgerId=" + ledgerId + "&merchantUserId="
+                    + merchantUserId;
+            }
+        }
+        /******************************易宝商户资质管理编辑/新建************************************/
+        function editQualification(ledgerId) {
+            alert(ledgerId);
+            if (ledgerId == -1) {
+//                location.href = "/manage/ledger/edit?ledgerId=0&merchantUserId=" + merchantUserId;
+            } else {
+//                location.href =
+//                    "/manage/ledger/edit?ledgerId=" + ledgerId + "&merchantUserId="
+//                    + merchantUserId;
+            }
+        }
+        /******************************易宝商户余额查询************************************/
+        function queryBalance(ledgerNo) {
+            $.get('/manage/ledger/queryBalance?ledgerNo=' + ledgerNo, function (map) {
+                if (eval(map.code) === 1) {
+                    alert(ledgerNo + " 子账户余额为：￥ " + map.ledgerbalance.split(':')[1] + ' 元');
+                } else {
+                    alert('请求错误，错误码：' + map.code + '(' + map.msg + ')');
+                }
+            });
+        }
+        /******************************易宝商户状态查询************************************/
+        function queryState(ledgerId) {
+            $.get('/manage/ledger/queryCheckRecord?ledgerId=' + ledgerId, function (map) {
+                if (eval(map.code) === 1) {
+                    if ("SUCCESS" == map.status) {
+                        alert('通过审核');
+                        window.location.href =
+                            "/manage/merchantUser/info/" + merchantUserId + '?li=6';
+                    } else {
+                        alert('审核未通过！，失败原因：' + map.reason);
+                    }
+                } else {
+                    alert('请求错误，错误码：' + map.code + '(' + map.msg + ')');
+                }
+            });
         }
     </script>
 </head>
@@ -353,6 +495,7 @@
                     <li><a href="#tab3" data-toggle="tab" onclick="go(3)">账号管理</a></li>
                     <li><a href="#tab4" data-toggle="tab" onclick="go(4)">移动商户号</a></li>
                     <li><a href="#tab5" data-toggle="tab" onclick="go(5)">POS机</a></li>
+                    <li><a href="#tab6" data-toggle="tab" onclick="go(6)">易宝商户管理</a></li>
                 </ul>
 
                 <div id="myTabContent" class="tab-content">
@@ -684,6 +827,39 @@
                         </div>
                     </div>
 
+
+                    <div class="tab-pane fade in active" id="tab6">
+                        <div class="merchant_management-table">
+                            <div class="merchant_management-addButton">
+                                <button class="ModButton ModButton_ordinary ModRadius"
+                                        onclick="editLedger(-1)">创建商户号
+                                </button>
+                            </div>
+                            <div class="toggleTable">
+                                <div class="tab-content">
+                                    <div class="tab-pane fade in active">
+                                        <table class="table table-bordered table-hover">
+                                            <thead>
+                                            <tr class="active">
+                                                <th>易宝商户编号</th>
+                                                <th>签约名称</th>
+                                                <th>注册结算类型</th>
+                                                <th>绑定手机号</th>
+                                                <th>起结金额</th>
+                                                <th>结算费承担方</th>
+                                                <th>审核状态</th>
+                                                <th>操作</th>
+                                            </tr>
+                                            </thead>
+                                            <tbody id="tab6-content">
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
                 </div>
             </div>
         </div>
@@ -882,15 +1058,17 @@
         }
         if (/(E+)/.test(fmt)) {
             fmt =
-            fmt.replace(RegExp.$1,
-                        ((RegExp.$1.length > 1) ? (RegExp.$1.length > 2 ? "\u661f\u671f" : "\u5468")
+                fmt.replace(RegExp.$1,
+                            ((RegExp.$1.length > 1) ? (RegExp.$1.length > 2 ? "\u661f\u671f"
+                                : "\u5468")
                                 : "") + week[this.getDay() + ""]);
         }
         for (var k in o) {
             if (new RegExp("(" + k + ")").test(fmt)) {
                 fmt =
-                fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr((""
-                                                                                                 + o[k]).length)));
+                    fmt.replace(RegExp.$1,
+                                (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr((""
+                                                                                          + o[k]).length)));
             }
         }
         return fmt;
@@ -982,20 +1160,20 @@
                               type: 'value'
                           },
                           series: [{
-                                       name: '充值话费',
-                                       type: 'line',
-                                       data: [120, 132, 101, 134, 90, 430]
-                                   },
-                                   {
-                                       name: '使用积分',
-                                       type: 'line',
-                                       data: [170, 192, 161, 114, 190, 530]
-                                   },
-                                   {
-                                       name: '实付金额',
-                                       type: 'line',
-                                       data: [150, 142, 121, 164, 170, 230]
-                                   }],
+                              name: '充值话费',
+                              type: 'line',
+                              data: [120, 132, 101, 134, 90, 430]
+                          },
+                              {
+                                  name: '使用积分',
+                                  type: 'line',
+                                  data: [170, 192, 161, 114, 190, 530]
+                              },
+                              {
+                                  name: '实付金额',
+                                  type: 'line',
+                                  data: [150, 142, 121, 164, 170, 230]
+                              }],
                           visualMap: {
                               inRange: {}
                           }
@@ -1105,7 +1283,7 @@
                    success: function (data) {
                        if (data.status == 200) {
                            window.location.href =
-                           "/manage/merchantUser/info/" + merchantUserId + '?li=3';
+                               "/manage/merchantUser/info/" + merchantUserId + '?li=3';
                        } else {
                            alert(data.msg);
                        }
@@ -1121,7 +1299,7 @@
                    url: "/manage/merchantUser/delete/" + $('#delUserId').val(),
                    success: function (data) {
                        window.location.href =
-                       "/manage/merchantUser/info/" + merchantUserId + '?li=3';
+                           "/manage/merchantUser/info/" + merchantUserId + '?li=3';
                    }
                });
     }
@@ -1133,7 +1311,7 @@
                    contentType: "application/json",
                    success: function (data) {
                        window.location.href =
-                       "/manage/merchantUser/info/" + merchantUserId + '?li=3';
+                           "/manage/merchantUser/info/" + merchantUserId + '?li=3';
                    }
                });
     }

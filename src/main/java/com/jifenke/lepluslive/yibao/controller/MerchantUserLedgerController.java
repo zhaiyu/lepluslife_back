@@ -3,8 +3,12 @@ package com.jifenke.lepluslive.yibao.controller;
 import com.jifenke.lepluslive.global.util.LejiaResult;
 import com.jifenke.lepluslive.global.util.MvUtil;
 import com.jifenke.lepluslive.merchant.service.MerchantUserService;
+import com.jifenke.lepluslive.yibao.domain.criteria.MerchantUserLedgerCriteria;
 import com.jifenke.lepluslive.yibao.domain.entities.MerchantUserLedger;
+import com.jifenke.lepluslive.yibao.service.LedgerModifyService;
 import com.jifenke.lepluslive.yibao.service.MerchantUserLedgerService;
+import com.jifenke.lepluslive.yibao.util.YbRequestUtils;
+import com.jifenke.lepluslive.yibao.util.ZGTUtils;
 
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -14,7 +18,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.util.Map;
+
 import javax.inject.Inject;
+import javax.servlet.http.HttpServletRequest;
 
 /**
  * 易宝子商户
@@ -29,6 +36,9 @@ public class MerchantUserLedgerController {
 
   @Inject
   private MerchantUserService merchantUserService;
+
+  @Inject
+  private LedgerModifyService ledgerModifyService;
 
   /**
    * 跳转到易宝子商户编辑页面  2017/7/13
@@ -55,10 +65,73 @@ public class MerchantUserLedgerController {
    * @param merchantUserLedger 易宝子商户
    */
   @RequestMapping(value = "/edit", method = RequestMethod.POST)
-  public LejiaResult edit(@RequestBody MerchantUserLedger merchantUserLedger) {
+  public Map edit(@RequestBody MerchantUserLedger merchantUserLedger) {
+    return merchantUserLedgerService.edit(merchantUserLedger);
+  }
 
-    merchantUserLedgerService.edit(merchantUserLedger);
+  /**
+   * 易宝子商户修改结算费用承担方  2017/7/17
+   *
+   * @param ledgerId 易宝子商户ID
+   * @param costSide 结算费用承担方  0=积分客（主商户）|1=子商户
+   */
+  @RequestMapping(value = "/editCostSide", method = RequestMethod.POST)
+  public LejiaResult editCostSide(@RequestParam Long ledgerId, @RequestParam Integer costSide) {
+    merchantUserLedgerService.editCostSide(ledgerId, costSide);
     return LejiaResult.ok();
+  }
+
+  /**
+   * ajax分页条件获取易宝子商户列表 2017/7/17
+   *
+   * @param criteria 查询条件
+   */
+  @RequestMapping(value = "/ajaxList", method = RequestMethod.POST)
+  public LejiaResult ajaxList(@RequestBody MerchantUserLedgerCriteria criteria) {
+    return LejiaResult.ok(merchantUserLedgerService.findAllByCriteria(criteria));
+  }
+
+  /**
+   * 易宝子商户编辑回调地址 17/7/16
+   */
+  @RequestMapping(value = "/modifyCallBack", method = RequestMethod.GET)
+  public String modifyCallBack(HttpServletRequest request) {
+
+    String data = request.getParameter("data");
+    System.out.println(data);
+    //解密
+    Map<String, String> map = ZGTUtils.decryptData(data);
+    System.out.println("易宝的异步响应：" + data);
+    System.out.println("data解密后明文：" + map.toString());
+    //验证签名
+    if (ZGTUtils.checkHmac(map, ZGTUtils.QUERYMODIFYREQUESTAPI_RESPONSE_HMAC_ORDER)) {
+      //业务处理
+      ledgerModifyService.modifyCallBack(map);
+      return "SUCCESS";
+    }
+    System.out.println("验签失败");
+    //返回信息
+    return "FAIL";
+  }
+
+  /**
+   * 易宝子商户余额查询 2017/7/17
+   *
+   * @param ledgerNo 易宝的子商户号
+   */
+  @RequestMapping(value = "/queryBalance", method = RequestMethod.GET)
+  public Map queryBalance(@RequestParam String ledgerNo) {
+    return YbRequestUtils.queryBalance(ledgerNo);
+  }
+
+  /**
+   * 分账方审核结果查询 2017/7/17
+   *
+   * @param ledgerId 易宝子商户ID
+   */
+  @RequestMapping(value = "/queryCheckRecord", method = RequestMethod.GET)
+  public Map queryCheckRecord(@RequestParam Long ledgerId) {
+    return merchantUserLedgerService.queryCheckRecord(ledgerId);
   }
 
 }

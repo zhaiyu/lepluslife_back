@@ -35,30 +35,41 @@ public class LedgerQualification {
   @NotNull
   private MerchantUserLedger merchantUserLedger;
 
-  @Column(nullable = false)
-  private String idCardFront;  //身份证正面
+  /**
+   * 该注释适用以下所有字段
+   * "0":初始化状态，未上传
+   * 已成功上传到易宝，必以'http'开头
+   * 非'http'开头为易宝错误码&错误原因
+   */
+  @Column(nullable = false, length = 150)
+  private String idCardFront = "0";  //身份证正面
 
-  @Column(nullable = false)
-  private String idCardBack;   //身份证背面
+  @Column(nullable = false, length = 150)
+  private String idCardBack = "0";   //身份证背面
 
-  @Column(nullable = false)
-  private String bankCardFront;  //银行卡正面
+  @Column(nullable = false, length = 150)
+  private String bankCardFront = "0";  //银行卡正面
 
-  @Column(nullable = false)
-  private String bankCardBack;  //银行卡背面
+  @Column(nullable = false, length = 150)
+  private String bankCardBack = "0";  //银行卡背面
 
-  @Column(nullable = false)
-  private String personPhoto;   //手持身份证照片
+  @Column(nullable = false, length = 150)
+  private String personPhoto = "0";   //手持身份证照片
 
-  private String bussinessLicense = "";  //营业执照
+  @Column(length = 150)
+  private String bussinessLicense = "0";  //营业执照
 
-  private String bussinessCertificates = "";  //工商证
+  @Column(length = 150)
+  private String bussinessCertificates = "0";  //工商证
 
-  private String organizationCode = "";  //组织机构代码证
+  @Column(length = 150)
+  private String organizationCode = "0";  //组织机构代码证
 
-  private String taxRegistration = "";   //税务登记证
+  @Column(length = 150)
+  private String taxRegistration = "0";   //税务登记证
 
-  private String bankAccountLicence = "";   //银行开户许可证
+  @Column(length = 150)
+  private String bankAccountLicence = "0";   //银行开户许可证
 
   public Long getId() {
     return id;

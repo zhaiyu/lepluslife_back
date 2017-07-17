@@ -1,8 +1,6 @@
 package com.jifenke.lepluslive.yibao.util;
 
 import com.jifenke.lepluslive.global.config.YBConstants;
-import com.jifenke.lepluslive.global.util.HttpClientUtil;
-import com.jifenke.lepluslive.global.util.JsonUtils;
 import com.jifenke.lepluslive.global.util.MvUtil;
 import com.jifenke.lepluslive.yibao.domain.entities.MerchantUserLedger;
 
@@ -21,99 +19,136 @@ public class YbRequestUtils {
    * @param ledger 　注册信息
    * @return map　注册结果
    */
-  public static Map<String, Object> register(MerchantUserLedger ledger) {
-
-    //返回结果
+  public static Map<String, String> register(MerchantUserLedger ledger) {
 
     //请求加密参数
     Map<String, String> dataMap = getCommonDataMap();
-    //Hmac签名参数
-    StringBuffer array = new StringBuffer(YBConstants.CUSTOMER_NUMBER + ",");
 
     String requestId = MvUtil.getOrderNumber(8);
     dataMap.put("requestid", requestId);
-    array.append(requestId).append(",");
-
     dataMap.put("bindmobile", ledger.getBindMobile());
-    array.append(ledger.getBindMobile()).append(",");
-
     //注册类型  1=PERSON(个人)|| 2=ENTERPRISE(企业)
     String customerType = ledger.getCustomerType() == 1 ? "PERSON" : "ENTERPRISE";
     dataMap.put("customertype", customerType);
-    array.append(customerType).append(",");
-
     dataMap.put("signedname", ledger.getSignedName());
-    array.append(ledger.getSignedName()).append(",");
-
     dataMap.put("linkman", ledger.getLinkman());
-    array.append(ledger.getLinkman()).append(",");
-
     dataMap.put("idcard", ledger.getIdCard());
-    array.append(ledger.getIdCard()).append(",");
-
     if (ledger.getCustomerType() == 2) {
       dataMap.put("businesslicence", ledger.getBusinessLicence());
-      array.append(ledger.getBusinessLicence()).append(",");
       dataMap.put("legalperson", ledger.getLegalPerson());
-      array.append(ledger.getLegalPerson()).append(",");
-    } else {
-      array.append(" ,");
-      array.append(" ,");
     }
-
     dataMap.put("minsettleamount", "" + ledger.getMinSettleAmount() / 100);
-    array.append(ledger.getMinSettleAmount() / 100).append(",");
-
     dataMap.put("riskreserveday", "" + ledger.getRiskReserveDay());
-    array.append(ledger.getRiskReserveDay()).append(",");
-
     dataMap.put("bankaccountnumber", ledger.getBankAccountNumber());
-    array.append(ledger.getBankAccountNumber()).append(",");
-
     dataMap.put("bankname", ledger.getBankName());
-    array.append(ledger.getBankName()).append(",");
-
     dataMap.put("accountname", ledger.getAccountName());
-    array.append(ledger.getAccountName()).append(",");
-
     //结算账户类型 1=PrivateCash(对私)||2=PublicCash(对公)
     String bankAccountYype = ledger.getBankAccountType() == 1 ? "PrivateCash" : "PublicCash";
     dataMap.put("bankaccounttype", bankAccountYype);
-    array.append(bankAccountYype).append(",");
-
     dataMap.put("bankprovince", ledger.getBankProvince());
-    array.append(ledger.getBankProvince()).append(",");
-
     dataMap.put("bankcity", ledger.getBankCity());
-    array.append(ledger.getBankCity());
 
-    String[] stringArray = getCommonDataMap(array);
+    String data = ZGTUtils.buildData(dataMap, ZGTUtils.REGISTERAPI_REQUEST_HMAC_ORDER);
+    Map<String, String> map = ZGTUtils.httpPost(YBConstants.REGISTER_URL, data);
+    return callBack(map);
+  }
 
-    System.out.println("参与Hmac签名数组===" + String.join(",", stringArray));
+  /**
+   * 子账户信息修改  2017/7/16
+   *
+   * @param dbLedger 数据库商户信息
+   * @param ledger   修改信息
+   * @return map　修改通讯结果（不代表修改成功）
+   */
+  public static Map<String, String> modify(MerchantUserLedger dbLedger, MerchantUserLedger ledger) {
 
-    String data = DataUtil.getData(dataMap, stringArray);
+    //请求加密参数
+    Map<String, String> dataMap = getCommonDataMap();
 
-    dataMap.clear();
-    dataMap.put("data", data);
-    dataMap.put("customernumber", YBConstants.CUSTOMER_NUMBER);
+    String requestId = MvUtil.getOrderNumber(8);
+    dataMap.put("requestid", requestId);
+    dataMap.put("ledgerno", dbLedger.getLedgerNo());
+    dataMap.put("bankaccountnumber", ledger.getBankAccountNumber());
+    dataMap.put("bankname", ledger.getBankName());
+    dataMap.put("accountname", dbLedger.getAccountName());
+    //结算账户类型 1=PrivateCash(对私)||2=PublicCash(对公)
+    String bankAccountYype = dbLedger.getBankAccountType() == 1 ? "PrivateCash" : "PublicCash";
+    dataMap.put("bankaccounttype", bankAccountYype);
+    dataMap.put("bankprovince", ledger.getBankProvince());
+    dataMap.put("bankcity", ledger.getBankCity());
+    dataMap.put("minsettleamount", "" + ledger.getMinSettleAmount() / 100);
+    dataMap.put("riskreserveday", "" + dbLedger.getRiskReserveDay());
+    //是否自助结算  todo: 需确认
+    dataMap.put("manualsettle", "N");
+    //后台接受修改成功回调通知地址
+    dataMap.put("callbackurl", YBConstants.MODIFY_CALLBACK_URL);
+    dataMap.put("bindmobile", ledger.getBindMobile());
 
-    String resultString = HttpClientUtil.post(YBConstants.REGISTER_URL, dataMap, "utf-8");
+    String data = ZGTUtils.buildData(dataMap, ZGTUtils.MODIFYREQUESTAPI_REQUEST_HMAC_ORDER);
+    Map<String, String> map = ZGTUtils.httpPost(YBConstants.MODIFY_REQUEST_URL, data);
+    return callBack(map);
+  }
 
-    System.out.println("请求返回字符串===" + resultString);
+  /**
+   * 子账户信息修改查询  2017/7/16
+   *
+   * @param requestId 修改请求号
+   * @return map　修改结果
+   */
+  public static Map<String, String> modifyQuery(String requestId) {
 
-    Map<String, Object> map = JsonUtils.jsonToPojo(resultString, Map.class);
+    //请求加密参数
+    Map<String, String> dataMap = getCommonDataMap();
+    dataMap.put("requestid", requestId);
 
-    if (map.containsKey("code")) {
-      return map;
+    String data = ZGTUtils.buildData(dataMap, ZGTUtils.QUERYMODIFYREQUESTAPI_REQUEST_HMAC_ORDER);
+    Map<String, String> map = ZGTUtils.httpPost(YBConstants.QUERY_MODIFY_REQUEST_URL, data);
+    return callBack(map);
+  }
+
+  /**
+   * 易宝子商户余额查询  2017/7/17
+   *
+   * @param ledgerNo 易宝的子商户号
+   */
+  public static Map<String, String> queryBalance(String ledgerNo) {
+    Map<String, String> dataMap = getCommonDataMap();
+    dataMap.put("ledgerno", ledgerNo);
+
+    String data = ZGTUtils.buildData(dataMap, ZGTUtils.QUERYBALANCEAPI_REQUEST_HMAC_ORDER);
+    Map<String, String> map = ZGTUtils.httpPost(YBConstants.QUERY_BALANCE_URL, data);
+    return callBack(map);
+  }
+
+  /**
+   * 分账方审核结果查询  2017/7/17
+   *
+   * @param ledgerNo 易宝的子商户号
+   */
+  public static Map<String, String> queryCheckRecord(String ledgerNo) {
+    Map<String, String> dataMap = getCommonDataMap();
+    dataMap.put("ledgerno", ledgerNo);
+
+    String data = ZGTUtils.buildData(dataMap, ZGTUtils.QUERYRECORDAPI_REQUEST_HMAC_ORDER);
+    Map<String, String> map = ZGTUtils.httpPost(YBConstants.QUERY_CHECK_RECORD_URL, data);
+    return callBack(map);
+  }
+
+  /**
+   * 请求响应中解析返回结果  2017/7/16
+   *
+   * @param stringMap 响应Map
+   * @return Map
+   */
+  private static Map<String, String> callBack(Map<String, String> stringMap) {
+    System.out.println("易宝的同步响应：" + stringMap);
+
+    if (stringMap.containsKey("code")) {
+      return stringMap;
     }
-
-    String decrypt = AESUtil.decrypt(map.get("data").toString(), YBConstants.SECRET_16);
-
-    Map<String, Object> resultMap = JsonUtils.jsonToPojo(decrypt, Map.class);
-
-    System.out.println("请求返回解密后Map===" + resultMap.toString());
-
-    return map;
+    Map<String, String> responseDataMap = ZGTUtils.decryptData(stringMap.get("data"));
+    System.out.println("data解密后明文：" + responseDataMap);
+    return responseDataMap;
   }
 
   /**
@@ -123,13 +158,6 @@ public class YbRequestUtils {
     Map<String, String> dataMap = new HashMap<>();
     dataMap.put("customernumber", YBConstants.CUSTOMER_NUMBER);
     return dataMap;
-  }
-
-  /**
-   * 获取加密stringArray  2017/7/14
-   */
-  private static String[] getCommonDataMap(StringBuffer s) {
-    return s.toString().split(",");
   }
 
 }

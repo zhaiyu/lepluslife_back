@@ -10,11 +10,6 @@ public final class YBConstants {
 
   public static final String CUSTOMER_NUMBER = "10000447996"; //易宝主商户号
 
-  public static final String
-      SECRET =
-      "jj3Q1h0H86FZ7CD46Z5Nr35p67L199WdkgETx85920n128vi2125T9KY2hzv";
-  public static final String SECRET_16 = "jj3Q1h0H86FZ7CD4";
-
   public static final BigDecimal WX_WEB_RATE = new BigDecimal(0.3);//微信WEB公众号成本费率
 
   public static final BigDecimal WX_APP_RATE = new BigDecimal(0.3);//微信APP成本费率
@@ -36,6 +31,11 @@ public final class YBConstants {
 
   //账户信息修改查询接口
   public static final String QUERY_MODIFY_REQUEST_URL = PREFIX_URL + "queryModifyRequest";
+
+  //后台接受修改成功回调通知地址 todo:域名上线需修改
+  public static final String
+      MODIFY_CALLBACK_URL =
+      "http://www.tiegancrm.com/manage/ledger/modifyCallBack";
 
   // 分账方资质上传接口
   public static final String
