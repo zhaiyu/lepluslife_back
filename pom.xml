@@ -424,11 +424,6 @@
             <groupId>org.springframework.cloud</groupId>
             <artifactId>spring-cloud-spring-service-connector</artifactId>
         </dependency>
-        <dependency>
-            <groupId>com.ning</groupId>
-            <artifactId>async-http-client</artifactId>
-            <version>RELEASE</version>
-        </dependency>
         <!-- jhipster-needle-maven-add-dependency -->
     </dependencies>
 
