@@ -48,7 +48,7 @@ public class ShiroConfig {
   @Lazy
   public DefaultWebSessionManager defaultWebSessionManager() {
     DefaultWebSessionManager defaultWebSessionManager = new DefaultWebSessionManager();
-    defaultWebSessionManager.setGlobalSessionTimeout(600000);
+    defaultWebSessionManager.setGlobalSessionTimeout(6000000);
     defaultWebSessionManager.setDeleteInvalidSessions(true);
     return defaultWebSessionManager;
   }
@@ -97,6 +97,7 @@ public class ShiroConfig {
     filterChainDefinitionMap.put("/manage/shortMessage/statusReport", "anon");//anon 可以理解为不拦截
     filterChainDefinitionMap.put("/manage/addReceipt", "anon");//anon 可以理解为不拦截
     filterChainDefinitionMap.put("/manage/receiptReturnValues", "anon");//anon 可以理解为不拦截
+    filterChainDefinitionMap.put("/manage/ledger/modifyCallBack", "anon");//anon 可以理解为不拦截
     filterChainDefinitionMap.put("/**", "authc");//anon 可以理解为不拦截
 
 

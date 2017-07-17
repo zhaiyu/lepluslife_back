@@ -33,7 +33,9 @@ public class MerchantUserLedger {
   @Column(nullable = false, unique = true, length = 50)
   private String ledgerNo;  //易宝的子商户号
 
-  private Integer state = 0;  //审核状态   -1=冻结|0=激活(审核中)|1=审核成功|其他为审核失败错误码
+  private Integer state = -1;  //状态   -1=冻结|0=待审核|1=审核成功|2=审核失败
+
+  private Integer checkState = -1;   //-1=初始化|0=修改审核中|1=修改审核成功|2=修改审核失败
 
   @ManyToOne(fetch = FetchType.LAZY)
   @NotNull
@@ -130,6 +132,14 @@ public class MerchantUserLedger {
 
   public void setMinSettleAmount(Integer minSettleAmount) {
     this.minSettleAmount = minSettleAmount;
+  }
+
+  public Integer getCheckState() {
+    return checkState;
+  }
+
+  public void setCheckState(Integer checkState) {
+    this.checkState = checkState;
   }
 
   public String getBindMobile() {

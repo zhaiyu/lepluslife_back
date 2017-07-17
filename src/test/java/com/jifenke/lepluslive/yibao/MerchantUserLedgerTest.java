@@ -4,7 +4,7 @@ import com.jifenke.lepluslive.Application;
 import com.jifenke.lepluslive.global.config.Constants;
 import com.jifenke.lepluslive.yibao.domain.entities.MerchantUserLedger;
 import com.jifenke.lepluslive.yibao.service.MerchantUserLedgerService;
-import com.jifenke.lepluslive.yibao.util.YbRequestUtils;
+import com.jifenke.lepluslive.yibao.util.ZGTUtils;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -53,6 +53,15 @@ public class MerchantUserLedgerTest {
     ledger.setLegalPerson("张文");
 
     merchantUserLedgerService.edit(ledger);
+  }
+
+  //配置文件加载测试
+  @Test
+  public void getConfigureTest() {
+
+    String keyForHmac = ZGTUtils.getKeyForHmac();
+
+    System.out.println("keyForHmac=" + keyForHmac);
   }
 
 }

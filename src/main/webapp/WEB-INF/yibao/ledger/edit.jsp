@@ -86,10 +86,10 @@
                 </div>
             </div>
             <div class="Mod-10 merchant_information-filling">
-                <div class="ModLabel ModRadius-left">注册类型<span class="fontColor">*</span></div>
+                <div class="ModLabel ModRadius-left">注册结算类型<span class="fontColor">*</span></div>
                 <div class="ModRadio2 customerType">
-                    <div id="customerType_2" class="ModRadius-left ModRadius2_active">企业</div>
-                    <div id="customerType_1" class="ModRadius-right">个人</div>
+                    <div id="customerType_2" class="ModRadius-left ModRadius2_active">企业对公</div>
+                    <div id="customerType_1" class="ModRadius-right">个人对私</div>
                 </div>
             </div>
             <div class="Mod-10">
@@ -122,13 +122,6 @@
                     <input id="legalPerson" class="ModRadius-right"
                            placeholder="企业注册时填写"
                            value="${l.legalPerson}">
-                </div>
-            </div>
-            <div class="Mod-10 merchant_information-filling">
-                <div class="ModLabel ModRadius-left">结算账户类型<span class="fontColor">*</span></div>
-                <div class="ModRadio2 bankAccountType">
-                    <div id="bankAccountType_2" class="ModRadius-left ModRadius2_active">对公</div>
-                    <div id="bankAccountType_1" class="ModRadius-right">对私</div>
                 </div>
             </div>
             <div class="Mod-10">
@@ -180,6 +173,7 @@
                     <div id="costSide_0" class="ModRadius-left ModRadius2_active">主商户</div>
                     <div id="costSide_1" class="ModRadius-right">子商户</div>
                 </div>
+                <span class="fontColor">&nbsp;&nbsp;注意：修改时,如果仅修改结算费用承担方，无需点击保存信息，点击切换承担方时即时生效！</span>
             </div>
 
             <div class="Mod-2">
@@ -220,32 +214,19 @@
         window.location.href =
             "/manage/merchantUser/info/" + $('#merchantUserId').val() + '?li=6';
     }
-    var type = 0; //卡类型
-    var customerType = 2; //注册类型  1=PERSON(个人)|| 2=ENTERPRISE(企业)
-    var bankAccountType = 2; //结算账户类型 1=PrivateCash(对私)||2=PublicCash(对公)
+    var customerType = 2; //注册及结算类型  1=PERSON(个人)|| 2=ENTERPRISE(企业)
     var costSide = 0; //结算费用承担方  0=积分客（主商户）|1=子商户
+    var ledgerId = $('#ledgerId').val();
     /*****************注册类型****************************/
     $(".customerType > div").click(function () {
         $(".customerType > div").removeClass("ModRadius2_active");
         $(this).addClass("ModRadius2_active");
         switch ($(this).html()) {
-            case "个人":
+            case "个人对私":
                 customerType = 1;
                 break;
-            case "企业":
+            case "企业对公":
                 customerType = 2;
-        }
-    });
-    /*****************结算账户类型****************************/
-    $(".bankAccountType > div").click(function () {
-        $(".bankAccountType > div").removeClass("ModRadius2_active");
-        $(this).addClass("ModRadius2_active");
-        switch ($(this).html()) {
-            case "对私":
-                bankAccountType = 1;
-                break;
-            case "对公":
-                bankAccountType = 2;
         }
     });
     /*****************结算费用承担方****************************/
@@ -259,12 +240,14 @@
             case "子商户":
                 costSide = 1;
         }
+        if (eval(ledgerId) !== 0) {
+            $.post('/manage/ledger/editCostSide', {ledgerId: ledgerId, costSide: costSide});
+        }
     });
     /*****************保存商户****************************/
     function save() {
-        var id = $('#ledgerId').val();
         var merchantUserLedger = {};
-        merchantUserLedger.id = id;
+        merchantUserLedger.id = ledgerId;
         var merchantUser = {};
         merchantUser.id = $('#merchantUserId').val();
         merchantUserLedger.merchantUser = merchantUser;
@@ -286,6 +269,8 @@
         merchantUserLedger.linkman = linkman.trim();
         //注册类型
         merchantUserLedger.customerType = customerType;
+        //结算账户类型
+        merchantUserLedger.bankAccountType = customerType;
         //签约名
         var signedName = $('#signedName').val();
         if (!signedName || signedName.trim().length === 0) {
@@ -303,7 +288,7 @@
         if (customerType === 2) {
             //营业执照号
             var businessLicence = $('#businessLicence').val();
-            if (!businessLicence || idCard.trim().length === 0) {
+            if (!businessLicence || businessLicence.trim().length === 0) {
                 alert("营业执照号不能为空");
                 return false
             }
@@ -316,8 +301,6 @@
             }
             merchantUserLedger.legalPerson = legalPerson.trim();
         }
-        //结算账户类型
-        merchantUserLedger.bankAccountType = bankAccountType;
         //银行账户号
         var bankAccountNumber = $('#bankAccountNumber').val();
         if (!bankAccountNumber || bankAccountNumber.trim().length === 0) {
@@ -371,37 +354,16 @@
                    contentType: "application/json",
                    data: JSON.stringify(merchantUserLedger),
                    success: function (result) {
-//                       if (result.status === 200) {
-//                           alert("保存成功");
+                       if (eval(result.code) === 1) {
+                           alert("保存成功");
+                           //todo:注释
 //                           window.location.href =
 //                               "/manage/merchantUser/info/" + $('#merchantUserId').val() + '?li=6';
-//                       } else {
-//                           alert(result.msg);
-//                       }
+                       } else {
+                           alert('保存失败.错误码:' + result.code + '(' + result.msg + ')');
+                       }
                    }
                });
-    }
-
-    function checkNameRepeat() {
-        var username = $("#name").val();
-        var flag = false;
-        if (username != null && username != '') {
-            $.ajax({
-                       url: "/manage/merchantUser/check_username",
-                       type: "post",
-                       contentType: "application/json",
-                       data: username,
-                       async: false,
-                       success: function (result) {
-                           if (result.status != 200) {
-                               alert(result.msg);
-                               $("#name").val('');
-                               flag = true;
-                           }
-                       }
-                   });
-        }
-        return flag;
     }
 
     var ledger = '${l}';
@@ -411,19 +373,18 @@
             $("#customerType_1").addClass("ModRadius2_active");
             customerType = 1;
         }
-        if (${l.bankAccountType == 1}) {
-            $(".bankAccountType > div").removeClass("ModRadius2_active");
-            $("#bankAccountType_1").addClass("ModRadius2_active");
-            bankAccountType = 1;
-        }
         if (${l.costSide == 1}) {
             $(".costSide > div").removeClass("ModRadius2_active");
             $("#costSide_1").addClass("ModRadius2_active");
             costSide = 1;
         }
-        $("#idCard").attr('display', true);
-        $("#businessLicence").attr('display', true);
-        $("#accountName").attr('display', true);
+        $("#linkman").attr('disabled', 'disabled');
+        $("#signedName").attr('disabled', 'disabled');
+        $("#idCard").attr('disabled', 'disabled');
+        $("#businessLicence").attr('disabled', 'disabled');
+        $("#legalPerson").attr('disabled', 'disabled');
+        $("#accountName").attr('disabled', 'disabled');
+        $(".customerType > div").unbind("click");
     }
 
 </script>
