@@ -8,6 +8,7 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 import org.springframework.data.jpa.repository.Query;
 
+import java.util.Date;
 import java.util.List;
 import java.util.Objects;
 
@@ -50,6 +51,8 @@ public interface ScoreAAccountRepository extends JpaRepository<ScoreAAccount,Lon
 
   @Query(value = "SELECT SUM(score) FROM scorea", nativeQuery = true)
   Long findPresentHoldScorea();
+  @Query(value = "SELECT SUM(score) FROM scorea ", nativeQuery = true)
+  Long findPresentHoldScoreaByDate(Date start, Date end);
 
   @Query(value = "SELECT SUM(total_score) FROM scorea ", nativeQuery = true)
   Long findIssueScorea();
@@ -64,6 +67,11 @@ public interface ScoreAAccountRepository extends JpaRepository<ScoreAAccount,Lon
   Long findShareMoney();
 
 
+  /**
+   * 用户持有金币数
+   */
+  @Query(value = "SELECT SUM(total_score) FROM scorec ", nativeQuery = true)
+  Long findPresentHoldScorec();
 
   @Query(value = "SELECT origin,SUM(number) from scorea_detail  WHERE number>0 AND date_created between ?1 and ?2 GROUP BY origin", nativeQuery = true)
   List<Object[]> findScoreaDistribution(String startDate,String endDate);

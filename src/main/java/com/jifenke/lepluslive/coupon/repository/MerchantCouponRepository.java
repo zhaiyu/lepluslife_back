@@ -1,7 +1,6 @@
 package com.jifenke.lepluslive.coupon.repository;
 
 import com.jifenke.lepluslive.coupon.domain.entities.MerchantCoupon;
-
 import org.springframework.data.jpa.repository.JpaRepository;
 
 /**

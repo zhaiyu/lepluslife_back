@@ -12,9 +12,12 @@ import com.jifenke.lepluslive.order.domain.criteria.FinancialCriteria;
 import com.jifenke.lepluslive.order.domain.criteria.OLOrderCriteria;
 import com.jifenke.lepluslive.order.domain.entities.FinancialStatistic;
 import com.jifenke.lepluslive.order.domain.entities.OffLineOrder;
+import com.jifenke.lepluslive.order.domain.entities.OffLineOrderShare;
 import com.jifenke.lepluslive.order.service.OffLineOrderService;
+import com.jifenke.lepluslive.order.service.ShareService;
 import com.jifenke.lepluslive.weixin.service.WxTemMsgService;
 
+import org.apache.commons.collections.map.HashedMap;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.data.domain.Page;
 import org.springframework.ui.Model;
@@ -54,6 +57,9 @@ public class OffLineOrderController {
     @Inject
     private MerchantWeiXinUserService merchantWeiXinUserService;
 
+    @Inject
+    private ShareService shareService;
+
     private StringBuffer sb = new StringBuffer();
 
 
@@ -67,10 +73,14 @@ public class OffLineOrderController {
     @ResponseBody
     LejiaResult getOffLineOrder(@RequestBody OLOrderCriteria olOrderCriteria) {
         Page page = offLineOrderService.findOrderByPage(olOrderCriteria, 10);
+        List<Object[]> countData = offLineOrderService.countOrderMoney(olOrderCriteria);
         if (olOrderCriteria.getOffset() == null) {
             olOrderCriteria.setOffset(1);
         }
-        return LejiaResult.ok(page);
+        Map map = new HashedMap();
+        map.put("page",page);
+        map.put("countData",countData);
+        return LejiaResult.ok(map);
     }
 
     //查询详情跳页

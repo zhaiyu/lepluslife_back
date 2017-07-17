@@ -59,7 +59,7 @@
                         <select class="form-control" id="pay-style">
                             <option value="0">全部支付方式</option>
                             <option value="1">微信支付</option>
-                            <option value="2">红包支付</option>
+                            <option value="2">鼓励金支付</option>
                         </select>
                     </div>
                     <div class="form-group col-md-3">
@@ -126,6 +126,7 @@
                     </li>
                 </ul>
                 <div id="myTabContent" class="tab-content">
+                    <div id="dataDisplay"></div>
                     <div class="tab-pane fade in active" id="tab1">
                         <table class="table table-bordered table-hover">
                             <thead>
@@ -136,15 +137,15 @@
                                 <th>商户名称</th>
                                 <th>消费者信息</th>
                                 <th>订单金额</th>
-                                <th>红包使用</th>
+                                <th>鼓励金使用</th>
                                 <th>支付方式</th>
                                 <th>实际支付</th>
-                                <th>佣金(手续费)</th>
+                                <th>佣金</th>
                                 <th>商户应入账</th>
                                 <th>第三方手续费</th>
-                                <th>发放红包</th>
+                                <th>发金币</th>
                                 <th>分润金额</th>
-                                <th>发放积分</th>
+                                <th>发鼓励金</th>
                                 <th>状态</th>
                                 <th>操作</th>
                             </tr>
@@ -155,7 +156,9 @@
                     </div>
                     <div class="tcdPageCode" style="display: inline;">
                     </div>
-                    <div style="display: inline;"> 共有 <span id="totalElements"></span> 个</div>
+                    <div style="display: inline;"> 共有 <span id="totalElements"></span> 个&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;跳转至&nbsp;
+                        <input id="toPage" type="text" style="width:60px" onkeyup="this.value=this.value.replace(/[^0-9]/g,'')" onafterpaste="this.value=this.value.replace(/[^0-9]/g,'')"/>&nbsp;页
+                        <button class="btn btn-primary" style="width:50px;" onclick="searchOrderByPage()">GO</button></div>
                     <button class="btn btn-primary pull-right" style="margin-top: 5px"
                             onclick="exportExcel()">导出excel
                     </button>
@@ -270,7 +273,8 @@
                    data: JSON.stringify(olOrderCriteria),
                    contentType: "application/json",
                    success: function (data) {
-                       var page = data.data;
+                       var page = data.data.page;
+                       var countData = data.data.countData;
                        var content = page.content;
                        var totalPage = page.totalPages;
                        $("#totalElements").html(page.totalElements);
@@ -285,6 +289,10 @@
                            initPage(1, totalPage);
                        }
                        var orderContent = document.getElementById("orderContent");
+                       var dataDisplay = document.getElementById("dataDisplay");
+                       dataDisplay.innerHTML='【检索订单列表=》订单总数=<span style="color: red">'+page.totalElements+'</span>单; 订单总额=<span style="color: red">'+(countData[0][1]/100.0)+'</span>元;商户应入账 =<span style="color: red">'+(countData[0][4]/100.0)+'</span>元;佣金手续费 =<span style="color: red">'+(countData[0][5]/100.0)+'</span>元;'+
+                           '消耗鼓励金总额=<span style="color: red">'+(countData[0][2]/100.0)+'</span>元;消耗货币总额 =<span style="color: red">'+(countData[0][3]/100.0)+'</span>元】';
+//                       console.log(JSON.stringify(countData));
                        for (i = 0; i < content.length; i++) {
                            var contentStr = '<tr><td>' + content[i].orderSid + '</td>';
                            if (content[i].rebateWay == 0) {
@@ -340,18 +348,18 @@
                            contentStr +=
                            '<td>' + payToMerchant + '</td>'
                            contentStr += '<td>' + content[i].wxCommission / 100 + '</td>'
-                           contentStr += '<td>' + content[i].rebate / 100 + '</td>';
-                           var share = 0;
-                           if (content[i].rebateWay != 1 && content[i].rebateWay!=3) {
+                           contentStr += '<td>' + content[i].scoreC / 100 + '</td>';
+                           var share = content[i].shareMoney/100.0;
+                           /*if (content[i].rebateWay != 1 && content[i].rebateWay!=3) {
                                share = 0;
                            } else {
                                share =
                                (content[i].ljCommission - content[i].wxCommission
                                 - content[i].rebate) / 100;
-                           }
+                           }*/
                            contentStr +=
                            '<td>' + share + '</td>'
-                           contentStr += '<td>' + content[i].scoreB + '</td>'
+                           contentStr += '<td>' + content[i].rebate /100.0+ '</td>'
                            if (content[i].state == 0) {
                                contentStr += '<td>未付款</td>';
                                contentStr +=
@@ -433,6 +441,7 @@
         }
         return fmt;
     }
+    // 根据条件进行查询
     function searchOrderByCriteria() {
         olOrderCriteria.offset = 1;
         init1 = 1;
@@ -483,6 +492,65 @@
         }
         getOffLineOrderByAjax(olOrderCriteria);
     }
+    //  跳转到指定页
+    function searchOrderByPage() {
+        var pageNum = $("#toPage").val();
+        if(pageNum==null||pageNum=='') {
+            alert("请输入目标页数 ^_^ ！");
+            return;
+        }
+        olOrderCriteria.offset = pageNum;
+        flag = true;
+        //lss 2016/07/19 订单金额大于等于
+        olOrderCriteria.amount = $('#customer-amount').val() * 100;
+        var dateStr = $('#date-end span').text().split("-");
+        var startDate = null;
+        var endDate = null;
+        if(dateStr.length>0 && dateStr[0]!=null&&dateStr[0]!='') {
+            startDate = dateStr[0].replace(/-/g, "/");
+            endDate = dateStr[1].replace(/-/g, "/");
+            olOrderCriteria.startDate = startDate;
+            olOrderCriteria.endDate = endDate;
+        }
+        if ($("#pay-style").val() != 0) {
+            olOrderCriteria.payWay = $("#pay-style").val();
+        } else {
+            olOrderCriteria.payWay = null;
+        }
+        if ($("#order-source").val() != 0) {
+            olOrderCriteria.orderSource = $("#order-source").val();
+        } else {
+            olOrderCriteria.orderSource = null;
+        }
+        if ($("#customer-ID").val() != "" && $("#customer-ID").val() != null) {
+            olOrderCriteria.userSid = $("#customer-ID").val();
+        } else {
+            olOrderCriteria.userSid = null;
+        }
+        if ($("#customer-tel").val() != "" && $("#customer-tel").val() != null) {
+            olOrderCriteria.phoneNumber = $("#customer-tel").val();
+        } else {
+            olOrderCriteria.phoneNumber = null;
+        }
+        if ($("#merchant-name").val() != "" && $("#merchant-name").val() != null) {
+            olOrderCriteria.merchant = $("#merchant-name").val();
+        } else {
+            olOrderCriteria.merchant = null;
+        }
+        // zxf  2016/09/02   设置订单分类、id查询条件
+        if ($("#order-ID").val() != "" && $("#order-ID").val() != null) {
+            olOrderCriteria.orderSid = $("#order-ID").val();
+        } else {
+            olOrderCriteria.orderSid = null;
+        }
+        if ($("#remote-style").val() != "" && $("#remote-style").val() != null) {
+            olOrderCriteria.rebateWay = $("#remote-style").val();
+        } else {
+            olOrderCriteria.rebateWay = null;
+        }
+        getOffLineOrderByAjax(olOrderCriteria);
+    }
+
     function searchOrderByState(state) {
         olOrderCriteria.offset = 1;
         if (state != null) {

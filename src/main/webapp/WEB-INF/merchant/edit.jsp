@@ -1908,7 +1908,6 @@
         merchantDto.merchantRebatePolicy = merchantRebatePolicy;
         merchantDto.merchantScanPayWay = merchantScanPayWay;
         merchantDto.merchantSettlementStore = merchantSettlementStore;
-        console.log(merchantDto);
         $("#enter").unbind("click");
         if (merchant.id == null || merchant.id == "") {
             $.ajax({

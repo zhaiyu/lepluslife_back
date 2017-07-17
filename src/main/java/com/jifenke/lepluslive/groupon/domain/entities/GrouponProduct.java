@@ -2,14 +2,8 @@ package com.jifenke.lepluslive.groupon.domain.entities;
 
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantUser;
 
-import java.util.List;
-
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
+import java.util.Date;
 
 /**
  * Created by wcg on 2017/6/14. 团购商品
@@ -28,9 +22,9 @@ public class GrouponProduct {
 
   private String description; //简介
 
-  private String explainPicture; //说明图 说明团购商品内容
+  private String explainPicture; //说明图 说明团购商品内容 （详情明细）
 
-  private String displayPicture; //展示图
+  private String displayPicture; //展示图 (列表图)
 
   private Integer reservation=0; //是否需要预约 0 不需要预约 1,2,3..需要提前1,2,3..天预约
 
@@ -44,7 +38,7 @@ public class GrouponProduct {
 
   private Long normalPrice=0L; //普通团购价格
 
-  private Long ljPrice=0L; //乐加团购价格
+  private Long ljPrice=0L; //乐加会员团购价格
 
   private Long normalStorage=0L; //普通库存
 
@@ -259,5 +253,55 @@ public class GrouponProduct {
 
   public void setShareToTradePartnerManager(Long shareToTradePartnerManager) {
     this.shareToTradePartnerManager = shareToTradePartnerManager;
+  }
+
+  public Long getSellVolume() {
+    return sellVolume;
+  }
+
+  public void setSellVolume(Long sellVolume) {
+    this.sellVolume = sellVolume;
+  }
+
+  public String getExplainPicture() {
+    return explainPicture;
+  }
+
+  public void setExplainPicture(String explainPicture) {
+    this.explainPicture = explainPicture;
+  }
+
+  public Integer getRefundType() {
+    return refundType;
+  }
+
+  public void setRefundType(Integer refundType) {
+    this.refundType = refundType;
+  }
+
+  public String getInstruction() {
+    return instruction;
+  }
+
+  public void setInstruction(String instruction) {
+    this.instruction = instruction;
+  }
+
+  public Long getCharge() {
+    return charge;
+  }
+
+  public void setCharge(Long charge) {
+    this.charge = charge;
+  }
+
+  private Date createDate;          //  创建时间
+
+  public Date getCreateDate() {
+    return createDate;
+  }
+
+  public void setCreateDate(Date createDate) {
+    this.createDate = createDate;
   }
 }

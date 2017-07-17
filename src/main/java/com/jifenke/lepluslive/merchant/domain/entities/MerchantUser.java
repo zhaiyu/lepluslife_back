@@ -156,6 +156,12 @@ public class MerchantUser {
         this.merchantName = merchantName;
     }
 
+    public MerchantUser(Long id,String name,String merchantName) {
+        this.id = id;
+        this.name = name;
+        this.merchantName = merchantName;
+    }
+
     public Partner getPartner() {
         return partner;
     }

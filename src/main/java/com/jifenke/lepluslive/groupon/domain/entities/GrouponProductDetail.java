@@ -1,16 +1,9 @@
 package com.jifenke.lepluslive.groupon.domain.entities;
 
-import com.jifenke.lepluslive.product.domain.entities.Product;
-
 import org.hibernate.annotations.Cache;
 import org.hibernate.annotations.CacheConcurrencyStrategy;
 
-import javax.persistence.Entity;
-import javax.persistence.GeneratedValue;
-import javax.persistence.GenerationType;
-import javax.persistence.Id;
-import javax.persistence.ManyToOne;
-import javax.persistence.Table;
+import javax.persistence.*;
 
 /**
  * Created by wcg on 16/3/17. 图文详情
@@ -65,5 +58,11 @@ public class GrouponProductDetail {
     this.description = description;
   }
 
+  public GrouponProduct getGrouponProduct() {
+    return grouponProduct;
+  }
 
+  public void setGrouponProduct(GrouponProduct grouponProduct) {
+    this.grouponProduct = grouponProduct;
+  }
 }

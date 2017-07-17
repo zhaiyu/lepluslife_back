@@ -37,9 +37,15 @@ bucket:
     barcode: lepluslive-barcode
     ossBarCodeReadRoot: http://lepluslive-barcode.oss-cn-beijing.aliyuncs.com
 weixin:
-     appId: wxec4f3a2fb6ee8f06
+     appId: wxe2190d22ce025e4f
 express:
     appkey: e5ebeb3f01670d2b
+telephone:
+     appkey: NeHLDTsD1U3a1I9a3KD7eTjb6DmuhsaUwIvZqNsgxkgmTfmKQPFVyOWsg9MoqN9M
+     secret: lsBC7TIs4PEMVRlAwQkUu8bB6OPkrNWC6n628Di1iNB4tMsQsDzNzBdtfSDwupZp
+shortMessage:
+     userName: jfk-yx
+     password: d41d8cd98f00b204e9800998ecf8427e
 # ===================================================================
 # JHipster specific properties
 # ===================================================================

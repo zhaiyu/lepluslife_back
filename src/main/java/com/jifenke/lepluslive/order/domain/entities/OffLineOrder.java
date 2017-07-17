@@ -50,7 +50,7 @@ public class OffLineOrder {
 
   private Long wxCommission = 0L; //微信手续费
 
-  private Long rebate = 0L; //返利红包
+  private Long rebate = 0L; //返利鼓励金
 
   private Long scoreB = 0L; //发放积分
 
@@ -306,5 +306,15 @@ public class OffLineOrder {
 
   public void setState(Integer state) {
     this.state = state;
+  }
+
+  private Long shareMoney=0L; //每笔订单分润金额
+
+  public Long getShareMoney() {
+    return shareMoney;
+  }
+
+  public void setShareMoney(Long shareMoney) {
+    this.shareMoney = shareMoney;
   }
 }

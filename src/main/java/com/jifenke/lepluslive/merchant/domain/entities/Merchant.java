@@ -84,9 +84,9 @@ public class Merchant {
 
   private BigDecimal memberCommission = new BigDecimal(0); //只有联盟商户才不为空 , 代表会员在绑定商户消费时的手续费
 
-  private BigDecimal scoreARebate; //返a积分比 单位百分比  【导流订单红包】
+  private BigDecimal scoreARebate = new BigDecimal(0); //返a积分比 单位百分比  【导流订单红包】
 
-  private BigDecimal scoreBRebate; //普通订单返B积分策略   【普通订单积分】
+  private BigDecimal scoreBRebate = new BigDecimal(0); //普通订单返B积分策略   【普通订单积分】
 
   private String contact; //联系人
 

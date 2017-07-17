@@ -4,6 +4,7 @@ import com.jifenke.lepluslive.global.util.DataUtils;
 import com.jifenke.lepluslive.merchant.domain.entities.City;
 import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantPos;
+import com.jifenke.lepluslive.merchant.repository.MerchantRepository;
 import com.jifenke.lepluslive.merchant.service.MerchantPosService;
 import com.jifenke.lepluslive.order.domain.criteria.OLOrderCriteria;
 import com.jifenke.lepluslive.order.domain.criteria.PosOrderCriteria;
@@ -15,6 +16,7 @@ import com.jifenke.lepluslive.order.repository.PosErrorLogRepository;
 import com.jifenke.lepluslive.order.repository.PosOrderRepository;
 import com.jifenke.lepluslive.user.domain.entities.LeJiaUser;
 
+import com.jifenke.lepluslive.user.repository.LeJiaUserRepository;
 import org.apache.poi.hssf.usermodel.*;
 import org.apache.poi.hssf.util.HSSFColor;
 import org.springframework.data.domain.Page;
@@ -39,6 +41,7 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
+import javax.persistence.EntityManager;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
@@ -63,13 +66,22 @@ public class PosOrderService {
     @Inject
     private PosErrorLogRepository posErrorLogRepository;
 
+    @Inject
+    private LeJiaUserRepository leJiaUserRepository;
+
+    @Inject
+    private MerchantRepository merchantRepository;
+
+    @Inject
+    private EntityManager entityManager;
+
 
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public Page findOrderByPage(PosOrderCriteria posOrderCriteria, int limit) {
         Sort sort = new Sort(Sort.Direction.DESC, "createdDate");
         return posOrderRepository
                 .findAll(getWhereClause(posOrderCriteria),
-                         new PageRequest(posOrderCriteria.getOffset() - 1, limit, sort));
+                        new PageRequest(posOrderCriteria.getOffset() - 1, limit, sort));
     }
 
     public static Specification<PosOrder> getWhereClause(PosOrderCriteria orderCriteria) {
@@ -407,13 +419,13 @@ public class PosOrderService {
             HSSFRichTextString truePayText = new HSSFRichTextString(String.valueOf(posOrder.getTruePay() / 100));
             truePayCell.setCellValue(truePayText);
             String commission = null;
-            if(posOrder.getState() == 1){
-                if(posOrder.getRebateWay() == 1 ||posOrder.getRebateWay() == 4){
-                    commission = String.valueOf(posOrder.getLjCommission()/100);
-                }else{
-                    commission = String.valueOf((100-posOrder.getMerchant().getLjCommission().intValue())/10)+"折";
+            if (posOrder.getState() == 1) {
+                if (posOrder.getRebateWay() == 1 || posOrder.getRebateWay() == 4) {
+                    commission = String.valueOf(posOrder.getLjCommission() / 100);
+                } else {
+                    commission = String.valueOf((100 - posOrder.getMerchant().getLjCommission().intValue()) / 10) + "折";
                 }
-            }else{
+            } else {
                 commission = "未支付";
             }
             HSSFCell commissionCell = row.createCell(11);
@@ -448,25 +460,97 @@ public class PosOrderService {
         }
     }
 
-  /**
-   * 统计某个门店POS的累计流水和累计收取红包  2017/02/10
-   *
-   * @param merchantId 门店ID
-   */
-  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-  public Map<String, Long> countPriceByMerchant(Long merchantId) {
-    List<Object[]> list = posOrderRepository.countPriceByMerchant(merchantId);
-    Map<String, Long> map = new HashMap<>();
-    Long totalPrice = 0L;
-    Long trueScore = 0L;
+    /**
+     * 统计某个门店POS的累计流水和累计收取红包  2017/02/10
+     *
+     * @param merchantId 门店ID
+     */
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+    public Map<String, Long> countPriceByMerchant(Long merchantId) {
+        List<Object[]> list = posOrderRepository.countPriceByMerchant(merchantId);
+        Map<String, Long> map = new HashMap<>();
+        Long totalPrice = 0L;
+        Long trueScore = 0L;
 
-    if (list != null && list.size() > 0) {
-      Object[] o = list.get(0);
-      totalPrice = Long.valueOf(String.valueOf(o[0] != null ? o[0] : 0));
-      trueScore = Long.valueOf(String.valueOf(o[1] != null ? o[1] : 0));
+        if (list != null && list.size() > 0) {
+            Object[] o = list.get(0);
+            totalPrice = Long.valueOf(String.valueOf(o[0] != null ? o[0] : 0));
+            trueScore = Long.valueOf(String.valueOf(o[1] != null ? o[1] : 0));
+        }
+        map.put("totalPrice_pos", totalPrice);
+        map.put("trueScore_pos", trueScore);
+        return map;
     }
-    map.put("totalPrice_pos", totalPrice);
-    map.put("trueScore_pos", trueScore);
-    return map;
-  }
+
+    /**
+     * 检索条数据  2017/06/06
+     *
+     * @param orderCriteria
+     * @return
+     */
+    @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
+    public List<Object[]> countOrderMoney(PosOrderCriteria orderCriteria) {
+        StringBuffer sql = new StringBuffer();
+        sql.append(" select count(*),IFNULL(sum(total_price),0),IFNULL(sum(true_score),0),IFNULL(sum(true_pay),0),IFNULL(sum(transfer_money),0),IFNULL(sum(wx_commission),0) from pos_order po,merchant m ");
+        sql.append(" where po.merchant_id = m.id ");
+        String start = orderCriteria.getStartDate();
+        String end = orderCriteria.getEndDate();
+        //  日期
+        if (start != null && end != null) {
+            SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+            String startDate = sdf.format(new Date(start));
+            String endDate = sdf.format(new Date(end));
+            sql.append(" and ");
+            sql.append("  po.complete_date BETWEEN '" + startDate + "' and  '" + endDate + "'");
+        }
+        //  用户 Sid
+        if (!"".equals(orderCriteria.getUserSid()) && orderCriteria.getUserSid() != null) {
+            LeJiaUser leJiaUser = leJiaUserRepository.findUserBySid(orderCriteria.getUserSid());
+            if(leJiaUser!=null) {
+                sql.append(" and ");
+                sql.append("  po.le_jia_user_id = " + leJiaUser.getId());
+            }
+        }
+        // 用户电话
+        if(orderCriteria.getUserPhone()!=null) {
+            LeJiaUser leJiaUser = leJiaUserRepository.findUserByPhoneNumber(orderCriteria.getUserPhone());
+            if(leJiaUser!=null) {
+                sql.append(" and ");
+                sql.append(" po.le_jia_user_id = "+leJiaUser.getId());
+            }
+        }
+        // 订单类型
+        if (orderCriteria.getRebateWay() != null) {
+            sql.append(" and ");
+            sql.append("  po.rebate_way = " + orderCriteria.getRebateWay());
+        }
+        //  支付方式
+        if (orderCriteria.getTradeFlag() != null) {
+            sql.append(" and ");
+            sql.append("  po.trade_flag = " + orderCriteria.getTradeFlag());
+        }
+        // 状态
+        if (orderCriteria.getState() != null) {
+            sql.append(" and ");
+            sql.append(" po.state = "+orderCriteria.getState());
+        }
+        // 所在城市
+        if (orderCriteria.getMerchantLocation() != null) {
+            sql.append(" and ");
+            sql.append("  m.city_id = " + orderCriteria.getMerchantLocation());
+        }
+        // 商户名称  or 商户 Sid
+        if (orderCriteria.getMerchant() != null && orderCriteria.getMerchant() != "") {
+            String merchant = orderCriteria.getMerchant();
+            if (orderCriteria.getMerchant().matches("^\\d{1,6}$")) {
+                sql.append(" and ");
+                sql.append("  m.merchant_sid like '%" +merchant + "%'");
+            } else {
+                sql.append(" and ");
+                sql.append("  m.name like '%" + merchant + "%'");
+            }
+        }
+        List<Object[]> resultList = entityManager.createNativeQuery(sql.toString()).getResultList();
+        return resultList;
+    }
 }
