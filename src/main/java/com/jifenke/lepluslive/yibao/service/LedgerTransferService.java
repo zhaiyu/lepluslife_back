@@ -45,22 +45,22 @@ public class LedgerTransferService {
       public Predicate toPredicate(Root<LedgerTransfer> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
         Predicate predicate = cb.conjunction();
         // 通道结算单号
-        if (criteria.getLedgerSid() != null) {
+        if (criteria.getLedgerSid() != null && !"".equals(criteria.getLedgerSid())) {
           predicate.getExpressions().add(
                   cb.equal(root.get("ledgerSid"), criteria.getLedgerSid()));
         }
         // 转账状态 0=待转账，1=转账成功，其他为易宝错误码
-        if (criteria.getState() != null) {
+        if (criteria.getState() != null && !"".equals(criteria.getState())) {
           predicate.getExpressions().add(
                   cb.equal(root.get("state"), criteria.getState()));
         }
         // 易宝商户号
-        if (criteria.getLedgerNo() != null) {
+        if (criteria.getLedgerNo() != null && !"".equals(criteria.getLedgerNo())) {
           predicate.getExpressions().add(
                   cb.equal(root.get("ledgerNo"),  criteria.getLedgerNo()));
         }
         // 转账请求号（转账单号）
-        if (criteria.getOrderSid() != null) {
+        if (criteria.getOrderSid() != null && !"".equals(criteria.getOrderSid())) {
           predicate.getExpressions().add(
                   cb.equal(root.get("orderSid"), criteria.getOrderSid()));
         }

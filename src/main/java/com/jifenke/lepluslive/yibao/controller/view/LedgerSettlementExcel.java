@@ -50,14 +50,15 @@ public class LedgerSettlementExcel extends AbstractExcelView {
         excelHeader.createCell(2).setCellValue("商户名称");
         excelHeader.createCell(3).setCellValue("清算日期");
         excelHeader.createCell(4).setCellValue("日交易转账金额");
-        excelHeader.createCell(5).setCellValue("费用承担方");
-        excelHeader.createCell(6).setCellValue("实际转账金额");
-        excelHeader.createCell(7).setCellValue("账户余额");
-        excelHeader.createCell(8).setCellValue("起结金额");
-        excelHeader.createCell(9).setCellValue("应结算金额");
-        excelHeader.createCell(10).setCellValue("实际结算金额");
-        excelHeader.createCell(11).setCellValue("转账状态");
-        excelHeader.createCell(12).setCellValue("结算状态");
+        excelHeader.createCell(5).setCellValue("单笔结算金额");
+        excelHeader.createCell(6).setCellValue("费用承担方");
+        excelHeader.createCell(7).setCellValue("实际转账金额");
+        excelHeader.createCell(8).setCellValue("账户余额");
+        excelHeader.createCell(9).setCellValue("起结金额");
+        excelHeader.createCell(10).setCellValue("应结算金额");
+        excelHeader.createCell(11).setCellValue("实际结算金额");
+        excelHeader.createCell(12).setCellValue("转账状态");
+        excelHeader.createCell(13).setCellValue("结算状态");
     }
 
     public void setExcelRows(HSSFSheet excelSheet, List<LedgerSettlement> settlementList) {
@@ -68,13 +69,17 @@ public class LedgerSettlementExcel extends AbstractExcelView {
             excelRow.createCell(1).setCellValue(settlement.getLedgerNo());
             if(settlement.getMerchantUserId()!=null) {
                 MerchantUser user = merchantUserService.findById(settlement.getMerchantUserId());
-                excelRow.createCell(2).setCellValue(user.getName());
+                if(user!=null) {
+                    excelRow.createCell(2).setCellValue(user.getName());
+                }else {
+                    excelRow.createCell(2).setCellValue(settlement.getMerchantUserId());
+                }
             }else {
                 excelRow.createCell(2).setCellValue("--");
             }
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
             if (settlement.getTradeDate() != null) {
-                excelRow.createCell(3).setCellValue(sdf.format(settlement.getTradeDate()));
+                excelRow.createCell(3).setCellValue(settlement.getTradeDate());
             } else {
                 excelRow.createCell(3).setCellValue("--");
             }
@@ -97,29 +102,31 @@ public class LedgerSettlementExcel extends AbstractExcelView {
             excelRow.createCell(11).setCellValue(settlement.getSettlementTrueAmount() / 100.0);
             //转账状态 0=待转账，1=转账成功，2=转账失败
             if (settlement.getTransferState() == 0) {
-                excelRow.createCell(11).setCellValue("待转账");
+                excelRow.createCell(12).setCellValue("待转账");
             } else if (settlement.getTransferState() == 1) {
-                excelRow.createCell(11).setCellValue("转账成功");
+                excelRow.createCell(12).setCellValue("转账成功");
             } else {
-                excelRow.createCell(11).setCellValue("转账失败");
+                excelRow.createCell(12).setCellValue("转账失败");
             }
             // 结算状态 0=待查询，1=打款成功，2=已退回，3=无结算记录，4=已扣款未打款，5=打款中，-1=打款失败，-2=银行返回打款失败
             if (settlement.getState() == 0) {
-                excelRow.createCell(11).setCellValue("待查询");
+                excelRow.createCell(13).setCellValue("待查询");
             } else if (settlement.getState() == 1) {
-                excelRow.createCell(11).setCellValue("打款成功");
+                excelRow.createCell(13).setCellValue("打款成功");
             } else if (settlement.getState() == 2) {
-                excelRow.createCell(11).setCellValue("已退回");
+                excelRow.createCell(13).setCellValue("已退回");
             } else if (settlement.getState() == 3) {
-                excelRow.createCell(11).setCellValue("无结算记录");
+                excelRow.createCell(13).setCellValue("无结算记录");
             } else if (settlement.getState() == 4) {
-                excelRow.createCell(11).setCellValue("已扣款未打款");
+                excelRow.createCell(13).setCellValue("已扣款未打款");
             } else if (settlement.getState() == 5) {
-                excelRow.createCell(11).setCellValue("打款中");
+                excelRow.createCell(13).setCellValue("打款中");
             } else if (settlement.getState() == -1) {
-                excelRow.createCell(11).setCellValue("打款失败");
+                excelRow.createCell(13).setCellValue("打款失败");
             } else if (settlement.getState() == -2) {
-                excelRow.createCell(11).setCellValue("银行返回打款失败");
+                excelRow.createCell(13).setCellValue("银行返回打款失败");
+            }else {
+                excelRow.createCell(13).setCellValue("--");
             }
         }
 

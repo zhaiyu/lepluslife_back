@@ -70,7 +70,7 @@ public class LedgerRefundOrderExcel extends AbstractExcelView {
             }
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");             // 清算日期
             if (refundOrder.getTradeDate() != null) {
-                excelRow.createCell(3).setCellValue(sdf.format(refundOrder.getTradeDate()));
+                excelRow.createCell(3).setCellValue(refundOrder.getTradeDate());
             } else {
                 excelRow.createCell(3).setCellValue("--");
             }
@@ -95,7 +95,7 @@ public class LedgerRefundOrderExcel extends AbstractExcelView {
                 excelRow.createCell(9).setCellValue("乐加订单");
             }
             //  追回补贴金额
-            excelRow.createCell(10).setCellValue(refundOrder.getRealScoreA() + "元" + (refundOrder.getRealScoreC() / 100.0) + "金币");
+            excelRow.createCell(10).setCellValue((refundOrder.getRealScoreA()/100.0) + "元" + (refundOrder.getRealScoreC() / 100.0) + "金币");
             //  追回分润
             excelRow.createCell(11).setCellValue(refundOrder.getShareBack() / 100.0);
             // 退款状态 0=待退款，1=未开始退款，2=退款成功，3=退款失败，其他为通道返回码

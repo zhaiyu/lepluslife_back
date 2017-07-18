@@ -1,14 +1,11 @@
 package com.jifenke.lepluslive.yibao.service;
 
-import com.jifenke.lepluslive.site.domain.criteria.SiteCriteria;
-import com.jifenke.lepluslive.site.domain.entities.Site;
 import com.jifenke.lepluslive.yibao.domain.criteria.MerchantUserLedgerCriteria;
 import com.jifenke.lepluslive.yibao.domain.entities.LedgerModify;
 import com.jifenke.lepluslive.yibao.domain.entities.LedgerQualification;
 import com.jifenke.lepluslive.yibao.domain.entities.MerchantUserLedger;
 import com.jifenke.lepluslive.yibao.repository.MerchantUserLedgerRepository;
 import com.jifenke.lepluslive.yibao.util.YbRequestUtils;
-
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -17,12 +14,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import javax.inject.Inject;
+import javax.persistence.criteria.Predicate;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
-
-import javax.inject.Inject;
-import javax.persistence.criteria.Predicate;
 
 /**
  * Created by zhangwen on 2017/7/12.

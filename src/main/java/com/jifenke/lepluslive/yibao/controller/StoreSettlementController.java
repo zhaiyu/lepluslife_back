@@ -2,6 +2,7 @@ package com.jifenke.lepluslive.yibao.controller;
 
 import com.jifenke.lepluslive.global.util.LejiaResult;
 import com.jifenke.lepluslive.global.util.MvUtil;
+import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
 import com.jifenke.lepluslive.yibao.controller.view.StoreSettlementExcel;
 import com.jifenke.lepluslive.yibao.domain.criteria.StoreSettlementCriteria;
 import com.jifenke.lepluslive.yibao.domain.entities.StoreSettlement;
@@ -11,7 +12,9 @@ import org.springframework.web.bind.annotation.*;
 import org.springframework.web.servlet.ModelAndView;
 
 import javax.inject.Inject;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -31,7 +34,7 @@ public class StoreSettlementController {
      */
     @RequestMapping(value = "/store/list",method = RequestMethod.GET)
     public ModelAndView toListPage() {
-        return MvUtil.go("/");
+        return MvUtil.go("/yibao/ledger/storeSettlementList");
     }
 
     @RequestMapping(value = "/store/findByCriteria",method = RequestMethod.POST)
@@ -40,8 +43,22 @@ public class StoreSettlementController {
         if(settlementCriteria.getOffset()==null) {
             settlementCriteria.setOffset(1);
         }
+        Map map = new HashMap();
         Page<StoreSettlement> page = storeSettlementService.findByCriteria(settlementCriteria,10);
-        return LejiaResult.ok(page);
+        List<StoreSettlement> content = page.getContent();
+        List<Merchant> merchants = new ArrayList<>();
+        if(content!=null) {
+            for (StoreSettlement storeSettlement : content) {
+                Merchant existMerchant = storeSettlement.getMerchant();
+                Merchant merchant = new Merchant();
+                merchant.setId(existMerchant.getId());
+                merchant.setName(existMerchant.getName());
+                merchants.add(merchant);
+            }
+        }
+        map.put("page",page);
+        map.put("merchants",merchants);
+        return LejiaResult.ok(map);
     }
 
 

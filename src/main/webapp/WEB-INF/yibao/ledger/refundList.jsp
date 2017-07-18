@@ -8,7 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@include file="../commen.jsp" %>
+<%@include file="../../commen.jsp" %>
 <!DOCTYPE>
 <html>
 <head>
@@ -37,11 +37,11 @@
 
 <body>
 <div id="topIframe">
-    <%@include file="../common/top.jsp" %>
+    <%@include file="../../common/top.jsp" %>
 </div>
 <div id="content">
     <div id="leftIframe">
-        <%@include file="../common/left.jsp" %>
+        <%@include file="../../common/left.jsp" %>
     </div>
     <div class="m-right">
         <div class="main">
@@ -77,21 +77,16 @@
                             <option value="2">乐加订单</option>
                         </select>
                     </div>
-                </div>
-                <div class="row" style="margin-bottom: 30px">
                     <div class="form-group col-md-3">
                         <label for="state">状态</label>
                         <select class="form-control" id="state">
-                            <option value="-1">所有状态</option>
+                            <option value="">所有状态</option>
                             <option value="0">待退款</option>
                             <option value="1">未开始退款</option>
                             <option value="2">退款成功</option>
                             <option value="3">退款失败</option>
                         </select>
                     </div>
-                </div>
-
-                <div class="form-group col-md-3">
                     <button class="btn btn-primary" style="margin-top: 24px"
                             onclick="searchOrderByCriteria()">查询
                     </button>
@@ -104,7 +99,7 @@
                         <tr class="active">
                             <th>退款单号</th>
                             <th>订单编号</th>
-                            <th>通道商户号</th>
+                            <th>门店ID</th>
                             <th>退款通道</th>
                             <th>清算日期</th>
                             <th>退款完成时间</th>
@@ -112,8 +107,6 @@
                             <th>手续费</th>
                             <th>手续费承担方</th>
                             <th>应收金额</th>
-                            <th>交易门店</th>
-                            <th>消费者</th>
                             <th>订单类型</th>
                             <th>追回虚拟币</th>
                             <th>追回分润</th>
@@ -136,7 +129,7 @@
 </div>
 </div>
 <div id="bottomIframe">
-    <%@include file="../common/bottom.jsp" %>
+    <%@include file="../../common/bottom.jsp" %>
 </div>
 
 <!-- Include all compiled plugins (below), or include individual files as needed -->
@@ -230,7 +223,7 @@
                 for (var i = 0; i < content.length; i++) {
                     var contentStr = '<tr><td>' + content[i].refundOrderSid + '</td>';
                     contentStr += '<td>' + content[i].orderSid + '</td>';
-                    contentStr += '<td>' + content[i].merchantNum + '</td>';
+                    contentStr += '<td>' + content[i].merchantId + '</td>';
                     if (content[i].orderFrom == 1) {
                         contentStr +=
                                 '<td><span>易宝</span></td>'
@@ -278,10 +271,10 @@
                     if (content[i].state == 0) {
                         contentStr +=
                                 '<td><span>待退款</span></td>'
-                    } else if (content[i].orderType == 1) {
+                    } else if (content[i].state == 1) {
                         contentStr +=
                                 '<td><span>未开始退款</span></td>'
-                    } else if (content[i].orderType == 2) {
+                    } else if (content[i].state == 2) {
                         contentStr +=
                                 '<td><span>退款成功</span></td>'
                     } else {

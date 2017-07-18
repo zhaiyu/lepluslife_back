@@ -58,7 +58,7 @@ public class LedgerTransferExcel extends AbstractExcelView {
             excelRow.createCell(1).setCellValue(transfer.getLedgerSid());         // 通道结算单号
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
             if (transfer.getTradeDate() != null) {
-                excelRow.createCell(2).setCellValue(sdf.format(transfer.getTradeDate()));         // 清算日期transfer
+                excelRow.createCell(2).setCellValue(transfer.getTradeDate());         // 清算日期transfer
             } else {
                 excelRow.createCell(2).setCellValue("--");         // 清算日期transfer
             }

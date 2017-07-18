@@ -50,7 +50,7 @@ public class LedgerRefundOrderService {
       public Predicate toPredicate(Root<LedgerRefundOrder> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
         Predicate predicate = cb.conjunction();
         // 退款单编号
-        if (criteria.getRefundOrderSid() != null) {
+        if (criteria.getRefundOrderSid() != null && !"".equals(criteria.getMerchantId())) {
           predicate.getExpressions().add(
                   cb.equal(root.get("refundOrderSid"), criteria.getRefundOrderSid()));
         }
@@ -60,7 +60,7 @@ public class LedgerRefundOrderService {
                   cb.equal(root.get("state"), criteria.getState()));
         }
         // 门店ID
-        if (criteria.getMerchantId() != null) {
+        if (criteria.getMerchantId() != null && !"".equals(criteria.getMerchantId())) {
           predicate.getExpressions().add(
                   cb.equal(root.get("merchantId"),  criteria.getMerchantId()));
         }
