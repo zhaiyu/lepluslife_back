@@ -1,7 +1,5 @@
 package com.jifenke.lepluslive.yibao.service;
 
-import com.jifenke.lepluslive.site.domain.criteria.SiteCriteria;
-import com.jifenke.lepluslive.site.domain.entities.Site;
 import com.jifenke.lepluslive.yibao.domain.criteria.MerchantUserLedgerCriteria;
 import com.jifenke.lepluslive.yibao.domain.entities.LedgerModify;
 import com.jifenke.lepluslive.yibao.domain.entities.LedgerQualification;
