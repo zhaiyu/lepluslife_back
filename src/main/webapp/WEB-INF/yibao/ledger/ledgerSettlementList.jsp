@@ -8,7 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@include file="../commen.jsp" %>
+<%@include file="../../commen.jsp" %>
 <!DOCTYPE>
 <html>
 <head>
@@ -35,11 +35,11 @@
 
 <body>
 <div id="topIframe">
-    <%@include file="../common/top.jsp" %>
+    <%@include file="../../common/top.jsp" %>
 </div>
 <div id="content">
     <div id="leftIframe">
-        <%@include file="../common/left.jsp" %>
+        <%@include file="../../common/left.jsp" %>
     </div>
     <div class="m-right">
         <div class="main">
@@ -123,7 +123,7 @@
     </div>
 </div>
 <div id="bottomIframe">
-    <%@include file="../common/bottom.jsp" %>
+    <%@include file="../../common/bottom.jsp" %>
 </div>
 
 <!-- Include all compiled plugins (below), or include individual files as needed -->

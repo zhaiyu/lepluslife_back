@@ -31,7 +31,7 @@ public class StoreSettlementController {
      */
     @RequestMapping(value = "/store/list",method = RequestMethod.GET)
     public ModelAndView toListPage() {
-        return MvUtil.go("/");
+        return MvUtil.go("/yibao/ledger/storeSettlementList");
     }
 
     @RequestMapping(value = "/store/findByCriteria",method = RequestMethod.POST)

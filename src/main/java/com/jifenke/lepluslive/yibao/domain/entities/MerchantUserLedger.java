@@ -33,11 +33,11 @@ public class MerchantUserLedger {
   @Column(nullable = false, unique = true, length = 50)
   private String ledgerNo;  //易宝的子商户号
 
-  private Integer state = -1;  //状态   -1=冻结|0=待审核|1=审核成功|2=审核失败
+  private Integer state = 0;  //状态   0=冻结(待审核)|1=审核成功|2=审核失败
 
   private Integer checkState = -1;   //-1=初始化|0=修改审核中|1=修改审核成功|2=修改审核失败
 
-  @ManyToOne(fetch = FetchType.LAZY)
+  @ManyToOne
   @NotNull
   private MerchantUser merchantUser;
 

@@ -441,14 +441,7 @@
         }
         /******************************易宝商户资质管理编辑/新建************************************/
         function editQualification(ledgerId) {
-            alert(ledgerId);
-            if (ledgerId == -1) {
-//                location.href = "/manage/ledger/edit?ledgerId=0&merchantUserId=" + merchantUserId;
-            } else {
-//                location.href =
-//                    "/manage/ledger/edit?ledgerId=" + ledgerId + "&merchantUserId="
-//                    + merchantUserId;
-            }
+            location.href = "/manage/qualification/edit?ledgerId=" + ledgerId;
         }
         /******************************易宝商户余额查询************************************/
         function queryBalance(ledgerNo) {

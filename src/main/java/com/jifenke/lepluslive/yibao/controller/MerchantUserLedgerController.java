@@ -82,6 +82,14 @@ public class MerchantUserLedgerController {
   }
 
   /**
+   * 跳转到易宝子商户列表页面(所有)  2017/7/19
+   */
+  @RequestMapping(value = "/list", method = RequestMethod.GET)
+  public ModelAndView list() {
+    return MvUtil.go("/yibao/ledger/ledgerList");
+  }
+
+  /**
    * ajax分页条件获取易宝子商户列表 2017/7/17
    *
    * @param criteria 查询条件

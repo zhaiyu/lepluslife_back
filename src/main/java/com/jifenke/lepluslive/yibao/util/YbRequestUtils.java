@@ -1,17 +1,40 @@
 package com.jifenke.lepluslive.yibao.util;
 
+import com.alibaba.fastjson.JSON;
+import com.alibaba.fastjson.TypeReference;
 import com.jifenke.lepluslive.global.config.YBConstants;
 import com.jifenke.lepluslive.global.util.MvUtil;
 import com.jifenke.lepluslive.yibao.domain.entities.MerchantUserLedger;
 
+import java.io.File;
 import java.util.HashMap;
 import java.util.Map;
+import java.util.TreeMap;
 
 /**
  * 易宝请求工具类（参数生成&发送请求）
  * Created by zhangwen on 2017/7/14.
  */
 public class YbRequestUtils {
+
+  /**
+   * 资质图片上传类型顺序
+   * ID_CARD_FRONT 身份证正面、0
+   * ID_CARD_BACK 身份证背面 、1
+   * BANK_CARD_FRONT 银行卡正面、2
+   * BANK_CARD_BACK 银行卡背面、3
+   * PERSON_PHOTO 手持身份证照片、4
+   * BUSSINESS_LICENSE 营业执照、5
+   * BUSSINESS_CERTIFICATES 工商证、6
+   * ORGANIZATION_CODE 组织机构代码证、7
+   * TAX_REGISTRATION 税务登记证、8
+   * BANK_ACCOUNT_LICENCE 银行开户许可证、9
+   */
+  private static final String[]
+      UPLOAD_TYPE =
+      {"ID_CARD_FRONT", "ID_CARD_BACK", "BANK_CARD_FRONT", "BANK_CARD_BACK", "PERSON_PHOTO",
+       "BUSSINESS_LICENSE", "BUSSINESS_CERTIFICATES", "ORGANIZATION_CODE", "TAX_REGISTRATION",
+       "BANK_ACCOUNT_LICENCE"};
 
   /**
    * 子账户注册  2017/7/14
@@ -135,6 +158,48 @@ public class YbRequestUtils {
   }
 
   /**
+   * 分账方资质上传 2017/7/18
+   *
+   * @param ledgerNo 易宝子商户号
+   * @param picPath  图片保存完整路径
+   * @param type     图片所属类型在易宝上传接口fileType数组属性(从0开始)
+   */
+  public static Map<String, String> uploadQualification(String ledgerNo, String picPath,
+                                                        Integer type) {
+    picPath = ZGTUtils.getBasePath() + '/' + picPath;
+    String fileType = UPLOAD_TYPE[type];
+    StringBuffer signature = new StringBuffer();
+    signature.append(ZGTUtils.getCustomernumber()).append(ledgerNo).append(fileType);
+    String hmac = Digest.hmacSign(signature.toString(), ZGTUtils.getKeyForHmac());
+    Map<String, Object> dataMap = new HashMap<>();
+    dataMap.put("customernumber", ZGTUtils.getCustomernumber());
+    dataMap.put("ledgerno", ledgerNo);
+    dataMap.put("filetype", fileType);
+    dataMap.put("hmac", hmac); // hmac 按照 properties 中声明的顺序进行签名
+    String dataJsonString = JSON.toJSONString(dataMap); //map 中数据转为 json 格式
+    String content = AESUtil.encrypt(dataJsonString, ZGTUtils.getKeyForAes());
+    Map<String, Object> params = new HashMap<>();
+    params.put("customernumber", ZGTUtils.getCustomernumber());
+    params.put("data", content);// 加密 json 格式数据作为 value 赋值给 data 参数
+    File file = new File(picPath);
+    params.put("file", file);
+    System.out.println(params);
+    try {
+      String
+          data =
+          ZGTUtils.uploadFile(params, YBConstants.UPLOAD_LEDGER_QUALIFICATIONS_URL);
+      TreeMap<String, String>
+          treeMap =
+          JSON.parseObject(data, new TypeReference<TreeMap<String, String>>() {
+          });
+      return callBack(treeMap);
+    } catch (Throwable e) {
+      e.printStackTrace();
+    }
+    return null;
+  }
+
+  /**
    * 请求响应中解析返回结果  2017/7/16
    *
    * @param stringMap 响应Map
@@ -156,7 +221,7 @@ public class YbRequestUtils {
    */
   private static Map<String, String> getCommonDataMap() {
     Map<String, String> dataMap = new HashMap<>();
-    dataMap.put("customernumber", YBConstants.CUSTOMER_NUMBER);
+    dataMap.put("customernumber", ZGTUtils.getCustomernumber());
     return dataMap;
   }
 
