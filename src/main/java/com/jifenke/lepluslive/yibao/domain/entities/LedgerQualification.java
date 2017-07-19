@@ -16,7 +16,7 @@ import javax.validation.constraints.NotNull;
  * 注意： 1、 个人类型账户必上传资质：身份证正、反面，手持身份证照片，银行卡正面；
  * 企业类型账户必上传资质：企业五证（营业执照，法人身份证正、反面，银行开户许可证，组织机构代码证，
  * 税务登记证），仅当营业执照为统一社会信用代码时，不需上传组织机构代码证和税务登记证；
- * 非必填参数请传" "
+ * 非必填参数请传""
  * Created by zhangwen on 2017/7/11.
  */
 @Entity
@@ -39,7 +39,7 @@ public class LedgerQualification {
    * 该注释适用以下所有字段
    * "0":初始化状态，未上传
    * 已成功上传到易宝，必以'http'开头
-   * 非'http'开头为易宝错误码&错误原因
+   * 图片上传到服务器本地(/home/yibaoDir)和OSS(lepluslive-image)
    */
   @Column(nullable = false, length = 150)
   private String idCardFront = "0";  //身份证正面

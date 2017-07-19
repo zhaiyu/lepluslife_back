@@ -9,6 +9,7 @@ import com.jifenke.lepluslive.order.domain.entities.FinancialStatistic;
 import com.jifenke.lepluslive.order.domain.entities.PosDailyBill;
 import com.jifenke.lepluslive.order.service.OffLineOrderService;
 import com.jifenke.lepluslive.order.service.PosOrderService;
+import com.jifenke.lepluslive.yibao.util.ZGTUtils;
 
 import org.apache.poi.hssf.usermodel.HSSFCell;
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -31,6 +32,7 @@ import org.springframework.web.multipart.commons.CommonsMultipartFile;
 import java.awt.image.BufferedImage;
 import java.io.BufferedOutputStream;
 import java.io.ByteArrayInputStream;
+import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.IOException;
@@ -80,25 +82,27 @@ public class FileImageController {
       LOG.error("图片上传失败" + e.getMessage());
       return LejiaResult.build(500, "上传失败");
     }
-
   }
 
-  @RequestMapping(value = "/file/saveProductDetail")
-  public
-  @ResponseBody
-  LejiaResult saveProductDetail(@RequestParam("file") MultipartFile filedata,
-                                HttpServletRequest request, HttpServletResponse response) {
-    String oriName = filedata.getOriginalFilename();
-    String extendName = MvUtil.getExtendedName(oriName);
-    String filePath = MvUtil.getFilePath(extendName);
+  /**
+   * 同时上传到OSS和服务器本地
+   *
+   * @param filedata 文件
+   * @return 文件名
+   */
+  @RequestMapping(value = "/file/localAndOss")
+  public LejiaResult saveImage(@RequestParam("file") MultipartFile filedata) {
+    String fileName = MvUtil.getFileName("yibao");
+    String suffix = MvUtil.getExtendedName(filedata.getOriginalFilename());
+    String fileNameNew = fileName + "." + suffix;
     try {
-      fileImageService.saveImage(filedata, filePath);
-      return LejiaResult.ok(filePath);
-    } catch (IOException e) {
+      File file = ZGTUtils.uploads(filedata, fileName);
+      fileImageService.saveImage(file, fileNameNew);
+      return LejiaResult.ok(fileNameNew);
+    } catch (Exception e) {
       LOG.error("图片上传失败" + e.getMessage());
-      return LejiaResult.build(500, "上传失败");
+      return LejiaResult.build(500, "上传失败（" + e.getMessage() + "）");
     }
-
   }
 
 
@@ -167,8 +171,8 @@ public class FileImageController {
           Optional<FinancialStatistic>
               optional =
               offLineOrderService.findFinancialByMerchantAndDate(merchant, end);
-          if(optional.isPresent()){
-            offLineOrderService.createFinancialRevise(optional.get(),merchant);
+          if (optional.isPresent()) {
+            offLineOrderService.createFinancialRevise(optional.get(), merchant);
           }
         });
       }

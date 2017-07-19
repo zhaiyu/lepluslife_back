@@ -36,6 +36,16 @@ public class MvUtil {
     return new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + randomStr + "." + extendName;
   }
 
+  //随机生成没有文件后缀有前缀的文件名
+  public static String getFileName(String prefix) {
+    String
+        randomStr =
+        RandomStringUtils
+            .random(5, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890");
+
+    return prefix + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + randomStr;
+  }
+
 
   //生成订单号
   public static String getOrderNumber() {

@@ -74,6 +74,12 @@ public class MerchantUserLedgerService {
         p.getExpressions()
             .add(cb.equal(r.get("merchantUser").get("id"), criteria.getMerchantUserId()));
       }
+      if (criteria.getMerchantName() != null && (!"".equals(criteria.getMerchantName()))) {
+        p.getExpressions()
+            .add(cb.like(r.get("merchantUser").get("merchantName"),
+                         "%" + criteria.getMerchantName() + "%"));
+
+      }
 
       return p;
     };

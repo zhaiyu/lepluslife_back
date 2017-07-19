@@ -15,6 +15,8 @@ import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.multipart.MultipartFile;
 
 import java.io.ByteArrayInputStream;
+import java.io.File;
+import java.io.FileInputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
@@ -66,7 +68,13 @@ public class FileImageService {
 
     // 必须设置ContentLength
     meta.setContentLength(filedata.getSize());
-    PutObjectResult putObjectResult = ossClient.putObject(imageBucket, filePath, is, meta);
+    ossClient.putObject(imageBucket, filePath, is, meta);
+  }
+
+  public void saveImage(File file, String filePath) throws IOException {
+    ossClient = getOssClient();
+    InputStream is = new FileInputStream(file);
+    ossClient.putObject(imageBucket, filePath, is);
   }
 
   public void SaveBarCode(byte[] bytes, String filePath) {
@@ -91,19 +99,18 @@ public class FileImageService {
 
   /**
    * 下载远程文件
-   * @param url
    */
-  public void downloadExcel(String filename,String url,HttpServletResponse response) {
+  public void downloadExcel(String filename, String url, HttpServletResponse response) {
     response.setContentType("application/vnd.ms-excel");
     response.setHeader("Content-disposition", "attachment;filename=" + filename);
     OutputStream outputStream = null;
     InputStream inputStream = null;
     try {
       outputStream = response.getOutputStream();
-      inputStream  = ImageLoad.returnStream(url);
+      inputStream = ImageLoad.returnStream(url);
       int len = 0;
-      byte [] buf = new byte[1024];
-      while ((len=inputStream.read(buf,0,1024))!=-1) {
+      byte[] buf = new byte[1024];
+      while ((len = inputStream.read(buf, 0, 1024)) != -1) {
         outputStream.write(buf);
       }
     } catch (IOException e) {

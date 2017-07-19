@@ -3,7 +3,7 @@ package com.jifenke.lepluslive.yibao.domain.criteria;
 /**
  * Created by zhangwen on 2017/7/17.
  */
-public class MerchantUserLedgerCriteria {
+public class LedgerModifyCriteria {
 
   private Integer currPage;
 
@@ -16,8 +16,6 @@ public class MerchantUserLedgerCriteria {
   private String merchantName;
 
   private Integer state;
-
-  private Integer costSide;
 
   public Integer getCurrPage() {
     return currPage;
@@ -51,14 +49,6 @@ public class MerchantUserLedgerCriteria {
     this.merchantUserId = merchantUserId;
   }
 
-  public String getMerchantName() {
-    return merchantName;
-  }
-
-  public void setMerchantName(String merchantName) {
-    this.merchantName = merchantName;
-  }
-
   public Integer getState() {
     return state;
   }
@@ -67,11 +57,11 @@ public class MerchantUserLedgerCriteria {
     this.state = state;
   }
 
-  public Integer getCostSide() {
-    return costSide;
+  public String getMerchantName() {
+    return merchantName;
   }
 
-  public void setCostSide(Integer costSide) {
-    this.costSide = costSide;
+  public void setMerchantName(String merchantName) {
+    this.merchantName = merchantName;
   }
 }

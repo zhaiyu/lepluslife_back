@@ -8,8 +8,6 @@ import java.math.BigDecimal;
  */
 public final class YBConstants {
 
-  public static final String CUSTOMER_NUMBER = "10000447996"; //易宝主商户号
-
   public static final BigDecimal WX_WEB_RATE = new BigDecimal(0.3);//微信WEB公众号成本费率
 
   public static final BigDecimal WX_APP_RATE = new BigDecimal(0.3);//微信APP成本费率

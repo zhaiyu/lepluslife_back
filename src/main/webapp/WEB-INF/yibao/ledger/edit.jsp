@@ -356,9 +356,8 @@
                    success: function (result) {
                        if (eval(result.code) === 1) {
                            alert("保存成功");
-                           //todo:注释
-//                           window.location.href =
-//                               "/manage/merchantUser/info/" + $('#merchantUserId').val() + '?li=6';
+                           window.location.href =
+                               "/manage/merchantUser/info/" + $('#merchantUserId').val() + '?li=6';
                        } else {
                            alert('保存失败.错误码:' + result.code + '(' + result.msg + ')');
                        }

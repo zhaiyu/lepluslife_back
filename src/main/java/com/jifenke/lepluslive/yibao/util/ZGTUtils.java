@@ -4,18 +4,20 @@ import com.alibaba.fastjson.JSON;
 import com.alibaba.fastjson.TypeReference;
 import com.jifenke.lepluslive.global.util.HttpClientUtil;
 
+import org.apache.commons.httpclient.HttpClient;
+import org.apache.commons.httpclient.HttpStatus;
+import org.apache.commons.httpclient.methods.PostMethod;
+import org.apache.commons.httpclient.methods.multipart.FilePart;
+import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
+import org.apache.commons.httpclient.methods.multipart.Part;
+import org.springframework.web.multipart.MultipartFile;
+
+import java.io.File;
 import java.io.UnsupportedEncodingException;
 import java.net.URLEncoder;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
-
-//import org.apache.commons.httpclient.HttpClient;
-//import org.apache.commons.httpclient.HttpStatus;
-//import org.apache.commons.httpclient.methods.PostMethod;
-//import org.apache.commons.httpclient.methods.multipart.FilePart;
-//import org.apache.commons.httpclient.methods.multipart.MultipartRequestEntity;
-//import org.apache.commons.httpclient.methods.multipart.Part;
 
 /**
  * @author: yingjie.wang
@@ -213,6 +215,7 @@ public class ZGTUtils {
   private static String customernumber = "";
   private static String keyForHmac = "";
   private static String keyForAes = "";
+  private static String basePath = "";
 
   static {
     //初始化merchantInfo
@@ -223,6 +226,8 @@ public class ZGTUtils {
     keyForHmac = merchantInfo.getValue("key");
     //aes密钥，为商户密钥的前16位
     keyForAes = keyForHmac.substring(0, 16);
+    //资质图片保存路径
+    basePath = merchantInfo.getValue("BasePath");
   }
 
   //生成hmac
@@ -374,6 +379,11 @@ public class ZGTUtils {
     return keyForAes;
   }
 
+  //getter
+  public static String getBasePath() {
+    return basePath;
+  }
+
   //字符串格式化
   public static String formatStr(String text) {
     return text == null ? "" : text;
@@ -401,44 +411,88 @@ public class ZGTUtils {
     return queryString;
   }
 
-//todo: 待完成
-//  public String uploadFile(Map<String, Object> params, String baseUrl) {
-//    if (!params.containsKey("file")) {
-//      throw new IllegalArgumentException("请上传图片");
-//    }
-//    File file = (File) params.get("file");
-//    if (!file.exists()) {
-//      throw new IllegalArgumentException("上传图片不存在");
-//    }
-//    if (baseUrl == null || baseUrl.trim().length() == 0) {
-//      throw new IllegalArgumentException("invalid url : " + baseUrl);
-//    }
-//    String queryString = mapToQueryString(params, "utf-8");
-//    int index = baseUrl.indexOf("?");
-//    if (index > 0) {
-//      baseUrl += "&" + queryString;
-//    } else {
-//      baseUrl += "?" + queryString;
-//    }
-//    PostMethod postMethod = new PostMethod(baseUrl);
-//    try {
-//      FilePart fp = new FilePart("file", file);
-//      Part[] parts = {fp};
-//      MultipartRequestEntity mre = new MultipartRequestEntity(parts, postMethod.getParams());
-//      postMethod.setRequestEntity(mre);
-//      HttpClient client = new HttpClient();
-//      client.getHttpConnectionManager().getParams().setConnectionTimeout(50000);// 设置连接时间
-//      int status = client.executeMethod(postMethod);
-//      if (status == HttpStatus.SC_OK) {
-//        return postMethod.getResponseBodyAsString();
-//      } else {
-//        throw new RuntimeException("上传请求异常");
-//      }
-//    } catch (Exception e) {
-//      throw new RuntimeException("上传请求异常");
-//    } finally {
-//      // 释放连接
-//      postMethod.releaseConnection();
-//    }
-//  }
+
+  public static String uploadFile(Map<String, Object> params, String baseUrl) {
+    if (!params.containsKey("file")) {
+      throw new IllegalArgumentException("请上传图片");
+    }
+    File file = (File) params.get("file");
+    if (!file.exists()) {
+      throw new IllegalArgumentException("上传图片不存在");
+    }
+    if (baseUrl == null || baseUrl.trim().length() == 0) {
+      throw new IllegalArgumentException("invalid url : " + baseUrl);
+    }
+    String queryString = mapToQueryString(params, "utf-8");
+    int index = baseUrl.indexOf("?");
+    if (index > 0) {
+      baseUrl += "&" + queryString;
+    } else {
+      baseUrl += "?" + queryString;
+    }
+    PostMethod postMethod = new PostMethod(baseUrl);
+    try {
+      FilePart fp = new FilePart("file", file);
+      Part[] parts = {fp};
+      MultipartRequestEntity mre = new MultipartRequestEntity(parts, postMethod.getParams());
+      postMethod.setRequestEntity(mre);
+      HttpClient client = new HttpClient();
+      client.getHttpConnectionManager().getParams().setConnectionTimeout(50000);// 设置连接时间
+      int status = client.executeMethod(postMethod);
+      if (status == HttpStatus.SC_OK) {
+        return postMethod.getResponseBodyAsString();
+      } else {
+        throw new RuntimeException("上传请求异常");
+      }
+    } catch (Exception e) {
+      throw new RuntimeException("上传请求异常");
+    } finally {
+      // 释放连接
+      postMethod.releaseConnection();
+    }
+  }
+
+  private static final String allowSuffix = "jpg,png,jpeg";//允许文件格式
+  private static final long allowSize = 1L;//允许文件大小 单位 0.5M
+
+  private static String getAllowSuffix() {
+    return allowSuffix;
+  }
+
+  private static long getAllowSize() {
+    return allowSize * 512 * 1024;
+  }
+
+  /**
+   * 功能：文件上传
+   *
+   * @author zhangwen
+   */
+  public static File uploads(MultipartFile file, String fileName) throws Exception {
+
+    try {
+      String
+          suffix =
+          file.getOriginalFilename().substring(file.getOriginalFilename().lastIndexOf(".") + 1);
+      int length = getAllowSuffix().indexOf(suffix);
+      if (length == -1) {
+        throw new Exception("请上传允许格式的文件");
+      }
+      if (file.getSize() > getAllowSize()) {
+        throw new Exception("您上传的文件大小已经超出范围");
+      }
+      String realPath = getBasePath();
+      File destFile = new File(realPath);
+      if (!destFile.exists()) {
+        destFile.mkdirs();
+      }
+      String fileNameNew = fileName + "." + suffix;
+      File f = new File(destFile.getAbsoluteFile() + "/" + fileNameNew);
+      file.transferTo(f);
+      f.createNewFile();
+      return f;
+    } catch (Exception e) {
+      throw e;
+    }
+  }
 }

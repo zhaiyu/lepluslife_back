@@ -1,12 +1,9 @@
 package com.jifenke.lepluslive.yibao.domain.entities;
 
-import com.jifenke.lepluslive.merchant.domain.entities.MerchantUser;
-
 import java.util.Date;
 
 import javax.persistence.Column;
 import javax.persistence.Entity;
-import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;

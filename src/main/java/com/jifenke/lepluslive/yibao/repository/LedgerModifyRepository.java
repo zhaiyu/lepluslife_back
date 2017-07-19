@@ -3,6 +3,9 @@ package com.jifenke.lepluslive.yibao.repository;
 import com.jifenke.lepluslive.yibao.domain.entities.LedgerModify;
 import com.jifenke.lepluslive.yibao.domain.entities.MerchantUserLedger;
 
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;
@@ -13,6 +16,8 @@ import java.util.List;
 public interface LedgerModifyRepository extends JpaRepository<LedgerModify, Long> {
 
   LedgerModify findByRequestId(String requestId);
+
+  Page findAll(Specification<LedgerModify> whereClause, Pageable pageRequest);
 
   /**
    * 查询某子商户某个状态的修改记录列表 2017/7/16

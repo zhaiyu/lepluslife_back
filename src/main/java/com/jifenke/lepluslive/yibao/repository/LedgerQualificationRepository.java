@@ -1,6 +1,7 @@
 package com.jifenke.lepluslive.yibao.repository;
 
 import com.jifenke.lepluslive.yibao.domain.entities.LedgerQualification;
+import com.jifenke.lepluslive.yibao.domain.entities.MerchantUserLedger;
 
 import org.springframework.data.jpa.repository.JpaRepository;
 
@@ -10,4 +11,5 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface LedgerQualificationRepository extends JpaRepository<LedgerQualification, Long> {
 
 
+  LedgerQualification findByMerchantUserLedger(MerchantUserLedger merchantUserLedger);
 }

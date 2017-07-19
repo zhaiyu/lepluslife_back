@@ -328,11 +328,15 @@
                 <a href='/manage/shortMessagesListPage'>发送记录</a>
             </div>
         </li>
-        <li><h4 class="M6"><span></span>运营中心</h4>
+        <li><h4 class="M6"><span></span>易宝支付</h4>
             <div class="list-item none none11">
-                <a href='/manage/productSecKill/overview'>秒杀概览</a>
-                <a href='/manage/productSecKill_time'>秒杀时段</a>
-                <a href='/manage/productSecKill/editPage'>秒杀商品</a>
+                <a href='/manage/ledger/list'>子商户列表</a>
+                <a href='/manage/modify/list'>信息修改记录</a>
+                <a href='/manage/refund/ledger/list'>退款单记录</a>
+                <a href='/manage/settlement/store/list'>门店结算单</a>
+                <a href='/manage/settlement/ledger/list'>通道结算单</a>
+                <a href='/manage/transfer/ledger/list'>转账记录</a>
+                <a href='/manage/refund/ledger/refund'>申请退款</a>
             </div>
         </li>
     </ul>
@@ -341,25 +345,34 @@
 <script>
     $(function () {
         var url = window.location.href;
-        if (url.indexOf("withdrawBill") != -1||url.indexOf("fillingBillApply") != -1||url.indexOf("weiXinWithdrawBill/weiXinWithdrawBillList")!=-1) {
+        if (url.indexOf("withdrawBill") != -1 || url.indexOf("fillingBillApply") != -1
+            || url.indexOf("weiXinWithdrawBill/weiXinWithdrawBillList") != -1) {
             $(".none1").parent('li').addClass('selected');
             $(".none1").slideDown(300);
         }
-        if (url.indexOf("partner") != -1||url.indexOf("offLineOrder") != -1 || url.indexOf("financial") != -1 || url.indexOf("/manage/pos_order") != -1
-                ||url.indexOf("/manage/scanCodeOrder/goOrderPage")!=-1||url.indexOf("/manage/refund/goRefundPage")!=-1||url.indexOf("/manage/statement/goStatementPage")!=-1) {
+        if (url.indexOf("partner") != -1 || url.indexOf("offLineOrder") != -1 || url.indexOf(
+                "financial") != -1 || url.indexOf("/manage/pos_order") != -1
+            || url.indexOf("/manage/scanCodeOrder/goOrderPage") != -1 || url.indexOf(
+                "/manage/refund/goRefundPage") != -1 || url.indexOf(
+                "/manage/statement/goStatementPage") != -1) {
             $(".none1").parent('li').addClass('selected');
             $(".none1").slideDown(300);
         }
-        if ((url.indexOf("/manage/product") != -1|| url.indexOf("/manage/gold") != -1 || url.indexOf("/manage/limit") != -1 || url.indexOf("/manage/order") != -1 || url.indexOf("/manage/topic") != -1) || url.indexOf("productRec") != -1) {
+        if ((url.indexOf("/manage/product") != -1 || url.indexOf("/manage/gold") != -1
+            || url.indexOf("/manage/limit") != -1 || url.indexOf("/manage/order") != -1
+            || url.indexOf("/manage/topic") != -1) || url.indexOf("productRec") != -1) {
             $(".none2").parent('li').addClass('selected');
             $(".none2").slideDown(300);
         }
-        if (url.indexOf("/manage/grouponProduct") != -1|| url.indexOf("/manage/grouponCode") != -1 || url.indexOf("/manage/grouponOrder") != -1 || url.indexOf("/manage/refundOrder") != -1) {
+        if (url.indexOf("/manage/grouponProduct") != -1 || url.indexOf("/manage/grouponCode") != -1
+            || url.indexOf("/manage/grouponOrder") != -1 || url.indexOf("/manage/refundOrder")
+                                                            != -1) {
             $(".none13").parent('li').addClass('selected');
             $(".none13").slideDown(300);
         }
-        if ( url.indexOf("/manage/printer")!=-1|| url.indexOf("/manage/merchant") != -1 || url.indexOf("merchantRec") != -1
-                || url.indexOf("/manage/merchant_data") != -1) {
+        if (url.indexOf("/manage/printer") != -1 || url.indexOf("/manage/merchant") != -1
+            || url.indexOf("merchantRec") != -1
+            || url.indexOf("/manage/merchant_data") != -1) {
             $(".none3").parent('li').addClass('selected');
             $(".none3").slideDown(300);
         }
@@ -376,29 +389,40 @@
             $(".none4").slideDown(300);
         }
         if (url.indexOf("codeBurse") != -1 || url.indexOf("initial_order_rebate") != -1
-                || url.indexOf("codePage") != -1|| url.indexOf("sMovieOrder") != -1) {
+            || url.indexOf("codePage") != -1 || url.indexOf("sMovieOrder") != -1) {
             $(".none6").parent('li').addClass('selected');
             $(".none6").slideDown(300);
         }
         if (url.indexOf("/weixin/menu/list") != -1 || url.indexOf("/weixin/reply/list") != -1
-                || url.indexOf("/weixin/imageText") != -1 || url.indexOf("managementUserList") != -1) {
+            || url.indexOf("/weixin/imageText") != -1 || url.indexOf("managementUserList") != -1) {
             $(".none7").parent('li').addClass('selected');
             $(".none7").slideDown(300);
         }
         if (url.indexOf("/manage/member_data") != -1 || url.indexOf("/manage/merchant_data")
-                != -1|| url.indexOf("/manage/scoreAAccountPage") != -1||url.indexOf("/manage/transactionAnalysisPage") != -1||url.indexOf("/manage/scoreC/scoreCPage")!=-1) {
+                                                        != -1 || url.indexOf(
+                "/manage/scoreAAccountPage") != -1 || url.indexOf("/manage/transactionAnalysisPage")
+                                                      != -1 || url.indexOf(
+                "/manage/scoreC/scoreCPage") != -1) {
             $(".none9").parent('li').addClass('selected');
             $(".none9").slideDown(300);
         }
-        if (url.indexOf("/manage/shortMessage/shortMessageBillboards") != -1 || url.indexOf("/manage/shortMessagesListPage")!= -1) {
+        if (url.indexOf("/manage/shortMessage/shortMessageBillboards") != -1 || url.indexOf(
+                "/manage/shortMessagesListPage") != -1) {
             $(".none10").parent('li').addClass('selected');
             $(".none10").slideDown(300);
         }
-        if (url.indexOf("/manage/productSecKill") != -1) {
+        if (url.indexOf("/manage/modify/list") != -1 || url.indexOf("/manage/ledger/list") != -1
+            || url.indexOf("/manage/refund/ledger/list") != -1 || url.indexOf(
+                "/manage/settlement/store/list") != -1 || url.indexOf(
+                "/manage/settlement/ledger/list") != -1 || url.indexOf(
+                "/manage/transfer/ledger/list") != -1 || url.indexOf("/manage/refund/ledger/refund")
+                                                         != -1) {
             $(".none11").parent('li').addClass('selected');
             $(".none11").slideDown(300);
         }
-        if (url.indexOf("/manage/unionPayStore/unionPayStorePage") != -1||url.indexOf("/manage/unionPosOrder/unionPosOrderPage")!=-1||url.indexOf("/manage/unionBankCard/unionBankCardPage")!=-1) {
+        if (url.indexOf("/manage/unionPayStore/unionPayStorePage") != -1 || url.indexOf(
+                "/manage/unionPosOrder/unionPosOrderPage") != -1 || url.indexOf(
+                "/manage/unionBankCard/unionBankCardPage") != -1) {
             $(".none12").parent('li').addClass('selected');
             $(".none12").slideDown(300);
         }
