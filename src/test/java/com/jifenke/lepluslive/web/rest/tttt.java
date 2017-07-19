@@ -1,9 +1,6 @@
 package com.jifenke.lepluslive.web.rest;
 
 import com.jifenke.lepluslive.Application;
-import com.jifenke.lepluslive.activity.service.ActivityPhoneOrderService;
-import com.jifenke.lepluslive.barcode.service.BarcodeService;
-import com.jifenke.lepluslive.fuyou.service.ScanCodeOrderService;
 import com.jifenke.lepluslive.global.config.Constants;
 import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantRebatePolicy;
@@ -11,26 +8,11 @@ import com.jifenke.lepluslive.merchant.domain.entities.RebateStage;
 import com.jifenke.lepluslive.merchant.repository.MerchantRebatePolicyRepository;
 import com.jifenke.lepluslive.merchant.repository.MerchantRepository;
 import com.jifenke.lepluslive.merchant.repository.RebateStageRepository;
-import com.jifenke.lepluslive.merchant.service.MerchantService;
-import com.jifenke.lepluslive.merchant.service.MerchantUserService;
-import com.jifenke.lepluslive.order.domain.entities.PosDailyBill;
-import com.jifenke.lepluslive.order.domain.entities.PosErrorLog;
-import com.jifenke.lepluslive.order.service.FinanicalStatisticService;
 import com.jifenke.lepluslive.order.service.OffLineOrderService;
-import com.jifenke.lepluslive.order.service.PosOrderService;
-import com.jifenke.lepluslive.partner.repository.PartnerRepository;
-import com.jifenke.lepluslive.partner.repository.PartnerWalletRepository;
-import com.jifenke.lepluslive.score.domain.entities.ScoreC;
-import com.jifenke.lepluslive.score.repository.ScoreARepository;
 import com.jifenke.lepluslive.score.service.ScoreCService;
-import com.jifenke.lepluslive.scoreAAccount.service.ScoreAAccountService;
 import com.jifenke.lepluslive.shortMessage.service.ShortMessageSceneService;
 import com.jifenke.lepluslive.shortMessage.service.ShortMessageService;
-import com.jifenke.lepluslive.user.repository.LeJiaUserRepository;
-import com.jifenke.lepluslive.user.repository.WeiXinUserRepository;
 import com.jifenke.lepluslive.user.service.UserService;
-import com.jifenke.lepluslive.yinlian.domain.entities.UnionPayStore;
-import com.jifenke.lepluslive.yinlian.service.UnionPayStoreService;
 
 import org.junit.Test;
 import org.junit.runner.RunWith;
@@ -40,21 +22,11 @@ import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.context.junit4.SpringJUnit4ClassRunner;
 import org.springframework.test.context.web.WebAppConfiguration;
 
-import java.io.BufferedReader;
-import java.io.DataOutputStream;
-import java.io.InputStreamReader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
-import java.net.HttpURLConnection;
-import java.net.URL;
-import java.net.URLEncoder;
-import java.text.SimpleDateFormat;
-import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
-import java.util.Map;
-import java.util.Optional;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;

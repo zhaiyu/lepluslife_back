@@ -1,6 +1,6 @@
-package com.jifenke.lepluslive.fuyou.controller.view;
+package com.jifenke.lepluslive.order.controller.view;
 
-import com.jifenke.lepluslive.fuyou.domain.entities.ScanCodeOrder;
+import com.jifenke.lepluslive.order.domain.entities.ScanCodeOrder;
 import com.jifenke.lepluslive.user.domain.entities.LeJiaUser;
 
 import org.apache.poi.hssf.usermodel.HSSFRow;
@@ -139,11 +139,11 @@ public class ScanCodeOrderViewExcel extends AbstractExcelView {
         default:
           excelRow.createCell(10).setCellValue(s[6]);
       }
-      if(order.getScanCodeOrderExt().getUseAliPay()==0&&order.getScanCodeOrderExt().getUseWeixin()==0){
+      if (order.getTruePay() == 0) {
         excelRow.createCell(11).setCellValue("纯红包");
-      }else if(order.getScanCodeOrderExt().getUseScoreA()==1&&(order.getScanCodeOrderExt().getUseWeixin()==1||order.getScanCodeOrderExt().getUseAliPay()==1)){
+      } else if (order.getScanCodeOrderExt().getUseScoreA() == 1) {
         excelRow.createCell(11).setCellValue("混合支付");
-      }else {
+      } else {
         excelRow.createCell(11).setCellValue("纯现金");
       }
       excelRow.createCell(12).setCellValue(order.getTotalPrice() / 100.0);

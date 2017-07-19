@@ -1,18 +1,19 @@
-package com.jifenke.lepluslive.fuyou.service;
+package com.jifenke.lepluslive.order.service;
 
 
-import com.jifenke.lepluslive.fuyou.domain.criteria.ScanCodeOrderCriteria;
-import com.jifenke.lepluslive.fuyou.domain.entities.ScanCodeOrder;
 import com.jifenke.lepluslive.fuyou.domain.entities.ScanCodeRefundOrder;
-import com.jifenke.lepluslive.fuyou.repository.ScanCodeOrderRepository;
+import com.jifenke.lepluslive.fuyou.service.FuYouPayService;
+import com.jifenke.lepluslive.fuyou.service.ScanCodeRefundOrderService;
 import com.jifenke.lepluslive.global.util.DataUtils;
 import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantWallet;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantWalletLog;
 import com.jifenke.lepluslive.merchant.service.MerchantService;
 import com.jifenke.lepluslive.merchant.service.MerchantWalletLogService;
+import com.jifenke.lepluslive.order.domain.criteria.ScanCodeOrderCriteria;
 import com.jifenke.lepluslive.order.domain.entities.OffLineOrderShare;
-import com.jifenke.lepluslive.order.service.ShareService;
+import com.jifenke.lepluslive.order.domain.entities.ScanCodeOrder;
+import com.jifenke.lepluslive.order.repository.ScanCodeOrderRepository;
 import com.jifenke.lepluslive.partner.domain.entities.Partner;
 import com.jifenke.lepluslive.partner.domain.entities.PartnerManager;
 import com.jifenke.lepluslive.partner.domain.entities.PartnerManagerWallet;
@@ -38,7 +39,6 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.text.SimpleDateFormat;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -123,7 +123,11 @@ public class ScanCodeOrderService {
     Merchant merchant = order.getMerchant();
     result.put("merchant", merchant);
     //获取该商户使用的商户号今日可退款金额和红包
-    Object[] o = repository.countByMerchantNumToday(order.getScanCodeOrderExt().getMerchantNum(), begin, date).get(0);
+    Object[]
+        o =
+        repository
+            .countByMerchantNumToday(order.getScanCodeOrderExt().getMerchantNum(), begin, date)
+            .get(0);
     Map<String, Object> canRefund = new HashMap<>();
     canRefund.put("totalPrice", o[0] == null ? 0 : o[0]);
     canRefund.put("truePay", o[1] == null ? 0 : o[1]);
@@ -202,7 +206,11 @@ public class ScanCodeOrderService {
     ScoreA scoreA = scoreAService.findScoreAByWeiXinUser(leJiaUser);
     ScoreB scoreB = scoreBService.findScoreBByWeiXinUser(leJiaUser);
     //获取该商户使用的商户号今日可退款金额和红包
-    Object[] o = repository.countByMerchantNumToday(order.getScanCodeOrderExt().getMerchantNum(), begin, date).get(0);
+    Object[]
+        o =
+        repository
+            .countByMerchantNumToday(order.getScanCodeOrderExt().getMerchantNum(), begin, date)
+            .get(0);
     Long canRefundScore = o[2] == null ? 0L : Long.valueOf(o[2].toString());
     if (canRefundScore < order.getTrueScore()) {
       result.put("status", 1001);
@@ -297,7 +305,7 @@ public class ScanCodeOrderService {
     try {
       scanCodeRefundOrderService.saveOrder(refundOrder);
       Map<String, String> map = null;
-      if (order.getScanCodeOrderExt().getUseAliPay() == 0&&order.getScanCodeOrderExt().getUseWeixin()==0) {
+      if (order.getTruePay() == 0) {
         map = new HashMap<>();
         map.put("result_code", "000000");
         map.put("transaction_id", "" + date.getTime());

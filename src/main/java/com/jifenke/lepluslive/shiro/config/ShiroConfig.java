@@ -98,6 +98,7 @@ public class ShiroConfig {
     filterChainDefinitionMap.put("/manage/addReceipt", "anon");//anon 可以理解为不拦截
     filterChainDefinitionMap.put("/manage/receiptReturnValues", "anon");//anon 可以理解为不拦截
     filterChainDefinitionMap.put("/manage/ledger/modifyCallBack", "anon");//anon 可以理解为不拦截
+    filterChainDefinitionMap.put("/manage/ledger/checkCallBack", "anon");//anon 可以理解为不拦截
     filterChainDefinitionMap.put("/**", "authc");//anon 可以理解为不拦截
 
 

@@ -1,6 +1,7 @@
 package com.jifenke.lepluslive.fuyou.domain.entities;
 
 import com.jifenke.lepluslive.global.util.MvUtil;
+import com.jifenke.lepluslive.order.domain.entities.ScanCodeOrder;
 
 import java.util.Date;
 

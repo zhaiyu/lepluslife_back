@@ -1,4 +1,4 @@
-package com.jifenke.lepluslive.fuyou.domain.criteria;
+package com.jifenke.lepluslive.order.domain.criteria;
 
 /**
  * 富友扫码订单查询条件 Created by zhangwen on 16/12/19.

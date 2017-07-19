@@ -103,7 +103,7 @@ public class MerchantUserLedgerService {
   }
 
   /**
-   * 分账方审核结果查询  2017/7/17
+   * 分账方审核结果主动查询  2017/7/17
    *
    * @param ledgerId 易宝子商户ID
    */
@@ -121,6 +121,23 @@ public class MerchantUserLedgerService {
     }
     repository.save(ledger);
     return resultMap;
+  }
+
+  /**
+   * 易宝子商户资质审核异步通知地址  2017/7/16
+   *
+   * @param map 异步通知
+   */
+  @Transactional(propagation = Propagation.REQUIRED)
+  public void checkCallBack(Map<String, String> map) {
+    MerchantUserLedger ledger = repository.findByLedgerNo(map.get("ledgerno"));
+    Map<String, String> resultMap = YbRequestUtils.queryCheckRecord(ledger.getLedgerNo());
+    if ("SUCCESS".equals(resultMap.get("status"))) {
+      ledger.setState(1);
+    } else {
+      ledger.setState(2);
+    }
+    repository.save(ledger);
   }
 
   /**
