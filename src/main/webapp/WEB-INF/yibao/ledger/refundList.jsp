@@ -8,7 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@include file="../../commen.jsp" %>
+<%@include file="../commen.jsp" %>
 <!DOCTYPE>
 <html>
 <head>
@@ -37,11 +37,11 @@
 
 <body>
 <div id="topIframe">
-    <%@include file="../../common/top.jsp" %>
+    <%@include file="../common/top.jsp" %>
 </div>
 <div id="content">
     <div id="leftIframe">
-        <%@include file="../../common/left.jsp" %>
+        <%@include file="../common/left.jsp" %>
     </div>
     <div class="m-right">
         <div class="main">
@@ -56,17 +56,20 @@
                             <b class="caret"></b>
                         </div>
                     </div>
-                    <div class="form-group col-md-2">
+                    <div class="form-group col-md-3">
                         <label for="merchantId">门店ID</label>
                         <input type="text" id="merchantId" class="form-control"
                                placeholder="请输入门店ID"/>
                     </div>
-                    <div class="form-group col-md-2">
+                    <div class="form-group col-md-3">
                         <label for="refundOrder-SID">退款单编号</label>
                         <input type="text" id="refundOrder-SID" class="form-control"
                                placeholder="请输入退款单编号"/>
                     </div>
-                    <div class="form-group col-md-2">
+                </div>
+
+                <div class="row" style="margin-bottom: 30px">
+                    <div class="form-group col-md-3">
                         <label for="orderType">订单类型</label>
                         <select class="form-control" id="orderType">
                             <option value="-1">所在类型(全部)</option>
@@ -74,7 +77,9 @@
                             <option value="2">乐加订单</option>
                         </select>
                     </div>
-                    <div class="form-group col-md-2">
+                </div>
+                <div class="row" style="margin-bottom: 30px">
+                    <div class="form-group col-md-3">
                         <label for="state">状态</label>
                         <select class="form-control" id="state">
                             <option value="-1">所有状态</option>
@@ -131,7 +136,7 @@
 </div>
 </div>
 <div id="bottomIframe">
-    <%@include file="../../common/bottom.jsp" %>
+    <%@include file="../common/bottom.jsp" %>
 </div>
 
 <!-- Include all compiled plugins (below), or include individual files as needed -->
