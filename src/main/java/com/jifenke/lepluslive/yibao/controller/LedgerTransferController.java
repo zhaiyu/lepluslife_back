@@ -31,7 +31,7 @@ public class LedgerTransferController {
      */
     @RequestMapping(value = "/ledger/list", method = RequestMethod.GET)
     public ModelAndView toListPage() {
-        return MvUtil.go("/yibao/ledger/transferList");
+        return MvUtil.go("/");
     }
 
     @RequestMapping(value = "/ledger/findByCriteria", method = RequestMethod.POST)
