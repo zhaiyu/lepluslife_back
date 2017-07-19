@@ -29,10 +29,10 @@ public class LedgerTransfer {
    * 如果一次转账失败，则需要系统自动生成一笔转账单，发起第二次重试。
    * 第二次重试再失败的话，无需发起重试，但需要给相关业务人员发送一条提醒短信。
    */
-  private Integer state = 0;   //转账状态 0=待转账，1=转账成功，其他为易宝错误码
+  private Integer state = 0;   //转账状态 0=待转账，1=转账成功，2=转账失败，3=转账中（查询非终态），其他为易宝错误码
 
   @Column(nullable = false, length = 30)
-  private String orderSid = MvUtil.getOrderNumber(7); //转账单号(唯一)
+  private String orderSid = MvUtil.getOrderNumber(10); //转账单号(唯一)
 
   @Column(nullable = false, length = 10)
   private String tradeDate; //清算日期（对应的交易记录是哪一天完成的）（yyyy-MM-dd）

@@ -1,7 +1,7 @@
-package com.jifenke.lepluslive.fuyou.repository;
+package com.jifenke.lepluslive.order.repository;
 
 
-import com.jifenke.lepluslive.fuyou.domain.entities.ScanCodeOrder;
+import com.jifenke.lepluslive.order.domain.entities.ScanCodeOrder;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;

@@ -13,4 +13,6 @@ import org.springframework.data.jpa.repository.JpaRepository;
 public interface MerchantUserLedgerRepository extends JpaRepository<MerchantUserLedger, Long> {
 
   Page findAll(Specification<MerchantUserLedger> whereClause, Pageable pageRequest);
+
+  MerchantUserLedger findByLedgerNo(String ledgerNo);
 }

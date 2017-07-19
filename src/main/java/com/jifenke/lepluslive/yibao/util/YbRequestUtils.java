@@ -7,6 +7,7 @@ import com.jifenke.lepluslive.global.util.MvUtil;
 import com.jifenke.lepluslive.yibao.domain.entities.MerchantUserLedger;
 
 import java.io.File;
+import java.math.BigDecimal;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.TreeMap;
@@ -60,7 +61,7 @@ public class YbRequestUtils {
       dataMap.put("businesslicence", ledger.getBusinessLicence());
       dataMap.put("legalperson", ledger.getLegalPerson());
     }
-    dataMap.put("minsettleamount", "" + ledger.getMinSettleAmount() / 100);
+    dataMap.put("minsettleamount", "" + ledger.getMinSettleAmount() / 100.0);
     dataMap.put("riskreserveday", "" + ledger.getRiskReserveDay());
     dataMap.put("bankaccountnumber", ledger.getBankAccountNumber());
     dataMap.put("bankname", ledger.getBankName());
@@ -99,7 +100,7 @@ public class YbRequestUtils {
     dataMap.put("bankaccounttype", bankAccountYype);
     dataMap.put("bankprovince", ledger.getBankProvince());
     dataMap.put("bankcity", ledger.getBankCity());
-    dataMap.put("minsettleamount", "" + ledger.getMinSettleAmount() / 100);
+    dataMap.put("minsettleamount", "" + ledger.getMinSettleAmount() / 100.0);
     dataMap.put("riskreserveday", "" + dbLedger.getRiskReserveDay());
     //是否自助结算  todo: 需确认
     dataMap.put("manualsettle", "N");
@@ -154,6 +155,45 @@ public class YbRequestUtils {
 
     String data = ZGTUtils.buildData(dataMap, ZGTUtils.QUERYRECORDAPI_REQUEST_HMAC_ORDER);
     Map<String, String> map = ZGTUtils.httpPost(YBConstants.QUERY_CHECK_RECORD_URL, data);
+    return callBack(map);
+  }
+
+  /**
+   * 转账  2017/7/19
+   *
+   * @param ledgerNo 易宝的子商户号
+   * @param amount   转账金额（注意：此时单位为分，调用接口时需/100转换为元）
+   * @param orderSid 转账单号(请求号)
+   * @return map　转账结果
+   */
+  public static Map<String, String> transfer(String ledgerNo, Long amount,
+                                             String orderSid) {
+
+    //请求加密参数
+    Map<String, String> dataMap = getCommonDataMap();
+    dataMap.put("requestid", orderSid);
+    dataMap.put("ledgerno", ledgerNo);
+    dataMap.put("amount", "" + amount / 100.0);
+
+    String data = ZGTUtils.buildData(dataMap, ZGTUtils.TRANSFERAPI_REQUEST_HMAC_ORDER);
+    Map<String, String> map = ZGTUtils.httpPost(YBConstants.TRANSFER_URL, data);
+    return callBack(map);
+  }
+
+  /**
+   * 转账查询  2017/7/19
+   *
+   * @param requestId 转账请求号
+   * @return map　转账结果
+   */
+  public static Map<String, String> queryTransfer(String requestId) {
+
+    //请求加密参数
+    Map<String, String> dataMap = getCommonDataMap();
+    dataMap.put("requestid", requestId);
+
+    String data = ZGTUtils.buildData(dataMap, ZGTUtils.TRANSFERQUERYAPI_REQUEST_HMAC_ORDER);
+    Map<String, String> map = ZGTUtils.httpPost(YBConstants.TRANSFER_QUERY_URL, data);
     return callBack(map);
   }
 

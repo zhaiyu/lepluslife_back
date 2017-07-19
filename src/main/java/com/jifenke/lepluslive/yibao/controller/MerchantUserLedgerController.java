@@ -18,10 +18,14 @@ import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
 
+import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
 import java.util.Map;
 
 import javax.inject.Inject;
 import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
 
 /**
  * 易宝子商户
@@ -100,10 +104,16 @@ public class MerchantUserLedgerController {
   }
 
   /**
-   * 易宝子商户编辑回调地址 17/7/16
+   * 易宝子商户修改回调地址 17/7/16
    */
-  @RequestMapping(value = "/modifyCallBack", method = RequestMethod.GET)
-  public String modifyCallBack(HttpServletRequest request) {
+  @RequestMapping(value = "/modifyCallBack")
+  public void modifyCallBack(HttpServletRequest request, HttpServletResponse response)
+      throws IOException {
+    //UTF-8编码
+    request.setCharacterEncoding("UTF-8");
+    response.setCharacterEncoding("UTF-8");
+    response.setContentType("text/html");
+    PrintWriter out = response.getWriter();
 
     String data = request.getParameter("data");
     System.out.println(data);
@@ -115,11 +125,46 @@ public class MerchantUserLedgerController {
     if (ZGTUtils.checkHmac(map, ZGTUtils.QUERYMODIFYREQUESTAPI_RESPONSE_HMAC_ORDER)) {
       //业务处理
       ledgerModifyService.modifyCallBack(map);
-      return "SUCCESS";
+      out.println("SUCCESS");
+    } else {
+      System.out.println("验签失败");
+      out.println("FAIL");
     }
-    System.out.println("验签失败");
-    //返回信息
-    return "FAIL";
+    //第四步 回写SUCCESS
+    out.flush();
+    out.close();
+  }
+
+  /**
+   * 易宝子商户资质审核异步通知地址 17/7/19
+   */
+  @RequestMapping(value = "/checkCallBack")
+  public void checkCallBack(HttpServletRequest request, HttpServletResponse response)
+      throws IOException {
+    //UTF-8编码
+    request.setCharacterEncoding("UTF-8");
+    response.setCharacterEncoding("UTF-8");
+    response.setContentType("text/html");
+    PrintWriter out = response.getWriter();
+
+    String data = request.getParameter("data");
+    System.out.println(data);
+    //解密
+    Map<String, String> map = ZGTUtils.decryptData(data);
+    System.out.println("易宝的异步响应：" + data);
+    System.out.println("data解密后明文：" + map.toString());
+    //验证签名
+    if (ZGTUtils.checkHmac(map, ZGTUtils.QUERYRECORDAPI_RESPONSE_HMAC_ORDER)) {
+      //业务处理
+      merchantUserLedgerService.checkCallBack(map);
+      out.println("SUCCESS");
+    } else {
+      System.out.println("验签失败");
+      out.println("FAIL");
+    }
+    //第四步 回写SUCCESS
+    out.flush();
+    out.close();
   }
 
   /**

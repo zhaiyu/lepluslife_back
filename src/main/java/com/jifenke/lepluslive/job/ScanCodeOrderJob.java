@@ -1,6 +1,6 @@
 package com.jifenke.lepluslive.job;
 
-import com.jifenke.lepluslive.fuyou.service.ScanCodeOrderService;
+import com.jifenke.lepluslive.order.service.ScanCodeOrderService;
 import com.jifenke.lepluslive.fuyou.service.ScanCodeStatementService;
 
 import org.quartz.Job;

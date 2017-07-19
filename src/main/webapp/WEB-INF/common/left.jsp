@@ -232,7 +232,7 @@
                             href='/manage/partner'>合伙人</a> </shiro:hasPermission>
                     <a
                             href='/manage/pos_order'>pos订单</a>
-                    <a href='/manage/scanCodeOrder/goOrderPage'>富友扫码</a>
+                    <a href='/manage/scanCodeOrder/goOrderPage'>通道订单</a>
                     <a href='/manage/refund/goRefundPage'>富友退款单</a>
                     <a href='/manage/statement/goStatementPage'>富友结算</a>
                     <a href='/manage/withdrawBill'>手动提现审核</a>

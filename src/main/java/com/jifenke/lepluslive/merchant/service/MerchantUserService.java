@@ -1,6 +1,6 @@
 package com.jifenke.lepluslive.merchant.service;
 
-import com.jifenke.lepluslive.fuyou.service.ScanCodeOrderService;
+import com.jifenke.lepluslive.order.service.ScanCodeOrderService;
 import com.jifenke.lepluslive.global.util.MD5Util;
 import com.jifenke.lepluslive.merchant.domain.criteria.MerchantUserCriteria;
 import com.jifenke.lepluslive.merchant.domain.entities.City;

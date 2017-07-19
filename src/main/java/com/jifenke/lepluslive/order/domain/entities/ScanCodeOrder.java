@@ -1,4 +1,4 @@
-package com.jifenke.lepluslive.fuyou.domain.entities;
+package com.jifenke.lepluslive.order.domain.entities;
 
 import com.jifenke.lepluslive.global.util.MvUtil;
 import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
@@ -66,7 +66,6 @@ public class ScanCodeOrder {
   private Long truePayCommission = 0L; //实付部分佣金
 
   private Long scoreCommission = 0L; //红包部分佣金
-
 
   private Long rebate = 0L; //返利红包
 
