@@ -133,11 +133,11 @@ public class YbRequestUtils {
   /**
    * 易宝子商户余额查询  2017/7/17
    *
-   * @param ledgerNo 易宝的子商户号
+   * @param ledgerNos 易宝的子商户号(可多个，多个已‘,’分隔)
    */
-  public static Map<String, String> queryBalance(String ledgerNo) {
+  public static Map<String, String> queryBalance(String ledgerNos) {
     Map<String, String> dataMap = getCommonDataMap();
-    dataMap.put("ledgerno", ledgerNo);
+    dataMap.put("ledgerno", ledgerNos);
 
     String data = ZGTUtils.buildData(dataMap, ZGTUtils.QUERYBALANCEAPI_REQUEST_HMAC_ORDER);
     Map<String, String> map = ZGTUtils.httpPost(YBConstants.QUERY_BALANCE_URL, data);

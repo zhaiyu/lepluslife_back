@@ -32,7 +32,7 @@ public class LedgerSettlement {
   private Integer transferState = 0;  //转账状态 0=待转账，1=转账成功，2=转账失败
 
   @Column(nullable = false, length = 10)
-  private String tradeDate; //清算日期（对应的交易记录是哪一天完成的）（yyyy-MM-dd）
+  private String tradeDate; //结算日期（对应的给商户转账是哪一天完成的）（yyyy-MM-dd）
 
   @Column(nullable = false, unique = true, length = 30)
   private String orderSid = MvUtil.getOrderNumber(7); //通道结算单号(唯一)

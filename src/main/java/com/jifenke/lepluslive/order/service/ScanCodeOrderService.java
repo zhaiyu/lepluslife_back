@@ -13,6 +13,7 @@ import com.jifenke.lepluslive.merchant.service.MerchantWalletLogService;
 import com.jifenke.lepluslive.order.domain.criteria.ScanCodeOrderCriteria;
 import com.jifenke.lepluslive.order.domain.entities.OffLineOrderShare;
 import com.jifenke.lepluslive.order.domain.entities.ScanCodeOrder;
+import com.jifenke.lepluslive.order.domain.entities.ScanCodeOrderExt;
 import com.jifenke.lepluslive.order.repository.ScanCodeOrderRepository;
 import com.jifenke.lepluslive.partner.domain.entities.Partner;
 import com.jifenke.lepluslive.partner.domain.entities.PartnerManager;
@@ -195,7 +196,7 @@ public class ScanCodeOrderService {
    * @param orderSid 要退款的订单号
    * @param force    是否强制退款
    */
-  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  @Transactional(propagation = Propagation.REQUIRED)
   public Map<String, Object> refundSubmit(String orderSid, Integer force) {
     Map<String, Object> result = new HashMap<>();
     Date date = new Date();
@@ -518,7 +519,9 @@ public class ScanCodeOrderService {
         }
 
         if (orderCriteria.getPayment() != null) {  //付款方式  0=纯现金|1=纯红包|2=混合
-          predicate.getExpressions().add(cb.equal(r.get("payment"), orderCriteria.getPayment()));
+          predicate.getExpressions().add(
+              cb.equal(r.<ScanCodeOrderExt>get("scanCodeOrderExt").get("useScoreA"),
+                       orderCriteria.getPayment()));
         }
 
         if (orderCriteria.getUserSid() != null && !"".equals(orderCriteria.getUserSid())) {//消费者SID
@@ -541,14 +544,9 @@ public class ScanCodeOrderService {
                       "%" + orderCriteria.getMerchantName() + "%"));
         }
 
-        if (orderCriteria.getMerchantUserId() != null) { //商户ID
-          predicate.getExpressions().add(cb.equal(r.get("merchantUserId"),
-                                                  orderCriteria.getMerchantUserId()));
-        }
-
         if (orderCriteria.getOrderType() != null) { //订单类型
           predicate.getExpressions().add(
-              cb.equal(r.<Category>get("orderType").get("id"), orderCriteria.getOrderType()));
+              cb.equal(r.get("orderType"), orderCriteria.getOrderType()));
         }
 
         if (orderCriteria.getOrderSid() != null && !"".equals(orderCriteria.getOrderSid())) { //订单编号
@@ -556,13 +554,26 @@ public class ScanCodeOrderService {
         }
 
         if (orderCriteria.getSource() != null) { //支付来源  0=WAP|1=APP
-          predicate.getExpressions().add(cb.equal(r.get("source"), orderCriteria.getSource()));
+          predicate.getExpressions().add(
+              cb.equal(r.<ScanCodeOrderExt>get("scanCodeOrderExt").get("source"),
+                       orderCriteria.getSource()));
+        }
+        if (orderCriteria.getGatewayType() != null) {
+          predicate.getExpressions().add(
+              cb.equal(r.<ScanCodeOrderExt>get("scanCodeOrderExt").get("gatewayType"),
+                       orderCriteria.getGatewayType()));
+        }
+        if (orderCriteria.getPayType() != null) {
+          predicate.getExpressions().add(
+              cb.equal(r.<ScanCodeOrderExt>get("scanCodeOrderExt").get("payType"),
+                       orderCriteria.getPayType()));
         }
 
         if (orderCriteria.getMerchantNum() != null && !""
-            .equals(orderCriteria.getMerchantNum())) {//富友商户号
+            .equals(orderCriteria.getMerchantNum())) {//通道商户号
           predicate.getExpressions().add(
-              cb.equal(r.get("merchantNum"), orderCriteria.getMerchantNum()));
+              cb.equal(r.<ScanCodeOrderExt>get("scanCodeOrderExt").get("merchantNum"),
+                       orderCriteria.getMerchantNum()));
         }
         return predicate;
       }

@@ -7,7 +7,6 @@ package com.jifenke.lepluslive.yibao.domain.criteria;
 public class LedgerTransferCriteria {
 
     private Integer offset;        // 页数
-    private String ledgerSid;      // 通道结算单号
     private String orderSid;       // 转账单号
     private String ledgerNo;       // 易宝子商户号
     private String state;          // 转账状态 0=待转账，1=转账成功，其他为易宝错误码
@@ -18,14 +17,6 @@ public class LedgerTransferCriteria {
 
     public void setOffset(Integer offset) {
         this.offset = offset;
-    }
-
-    public String getLedgerSid() {
-        return ledgerSid;
-    }
-
-    public void setLedgerSid(String ledgerSid) {
-        this.ledgerSid = ledgerSid;
     }
 
     public String getOrderSid() {

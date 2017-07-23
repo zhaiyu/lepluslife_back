@@ -3,7 +3,10 @@ package com.jifenke.lepluslive.yibao;
 import com.jifenke.lepluslive.Application;
 import com.jifenke.lepluslive.global.config.Constants;
 import com.jifenke.lepluslive.global.util.MvUtil;
+import com.jifenke.lepluslive.yibao.domain.entities.LedgerTransfer;
+import com.jifenke.lepluslive.yibao.domain.entities.LedgerTransferLog;
 import com.jifenke.lepluslive.yibao.domain.entities.MerchantUserLedger;
+import com.jifenke.lepluslive.yibao.service.LedgerTransferLogService;
 import com.jifenke.lepluslive.yibao.service.LedgerTransferService;
 import com.jifenke.lepluslive.yibao.service.MerchantUserLedgerService;
 import com.jifenke.lepluslive.yibao.util.YbRequestUtils;
@@ -89,13 +92,9 @@ public class MerchantUserLedgerTest {
 
     Long amount = 9900L;  //分
 
-    String ledgerSid = MvUtil.getOrderNumber(10); //通道结算单号
-
     String tradeDate = "2017-07-19";
 
-    int retry = 1;
-
-    transferService.transfer(ledgerNo, amount, ledgerSid, tradeDate, retry);
+    transferService.transfer(ledgerNo, amount, tradeDate,1);
 
     Map<String, String> after = YbRequestUtils.queryBalance(ledgerNo);
 
@@ -135,6 +134,21 @@ public class MerchantUserLedgerTest {
 
     String b5 = "" + a5 / 100.0;
     System.out.println("b5===" + b5);
+  }
+
+  @Inject
+  private LedgerTransferLogService ledgerTransferLogService;
+
+
+  //临时测试
+  @Test
+  public void tempTest() {
+
+    LedgerTransferLog log = new LedgerTransferLog();
+
+    ledgerTransferLogService.saveLog(log);
+
+
   }
 
 }

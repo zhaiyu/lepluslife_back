@@ -12,7 +12,7 @@ import javax.persistence.Id;
 import javax.persistence.Table;
 
 /**
- * 易宝转账记录
+ * 业务转账单
  * Created by zhangwen on 2017/7/12.
  */
 @Entity
@@ -25,14 +25,19 @@ public class LedgerTransfer {
 
   private Date dateCreated = new Date();
 
+  private Date dateCompleted;  //转账成功的时间
+
   /**
-   * 如果一次转账失败，则需要系统自动生成一笔转账单，发起第二次重试。
-   * 第二次重试再失败的话，无需发起重试，但需要给相关业务人员发送一条提醒短信。
+   * 如果一次转账失败，需要给相关业务人员发送一条提醒短信。
    */
-  private Integer state = 0;   //转账状态 0=待转账，1=转账成功，2=转账失败，3=转账中（查询非终态），其他为易宝错误码
+  private Integer state = 0;   //转账状态 0=待转账，1=转账成功，2=转账失败，3=转账中（查询非终态）
+
+  private Integer type = 1;  //转账类型 1=交易实时转账，2=定时合并转账
+
+  private Integer repair = 0;  //是否补单 1=是（此时一个业务转账单对应多个转账记录）
 
   @Column(nullable = false, length = 30)
-  private String orderSid = MvUtil.getOrderNumber(10); //转账单号(唯一)
+  private String orderSid = MvUtil.getOrderNumber(10); //转账单号(非定时转账为关联的订单号，定时转账自己生成)
 
   @Column(nullable = false, length = 10)
   private String tradeDate; //清算日期（对应的交易记录是哪一天完成的）（yyyy-MM-dd）
@@ -41,13 +46,6 @@ public class LedgerTransfer {
   private String ledgerNo;  //易宝的子商户号
 
   private Long actualTransfer = 0L;   //应转账金额
-
-  private Date dateCompleted;  //转账成功的时间
-
-  private Integer type = 1;  //转账类型 结算转账	目前只有这一种，预留该字段为以后拓展
-
-  @Column(nullable = false, length = 30)
-  private String ledgerSid;  //通道结算单号=LedgerSettlement.orderSid
 
   public Long getId() {
     return id;
@@ -121,11 +119,11 @@ public class LedgerTransfer {
     this.type = type;
   }
 
-  public String getLedgerSid() {
-    return ledgerSid;
+  public Integer getRepair() {
+    return repair;
   }
 
-  public void setLedgerSid(String ledgerSid) {
-    this.ledgerSid = ledgerSid;
+  public void setRepair(Integer repair) {
+    this.repair = repair;
   }
 }

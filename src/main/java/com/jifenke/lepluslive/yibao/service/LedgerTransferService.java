@@ -1,8 +1,11 @@
 package com.jifenke.lepluslive.yibao.service;
 
 
+import com.jifenke.lepluslive.global.util.MvUtil;
 import com.jifenke.lepluslive.yibao.domain.criteria.LedgerTransferCriteria;
 import com.jifenke.lepluslive.yibao.domain.entities.LedgerTransfer;
+import com.jifenke.lepluslive.yibao.domain.entities.LedgerTransferLog;
+import com.jifenke.lepluslive.yibao.domain.entities.MerchantUserLedger;
 import com.jifenke.lepluslive.yibao.repository.LedgerTransferRepository;
 import com.jifenke.lepluslive.yibao.util.YbRequestUtils;
 
@@ -34,23 +37,37 @@ public class LedgerTransferService {
   @Inject
   private LedgerTransferRepository ledgerTransferRepository;
 
+  @Inject
+  private LedgerTransferLogService ledgerTransferLogService;
+
+  @Transactional(propagation = Propagation.REQUIRED)
+  public LedgerTransfer findById(Long id) {
+    return ledgerTransferRepository.findOne(id);
+  }
+
   /**
    * 转账(根据通道结算单转账并生成转账记录)  2017/7/19
    *
-   * @param ledgerNo    易宝的子商户号
-   * @param amount      转账金额（注意：此时单位为分，调用接口时需/100转换为元）
-   * @param ledgerSid   通道结算单号
-   * @param tradeDate   清算日期
-   * @param retryNumber 重试次数，目前固定为一次，传入1,重试一次，传入0,不会重试转账
+   * @param ledgerNo  易宝的子商户号
+   * @param amount    转账金额（注意：此时单位为分，调用接口时需/100转换为元）
+   * @param tradeDate 清算日期
+   * @param type      转账类型 1=交易实时转账，2=交易延迟转账，3=定时合并转账
    */
   @Transactional(propagation = Propagation.REQUIRED)
-  public void transfer(String ledgerNo, Long amount, String ledgerSid,
-                       String tradeDate, int retryNumber) {
+  public void transfer(String ledgerNo, Long amount, String tradeDate, Integer type) {
     LedgerTransfer transfer = new LedgerTransfer();
+    String orderSid = MvUtil.getOrderNumber(10);
     transfer.setActualTransfer(amount);
+    transfer.setType(type);
     transfer.setLedgerNo(ledgerNo);
-    transfer.setLedgerSid(ledgerSid);
+    transfer.setOrderSid(orderSid);
     transfer.setTradeDate(tradeDate);
+    LedgerTransferLog log = new LedgerTransferLog();
+    log.setAmount(amount);
+    log.setLedgerNo(ledgerNo);
+    log.setOrderSid(orderSid);
+    log.setRequestId(orderSid);
+    log.setType(type);
     int state = 0;
     Map<String, String>
         resultMap =
@@ -61,6 +78,7 @@ public class LedgerTransferService {
     String code = resultMap.get("code");
     if (!"1".equals(code)) {
       state = Integer.valueOf(code);
+      log.setMsg(resultMap.get("msg"));
       //第一次转账异常，给对应人员发送短信或消息 todo: 待完成
       if ("162005".equals(code) || "988888".equals(code) || "999999".equals(code)) {
         //补偿查询
@@ -75,10 +93,6 @@ public class LedgerTransferService {
             state = 3;
           }
         }
-      } else if (retryNumber != 0) {//转账失败，进行一次重新转账
-        transfer(ledgerNo, amount, ledgerSid, tradeDate, 0);
-      } else {
-        //第二次转账失败，发送短信或消息警告 todo:待完成
       }
     } else {
       state = 1;
@@ -86,6 +100,9 @@ public class LedgerTransferService {
     transfer.setDateCompleted(new Date());
     transfer.setState(state);
     ledgerTransferRepository.save(transfer);
+    log.setDateCompleted(new Date());
+    log.setState(state);
+    ledgerTransferLogService.saveLog(log);
   }
 
   /***
@@ -105,12 +122,7 @@ public class LedgerTransferService {
       public Predicate toPredicate(Root<LedgerTransfer> root, CriteriaQuery<?> query,
                                    CriteriaBuilder cb) {
         Predicate predicate = cb.conjunction();
-        // 通道结算单号
-        if (criteria.getLedgerSid() != null) {
-          predicate.getExpressions().add(
-              cb.equal(root.get("ledgerSid"), criteria.getLedgerSid()));
-        }
-        // 转账状态 0=待转账，1=转账成功，其他为易宝错误码
+        // 转账状态 0=待转账，1=转账成功，2=转账失败，3=转账中（查询非终态）
         if (criteria.getState() != null) {
           predicate.getExpressions().add(
               cb.equal(root.get("state"), criteria.getState()));
@@ -120,7 +132,7 @@ public class LedgerTransferService {
           predicate.getExpressions().add(
               cb.equal(root.get("ledgerNo"), criteria.getLedgerNo()));
         }
-        // 转账请求号（转账单号）
+        //转账单号(非定时转账为关联的订单号，定时转账自己生成)
         if (criteria.getOrderSid() != null) {
           predicate.getExpressions().add(
               cb.equal(root.get("orderSid"), criteria.getOrderSid()));

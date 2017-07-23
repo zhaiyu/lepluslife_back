@@ -26,11 +26,9 @@ public class ScanCodeOrderExt {
 
   private Integer payType = 0; //0代表微信 1 代表支付宝
 
-  private Integer useScoreA = 0; //是否使用红包付款 0 不用 1 使用
+  private Integer useScoreA = 0; //付款方式 0=不用（纯通道） 1=使用（纯鼓励金）  2=混合
 
   private String merchantNum;  //该订单使用的通道子商户号
-
-  private String tradeDate; //yyyy-MM-dd 结算日期
 
   private Integer gatewayType; //通道类型 0 富有 1 易宝
 
@@ -38,7 +36,7 @@ public class ScanCodeOrderExt {
 
   private Long thirdCommission = 0L; //三方手续费=totalPrice*commission
 
-  private Long thirdTrueCommission = 0L;  //三方实际手续费(对积分客)=truePay*0.35%
+  private Long thirdTrueCommission = 0L;  //三方实际手续费(对积分客)=truePay*0.3%
 
   private String aliUserid; //当为支付宝支付时的userid
 
@@ -88,14 +86,6 @@ public class ScanCodeOrderExt {
 
   public void setMerchantNum(String merchantNum) {
     this.merchantNum = merchantNum;
-  }
-
-  public String getTradeDate() {
-    return tradeDate;
-  }
-
-  public void setTradeDate(String tradeDate) {
-    this.tradeDate = tradeDate;
   }
 
   public Integer getGatewayType() {

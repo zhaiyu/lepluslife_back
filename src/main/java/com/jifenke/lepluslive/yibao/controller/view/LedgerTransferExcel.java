@@ -41,7 +41,6 @@ public class LedgerTransferExcel extends AbstractExcelView {
     public void setExcelHeader(HSSFSheet excelSheet) {
         HSSFRow excelHeader = excelSheet.createRow(0);
         excelHeader.createCell(0).setCellValue("转账请求号");
-        excelHeader.createCell(1).setCellValue("通道结算单号");
         excelHeader.createCell(2).setCellValue("清算日期");
         excelHeader.createCell(3).setCellValue("子商户号");
         excelHeader.createCell(4).setCellValue("转账金额");
@@ -55,7 +54,6 @@ public class LedgerTransferExcel extends AbstractExcelView {
         for (LedgerTransfer transfer : transferList) {
             HSSFRow excelRow = excelSheet.createRow(record++);
             excelRow.createCell(0).setCellValue(transfer.getOrderSid());   // 转账请求号
-            excelRow.createCell(1).setCellValue(transfer.getLedgerSid());         // 通道结算单号
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
             if (transfer.getTradeDate() != null) {
                 excelRow.createCell(2).setCellValue(sdf.format(transfer.getTradeDate()));         // 清算日期transfer
