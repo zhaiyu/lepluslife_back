@@ -1,15 +1,17 @@
-package com.jifenke.lepluslive.fuyou.domain.criteria;
+package com.jifenke.lepluslive.order.domain.criteria;
 
 /**
  * 富友扫码订单查询条件 Created by zhangwen on 16/12/19.
  */
 public class ScanCodeOrderCriteria {
 
+  private Integer offset; //页码
+
   private String startDate;
 
   private String endDate;
 
-  private Integer payment;  ////付款方式  0=纯现金|1=纯红包|2=混合
+  private Integer payment;  ////付款方式  0=纯通道|1=纯鼓励金|2=混合
 
   private String userSid; //消费者TOKEN
 
@@ -17,19 +19,21 @@ public class ScanCodeOrderCriteria {
 
   private String merchantName;  //门店名称=Merchant.name
 
-  private Long merchantUserId;  //商户ID=MerchantUser.id
+//  private Long merchantUserId;  //商户ID=MerchantUser.id
 
   private Integer orderType; //订单类型6种=Category.id(12001~12006)
 
   private String orderSid;  //订单编号
 
-  private String merchantNum; //移动商户号
+  private String merchantNum; //通道商户号
 
   private Integer state;//支付状态  0=未支付|1=已支付|2=已退款
 
   private Integer source;  //支付来源  0=WAP|1=APP
 
-  private Integer offset; //页码
+  private Integer gatewayType;  //通道类型 0 富有 1 易宝
+
+  private Integer payType; //0代表微信 1 代表支付宝
 
   public String getStartDate() {
     return startDate;
@@ -79,14 +83,6 @@ public class ScanCodeOrderCriteria {
     this.merchantName = merchantName;
   }
 
-  public Long getMerchantUserId() {
-    return merchantUserId;
-  }
-
-  public void setMerchantUserId(Long merchantUserId) {
-    this.merchantUserId = merchantUserId;
-  }
-
   public Integer getSource() {
     return source;
   }
@@ -133,5 +129,21 @@ public class ScanCodeOrderCriteria {
 
   public void setOffset(Integer offset) {
     this.offset = offset;
+  }
+
+  public Integer getGatewayType() {
+    return gatewayType;
+  }
+
+  public void setGatewayType(Integer gatewayType) {
+    this.gatewayType = gatewayType;
+  }
+
+  public Integer getPayType() {
+    return payType;
+  }
+
+  public void setPayType(Integer payType) {
+    this.payType = payType;
   }
 }

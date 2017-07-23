@@ -3,7 +3,7 @@ package com.jifenke.lepluslive.web.rest;
 import com.jifenke.lepluslive.Application;
 import com.jifenke.lepluslive.activity.service.ActivityPhoneOrderService;
 import com.jifenke.lepluslive.barcode.service.BarcodeService;
-import com.jifenke.lepluslive.fuyou.service.ScanCodeOrderService;
+import com.jifenke.lepluslive.order.service.ScanCodeOrderService;
 import com.jifenke.lepluslive.global.config.Constants;
 import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
 import com.jifenke.lepluslive.merchant.repository.MerchantRepository;

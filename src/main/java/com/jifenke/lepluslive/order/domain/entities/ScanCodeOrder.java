@@ -1,4 +1,4 @@
-package com.jifenke.lepluslive.fuyou.domain.entities;
+package com.jifenke.lepluslive.order.domain.entities;
 
 import com.jifenke.lepluslive.global.util.MvUtil;
 import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
@@ -18,7 +18,7 @@ import javax.persistence.Version;
 import javax.validation.constraints.NotNull;
 
 /**
- * 富友线下扫码订单 Created by zhangwen on 16/11/25.
+ * 通道支付订单 Created by zhangwen on 16/11/25.
  */
 @Entity
 @Table(name = "SCAN_CODE_ORDER")
@@ -32,7 +32,7 @@ public class ScanCodeOrder {
 
   private String orderCode;  //第三方渠道流水号
 
-  private String settleDate;  //第三方支付完成时间
+  private String settleDate;  //第三方支付完成时间(入账时间[第二天结算]：易宝格式：yyyy-MM-dd,富友：yyyyMMdd)
 
   private Date createdDate;
 
@@ -50,7 +50,7 @@ public class ScanCodeOrder {
   private Integer state = 0; //支付状态  0=未支付|1=已支付|2=已退款
 
   @NotNull
-  private Long orderType;//订单类型
+  private Long orderType;//订单类型 todo:几种？
 
   @NotNull
   private Long totalPrice = 0L;
@@ -59,7 +59,7 @@ public class ScanCodeOrder {
   private Long truePay = 0L;
 
   @NotNull
-  private Long trueScore = 0L; //实际使用红包
+  private Long trueScore = 0L; //实际使用鼓励金
 
   private Long commission = 0L; //乐加总佣金=truePayCommission+scoreCommission
 
@@ -67,8 +67,7 @@ public class ScanCodeOrder {
 
   private Long scoreCommission = 0L; //红包部分佣金
 
-
-  private Long rebate = 0L; //返利红包
+  private Long rebate = 0L; //返鼓励金
 
   private Long scoreC = 0L; //返金币数 = commission*40%
 

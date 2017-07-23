@@ -2,9 +2,9 @@ package com.jifenke.lepluslive.fuyou.controller;
 
 import com.jifenke.lepluslive.fuyou.controller.view.ScanCodeRefundOrderViewExcel;
 import com.jifenke.lepluslive.fuyou.domain.criteria.ScanCodeRefundOrderCriteria;
-import com.jifenke.lepluslive.fuyou.domain.entities.ScanCodeOrder;
+import com.jifenke.lepluslive.order.domain.entities.ScanCodeOrder;
 import com.jifenke.lepluslive.fuyou.domain.entities.ScanCodeRefundOrder;
-import com.jifenke.lepluslive.fuyou.service.ScanCodeOrderService;
+import com.jifenke.lepluslive.order.service.ScanCodeOrderService;
 import com.jifenke.lepluslive.fuyou.service.ScanCodeRefundOrderService;
 import com.jifenke.lepluslive.fuyou.service.ScanCodeStatementService;
 import com.jifenke.lepluslive.global.util.LejiaResult;

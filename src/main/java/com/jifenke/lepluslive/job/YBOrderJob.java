@@ -1,7 +1,8 @@
 package com.jifenke.lepluslive.job;
 
-import com.jifenke.lepluslive.order.service.ScanCodeOrderService;
 import com.jifenke.lepluslive.fuyou.service.ScanCodeStatementService;
+import com.jifenke.lepluslive.order.service.ScanCodeOrderService;
+import com.jifenke.lepluslive.yibao.service.YBOrderService;
 
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -17,14 +18,15 @@ import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
+import java.util.Map;
 
 /**
- * 富友扫码订单生成两种分润单 Created by zhangwen on 16/12/21.
+ * 易宝订单生成两种结算单 Created by zhangwen on 17/07/20.
  */
 @Component
-public class ScanCodeOrderJob implements Job {
+public class YBOrderJob implements Job {
 
-  private static final Logger log = LoggerFactory.getLogger(ScanCodeOrderJob.class);
+  private static final Logger log = LoggerFactory.getLogger(YBOrderJob.class);
 
 
   @Override
@@ -39,9 +41,9 @@ public class ScanCodeOrderJob implements Job {
       log.error("jobExecutionContext.getScheduler().getContext() error!", e);
       throw new RuntimeException(e);
     }
-    ScanCodeOrderService
-        orderService =
-        (ScanCodeOrderService) applicationContext.getBean("scanCodeOrderService");
+    YBOrderService
+        ybOrderService =
+        (YBOrderService) applicationContext.getBean("YBOrderService");
     ScanCodeStatementService
         statementService =
         (ScanCodeStatementService) applicationContext.getBean("scanCodeStatementService");
@@ -61,24 +63,16 @@ public class ScanCodeOrderJob implements Job {
     String currDay2 = sdf.format(start);
     String currDay = currDay2 + "%";
 
-    List<Object[]> o1 = orderService.countTransferGroupByMerchantNum(currDay);
-    List<Object[]> o2 = orderService.countTransferGroupByMerchant(currDay);
+    List<Map<String, Object>> list = ybOrderService.countTransferGroupByMerchantNum(currDay);
 
-    for (Object[] object : o1) {
+    for (Map<String, Object> map : list) {
       try {
-        statementService.createScanCodeSettleOrder(object, currDay2);
+//        statementService.createScanCodeSettleOrder(object, currDay2);
       } catch (Exception e) {
-        log.error("商户号为" + object[0] + "的统计出现问题");
+        log.error("商户号为" + map.get("ledgerNo") + "的统计出现问题");
       }
     }
 
-    for (Object[] object : o2) {
-      try {
-        statementService.createScanCodeMerchantStatement(object, currDay2);
-      } catch (Exception e) {
-        log.error("商户ID为" + object[0] + "的商户结算单统计出现问题");
-      }
-    }
 
     //根据昨天的已完成退款单冲正两种结算
     try {

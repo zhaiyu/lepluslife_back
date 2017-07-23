@@ -32,6 +32,9 @@ public class LedgerRefundOrder {
   @Column(nullable = false, length = 30)
   private String orderSid; //对应要退款订单的订单号
 
+  @Column(nullable = false, length = 50)
+  private String ledgerNo;  //通道子商户号
+
   private Integer orderFrom = 1;  //退款通道 1=易宝，2=富有，3=微信
 
   private Integer orderType = 1;  //1=普通订单,2=乐加订单
@@ -63,7 +66,7 @@ public class LedgerRefundOrder {
 
   private Long scoreCommission = 0L;  //鼓励金手续费|鼓励金佣金=对应order.scoreCommission
 
-  private Long transferMoney = 0L; //应收商户的总金额鼓励金=对应order.transferMoney
+  private Long transferMoney = 0L; //应收商户的总金额=对应order.transferMoney
 
   private Long transferMoneyFromTruePay = 0L; //因产生退款，应收商户的资金=对应order.transferMoneyFromTruePay
 
@@ -292,5 +295,13 @@ public class LedgerRefundOrder {
 
   public void setShareOrderId(Long shareOrderId) {
     this.shareOrderId = shareOrderId;
+  }
+
+  public String getLedgerNo() {
+    return ledgerNo;
+  }
+
+  public void setLedgerNo(String ledgerNo) {
+    this.ledgerNo = ledgerNo;
   }
 }

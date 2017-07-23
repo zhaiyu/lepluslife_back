@@ -1,6 +1,6 @@
 package com.jifenke.lepluslive.fuyou.controller.view;
 
-import com.jifenke.lepluslive.fuyou.domain.entities.ScanCodeOrder;
+import com.jifenke.lepluslive.order.domain.entities.ScanCodeOrder;
 import com.jifenke.lepluslive.fuyou.domain.entities.ScanCodeRefundOrder;
 import com.jifenke.lepluslive.user.domain.entities.LeJiaUser;
 

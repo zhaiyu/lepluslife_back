@@ -1,7 +1,6 @@
 
 package com.jifenke.lepluslive.order.domain.entities;
 
-import com.jifenke.lepluslive.fuyou.domain.entities.ScanCodeOrder;
 import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
 import com.jifenke.lepluslive.partner.domain.entities.Partner;
 import com.jifenke.lepluslive.partner.domain.entities.PartnerManager;

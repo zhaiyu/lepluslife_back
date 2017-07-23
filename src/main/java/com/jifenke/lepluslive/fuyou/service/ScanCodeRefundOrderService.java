@@ -1,7 +1,7 @@
 package com.jifenke.lepluslive.fuyou.service;
 
 import com.jifenke.lepluslive.fuyou.domain.criteria.ScanCodeRefundOrderCriteria;
-import com.jifenke.lepluslive.fuyou.domain.entities.ScanCodeOrder;
+import com.jifenke.lepluslive.order.domain.entities.ScanCodeOrder;
 import com.jifenke.lepluslive.fuyou.domain.entities.ScanCodeRefundLog;
 import com.jifenke.lepluslive.fuyou.domain.entities.ScanCodeRefundOrder;
 import com.jifenke.lepluslive.fuyou.repository.ScanCodeRefundLogRepository;
