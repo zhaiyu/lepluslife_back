@@ -46,32 +46,27 @@ public class LedgerSettlementService {
       public Predicate toPredicate(Root<LedgerSettlement> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
         Predicate predicate = cb.conjunction();
         // 转账状态
-        if (criteria.getTransferState() != null) {
+        if (criteria.getTransferState() != null && !"".equals(criteria.getTransferState())) {
           predicate.getExpressions().add(
                   cb.equal(root.get("transferState"), criteria.getTransferState()));
         }
         // 结算状态
-        if (criteria.getState() != null) {
+        if (criteria.getState() != null && !"".equals(criteria.getState())) {
           predicate.getExpressions().add(
                   cb.equal(root.get("state"), criteria.getState()));
         }
         // 乐加商户编号
-        if (criteria.getMerchantUserId() != null) {
+        if (criteria.getMerchantUserId() != null && !"".equals(criteria.getMerchantUserId())) {
           predicate.getExpressions().add(
                   cb.equal(root.get("merchantUserId"), criteria.getMerchantUserId()));
         }
         // 易宝商户号
-        if (criteria.getLedgerNo() != null) {
+        if (criteria.getLedgerNo() != null && !"".equals(criteria.getLedgerNo())) {
           predicate.getExpressions().add(
                   cb.equal(root.get("ledgerNo"),  criteria.getLedgerNo()));
         }
-        // 转账请求号
-        if (criteria.getOrderSid() != null) {
-          predicate.getExpressions().add(
-                  cb.equal(root.get("orderSid"), criteria.getOrderSid()));
-        }
         //  通道结算单号
-        if (criteria.getOrderSid() != null) {
+        if (criteria.getOrderSid() != null  && !"".equals(criteria.getOrderSid())) {
           predicate.getExpressions().add(
                   cb.equal(root.get("orderSid"), criteria.getOrderSid()));
         }

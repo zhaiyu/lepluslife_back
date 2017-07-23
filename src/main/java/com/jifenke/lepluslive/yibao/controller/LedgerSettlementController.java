@@ -37,7 +37,7 @@ public class LedgerSettlementController {
      */
     @RequestMapping(value = "/ledger/list", method = RequestMethod.GET)
     public ModelAndView toListPage() {
-        return MvUtil.go("/");
+        return MvUtil.go("/yibao/ledger/ledgerSettlementList");
     }
 
     @RequestMapping(value = "/ledger/findByCriteria", method = RequestMethod.POST)

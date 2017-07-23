@@ -63,7 +63,7 @@ public class StoreSettlementExcel extends AbstractExcelView {
             excelRow.createCell(2).setCellValue(settlement.getMerchant().getName());
             SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
             if (settlement.getTradeDate() != null) {
-                excelRow.createCell(3).setCellValue(sdf.format(settlement.getTradeDate()));
+                excelRow.createCell(3).setCellValue(settlement.getTradeDate());
             } else {
                 excelRow.createCell(3).setCellValue("--");
             }

@@ -47,27 +47,27 @@ public class StoreSettlementService {
             public Predicate toPredicate(Root<StoreSettlement> root, CriteriaQuery<?> query, CriteriaBuilder cb) {
                 Predicate predicate = cb.conjunction();
                 // 门店ID
-                if (criteria.getMerchantId() != null) {
+                if (criteria.getMerchantId() != null&&!"".equals(criteria.getMerchantId())) {
                     predicate.getExpressions().add(
                             cb.equal(root.get("merchant").get("id"), criteria.getMerchantId()));
                 }
                 // 门店名称
-                if (criteria.getMerchantName() != null) {
+                if (criteria.getMerchantName() != null&&!"".equals(criteria.getMerchantName())) {
                     predicate.getExpressions().add(
                             cb.like(root.get("merchant").get("name"), "%" + criteria.getMerchantName() + "%"));
                 }
                 // 易宝商户号
-                if (criteria.getLedgerNo() != null) {
+                if (criteria.getLedgerNo() != null&&!"".equals(criteria.getLedgerNo())) {
                     predicate.getExpressions().add(
                             cb.equal(root.get("ledgerNo"), criteria.getLedgerNo()));
                 }
                 //  通道结算单号
-                if (criteria.getLedgerSid() != null) {
+                if (criteria.getLedgerSid() != null&&!"".equals(criteria.getLedgerSid())) {
                     predicate.getExpressions().add(
                             cb.equal(root.get("ledgerSid"), criteria.getLedgerSid()));
                 }
                 //  清算日期
-                if (criteria.getStartDate() != null && criteria.getEndDate() != null) {
+                if (criteria.getStartDate() != null && criteria.getEndDate() != null&&!"".equals(criteria.getStartDate())) {
                     Date start = new Date(criteria.getStartDate());
                     Date end = new Date(criteria.getEndDate());
                     predicate.getExpressions().add(

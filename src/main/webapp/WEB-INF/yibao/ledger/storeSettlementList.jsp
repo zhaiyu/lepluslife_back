@@ -61,7 +61,7 @@
                     </div>
                     <div class="form-group col-md-3">
                         <label for="merchantID">门店名称</label>
-                        <input id="merchantName" type="text" 
+                        <input id="merchantName" type="text"
                                class="form-control"
                                placeholder="请输入门店名称"/>
                     </div>
@@ -249,7 +249,6 @@
     function getFinancialByAjax(settlementCriteria) {
         financialContent.innerHTML = "";
         headContent.innerHTML = "";
-        dateContent.innerHTML = "";
         $.ajax({
                    type: "post",
                    url: "/manage/settlement/store/findByCriteria",
@@ -257,34 +256,43 @@
                    data: JSON.stringify(settlementCriteria),
                    contentType: "application/json",
                    success: function (data) {
-                       var page = data.data;
+                       var page = data.data.page;
+                       var merchants = data.data.merchants;
                        var content = page.content;
                        var totalPage = page.totalPages;
-                       $("#totalElements").html(page.totalElements);
                        if (totalPage == 0) {
                            totalPage = 1;
                        }
                        if (flag) {
-                           initPage(financialCriteria.offset, totalPage);
+                           initPage(settlementCriteria.offset, totalPage);
                            flag = false;
                        }
                        if (init1) {
                            initPage(1, totalPage);
                        }
-                       headContent.innerHTML =
+                       headContent.innerHTML +=
                                '<th>结算单号</th><th>门店ID</th><th>门店名称</th><th>清算日期</th><th>易宝商户号</th><th>微信应入账</th><th>支付宝应入账</th><th>鼓励金应入账</th>';
-                       headContent.innerHTML =
+                       headContent.innerHTML +=
                                '<th>退款笔数</th><th>退款支出</th><th>实际应转账</th><th>通道结算单</th>';
                        for (i = 0; i < content.length; i++) {
                            var contentStr = '<tr><td>' + content[i].orderSid + '</td>';
-                           contentStr +=
-                                   '<td><span>' + content[i].merchant.id + '</span></td>';
-                           contentStr +=
-                                   '<td><span>' + content[i].merchant.name + '</span></td>'
+                           if(merchants[i]!=null&&merchants[i].id!="") {
+                               contentStr +=
+                                       '<td><span>' + merchants[i].id + '</span></td>';
+                               contentStr +=
+                                       '<td><span>' + merchants[i].name + '</span></td>'
+                           }else  {
+                               contentStr +=
+                                       '<td><span>--</span></td>';
+                               contentStr +=
+                                       '<td><span>--</span></td>';
+                           }
                            contentStr +=
                                    '<td><span>'
-                                   + new Date(content[i].endDate).format('yyyy-MM-dd')          // 清算日期
+                                   + new Date(content[i].tradeDate).format('yyyy-MM-dd')          // 清算日期
                                    + '</span></td>';
+                           contentStr +=
+                                   '<td><span>' + content[i].ledgerNo + '</span></td>';
                            contentStr +=
                                    '<td><span>' + content[i].wxTruePayTransfer/100.0 + '</span></td>';
                            contentStr +=
@@ -375,7 +383,7 @@
         } else {
             settlementCriteria.merchantName = null;
         }
-        if ($("#ledgerSid").val() != "" && $("#ledgerSid").val() != null) {
+        if ($("#ledgerSid").val()!= ""&& $("#ledgerSid").val()!= null) {
             settlementCriteria.ledgerSid = $("#ledgerSid").val();
         } else {
             settlementCriteria.ledgerSid = null;

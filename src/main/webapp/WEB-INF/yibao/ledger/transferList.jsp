@@ -49,8 +49,7 @@
                 <div class="row" style="margin-bottom: 30px">
                     <div class="form-group col-md-3">
                         <label for="ledgerSid">通道结算单号</label>
-                        <input type="text" id="ledgerSid" class="form-control"
-                               placeholder="请输入通道结算单号"/>
+                        <input type="text" id="ledgerSid" class="form-control" placeholder="请输入通道结算单号"/>
                     </div>
                     <div class="form-group col-md-3">
                         <label for="orderSid">转账请求号</label>
@@ -204,7 +203,6 @@
                 for (var i = 0; i < content.length; i++) {
                     var contentStr = '<tr><td>' + content[i].orderSid + '</td>';
                     contentStr += '<td>' + content[i].ledgerSid + '</td>';
-                    contentStr += '<td>' + content[i].merchantNum + '</td>';
                     contentStr +=
                             '<td>'
                             + new Date(content[i].tradeDate).format('yyyy-MM-dd HH:mm:ss')
@@ -292,22 +290,22 @@
     function setCriteria() {
         transferCriteria.offset = 1;
         init1 = 1;
-        if ($("#ledgerSid").val() != "" && $("#ledgerSid").val() != null) {
-            transferCriteria.ledgerSid = $("#ledgerSid").val();
+        if ($("#ledgerSid").val()!=""&&$("#ledgerSid").val()!= null) {
+            transferCriteria.ledgerSid=$("#ledgerSid").val();
         } else {
-            transferCriteria.ledgerSid = null;
+            transferCriteria.ledgerSid=null;
         }
         if ($("#orderSid").val() != "" && $("#orderSid").val() != null) {
             transferCriteria.orderSid = $("#orderSid").val();
         } else {
             transferCriteria.orderSid = null;
         }
-        if ($("#ledgerNo").val() != -1) {
+        if ($("#ledgerNo").val() != "" && $("#ledgerNo").val()!=null) {
             transferCriteria.ledgerNo = $("#ledgerNo").val();
         } else {
             transferCriteria.ledgerNo = null;
         }
-        if ($("#state").val() != "" && $("#state").val() != null) {
+        if ($("#state").val()!=""&&$("#state").val()!=null) {
             transferCriteria.state = $("#state").val();
         } else {
             transferCriteria.state = null;
@@ -332,7 +330,7 @@
     }
     function exportExcel() {
         setCriteria();
-        post("/manage/transfer/ledger/findByCriteria", transferCriteria);
+        post("/manage/transfer/ledger/export", transferCriteria);
     }
 
     //***********************保留2位小数*************************************

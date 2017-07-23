@@ -5,7 +5,6 @@ import com.jifenke.lepluslive.global.util.MvUtil;
 import com.jifenke.lepluslive.yibao.domain.criteria.LedgerTransferCriteria;
 import com.jifenke.lepluslive.yibao.domain.entities.LedgerTransfer;
 import com.jifenke.lepluslive.yibao.domain.entities.LedgerTransferLog;
-import com.jifenke.lepluslive.yibao.domain.entities.MerchantUserLedger;
 import com.jifenke.lepluslive.yibao.repository.LedgerTransferRepository;
 import com.jifenke.lepluslive.yibao.util.YbRequestUtils;
 

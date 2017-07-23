@@ -8,7 +8,7 @@
 <%@ page contentType="text/html;charset=UTF-8" language="java" %>
 <%@ taglib prefix="c" uri="http://java.sun.com/jsp/jstl/core" %>
 <%@ taglib prefix="fmt" uri="http://java.sun.com/jsp/jstl/fmt" %>
-<%@include file="../commen.jsp" %>
+<%@include file="../../commen.jsp" %>
 <!DOCTYPE>
 <html>
 <head>
@@ -35,19 +35,19 @@
 
 <body>
 <div id="topIframe">
-    <%@include file="../common/top.jsp" %>
+    <%@include file="../../common/top.jsp" %>
 </div>
 <div id="content">
     <div id="leftIframe">
-        <%@include file="../common/left.jsp" %>
+        <%@include file="../../common/left.jsp" %>
     </div>
     <div class="m-right">
         <div class="main">
             <div class="container-fluid">
-                <div class="row" style="margin-top: 30px">
-                    <div class="form-group col-md-5">
+                <div class="row">
+                    <div class="form-group col-md-3">
                         <label for="date-end" id="date-content">清算日期</label>
-                        <div id="date-end" class="form-control">
+                        <div id="date-end" class="form-control" style="margin-top: 20px">
                             <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
                             <span id="searchDateRange"></span>
                             <b class="caret"></b>
@@ -65,6 +65,8 @@
                                class="form-control"
                                placeholder="请输入商户ID"/>
                     </div>
+                </div>
+                <div class="row">
                     <div class="form-group col-md-2">
                         <label>转账状态</label>
                         <select class="form-control" id="transferState">
@@ -123,7 +125,7 @@
     </div>
 </div>
 <div id="bottomIframe">
-    <%@include file="../common/bottom.jsp" %>
+    <%@include file="../../common/bottom.jsp" %>
 </div>
 
 <!-- Include all compiled plugins (below), or include individual files as needed -->
@@ -190,8 +192,9 @@
             data: JSON.stringify(settlementCriteria),
             contentType: "application/json",
             success: function (data) {
-                var page = data.data;
+                var page = data.data.page;
                 var content = page.content;
+                var merchants = data.data.merchantUsers;
                 var totalPage = page.totalPages;
                 $("#totalElements").html(page.totalElements);
                 if (totalPage == 0) {
@@ -206,22 +209,28 @@
                 }
                 headContent.innerHTML =
                         '<th>通道结算单号</th><th>易宝商户号</th><th>乐加商户ID</th><th>清算日期</th><th>日转账交易金额</th><th>单笔结算费</th><th>费用承担方</th><th>实际转账金额</th>';
-                headContent.innerHTML =
+                headContent.innerHTML +=
                         '<th>账户余额</th><th>起结金额</th><th>应结算金额</th><th>实际结算金额</th><th>转账状态</th><th>结算状态</th><th>操作</th>';
-                for (i = 0; i < content.length; i++) {
+                for (var i = 0; i < content.length; i++) {
                     var contentStr = '<tr><td>' + content[i].orderSid + '</td>';
                     contentStr +=
                             '<td><span>' + content[i].ledgerNo + '</span></td>';
-                    contentStr +=
-                            '<td><span>' + content[i].merchantUserId + '</span></td>';
+                    if (merchants[i] != null && merchants[i].name != "") {
+                        contentStr +=
+                                '<td><span>' + merchants[i].name + '(' + merchants[i].id + ')</span></td>';
+                    } else {
+                        contentStr +=
+                                '<td><span>' + content[i].merchantUserId + '</span></td>';
+
+                    }
                     contentStr +=
                             '<td><span>'
                             + new Date(content[i].tradeDate).format('yyyy-MM-dd')
                             + '</span></td>';
                     contentStr +=
-                            '<td><span>' + content[i].totalTransfer/100.0 + '</span></td>';
+                            '<td><span>' + content[i].totalTransfer / 100.0 + '</span></td>';
                     contentStr +=
-                            '<td><span>' + content[i].settlementCost/100.0 + '</span></td>';
+                            '<td><span>' + content[i].settlementCost / 100.0 + '</span></td>';
                     if (content[i].costSide == 0) {
                         contentStr +=
                                 '<td>积分客</td>'
@@ -230,41 +239,41 @@
                                 '<td>子商户</td>';
                     }
                     contentStr +=
-                            '<td><span>' + content[i].actualTransfer/100.0 + '</span></td>';
+                            '<td><span>' + content[i].actualTransfer / 100.0 + '</span></td>';
                     contentStr +=
-                            '<td><span>' + content[i].accountBalance/100.0 + '</span></td>';
+                            '<td><span>' + content[i].accountBalance / 100.0 + '</span></td>';
                     contentStr +=
-                            '<td><span>' + content[i].minSettleAmount/100.0 + '</span></td>';
+                            '<td><span>' + content[i].minSettleAmount / 100.0 + '</span></td>';
                     contentStr +=
-                            '<td><span>' + content[i].settlementAmount/100.0 + '</span></td>';
+                            '<td><span>' + content[i].settlementAmount / 100.0 + '</span></td>';
                     contentStr +=
-                            '<td><span>' + content[i].actualTransfer/100.0 + '</span></td>';
+                            '<td><span>' + content[i].actualTransfer / 100.0 + '</span></td>';
                     if (content[i].transferState == 0) {
                         contentStr += '<td>待转账</td>'
-                    } else if(content[i].transferState == 1) {
+                    } else if (content[i].transferState == 1) {
                         contentStr += '<td>转账成功</td>';
                     } else {
                         contentStr += '<td>转账失败</td>';
                     }
                     if (content[i].state == 0) {
                         contentStr += '<td>待查询</td>'
-                    } else if(content[i].state == 1) {
+                    } else if (content[i].state == 1) {
                         contentStr += '<td>转账成功</td>';
-                    } else if(content[i].state == 2){
+                    } else if (content[i].state == 2) {
                         contentStr += '<td>已退回</td>';
-                    } else if(content[i].state == 3){
+                    } else if (content[i].state == 3) {
                         contentStr += '<td>无结算记录</td>';
-                    } else if(content[i].state == 4){
+                    } else if (content[i].state == 4) {
                         contentStr += '<td>已扣款未打款</td>';
-                    } else if(content[i].state == 5){
+                    } else if (content[i].state == 5) {
                         contentStr += '<td>打款中</td>';
-                    } else if(content[i].state == -1){
+                    } else if (content[i].state == -1) {
                         contentStr += '<td>打款失败</td>';
                     } else {
                         contentStr += '<td>银行返回打款失败</td>';
                     }
                     contentStr +=
-                            '<td><span><a onclick="searchState('+content[i].id+')"></span></td></tr>';
+                            '<td><span><a onclick="searchState(' + content[i].id + ')">查询状态</a></span></td></tr>';
                     financialContent.innerHTML += contentStr;
                 }
 
@@ -331,6 +340,11 @@
             settlementCriteria.ledgerNo = $("#ledgerNo").val();
         } else {
             settlementCriteria.ledgerNo = null;
+        }
+        if ($("#orderSid").val() != "" && $("#orderSid").val() != null) {
+            settlementCriteria.orderSid = $("#orderSid").val();
+        } else {
+            settlementCriteria.orderSid = null;
         }
         if ($("#merchantUserId").val() != "" && $("#merchantUserId").val() != null) {
             settlementCriteria.merchantUserId = $("#merchantUserId").val();
