@@ -306,7 +306,8 @@ public class MerchantService {
             return null;
         }).collect(Collectors.toList());
         // 门店所属商户修改 17/05/04
-        if (merchantUser != null && !merchantUser.getName().equals(origin.getMerchantUser() == null ? "" : origin.getMerchantUser().getName())) {
+        // && !merchantUser.getName().equals(origin.getMerchantUser() == null ? "" : origin.getMerchantUser().getName())
+        if (merchantUser != null) {
             // 1-门店自身的商户字段
             origin.setMerchantUser(merchantUser);
             // 2-乐加商户平台映射关系
