@@ -23,11 +23,7 @@ public class LedgerTransferLogService {
 
   @Transactional(propagation = Propagation.REQUIRED)
   public void saveLog(LedgerTransferLog log) {
-    try {
-      repository.save(log);
-    } catch (Exception e) {
-      e.printStackTrace();
-    }
+    repository.save(log);
   }
 
 }

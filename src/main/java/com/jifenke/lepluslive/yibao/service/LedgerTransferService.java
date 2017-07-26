@@ -45,12 +45,12 @@ public class LedgerTransferService {
   }
 
   /**
-   * 转账(根据通道结算单转账并生成转账记录)  2017/7/19
+   * 转账  2017/7/19
    *
    * @param ledgerNo  易宝的子商户号
    * @param amount    转账金额（注意：此时单位为分，调用接口时需/100转换为元）
    * @param tradeDate 清算日期
-   * @param type      转账类型 1=交易实时转账，2=交易延迟转账，3=定时合并转账
+   * @param type      转账类型 1=交易实时转账，2=定时合并转账
    */
   @Transactional(propagation = Propagation.REQUIRED)
   public void transfer(String ledgerNo, Long amount, String tradeDate, Integer type) {
@@ -79,6 +79,7 @@ public class LedgerTransferService {
       state = Integer.valueOf(code);
       log.setMsg(resultMap.get("msg"));
       //第一次转账异常，给对应人员发送短信或消息 todo: 待完成
+      System.out.println("==============第一次转账异常===============");
       if ("162005".equals(code) || "988888".equals(code) || "999999".equals(code)) {
         //补偿查询
         Map<String, String> map = YbRequestUtils.queryTransfer(transfer.getOrderSid());

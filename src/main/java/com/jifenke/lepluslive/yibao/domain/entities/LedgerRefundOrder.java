@@ -86,7 +86,6 @@ public class LedgerRefundOrder {
 
   private Long shareRealBack = 0L; //实际追回的分润总额
 
-  @Column(nullable = false)
   private Long shareOrderId;   //如果该订单有分润=分润单ID
 
   public Long getId() {

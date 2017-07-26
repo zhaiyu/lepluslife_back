@@ -42,7 +42,7 @@ public class StoreSettlement {
   @Column(nullable = false, length = 30)
   private String orderSid = MvUtil.getOrderNumber(7); //结算单号(唯一)
 
-  @Column(nullable = false, length = 30)
+  @Column(length = 30)
   private String ledgerSid;  //通道结算单号=LedgerSettlement.orderSid
 
   @Column(nullable = false, length = 50)

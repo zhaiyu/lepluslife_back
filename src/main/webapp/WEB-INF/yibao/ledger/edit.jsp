@@ -338,7 +338,7 @@
         merchantUserLedger.bankCity = bankCity.trim();
         //起结金额
         var minSettleAmount = $('#minSettleAmount').val();
-        if (!minSettleAmount || eval(minSettleAmount) <= 0.01) {
+        if (!minSettleAmount || eval(minSettleAmount) < 0.01) {
             alert("请输入大于0.01元的起结金额");
             return false
         }

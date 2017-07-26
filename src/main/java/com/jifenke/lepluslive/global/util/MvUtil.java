@@ -41,7 +41,7 @@ public class MvUtil {
     String
         randomStr =
         RandomStringUtils
-            .random(5, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890");
+            .random(2, "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ1234567890");
 
     return prefix + new SimpleDateFormat("yyyyMMddHHmmss").format(new Date()) + randomStr;
   }

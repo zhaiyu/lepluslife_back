@@ -208,9 +208,9 @@
                     initPage(1, totalPage);
                 }
                 headContent.innerHTML =
-                        '<th>通道结算单号</th><th>易宝商户号</th><th>乐加商户ID</th><th>清算日期</th><th>日转账交易金额</th><th>单笔结算费</th><th>费用承担方</th><th>实际转账金额</th>';
+                        '<th>通道结算单号</th><th>易宝商户号</th><th>乐加商户ID</th><th>清算日期</th><th>日转账交易金额</th><th>实际转账金额</th>';
                 headContent.innerHTML +=
-                        '<th>账户余额</th><th>起结金额</th><th>应结算金额</th><th>实际结算金额</th><th>转账状态</th><th>结算状态</th><th>操作</th>';
+                        '<th>实际结算金额</th><th>转账状态</th><th>结算状态</th><th>操作</th>';
                 for (var i = 0; i < content.length; i++) {
                     var contentStr = '<tr><td>' + content[i].orderSid + '</td>';
                     contentStr +=
@@ -230,22 +230,7 @@
                     contentStr +=
                             '<td><span>' + content[i].totalTransfer / 100.0 + '</span></td>';
                     contentStr +=
-                            '<td><span>' + content[i].settlementCost / 100.0 + '</span></td>';
-                    if (content[i].costSide == 0) {
-                        contentStr +=
-                                '<td>积分客</td>'
-                    } else {
-                        contentStr +=
-                                '<td>子商户</td>';
-                    }
-                    contentStr +=
                             '<td><span>' + content[i].actualTransfer / 100.0 + '</span></td>';
-                    contentStr +=
-                            '<td><span>' + content[i].accountBalance / 100.0 + '</span></td>';
-                    contentStr +=
-                            '<td><span>' + content[i].minSettleAmount / 100.0 + '</span></td>';
-                    contentStr +=
-                            '<td><span>' + content[i].settlementAmount / 100.0 + '</span></td>';
                     contentStr +=
                             '<td><span>' + content[i].actualTransfer / 100.0 + '</span></td>';
                     if (content[i].transferState == 0) {
