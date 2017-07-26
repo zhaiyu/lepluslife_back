@@ -34,6 +34,9 @@ public class LedgerSettlement {
   @Column(nullable = false, length = 10)
   private String tradeDate; //结算日期（对应的给商户转账是哪一天完成的）（yyyy-MM-dd）
 
+  @Column(length = 30)
+  private String startEndDate;  //结算起止时间
+
   @Column(nullable = false, unique = true, length = 30)
   private String orderSid = MvUtil.getOrderNumber(7); //通道结算单号(唯一)
 
@@ -43,36 +46,25 @@ public class LedgerSettlement {
   @Column(nullable = false)
   private Long merchantUserId;  //对应的商户ID
 
-  private Long accountBalance = 0L;  //当前子账户余额(转账前查询)
-
-  private Integer settlementCost = 0;   //单笔结算费用
-
-  private Long totalTransfer = 0L;  //日交易转账金额=使用该账户门店结算单之和
+  private Long totalTransfer = 0L;  //交易应入账金额=使用该账户门店结算单之和
 
   /**
-   * 如果结算费用承担方为【积分客承担】
-   * 【日交易转账金额+账户余额】小于起结金额时，实际转账金额=日交易转账金额。如果大于等于起结金额，实际转账金额=日交易转账金额+单笔结算费用
-   * 如果结算费用承担方为【子商户承担】
-   * 实际转账金额=日交易转账金额
+   * 实际转账金额=结算起止时间内的转账成功金额
    */
   private Long actualTransfer = 0L;   //实际转账金额
 
-  /**
-   * 值A=账户余额+实际转账金额。
-   * A如果小于起结金额，则通道应结算金额为0.否则通道应结算金额为A
-   */
-  private Long settlementAmount = 0L;  //通道应结算金额
-
   private Long settlementTrueAmount = 0L;  //查询后易宝返回的实际结算金额（理应=settlementAmount）
 
-  private Integer costSide = 0;   //结算费用承担方  0=积分客|1=子商户
+  @Column(length = 50)
+  private String batchNo;  //通道返回的结算批次号
 
-  private Long minSettleAmount = 1L;  //起结金额 账户余额必须大于等于该值才会结算
+  @Column(length = 100)
+  private String describe;  //通道返回的描述
 
-  @Column(nullable = false, length = 30)
+  @Column(length = 30)
   private String accountName; //开户名
 
-  @Column(nullable = false, length = 30)
+  @Column(length = 30)
   private String bankAccountNumber;  //出款用的银行卡号【必须为储蓄卡】
 
   public Long getId() {
@@ -139,20 +131,28 @@ public class LedgerSettlement {
     this.merchantUserId = merchantUserId;
   }
 
-  public Long getAccountBalance() {
-    return accountBalance;
+  public String getStartEndDate() {
+    return startEndDate;
   }
 
-  public void setAccountBalance(Long accountBalance) {
-    this.accountBalance = accountBalance;
+  public void setStartEndDate(String startEndDate) {
+    this.startEndDate = startEndDate;
   }
 
-  public Integer getSettlementCost() {
-    return settlementCost;
+  public String getBatchNo() {
+    return batchNo;
   }
 
-  public void setSettlementCost(Integer settlementCost) {
-    this.settlementCost = settlementCost;
+  public void setBatchNo(String batchNo) {
+    this.batchNo = batchNo;
+  }
+
+  public String getDescribe() {
+    return describe;
+  }
+
+  public void setDescribe(String describe) {
+    this.describe = describe;
   }
 
   public Long getTotalTransfer() {
@@ -171,36 +171,12 @@ public class LedgerSettlement {
     this.actualTransfer = actualTransfer;
   }
 
-  public Long getSettlementAmount() {
-    return settlementAmount;
-  }
-
-  public void setSettlementAmount(Long settlementAmount) {
-    this.settlementAmount = settlementAmount;
-  }
-
   public Long getSettlementTrueAmount() {
     return settlementTrueAmount;
   }
 
   public void setSettlementTrueAmount(Long settlementTrueAmount) {
     this.settlementTrueAmount = settlementTrueAmount;
-  }
-
-  public Integer getCostSide() {
-    return costSide;
-  }
-
-  public void setCostSide(Integer costSide) {
-    this.costSide = costSide;
-  }
-
-  public Long getMinSettleAmount() {
-    return minSettleAmount;
-  }
-
-  public void setMinSettleAmount(Long minSettleAmount) {
-    this.minSettleAmount = minSettleAmount;
   }
 
   public String getAccountName() {

@@ -91,8 +91,9 @@ public class FileImageController {
    * @return 文件名
    */
   @RequestMapping(value = "/file/localAndOss")
-  public LejiaResult saveImage(@RequestParam("file") MultipartFile filedata) {
-    String fileName = MvUtil.getFileName("yibao");
+  public LejiaResult saveImage(@RequestParam("file") MultipartFile filedata,
+                               @RequestParam String ledgerNo) {
+    String fileName = MvUtil.getFileName("yibao_" + ledgerNo + "_");
     String suffix = MvUtil.getExtendedName(filedata.getOriginalFilename());
     String fileNameNew = fileName + "." + suffix;
     try {

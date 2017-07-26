@@ -198,6 +198,26 @@ public class YbRequestUtils {
   }
 
   /**
+   * 结算结果查询  2017/7/25
+   *
+   * @param ledgerNos 易宝的子商户号(可多个，多个已‘|’分隔)
+   * @param date      结算日期(yyyy-MM-dd. 若为空，则查询近 7 天内的结算结果) null时查询最近七天
+   */
+  public static Map<String, String> querySettlement(String ledgerNos, String date) {
+    Map<String, String> dataMap = getCommonDataMap();
+    dataMap.put("ledgerno", ledgerNos);
+    if (date != null) {
+      dataMap.put("date", date);
+    }
+    //默认查询详情本版关闭,当查询详情时“Y”，ledgerno为空或只能为一个商编，且日期必填
+    //dataMap.put("isdetail", "N");
+
+    String data = ZGTUtils.buildData(dataMap, ZGTUtils.QUERYSETTLEMENTAPI_REQUEST_HMAC_ORDER);
+    Map<String, String> map = ZGTUtils.httpPost(YBConstants.QUERY_SETTLEMENT_URL, data);
+    return callBack(map);
+  }
+
+  /**
    * 分账方资质上传 2017/7/18
    *
    * @param ledgerNo 易宝子商户号

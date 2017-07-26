@@ -84,20 +84,16 @@ public class LedgerSettlementExcel extends AbstractExcelView {
                 excelRow.createCell(3).setCellValue("--");
             }
             excelRow.createCell(4).setCellValue(settlement.getTotalTransfer() / 100.0);   // 日交易转账金额
-            excelRow.createCell(5).setCellValue(settlement.getSettlementCost() / 100.0);// 单笔结算费用
+            excelRow.createCell(5).setCellValue("");// 单笔结算费用 todo:去掉了
             //结算费用承担方  0=积分客|1=子商户
-            if (settlement.getCostSide() == 0) {
-                excelRow.createCell(6).setCellValue("积分客");
-            } else if (settlement.getCostSide() == 1) {
-                excelRow.createCell(6).setCellValue("子商户");
-            }
+            excelRow.createCell(6).setCellValue("积分客"); //todo:该版本均为积分客承担
             excelRow.createCell(7).setCellValue(settlement.getActualTransfer() / 100.0); // 实际转账金额
             //  当前子账户余额(转账前查询)
-            excelRow.createCell(8).setCellValue(settlement.getAccountBalance() / 100.0);
+            excelRow.createCell(8).setCellValue(""); //todo:去掉了
             //  起结金额
-            excelRow.createCell(9).setCellValue(settlement.getMinSettleAmount() / 100.0);
+            excelRow.createCell(9).setCellValue(""); //todo:去掉了
             //  应结算金额
-            excelRow.createCell(10).setCellValue(settlement.getSettlementAmount() / 100.0);
+            excelRow.createCell(10).setCellValue("");//todo:去掉了
             //  实际结算金额
             excelRow.createCell(11).setCellValue(settlement.getSettlementTrueAmount() / 100.0);
             //转账状态 0=待转账，1=转账成功，2=转账失败

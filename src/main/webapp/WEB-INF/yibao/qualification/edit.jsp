@@ -89,7 +89,7 @@
                                            class="btn btn-xs btn-primary select-btn createWarn"
                                            onclick="updataImg(this,0)" value="编辑图片">
                                     <input type="file" class="fileUpload" name="file"
-                                           data-url="/manage/file/localAndOss">
+                                           data-url="/manage/file/localAndOss?ledgerNo=${q.merchantUserLedger.ledgerNo}">
                                     <input type="button"
                                            class="btn btn-xs btn-primary select-btn createWarn"
                                            value="上送易宝" onclick="uploadQualification(0)">
@@ -106,7 +106,7 @@
                                            class="btn btn-xs btn-primary select-btn createWarn"
                                            onclick="updataImg(this,1)" value="编辑图片">
                                     <input type="file" class="fileUpload" name="file"
-                                           data-url="/manage/file/localAndOss">
+                                           data-url="/manage/file/localAndOss?ledgerNo=${q.merchantUserLedger.ledgerNo}">
                                     <input type="button"
                                            class="btn btn-xs btn-primary select-btn createWarn"
                                            value="上送易宝" onclick="uploadQualification(1)">
@@ -123,7 +123,7 @@
                                            class="btn btn-xs btn-primary select-btn createWarn"
                                            onclick="updataImg(this,2)" value="编辑图片">
                                     <input type="file" class="fileUpload" name="file"
-                                           data-url="/manage/file/localAndOss">
+                                           data-url="/manage/file/localAndOss?ledgerNo=${q.merchantUserLedger.ledgerNo}">
                                     <input type="button"
                                            class="btn btn-xs btn-primary select-btn createWarn"
                                            value="上送易宝" onclick="uploadQualification(2)">
@@ -140,7 +140,7 @@
                                            class="btn btn-xs btn-primary select-btn createWarn"
                                            onclick="updataImg(this,3)" value="编辑图片">
                                     <input type="file" class="fileUpload" name="file"
-                                           data-url="/manage/file/localAndOss">
+                                           data-url="/manage/file/localAndOss?ledgerNo=${q.merchantUserLedger.ledgerNo}">
                                     <input type="button"
                                            class="btn btn-xs btn-primary select-btn createWarn"
                                            value="上送易宝" onclick="uploadQualification(3)">
@@ -157,7 +157,7 @@
                                            class="btn btn-xs btn-primary select-btn createWarn"
                                            onclick="updataImg(this,4)" value="编辑图片">
                                     <input type="file" class="fileUpload" name="file"
-                                           data-url="/manage/file/localAndOss">
+                                           data-url="/manage/file/localAndOss?ledgerNo=${q.merchantUserLedger.ledgerNo}">
                                     <input type="button"
                                            class="btn btn-xs btn-primary select-btn createWarn"
                                            value="上送易宝" onclick="uploadQualification(4)">
@@ -174,7 +174,7 @@
                                            class="btn btn-xs btn-primary select-btn createWarn"
                                            onclick="updataImg(this,5)" value="编辑图片">
                                     <input type="file" class="fileUpload" name="file"
-                                           data-url="/manage/file/localAndOss">
+                                           data-url="/manage/file/localAndOss?ledgerNo=${q.merchantUserLedger.ledgerNo}">
                                     <input type="button"
                                            class="btn btn-xs btn-primary select-btn createWarn"
                                            value="上送易宝" onclick="uploadQualification(5)">
@@ -191,7 +191,7 @@
                                            class="btn btn-xs btn-primary select-btn createWarn"
                                            onclick="updataImg(this,6)" value="编辑图片">
                                     <input type="file" class="fileUpload" name="file"
-                                           data-url="/manage/file/localAndOss">
+                                           data-url="/manage/file/localAndOss?ledgerNo=${q.merchantUserLedger.ledgerNo}">
                                     <input type="button"
                                            class="btn btn-xs btn-primary select-btn createWarn"
                                            value="上送易宝" onclick="uploadQualification(6)">
@@ -208,7 +208,7 @@
                                            class="btn btn-xs btn-primary select-btn createWarn"
                                            onclick="updataImg(this,7)" value="编辑图片">
                                     <input type="file" class="fileUpload" name="file"
-                                           data-url="/manage/file/localAndOss">
+                                           data-url="/manage/file/localAndOss?ledgerNo=${q.merchantUserLedger.ledgerNo}">
                                     <input type="button"
                                            class="btn btn-xs btn-primary select-btn createWarn"
                                            value="上送易宝" onclick="uploadQualification(7)">
@@ -225,7 +225,7 @@
                                            class="btn btn-xs btn-primary select-btn createWarn"
                                            onclick="updataImg(this,8)" value="编辑图片">
                                     <input type="file" class="fileUpload" name="file"
-                                           data-url="/manage/file/localAndOss">
+                                           data-url="/manage/file/localAndOss?ledgerNo=${q.merchantUserLedger.ledgerNo}">
                                     <input type="button"
                                            class="btn btn-xs btn-primary select-btn createWarn"
                                            value="上送易宝" onclick="uploadQualification(8)">
@@ -242,7 +242,7 @@
                                            class="btn btn-xs btn-primary select-btn createWarn"
                                            onclick="updataImg(this,9)" value="编辑图片">
                                     <input type="file" class="fileUpload" name="file"
-                                           data-url="/manage/file/localAndOss">
+                                           data-url="/manage/file/localAndOss?ledgerNo=${q.merchantUserLedger.ledgerNo}">
                                     <input type="button"
                                            class="btn btn-xs btn-primary select-btn createWarn"
                                            value="上送易宝" onclick="uploadQualification(9)">
@@ -282,6 +282,7 @@
     }
     /** 分账方资质上传**/
     function uploadQualification(type) {
+        picType = type;
         var currPic = 'picType' + type;
         var strs = $('#' + currPic).attr('src').split('/');
         var picPath = strs[strs.length - 1];
@@ -354,7 +355,7 @@
                                         },
                                         done: function (e, data) {
                                             var resp = data.result;
-                                            if(eval(resp.status) === 200){
+                                            if (eval(resp.status) === 200) {
                                                 var currPic = 'picType' + picType;
                                                 console.log(resp.data);
                                                 $('#' + currPic).attr('src', '${ossImageReadRoot}/'
