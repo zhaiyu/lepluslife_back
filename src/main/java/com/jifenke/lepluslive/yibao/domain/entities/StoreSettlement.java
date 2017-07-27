@@ -33,7 +33,7 @@ public class StoreSettlement {
 
   private Date dateCreated = new Date();
 
-  //0=待查询，1=打款成功，2=已退回，3=无结算记录，4=已扣款未打款，5=打款中，-1=打款失败，-2=银行返回打款失败
+  //0=待查询，1=打款成功，2=已退回，3=已扣款未打款，4=打款中，5=无结算记录，-1=打款失败，-2=银行返回打款失败
   private Integer state = 0;   //结算状态
 
   @Column(nullable = false, length = 10)

@@ -1,5 +1,7 @@
 package com.jifenke.lepluslive.job;
 
+import com.jifenke.lepluslive.global.util.DataUtils;
+import com.jifenke.lepluslive.yibao.service.LedgerSettlementService;
 import com.jifenke.lepluslive.yibao.service.YBOrderService;
 import com.jifenke.lepluslive.yibao.util.YbRequestUtils;
 
@@ -14,20 +16,25 @@ import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 /**
- * 易宝通道结算单(每日凌晨5点统计) Created by zhangwen on 17/07/25.
+ * 易宝通道结算单(每日早上12点统计) Created by zhangwen on 17/07/25.
  */
 @Component
 public class YBLedgerStatementJob implements Job {
 
   private static final Logger log = LoggerFactory.getLogger(YBLedgerStatementJob.class);
 
-
   @Override
   public void execute(JobExecutionContext context) throws JobExecutionException {
+
+    //周六周日不生成通道结算单
+    int day = DataUtils.getDay(new Date());
+    if (day == 1 || day == 7) {
+      return;
+    }
     ApplicationContext
         applicationContext = null;
     try {
@@ -41,25 +48,25 @@ public class YBLedgerStatementJob implements Job {
     YBOrderService
         ybOrderService =
         (YBOrderService) applicationContext.getBean("YBOrderService");
+    LedgerSettlementService
+        ledgerSettlementService =
+        (LedgerSettlementService) applicationContext.getBean("LedgerSettlementService");
 
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     final String tradeDate = sdf.format(new Date());
 
     //获取所有的审核通过的易宝子商户号
-    Set<String> allLedgers = ybOrderService.findAllLedgers();
+    List<Map<String, Object>> list = ybOrderService.findAllLedgers();
 
-    //第一次统计
-    allLedgers.forEach(ledger -> {
+    for (Map<String, Object> map : list) {
       try {
-        Map<String, String> map = YbRequestUtils.querySettlement(ledger, tradeDate);
-        if ("1".equals(map.get("code"))) {
-          //插入一条通道结算单
-
-        }
+        Map<String, String>
+            queryMap =
+            YbRequestUtils.querySettlement("" + map.get("ledgerNo"), tradeDate);
+        ledgerSettlementService.createLedgerSettlement(queryMap, map);
       } catch (Exception e) {
-        log.error("易宝-商户号为" + ledger + "的通道结算单统计出现问题");
+        log.error("易宝-商户号为" + map.get("ledgerNo") + "的通道结算单统计出现问题");
       }
-
-    });
+    }
   }
 }

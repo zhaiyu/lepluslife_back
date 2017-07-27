@@ -68,21 +68,12 @@
                 </div>
                 <div class="row">
                     <div class="form-group col-md-2">
-                        <label>转账状态</label>
-                        <select class="form-control" id="transferState">
-                            <option value="">全部</option>
-                            <option value="0">待转账</option>
-                            <option value="1">转账成功</option>
-                            <option value="2">转账失败</option>
-                        </select>
-                    </div>
-                    <div class="form-group col-md-2">
                         <label>结算状态</label>
                         <select class="form-control" id="state">
                             <option value="">全部</option>
                             <option value="0">待查询</option>
                             <option value="1">打款成功</option>
-                            <option value="5">打款中</option>
+                            <option value="4">打款中</option>
                             <option value="2">已退回</option>
                             <option value="-1">打款失败</option>
                         </select>
@@ -210,7 +201,7 @@
                 headContent.innerHTML =
                         '<th>通道结算单号</th><th>易宝商户号</th><th>乐加商户ID</th><th>清算日期</th><th>日转账交易金额</th><th>实际转账金额</th>';
                 headContent.innerHTML +=
-                        '<th>实际结算金额</th><th>转账状态</th><th>结算状态</th><th>操作</th>';
+                        '<th>实际结算金额</th><th>结算状态</th><th>操作</th>';
                 for (var i = 0; i < content.length; i++) {
                     var contentStr = '<tr><td>' + content[i].orderSid + '</td>';
                     contentStr +=
@@ -233,13 +224,6 @@
                             '<td><span>' + content[i].actualTransfer / 100.0 + '</span></td>';
                     contentStr +=
                             '<td><span>' + content[i].actualTransfer / 100.0 + '</span></td>';
-                    if (content[i].transferState == 0) {
-                        contentStr += '<td>待转账</td>'
-                    } else if (content[i].transferState == 1) {
-                        contentStr += '<td>转账成功</td>';
-                    } else {
-                        contentStr += '<td>转账失败</td>';
-                    }
                     if (content[i].state == 0) {
                         contentStr += '<td>待查询</td>'
                     } else if (content[i].state == 1) {
@@ -247,15 +231,15 @@
                     } else if (content[i].state == 2) {
                         contentStr += '<td>已退回</td>';
                     } else if (content[i].state == 3) {
-                        contentStr += '<td>无结算记录</td>';
-                    } else if (content[i].state == 4) {
                         contentStr += '<td>已扣款未打款</td>';
-                    } else if (content[i].state == 5) {
+                    } else if (content[i].state == 4) {
                         contentStr += '<td>打款中</td>';
                     } else if (content[i].state == -1) {
                         contentStr += '<td>打款失败</td>';
-                    } else {
+                    } else if (content[i].state == -2){
                         contentStr += '<td>银行返回打款失败</td>';
+                    } else {
+                        contentStr += '<td>未知</td>';
                     }
                     contentStr +=
                             '<td><span><a onclick="searchState(' + content[i].id + ')">查询状态</a></span></td></tr>';
@@ -335,11 +319,6 @@
             settlementCriteria.merchantUserId = $("#merchantUserId").val();
         } else {
             settlementCriteria.merchantUserId = null;
-        }
-        if ($("#transferState").val() != "" && $("#transferState").val() != null) {
-            settlementCriteria.transferState = $("#transferState").val();
-        } else {
-            settlementCriteria.transferState = null;
         }
         if ($("#state").val() != "" && $("#state").val() != null) {
             settlementCriteria.state = $("#state").val();

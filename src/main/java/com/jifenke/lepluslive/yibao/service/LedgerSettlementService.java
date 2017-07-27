@@ -1,6 +1,15 @@
 package com.jifenke.lepluslive.yibao.service;
 
 
+import com.jifenke.lepluslive.global.config.YBConstants;
+import com.jifenke.lepluslive.global.util.DataUtils;
+import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
+import com.jifenke.lepluslive.merchant.domain.entities.MerchantWeiXinUser;
+import com.jifenke.lepluslive.merchant.domain.entities.TemporaryMerchantUserShop;
+import com.jifenke.lepluslive.merchant.service.MerchantService;
+import com.jifenke.lepluslive.merchant.service.MerchantWeiXinUserService;
+import com.jifenke.lepluslive.merchant.service.TemporaryMerchantUserShopService;
+import com.jifenke.lepluslive.weixin.service.WxTemMsgService;
 import com.jifenke.lepluslive.yibao.domain.criteria.LedgerSettlementCriteria;
 import com.jifenke.lepluslive.yibao.domain.entities.LedgerSettlement;
 import com.jifenke.lepluslive.yibao.repository.LedgerSettlementRepository;
@@ -13,14 +22,16 @@ import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.math.BigDecimal;
+import java.util.Date;
+import java.util.List;
+import java.util.Map;
+
 import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-
-import java.util.Date;
-import java.util.Map;
 
 
 /**
@@ -33,14 +44,141 @@ public class LedgerSettlementService {
   @Inject
   private LedgerSettlementRepository ledgerSettlementRepository;
 
-  /**
-   * 插入一条通道结算单 2017-07-26
-   *
-   * @param queryMap 查询结果
-   */
-  @Transactional(readOnly = true, propagation = Propagation.REQUIRED)
-  public void createLedgerSettlement(Map<String, String> queryMap) {
+  @Inject
+  private YBOrderService ybOrderService;
 
+  @Inject
+  private MerchantService merchantService;
+
+  @Inject
+  private WxTemMsgService wxTemMsgService;
+
+  @Inject
+  private MerchantWeiXinUserService merchantWeiXinUserService;
+
+  @Inject
+  private TemporaryMerchantUserShopService temporaryMerchantUserShopService;
+
+  /**
+   * 插入通道结算单&发送通知 2017-07-26
+   *
+   * @param queryMap  查询结果
+   * @param ledgerMap 商户信息
+   */
+  @Transactional(propagation = Propagation.REQUIRED)
+  public void createLedgerSettlement(Map<String, String> queryMap, Map<String, Object> ledgerMap) {
+    if ("1".equals(queryMap.get("code"))) {
+      //插入一条通道结算单
+      LedgerSettlement settlement = new LedgerSettlement();
+      String[] info = queryMap.get("info").split(",");
+      String startDate = info[5];
+      String tradeDate = info[1];
+      String bankNo = "" + ledgerMap.get("bankNo");
+      Long merchantUserId = Long.valueOf("" + ledgerMap.get("merchantUserId"));
+      int state = parseState(info[3]);
+      settlement.setState(state);
+      settlement.setTradeDate(tradeDate);
+      settlement.setStartEndDate(startDate + "," + info[6]);
+      settlement.setLedgerNo(info[0]);
+      settlement.setMerchantUserId(merchantUserId);
+      settlement.setSettlementTrueAmount(
+          new BigDecimal(info[2]).multiply(YBConstants.BIG_DECIMAL_100).longValue());
+      settlement.setBatchNo(info[4]);
+      settlement.setAccountName("" + ledgerMap.get("accountName"));
+      settlement.setBankAccountNumber(bankNo);
+      int diff = DataUtils.dayDiff(startDate, info[6], null);
+      if (diff <= 0) {
+        settlement.setActualTransfer(0L);
+        settlement.setTotalTransfer(0L);
+      } else {
+        Long actualTransfer = ybOrderService.findActualTransfer(diff, startDate, info[0]);
+        settlement.setActualTransfer(actualTransfer);
+        Long totalTransfer = ybOrderService.findTotalTransfer(diff, startDate, info[0]);
+        settlement.setTotalTransfer(totalTransfer);
+      }
+      ledgerSettlementRepository.save(settlement);
+      //更新对应门店结算单状态 多出无结算记录
+      ybOrderService.resetStoreSettlementState(diff, startDate, info[0], state);
+      //发送微信模板消息
+      sendWxMsg(info[2], tradeDate, bankNo, settlement.getOrderSid(), merchantUserId);
+    }
+  }
+
+  /**
+   * 发送转账模板消息  2017/7/28
+   *
+   * @param transferMoney  转入金额
+   * @param tradeDate      转入时间
+   * @param bankNo         银行卡号
+   * @param orderSid       结算单号
+   * @param merchantUserId 商户ID
+   */
+  private void sendWxMsg(String transferMoney, String tradeDate, String bankNo, String orderSid,
+                         Long merchantUserId) {
+    String[] keys = new String[3];
+    keys[0] = "***************" + bankNo.substring(bankNo.length() - 4, bankNo.length());
+    keys[1] = transferMoney;
+    keys[2] = tradeDate;
+
+    List<Object[]> list = merchantService.countByMerchantUser(merchantUserId);
+    Merchant merchant = new Merchant();
+    if (list != null && list.size() > 0) {
+      for (Object[] o : list) {
+        merchant.setId(Long.valueOf("" + o[0]));
+        List<TemporaryMerchantUserShop>
+            merchantUserShopList =
+            temporaryMerchantUserShopService.findAllByMerchant(merchant);
+        for (TemporaryMerchantUserShop s : merchantUserShopList) {
+          List<MerchantWeiXinUser>
+              merchantWeiXinUsers =
+              merchantWeiXinUserService.findMerchantWeiXinUserByMerchantUser(s.getMerchantUser());
+          for (MerchantWeiXinUser merchantWeiXinUser : merchantWeiXinUsers) {
+            wxTemMsgService.sendTemMessage(merchantWeiXinUser.getOpenId(), 12L, 9L, keys, orderSid);
+          }
+        }
+      }
+    }
+  }
+
+  /**
+   * 易宝结算状态码转换 2017/7/27
+   */
+  private int parseState(String state) {
+    if (state.contains("SUCCESS")) {
+      return 1;
+    }
+    if (state.contains("INIT")) {
+      return 3;
+    }
+    if (state.contains("PROCESSING")) {
+      return 4;
+    }
+    if (state.contains("FAILED")) {
+      return -1;
+    }
+    if (state.contains("BANKFAILED")) {
+      return -2;
+    }
+    if (state.contains("REFUNDED")) {
+      return 2;
+    }
+    return 0;
+//    switch (state) {
+//      case "SUCCESS":
+//        return 1;
+//      case "INIT":
+//        return 3;
+//      case "PROCESSING":
+//        return 4;
+//      case "FAILED":
+//        return -1;
+//      case "BANKFAILED":
+//        return -2;
+//      case "REFUNDED":
+//        return 2;
+//      default:
+//        return 0;
+//    }
   }
 
   /***
@@ -60,11 +198,6 @@ public class LedgerSettlementService {
       public Predicate toPredicate(Root<LedgerSettlement> root, CriteriaQuery<?> query,
                                    CriteriaBuilder cb) {
         Predicate predicate = cb.conjunction();
-        // 转账状态
-        if (criteria.getTransferState() != null && !"".equals(criteria.getTransferState())) {
-          predicate.getExpressions().add(
-              cb.equal(root.get("transferState"), criteria.getTransferState()));
-        }
         // 结算状态
         if (criteria.getState() != null && !"".equals(criteria.getState())) {
           predicate.getExpressions().add(

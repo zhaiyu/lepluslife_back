@@ -1,15 +1,16 @@
 package com.jifenke.lepluslive.yibao.service;
 
+import com.jifenke.lepluslive.global.util.DataUtils;
+
 import org.hibernate.SQLQuery;
 import org.hibernate.transform.Transformers;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import java.util.HashMap;
-import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
-import java.util.Set;
 
 import javax.inject.Inject;
 import javax.persistence.EntityManager;
@@ -115,18 +116,124 @@ public class YBOrderService {
   }
 
   /**
-   * 获取所有的审核成功的商户号集合(用于通道结算单)  2017/7/26
+   * 获取所有的审核成功的商户号及商户ID(用于通道结算单)  2017/7/26
    */
-  public Set<String> findAllLedgers() {
-    String sql = "SELECT ledger_no AS ledgerNo FROM yb_merchant_user_ledger WHERE state = 1";
-    List<Map<String, Object>> list = findBySql(sql);
-    Set<String> set = new HashSet<>();
-    if (list != null && list.size() > 0) {
-      for (Map<String, Object> m : list) {
-        set.add("" + m.get("ledgerNo"));
+  public List<Map<String, Object>> findAllLedgers() {
+    String
+        sql =
+        "SELECT ledger_no AS ledgerNo,merchant_user_id AS merchantUserId,account_name AS accountName,bank_account_number AS bankNo FROM yb_merchant_user_ledger WHERE state = 1";
+    return findBySql(sql);
+  }
+
+  /**
+   * 获取某个子商户号某日的转账成功金额(用于通道结算单)  2017/7/26
+   *
+   * @param days     转账起止天数
+   * @param date     起始日期
+   * @param ledgerNo 商户号
+   */
+  public Long findActualTransfer(int days, String date, String ledgerNo) {
+    StringBuffer s = new StringBuffer();
+    String currDate = null;
+    if (days == 1) {
+      s.append("SELECT SUM(actual_transfer) FROM yb_ledger_transfer");
+      s.append(" WHERE ledger_no = '").append(ledgerNo).append("' AND state = 1");
+      s.append(" AND trade_date = '").append(date).append("'");
+    } else {
+      StringBuffer dates = new StringBuffer();
+      dates.append(" ('").append(date).append("'");
+      while (days > 1) {
+        days--;
+        currDate = DataUtils.getNextDateByDay(date, days);
+        dates.append(",'").append(currDate).append("'");
       }
+      dates.append(")");
+      s.append("SELECT SUM(actual_transfer) FROM yb_ledger_transfer");
+      s.append(" WHERE ledger_no = '").append(ledgerNo).append("' AND state = 1");
+      s.append(" AND trade_date IN");
+      // ('2016-07-20','2017-07-19')
+      s.append(dates);
     }
-    return set;
+    System.out.println(s.toString());
+    Query query = entityManager.createNativeQuery(s.toString());
+    Object singleResult = query.getSingleResult();
+    if (singleResult != null) {
+      return Long.valueOf("" + singleResult);
+    }
+    return 0L;
+  }
+
+  /**
+   * 获取某个子商户号某日的门店应结算金额(用于通道结算单)  2017/7/26
+   *
+   * @param days     转账起止天数
+   * @param date     起始日期
+   * @param ledgerNo 商户号
+   */
+  public Long findTotalTransfer(int days, String date, String ledgerNo) {
+    StringBuffer s = new StringBuffer();
+    String currDate = null;
+    if (days == 1) {
+      s.append("SELECT SUM(actual_transfer) FROM yb_store_settlement");
+      s.append(" WHERE ledger_no = '").append(ledgerNo).append("'");
+      s.append(" AND trade_date = '").append(date).append("'");
+    } else {
+      StringBuffer dates = new StringBuffer();
+      dates.append(" ('").append(date).append("'");
+      while (days > 1) {
+        days--;
+        currDate = DataUtils.getNextDateByDay(date, days);
+        dates.append(",'").append(currDate).append("'");
+      }
+      dates.append(")");
+      s.append("SELECT SUM(actual_transfer) FROM yb_store_settlement");
+      s.append(" WHERE ledger_no = '").append(ledgerNo).append("'");
+      s.append(" AND trade_date IN");
+      s.append(dates);
+    }
+    System.out.println(s.toString());
+    Query query = entityManager.createNativeQuery(s.toString());
+    Object singleResult = query.getSingleResult();
+    if (singleResult != null) {
+      return Long.valueOf("" + singleResult);
+    }
+    return 0L;
+  }
+
+  /**
+   * 重置门店结算单状态(用于通道结算单)  2017/7/27
+   *
+   * @param days     转账起止天数
+   * @param date     起始日期
+   * @param ledgerNo 商户号
+   * @param state    结算状态
+   */
+  @Transactional(propagation = Propagation.REQUIRED)
+  public void resetStoreSettlementState(int days, String date, String ledgerNo, int state) {
+    StringBuffer s = new StringBuffer();
+    String currDate = null;
+    if (days == 1) {
+      s.append("UPDATE yb_store_settlement SET state = ").append(state);
+      s.append(" WHERE ledger_no = '").append(ledgerNo).append("'");
+      s.append(" AND trade_date = '").append(date).append("'");
+    } else {
+      StringBuffer dates = new StringBuffer();
+      dates.append(" ('").append(date).append("'");
+      while (days > 1) {
+        days--;
+        currDate = DataUtils.getNextDateByDay(date, days);
+        dates.append(",'").append(currDate).append("'");
+      }
+      dates.append(")");
+      s.append("UPDATE yb_store_settlement SET state = ").append(state);
+      s.append(" WHERE ledger_no = '").append(ledgerNo).append("'");
+      s.append(" AND trade_date IN");
+      s.append(dates);
+    }
+    System.out.println(s.toString());
+    Query query = entityManager.createNativeQuery(s.toString());
+    int i = query.executeUpdate();
+    System.out.println("更新记录===" + i);
   }
 
   /**
