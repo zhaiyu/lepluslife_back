@@ -335,7 +335,7 @@
                 <a href='/manage/refund/ledger/list'>退款单记录</a>
                 <a href='/manage/settlement/store/list'>门店结算单</a>
                 <a href='/manage/settlement/ledger/list'>通道结算单</a>
-                <a href='/manage/transfer/ledger/list'>转账记录</a>
+                <a href='/manage/transfer/ledger/list'>转账单</a>
                 <a href='/manage/refund/ledger/refund'>申请退款</a>
             </div>
         </li>

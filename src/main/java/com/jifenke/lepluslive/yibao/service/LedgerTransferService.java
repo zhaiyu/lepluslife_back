@@ -105,6 +105,68 @@ public class LedgerTransferService {
     ledgerTransferLogService.saveLog(log);
   }
 
+  /**
+   * 转账(手动补单)  2017/7/27
+   *
+   * @param transferId 转账单ID
+   */
+  @Transactional(propagation = Propagation.REQUIRED)
+  public Map<String, String> transferRetry(Long transferId) throws Exception {
+    LedgerTransfer transfer = ledgerTransferRepository.findOne(transferId);
+    if (transfer.getState() == 2) {
+      transfer.setRepair(1);
+      String requestId = MvUtil.getOrderNumber(10);//转载请求号
+      LedgerTransferLog log = new LedgerTransferLog();
+      log.setAmount(transfer.getActualTransfer());
+      log.setLedgerNo(transfer.getLedgerNo());
+      log.setOrderSid(transfer.getOrderSid());
+      log.setRequestId(requestId);
+      log.setType(3);
+      int state = 0;
+      Map<String, String>
+          resultMap =
+          YbRequestUtils
+              .transfer(transfer.getLedgerNo(), transfer.getActualTransfer(), requestId);
+      //注意：错误码为 162005、988888、999999：需要通过补偿查询（5.6 转账查询接口）确认转账状
+      //态。状态为成功时：转账已成功；若状态为非终止状态（终止转态：COMPLETE、FAIL）需等状态
+      // 为终止状态时，再进行下一步操作
+      try {
+        String code = resultMap.get("code");
+        if (!"1".equals(code)) {
+          state = Integer.valueOf(code);
+          log.setMsg(resultMap.get("msg"));
+          if ("162005".equals(code) || "988888".equals(code) || "999999".equals(code)) {
+            //补偿查询
+            Map<String, String> map = YbRequestUtils.queryTransfer(transfer.getOrderSid());
+            if ("1".equals(map.get("code"))) {
+              String status = map.get("status");
+              if ("COMPLETE".equals(status)) {
+                state = 1;
+              } else if ("FAIL".equals(status)) {
+                state = 2;
+              } else { //非终态，全部转账完成后对该状态统一查询一次
+                state = 3;
+              }
+            }
+          }
+        } else {
+          state = 1;
+        }
+        transfer.setDateCompleted(new Date());
+        transfer.setState(state);
+        ledgerTransferRepository.save(transfer);
+        log.setDateCompleted(new Date());
+        log.setState(state);
+        ledgerTransferLogService.saveLog(log);
+      } catch (Exception e) {
+        e.printStackTrace();
+        throw new Exception("请求异常");
+      }
+      return resultMap;
+    }
+    return null;
+  }
+
   /***
    *  根据条件查询转账记录
    *  Created by xf on 2017-07-14.
