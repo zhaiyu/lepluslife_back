@@ -77,7 +77,6 @@ public class LedgerSettlementExcel extends AbstractExcelView {
             }else {
                 excelRow.createCell(2).setCellValue("--");
             }
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
             if (settlement.getTradeDate() != null) {
                 excelRow.createCell(3).setCellValue(settlement.getTradeDate());
             } else {
@@ -97,13 +96,7 @@ public class LedgerSettlementExcel extends AbstractExcelView {
             //  实际结算金额
             excelRow.createCell(11).setCellValue(settlement.getSettlementTrueAmount() / 100.0);
             //转账状态 0=待转账，1=转账成功，2=转账失败
-            if (settlement.getTransferState() == 0) {
-                excelRow.createCell(12).setCellValue("待转账");
-            } else if (settlement.getTransferState() == 1) {
-                excelRow.createCell(12).setCellValue("转账成功");
-            } else {
-                excelRow.createCell(12).setCellValue("转账失败");
-            }
+            excelRow.createCell(12).setCellValue("");//todo:去掉了
             // 结算状态 0=待查询，1=打款成功，2=已退回，3=无结算记录，4=已扣款未打款，5=打款中，-1=打款失败，-2=银行返回打款失败
             if (settlement.getState() == 0) {
                 excelRow.createCell(13).setCellValue("待查询");
@@ -112,10 +105,8 @@ public class LedgerSettlementExcel extends AbstractExcelView {
             } else if (settlement.getState() == 2) {
                 excelRow.createCell(13).setCellValue("已退回");
             } else if (settlement.getState() == 3) {
-                excelRow.createCell(13).setCellValue("无结算记录");
-            } else if (settlement.getState() == 4) {
                 excelRow.createCell(13).setCellValue("已扣款未打款");
-            } else if (settlement.getState() == 5) {
+            } else if (settlement.getState() == 4) {
                 excelRow.createCell(13).setCellValue("打款中");
             } else if (settlement.getState() == -1) {
                 excelRow.createCell(13).setCellValue("打款失败");

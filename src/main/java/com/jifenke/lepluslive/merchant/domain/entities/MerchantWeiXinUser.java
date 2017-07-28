@@ -1,11 +1,10 @@
 package com.jifenke.lepluslive.merchant.domain.entities;
 
 
-import com.jifenke.lepluslive.merchant.domain.entities.MerchantUser;
-
 import java.util.Date;
 
 import javax.persistence.Entity;
+import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
@@ -43,7 +42,7 @@ public class MerchantWeiXinUser {
 
   private String refreshToken;
 
-  @ManyToOne
+  @ManyToOne(fetch = FetchType.LAZY)
   private MerchantUser merchantUser;
 
 

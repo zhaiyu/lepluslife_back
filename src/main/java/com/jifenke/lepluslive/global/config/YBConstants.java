@@ -18,6 +18,8 @@ public final class YBConstants {
 
   public static final int SETTLEMENT_COST = 150;  //单笔结算费用
 
+  public static final BigDecimal BIG_DECIMAL_100 = BigDecimal.valueOf(100);
+
   //接口地址统一前缀
   private static final String PREFIX_URL = "https://o2o.yeepay.com/zgt-api/api/";
 

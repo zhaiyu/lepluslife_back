@@ -10,8 +10,7 @@ public class LedgerSettlementCriteria {
     private String orderSid;               // 通道结算单号
     private String merchantUserId;         // 乐加商户编号
     private String ledgerNo;               // 易宝商户编号
-    private Integer transferState;         // 转账状态 0=待转账，1=转账成功，2=转账失败
-    private Integer state;                 // 结算状态 0=待查询，1=打款成功，2=已退回，3=无结算记录，4=已扣款未打款，5=打款中，-1=打款失败，-2=银行返回打款失败
+    private Integer state;                 // 结算状态 0=待查询，1=打款成功，2=已退回，3=已扣款未打款，4=打款中，-1=打款失败，-2=银行返回打款失败
     private String startDate;              // 清算日期 - 起始时间
     private String endDate;                // 清算日期 - 截止时间
 
@@ -38,14 +37,6 @@ public class LedgerSettlementCriteria {
 
     public void setLedgerNo(String ledgerNo) {
         this.ledgerNo = ledgerNo;
-    }
-
-    public Integer getTransferState() {
-        return transferState;
-    }
-
-    public void setTransferState(Integer transferState) {
-        this.transferState = transferState;
     }
 
     public String getMerchantUserId() {

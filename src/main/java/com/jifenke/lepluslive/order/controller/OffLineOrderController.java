@@ -2,34 +2,37 @@ package com.jifenke.lepluslive.order.controller;
 
 import com.jifenke.lepluslive.global.util.LejiaResult;
 import com.jifenke.lepluslive.global.util.MvUtil;
-import com.jifenke.lepluslive.merchant.domain.entities.MerchantUser;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantWeiXinUser;
-import com.jifenke.lepluslive.merchant.service.MerchantService;
+import com.jifenke.lepluslive.merchant.domain.entities.TemporaryMerchantUserShop;
 import com.jifenke.lepluslive.merchant.service.MerchantWeiXinUserService;
+import com.jifenke.lepluslive.merchant.service.TemporaryMerchantUserShopService;
 import com.jifenke.lepluslive.order.controller.view.FinancialViewExcel;
 import com.jifenke.lepluslive.order.controller.view.OrderViewExcel;
 import com.jifenke.lepluslive.order.domain.criteria.FinancialCriteria;
 import com.jifenke.lepluslive.order.domain.criteria.OLOrderCriteria;
 import com.jifenke.lepluslive.order.domain.entities.FinancialStatistic;
-import com.jifenke.lepluslive.order.domain.entities.OffLineOrder;
-import com.jifenke.lepluslive.order.domain.entities.OffLineOrderShare;
 import com.jifenke.lepluslive.order.service.OffLineOrderService;
-import com.jifenke.lepluslive.order.service.ShareService;
 import com.jifenke.lepluslive.weixin.service.WxTemMsgService;
 
 import org.apache.commons.collections.map.HashedMap;
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.data.domain.Page;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.PathVariable;
+import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestMethod;
+import org.springframework.web.bind.annotation.RequestParam;
+import org.springframework.web.bind.annotation.ResponseBody;
+import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.ModelAndView;
-
-import javax.inject.Inject;
 
 import java.text.SimpleDateFormat;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+
+import javax.inject.Inject;
 
 /**
  * Created by wcg on 16/5/9.
@@ -52,13 +55,10 @@ public class OffLineOrderController {
     private WxTemMsgService wxTemMsgService;
 
     @Inject
-    private MerchantService merchantService;
-
-    @Inject
     private MerchantWeiXinUserService merchantWeiXinUserService;
 
     @Inject
-    private ShareService shareService;
+    private TemporaryMerchantUserShopService temporaryMerchantUserShopService;
 
     private StringBuffer sb = new StringBuffer();
 
@@ -252,17 +252,16 @@ public class OffLineOrderController {
         mapRemark.put("color", "#173177");
         HashMap<String, Object> map2 = new HashMap<>();
         map2.put("remark", mapRemark);
-        List<MerchantUser>
-                merchantUsers =
-                merchantService.findMerchantUserByMerchant(financialStatistic
-                        .getMerchant());
-        for (MerchantUser merchantUser : merchantUsers) {
+        List<TemporaryMerchantUserShop>
+            merchantUserShopList =
+            temporaryMerchantUserShopService.findAllByMerchant(financialStatistic.getMerchant());
+        for (TemporaryMerchantUserShop t : merchantUserShopList) {
             List<MerchantWeiXinUser>
-                    merchantWeiXinUsers =
-                    merchantWeiXinUserService.findMerchantWeiXinUserByMerchantUser(merchantUser);
+                merchantWeiXinUsers =
+                merchantWeiXinUserService.findMerchantWeiXinUserByMerchantUser(t.getMerchantUser());
             for (MerchantWeiXinUser merchantWeiXinUser : merchantWeiXinUsers) {
                 wxTemMsgService.sendTemMessage(merchantWeiXinUser.getOpenId(), 4L, keys,
-                        financialStatistic.getStatisticId(), map2);
+                                               financialStatistic.getStatisticId(), map2);
             }
         }
     }

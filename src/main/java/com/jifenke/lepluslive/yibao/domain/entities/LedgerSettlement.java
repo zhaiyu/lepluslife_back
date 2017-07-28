@@ -26,10 +26,8 @@ public class LedgerSettlement {
   private Date dateCreated = new Date();
 
   //【打款成功】【无结算记录】和【已退回】为终态
-  //0=待查询，1=打款成功，2=已退回，3=无结算记录，4=已扣款未打款，5=打款中，-1=打款失败，-2=银行返回打款失败
+  //0=待查询，1=打款成功，2=已退回，3=已扣款未打款，4=打款中，-1=打款失败，-2=银行返回打款失败
   private Integer state = 0;   //结算状态
-
-  private Integer transferState = 0;  //转账状态 0=待转账，1=转账成功，2=转账失败
 
   @Column(nullable = false, length = 10)
   private String tradeDate; //结算日期（对应的给商户转账是哪一天完成的）（yyyy-MM-dd）
@@ -37,7 +35,7 @@ public class LedgerSettlement {
   @Column(length = 30)
   private String startEndDate;  //结算起止时间
 
-  @Column(nullable = false, unique = true, length = 30)
+  @Column(nullable = false, length = 30)
   private String orderSid = MvUtil.getOrderNumber(7); //通道结算单号(唯一)
 
   @Column(nullable = false, length = 50)
@@ -57,9 +55,6 @@ public class LedgerSettlement {
 
   @Column(length = 50)
   private String batchNo;  //通道返回的结算批次号
-
-  @Column(length = 100)
-  private String describe;  //通道返回的描述
 
   @Column(length = 30)
   private String accountName; //开户名
@@ -89,14 +84,6 @@ public class LedgerSettlement {
 
   public void setState(Integer state) {
     this.state = state;
-  }
-
-  public Integer getTransferState() {
-    return transferState;
-  }
-
-  public void setTransferState(Integer transferState) {
-    this.transferState = transferState;
   }
 
   public String getTradeDate() {
@@ -145,14 +132,6 @@ public class LedgerSettlement {
 
   public void setBatchNo(String batchNo) {
     this.batchNo = batchNo;
-  }
-
-  public String getDescribe() {
-    return describe;
-  }
-
-  public void setDescribe(String describe) {
-    this.describe = describe;
   }
 
   public Long getTotalTransfer() {

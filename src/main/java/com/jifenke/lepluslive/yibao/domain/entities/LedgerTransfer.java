@@ -45,7 +45,7 @@ public class LedgerTransfer {
   @Column(nullable = false, length = 50)
   private String ledgerNo;  //易宝的子商户号
 
-  private Long actualTransfer = 0L;   //应转账金额
+  private Long actualTransfer = 0L;   //转账金额
 
   public Long getId() {
     return id;
