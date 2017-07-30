@@ -165,8 +165,8 @@ public class MerchantService {
         return merchantRepository.findOne(id);
     }
 
-    @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-    public void createMerchant(Merchant merchant) {
+    @Transactional(propagation = Propagation.REQUIRED)
+    public Merchant createMerchant(Merchant merchant) {
         if (merchant.getId() != null) {
             throw new RuntimeException("新建商户ID不能存在");
         }
@@ -209,7 +209,7 @@ public class MerchantService {
         MerchantInfo merchantInfo = new MerchantInfo();
         merchantInfoRepository.save(merchantInfo);
         merchant.setMerchantInfo(merchantInfo);
-        merchantRepository.save(merchant);
+        Merchant dbMerchant = merchantRepository.save(merchant);
         RegisterOrigin registerOrigin = new RegisterOrigin();
         registerOrigin.setOriginType(3);
         registerOrigin.setMerchant(merchant);
@@ -242,6 +242,7 @@ public class MerchantService {
         merchantUserShop.setMerchant(merchant);
         merchantUserShop.setCreateDate(new Date());
         merchantUserShopService.saveShop(merchantUserShop);
+        return dbMerchant;
     }
 
     @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
@@ -874,7 +875,7 @@ public class MerchantService {
                                                     .getCommission());
                                 }
                             }
-                        } else if (scanPayWay.getType() == 1) { //乐加结算
+                        } else if (scanPayWay.getType() == 1 || scanPayWay.getType() == 3) { //乐加||易宝结算
                             if (m.getPartnership() == 0) {
                                 map.put("common", m.getLjCommission());
                             } else {

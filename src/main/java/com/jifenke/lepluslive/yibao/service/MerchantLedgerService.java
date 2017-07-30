@@ -1,9 +1,12 @@
 package com.jifenke.lepluslive.yibao.service;
 
 
+import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
+import com.jifenke.lepluslive.yibao.domain.entities.MerchantLedger;
 import com.jifenke.lepluslive.yibao.repository.MerchantLedgerRepository;
 
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
@@ -17,6 +20,22 @@ import javax.inject.Inject;
 public class MerchantLedgerService {
 
   @Inject
-  private MerchantLedgerRepository merchantLedgerRepository;
+  private MerchantLedgerRepository repository;
+
+  public MerchantLedger findByMerchant(Merchant merchant) {
+    return repository.findByMerchant(merchant);
+  }
+
+  @Transactional(propagation = Propagation.REQUIRED)
+  public void saveByMerchant(MerchantLedger merchantLedger,
+                             Merchant merchant) {
+    MerchantLedger dbLedger = repository.findByMerchant(merchant);
+    if (dbLedger == null) {
+      dbLedger = new MerchantLedger();
+      dbLedger.setMerchant(merchant);
+    }
+    dbLedger.setMerchantUserLedger(merchantLedger.getMerchantUserLedger());
+    repository.save(dbLedger);
+  }
 
 }

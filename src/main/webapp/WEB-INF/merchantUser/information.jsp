@@ -88,6 +88,9 @@
                                    } else if (m.payWay == 1) {//乐加结算
                                        contentStr += '<td>普通</td>';
                                        contentStr += '<td>乐加结算（普通' + m.common + '%）</td>';
+                                   } else if (m.payWay == 3) {//易宝结算
+                                       contentStr += '<td>普通</td>';
+                                       contentStr += '<td>易宝结算（普通' + m.common + '%）</td>';
                                    } else { //暂未开通
                                        contentStr += '<td>普通</td>';
                                        contentStr += '<td>暂未开通</td>';
@@ -102,6 +105,11 @@
                                        contentStr += '<td>联盟</td>';
                                        contentStr +=
                                            '<td>乐加结算（佣金' + m.alliance + '%,普通' + m.common
+                                           + '%）</td>';
+                                   } else if (m.payWay == 3) {//易宝结算
+                                       contentStr += '<td>联盟</td>';
+                                       contentStr +=
+                                           '<td>易宝结算（佣金' + m.alliance + '%,普通' + m.common
                                            + '%）</td>';
                                    } else { //暂未开通
                                        contentStr += '<td>联盟</td>';

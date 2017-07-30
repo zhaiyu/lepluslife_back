@@ -190,12 +190,12 @@ public class LedgerTransferService {
               cb.equal(root.get("state"), criteria.getState()));
         }
         // 易宝商户号
-        if (criteria.getLedgerNo() != null) {
+        if (criteria.getLedgerNo() != null && !"".equals(criteria.getLedgerNo())) {
           predicate.getExpressions().add(
               cb.equal(root.get("ledgerNo"), criteria.getLedgerNo()));
         }
         //转账单号(非定时转账为关联的订单号，定时转账自己生成)
-        if (criteria.getOrderSid() != null) {
+        if (criteria.getOrderSid() != null && !"".equals(criteria.getOrderSid())) {
           predicate.getExpressions().add(
               cb.equal(root.get("orderSid"), criteria.getOrderSid()));
         }
