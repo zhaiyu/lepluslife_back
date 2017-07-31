@@ -38,10 +38,10 @@ public class YBTimingTransferJob implements Job {
     }
     YBOrderService
         ybOrderService =
-        (YBOrderService) applicationContext.getBean("YBOrderService");
+        (YBOrderService) applicationContext.getBean("ybOrderService");
     LedgerTransferService
         ledgerTransferService =
-        (LedgerTransferService) applicationContext.getBean("LedgerTransferService");
+        (LedgerTransferService) applicationContext.getBean("ledgerTransferService");
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     String tradeDate = sdf.format(new Date());
 

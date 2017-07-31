@@ -1,11 +1,13 @@
 package com.jifenke.lepluslive.yibao.service;
 
+import com.jifenke.lepluslive.merchant.domain.entities.MerchantUser;
 import com.jifenke.lepluslive.yibao.domain.criteria.MerchantUserLedgerCriteria;
 import com.jifenke.lepluslive.yibao.domain.entities.LedgerModify;
 import com.jifenke.lepluslive.yibao.domain.entities.LedgerQualification;
 import com.jifenke.lepluslive.yibao.domain.entities.MerchantUserLedger;
 import com.jifenke.lepluslive.yibao.repository.MerchantUserLedgerRepository;
 import com.jifenke.lepluslive.yibao.util.YbRequestUtils;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -16,6 +18,7 @@ import org.springframework.transaction.annotation.Transactional;
 
 import javax.inject.Inject;
 import javax.persistence.criteria.Predicate;
+
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -38,6 +41,10 @@ public class MerchantUserLedgerService {
 
   public MerchantUserLedger findById(Long id) {
     return repository.findOne(id);
+  }
+
+  public List<MerchantUserLedger> findAllByMerchantUser(MerchantUser merchantUser) {
+    return repository.findAllByMerchantUser(merchantUser);
   }
 
   @Transactional(propagation = Propagation.REQUIRED)

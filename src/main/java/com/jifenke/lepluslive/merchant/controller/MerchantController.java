@@ -13,6 +13,9 @@ import com.jifenke.lepluslive.partner.service.PartnerService;
 import com.jifenke.lepluslive.sales.domain.entities.SalesStaff;
 import com.jifenke.lepluslive.sales.service.SalesService;
 import com.jifenke.lepluslive.weixin.service.DictionaryService;
+import com.jifenke.lepluslive.yibao.domain.entities.MerchantUserLedger;
+import com.jifenke.lepluslive.yibao.service.MerchantLedgerService;
+import com.jifenke.lepluslive.yibao.service.MerchantUserLedgerService;
 
 import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.data.domain.Page;
@@ -33,8 +36,6 @@ import java.util.List;
 import java.util.Map;
 
 import javax.inject.Inject;
-
-import springfox.documentation.spring.web.json.Json;
 
 /**
  * Created by wcg on 16/3/17.
@@ -62,7 +63,7 @@ public class MerchantController {
   private MerchantWeiXinUserService merchantWeiXinUserService;
 
   @Inject
-  private BankNameService bankNameService;
+  private MerchantUserLedgerService merchantUserLedgerService;
 
   @Inject
   private MerchantPosService merchantPosService;
@@ -84,6 +85,9 @@ public class MerchantController {
 
   @Inject
   private DictionaryService dictionaryService;
+
+  @Inject
+  private MerchantLedgerService merchantLedgerService;
 
   @RequestMapping(value = "/merchant", method = RequestMethod.GET)
   public ModelAndView goShowMerchantPage(Model model) {
@@ -134,12 +138,22 @@ public class MerchantController {
         merchantSettlementService.findByMerchantUser(merchantUserId);
     model.addAttribute("settlementList",
                        settlementList);
-    if(settlementList.size()==0){
+    if (settlementList.size() == 0) {
       model.addAttribute("display_show",
                          false);
-    }else {
+    } else {
       model.addAttribute("display_show",
                          true);
+    }
+    //新加易宝 获取商户所有易宝子商户
+    List<MerchantUserLedger>
+        ledgerList =
+        merchantUserLedgerService.findAllByMerchantUser(new MerchantUser(merchantUserId, ""));
+    if (ledgerList == null || ledgerList.size() == 0) {
+      model.addAttribute("display_show_yb", false);
+    } else {
+      model.addAttribute("ledgerList", ledgerList);
+      model.addAttribute("display_show_yb", true);
     }
     return MvUtil.go("/merchant/edit");
   }
@@ -170,71 +184,93 @@ public class MerchantController {
     if (merchant.getMerchantUser() != null) {
       model.addAttribute("settlementList", settlementList);
     }
-    if(settlementList.size()==0){
+    if (settlementList.size() == 0) {
       model.addAttribute("display_show",
                          false);
-    }else {
+    } else {
       model.addAttribute("display_show",
                          true);
     }
     //获取门店结算方式和使用商户号信息 (没有就创建)
-    model.addAttribute("scanPayWay", merchantScanPayWayService.findByMerchantId(id));
+    MerchantScanPayWay scanPayWay = merchantScanPayWayService.findByMerchantId(id);
+    model.addAttribute("scanPayWay", scanPayWay);
     model.addAttribute("store", merchantSettlementStoreService.findByMerchantId(id));
     model.addAttribute("rebateStage", dictionaryService.findDictionaryById(50L).getValue());
+    //新加易宝 获取商户所有易宝子商户
+    List<MerchantUserLedger>
+        ledgerList =
+        merchantUserLedgerService.findAllByMerchantUser(merchant.getMerchantUser());
+    if (ledgerList == null || ledgerList.size() == 0) {
+      model.addAttribute("display_show_yb", false);
+    } else {
+      model.addAttribute("ledgerList", ledgerList);
+      model.addAttribute("display_show_yb", true);
+    }
+    if (scanPayWay.getType() == 3) {
+      model.addAttribute("merchantLedger", merchantLedgerService.findByMerchant(merchant));
+    }
     return MvUtil.go("/merchant/edit");
   }
 
   @RequestMapping(value = "/merchant", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
   public LejiaResult createMerchant(@RequestBody MerchantDto merchantDto) {
     Merchant merchant = merchantDto.getMerchant();
-    merchantService.createMerchant(merchant);
-    MerchantRebatePolicy policy = merchantDto.getMerchantRebatePolicy();
-    policy.setMerchantId(merchant.getId());
-    merchantReBatePolicyService.saveMerchantRebatePolicy(policy);
-    //新加内容 01/13
-    //保存支付方式和商户号使用信息
-    MerchantScanPayWay scanPayWay = merchantDto.getMerchantScanPayWay();
-    scanPayWay.setMerchantId(merchant.getId());
-    MerchantSettlementStore store = merchantDto.getMerchantSettlementStore();
-    store.setMerchantId(merchant.getId());
     try {
+      Merchant dbMerchant = merchantService.createMerchant(merchant);
+      MerchantRebatePolicy policy = merchantDto.getMerchantRebatePolicy();
+      policy.setMerchantId(dbMerchant.getId());
+      merchantReBatePolicyService.saveMerchantRebatePolicy(policy);
+      //新加内容 01/13
+      //保存支付方式和商户号使用信息
+      MerchantScanPayWay scanPayWay = merchantDto.getMerchantScanPayWay();
+      scanPayWay.setMerchantId(dbMerchant.getId());
+      MerchantSettlementStore store = merchantDto.getMerchantSettlementStore();
+      store.setMerchantId(dbMerchant.getId());
       merchantScanPayWayService.savePayWay(scanPayWay);
       merchantSettlementStoreService.saveSettlementStore(store);
+      //新加 如果选择易宝支付，保存门店选择的子商编
+      if (scanPayWay.getType() == 3) {
+        merchantLedgerService.saveByMerchant(merchantDto.getMerchantLedger(), merchant);
+      }
     } catch (Exception e) {
       e.printStackTrace();
       return LejiaResult.build(500, "创建异常");
     }
-
-    return LejiaResult.ok("添加商户成功");
+    return LejiaResult.build(200, "添加商户成功");
   }
 
   @RequestMapping(value = "/merchant", method = RequestMethod.PUT)
   public LejiaResult editMerchant(@RequestBody MerchantDto merchantDto) {
     Merchant merchant = merchantDto.getMerchant();
     MerchantUser merchantUser = null;
-    if(merchant.getMerchantUser()!=null&&merchant.getMerchantUser().getName()!=null) {
-      merchantUser = merchantUserService.findMerchantManagerByName(merchant.getMerchantUser().getName());
+    if (merchant.getMerchantUser() != null && merchant.getMerchantUser().getName() != null) {
+      merchantUser =
+          merchantUserService.findMerchantManagerByName(merchant.getMerchantUser().getName());
     }
-    merchantService.editMerchant(merchant,merchantUser);
-    MerchantRebatePolicy policy = merchantDto.getMerchantRebatePolicy();
-    if (policy.getId() == null) {
-      policy.setMerchantId(merchant.getId());
-      merchantReBatePolicyService.saveMerchantRebatePolicy(policy);
-    } else {
-      merchantReBatePolicyService.editMerchantRebatePolicy(policy);
-    }
-    //新加内容 01/13
-    //保存支付方式和商户号使用信息
-    MerchantScanPayWay scanPayWay = merchantDto.getMerchantScanPayWay();
-    MerchantSettlementStore store = merchantDto.getMerchantSettlementStore();
     try {
+      merchantService.editMerchant(merchant, merchantUser);
+      MerchantRebatePolicy policy = merchantDto.getMerchantRebatePolicy();
+      if (policy.getId() == null) {
+        policy.setMerchantId(merchant.getId());
+        merchantReBatePolicyService.saveMerchantRebatePolicy(policy);
+      } else {
+        merchantReBatePolicyService.editMerchantRebatePolicy(policy);
+      }
+      //新加内容 01/13
+      //保存支付方式和商户号使用信息
+      MerchantScanPayWay scanPayWay = merchantDto.getMerchantScanPayWay();
+      MerchantSettlementStore store = merchantDto.getMerchantSettlementStore();
       merchantScanPayWayService.savePayWay(scanPayWay);
       merchantSettlementStoreService.saveSettlementStore(store);
+      //新加 如果选择易宝支付，保存门店选择的子商编
+      if (scanPayWay.getType() == 3) {
+        merchantLedgerService.saveByMerchant(merchantDto.getMerchantLedger(), merchant);
+      }
     } catch (Exception e) {
       e.printStackTrace();
       return LejiaResult.build(500, "修改异常");
     }
-    return LejiaResult.build(200,"修改门店成功",merchantUser.getId());
+    return LejiaResult.build(200, "修改门店成功", merchantUser.getId());
   }
 
   @RequestMapping(value = "/merchant/disable/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -385,9 +421,9 @@ public class MerchantController {
   }
 
   /**
-   *  查询商户下面所有门店
+   * 查询商户下面所有门店
    */
-  @RequestMapping(value = "/merchant/findByMU",method = RequestMethod.GET)
+  @RequestMapping(value = "/merchant/findByMU", method = RequestMethod.GET)
   @ResponseBody
   public LejiaResult findByMerchantUser(Long id) {
     MerchantUser merchantUser = merchantUserService.findById(id);

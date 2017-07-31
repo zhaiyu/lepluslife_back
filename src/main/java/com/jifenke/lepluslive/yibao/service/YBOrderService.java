@@ -20,7 +20,7 @@ import javax.persistence.Query;
  * 易宝订单操作
  * Created by zhangwen on 2017/7/20.
  */
-@Service
+@Service("ybOrderService")
 @Transactional(readOnly = true)
 public class YBOrderService {
 

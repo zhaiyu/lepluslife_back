@@ -41,10 +41,10 @@ public class YBStoreStatementJob implements Job {
     }
     YBOrderService
         ybOrderService =
-        (YBOrderService) applicationContext.getBean("YBOrderService");
+         (YBOrderService) applicationContext.getBean("ybOrderService");
     StoreSettlementService
         storeSettlementService =
-        (StoreSettlementService) applicationContext.getBean("StoreSettlementService");
+        (StoreSettlementService) applicationContext.getBean("storeSettlementService");
     Date date = new Date();
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     Calendar calendar = Calendar.getInstance();

@@ -33,6 +33,7 @@ public class YBLedgerStatementJob implements Job {
     //周六周日不生成通道结算单
     int day = DataUtils.getDay(new Date());
     if (day == 1 || day == 7) {
+      System.out.println("周末无结算单");
       return;
     }
     ApplicationContext
@@ -47,10 +48,10 @@ public class YBLedgerStatementJob implements Job {
     }
     YBOrderService
         ybOrderService =
-        (YBOrderService) applicationContext.getBean("YBOrderService");
+        (YBOrderService) applicationContext.getBean("ybOrderService");
     LedgerSettlementService
         ledgerSettlementService =
-        (LedgerSettlementService) applicationContext.getBean("LedgerSettlementService");
+        (LedgerSettlementService) applicationContext.getBean("ledgerSettlementService");
 
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
     final String tradeDate = sdf.format(new Date());
