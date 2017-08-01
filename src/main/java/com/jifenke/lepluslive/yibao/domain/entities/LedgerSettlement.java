@@ -25,6 +25,8 @@ public class LedgerSettlement {
 
   private Date dateCreated = new Date();
 
+  private Date dateUpdated = new Date();  //最近更新时间
+
   //【打款成功】【无结算记录】和【已退回】为终态
   //0=待查询，1=打款成功，2=已退回，3=已扣款未打款，4=打款中，-1=打款失败，-2=银行返回打款失败
   private Integer state = 0;   //结算状态
@@ -172,5 +174,13 @@ public class LedgerSettlement {
 
   public void setBankAccountNumber(String bankAccountNumber) {
     this.bankAccountNumber = bankAccountNumber;
+  }
+
+  public Date getDateUpdated() {
+    return dateUpdated;
+  }
+
+  public void setDateUpdated(Date dateUpdated) {
+    this.dateUpdated = dateUpdated;
   }
 }

@@ -1,6 +1,5 @@
 package com.jifenke.lepluslive.job;
 
-import com.jifenke.lepluslive.global.util.DataUtils;
 import com.jifenke.lepluslive.yibao.service.LedgerSettlementService;
 import com.jifenke.lepluslive.yibao.service.YBOrderService;
 import com.jifenke.lepluslive.yibao.util.YbRequestUtils;
@@ -15,6 +14,7 @@ import org.springframework.context.ApplicationContext;
 import org.springframework.stereotype.Component;
 
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -30,12 +30,6 @@ public class YBLedgerStatementJob implements Job {
   @Override
   public void execute(JobExecutionContext context) throws JobExecutionException {
 
-    //周六周日不生成通道结算单
-    int day = DataUtils.getDay(new Date());
-    if (day == 1 || day == 7) {
-      System.out.println("周末无结算单");
-      return;
-    }
     ApplicationContext
         applicationContext = null;
     try {
@@ -54,7 +48,30 @@ public class YBLedgerStatementJob implements Job {
         (LedgerSettlementService) applicationContext.getBean("ledgerSettlementService");
 
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd");
-    final String tradeDate = sdf.format(new Date());
+    Date date = new Date();
+    String tradeDate = sdf.format(date);
+    Calendar calendar = Calendar.getInstance();
+    calendar.setTime(date);
+    calendar.add(Calendar.DAY_OF_MONTH, -11);
+    String beginDate = sdf.format(calendar.getTime());
+    calendar.add(Calendar.DAY_OF_MONTH, 10);
+    String endDate = sdf.format(calendar.getTime());
+    //查询最近十日结算状态非终态的结算单，如果成功，修改状态并修改对应门店结算单状态，并发送消息
+    List<Map<String, Object>>
+        settlementList =
+        ybOrderService.findSettlementByStateAndTradeDate(beginDate, endDate);
+    for (Map<String, Object> map : settlementList) {
+      try {
+        Map<String, String>
+            queryMap =
+            YbRequestUtils.querySettlement("" + map.get("ledgerNo"), "" + map.get("tradeDate"));
+        ledgerSettlementService
+            .updateLedgerSettlement(queryMap, Long.valueOf("" + map.get("id")), tradeDate);
+      } catch (Exception e) {
+        log.error(
+            "易宝-商户号为" + map.get("ledgerNo") + "结算日期为" + map.get("tradeDate") + "的通道结算单查询出现问题");
+      }
+    }
 
     //获取所有的审核通过的易宝子商户号
     List<Map<String, Object>> list = ybOrderService.findAllLedgers();
