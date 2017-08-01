@@ -234,7 +234,7 @@
                 </div>
             </div>
             <c:if test="${display_show_yb}">
-                <div class="MODInput_row" id="yibaoLedgerList">
+                <div class="MODInput_row" id="yibaoLedgerList" style="display: none">
                     <div class="Mod-2">易宝子商编</div>
                     <div class="Mod-5">
                         <select class="hhr" name="ledgerList">
@@ -757,6 +757,7 @@
                 }
                 $("select[name='ledgerList'] option[value=${merchantLedger.merchantUserLedger.id}]").attr(
                     "selected", true);
+                $('#yibaoLedgerList').css('display','block');
             }
             if (${scanPayWay.type == 0}) { //富友结算
                 $(".create_edit-payChose > div").removeClass("ModRadius2_active");
