@@ -99,8 +99,42 @@ public class LedgerSettlementService {
       ledgerSettlementRepository.save(settlement);
       //更新对应门店结算单状态 多出无结算记录
       ybOrderService.resetStoreSettlementState(diff, startDate, info[0], state);
-      //发送微信模板消息
-      sendWxMsg(info[2], tradeDate, bankNo, settlement.getOrderSid(), merchantUserId);
+      //结算成功时发送微信模板消息
+      if (state == 1) {
+        sendWxMsg(info[2], tradeDate, bankNo, settlement.getOrderSid(), merchantUserId);
+      }
+    }
+  }
+
+  /**
+   * 查询近期非终态目前状态，若SUCCESS修改通道结算单状态&发送通知 2017-08-01
+   *
+   * @param queryMap     查询结果
+   * @param settlementId 通道结算单ID
+   * @param tradeDate    转入时间
+   */
+  @Transactional(propagation = Propagation.REQUIRED)
+  public void updateLedgerSettlement(Map<String, String> queryMap, Long settlementId,
+                                     String tradeDate) {
+    if ("1".equals(queryMap.get("code"))) {
+      //插入一条通道结算单
+      String[] info = queryMap.get("info").split(",");
+      String startDate = info[5];
+      int state = parseState(info[3]);
+      if (state == 1) {
+        LedgerSettlement settlement = ledgerSettlementRepository.findOne(settlementId);
+        settlement.setState(state);
+        settlement.setDateUpdated(new Date());
+        ledgerSettlementRepository.save(settlement);
+        int diff = DataUtils.dayDiff(startDate, info[6], null);
+        //更新对应门店结算单状态 多出无结算记录
+        if (diff > 0) {
+          ybOrderService.resetStoreSettlementState(diff, startDate, info[0], state);
+        }
+        //结算成功时发送微信模板消息
+        sendWxMsg(info[2], tradeDate, settlement.getBankAccountNumber(), settlement.getOrderSid(),
+                  settlement.getMerchantUserId());
+      }
     }
   }
 

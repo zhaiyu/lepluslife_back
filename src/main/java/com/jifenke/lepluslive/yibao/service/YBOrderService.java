@@ -201,6 +201,23 @@ public class YBOrderService {
   }
 
   /**
+   * 查询一定时间内结算状态非终态的结算单(用于通道结算单)  2017/8/1
+   *
+   * @param beginDate 结算起始日期
+   * @param endDate   结算终止日期
+   */
+  public List<Map<String, Object>> findSettlementByStateAndTradeDate(String beginDate,
+                                                                     String endDate) {
+    StringBuffer s = new StringBuffer();
+    s.append("SELECT id,ledger_no AS ledgerNo,trade_date AS tradeDate FROM yb_ledger_settlement");
+    s.append(" WHERE state != 1 AND trade_date BETWEEN '");
+    s.append(beginDate).append("' AND '");
+    s.append(endDate).append("'");
+    System.out.println(s.toString());
+    return findBySql(s.toString());
+  }
+
+  /**
    * 重置门店结算单状态(用于通道结算单)  2017/7/27
    *
    * @param days     转账起止天数
