@@ -29,7 +29,7 @@ public class YBLedgerStatementJob implements Job {
 
   @Override
   public void execute(JobExecutionContext context) throws JobExecutionException {
-
+    log.error("非错误----------易宝通道结算单统计开始-----" + new Date().getTime());
     ApplicationContext
         applicationContext = null;
     try {
@@ -86,5 +86,6 @@ public class YBLedgerStatementJob implements Job {
         log.error("易宝-商户号为" + map.get("ledgerNo") + "的通道结算单统计出现问题");
       }
     }
+    log.error("非错误----------易宝通道结算单统计结束-----" + new Date().getTime());
   }
 }
