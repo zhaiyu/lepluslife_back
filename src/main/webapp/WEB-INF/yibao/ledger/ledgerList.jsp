@@ -299,8 +299,6 @@
             if (eval(map.code) === 1) {
                 if ("SUCCESS" == map.status) {
                     alert('通过审核');
-                    window.location.href =
-                        "/manage/merchantUser/info/" + merchantUserId + '?li=6';
                 } else {
                     alert('审核未通过！，失败原因：' + map.reason);
                 }
