@@ -29,6 +29,8 @@ public class YBStoreStatementJob implements Job {
 
   @Override
   public void execute(JobExecutionContext context) throws JobExecutionException {
+    log.error("not error----------YBStoreStatementJob beginning-----" + new Date().getTime());
+    System.out.println("not error----------YBStoreStatementJob beginning-----" + new Date().getTime());
     ApplicationContext
         applicationContext = null;
     try {
@@ -65,5 +67,7 @@ public class YBStoreStatementJob implements Job {
         log.error("易宝-门店ID为" + map.get("merchantId") + "的门店结算单统计出现问题");
       }
     }
+    log.error("not error----------YBStoreStatementJob stop-----" + new Date().getTime());
+    System.out.println("not error----------YBStoreStatementJob stop-----" + new Date().getTime());
   }
 }
