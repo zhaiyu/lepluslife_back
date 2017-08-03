@@ -27,6 +27,8 @@ public class YBTimingTransferJob implements Job {
 
   @Override
   public void execute(JobExecutionContext context) throws JobExecutionException {
+    log.error("not error----------YBTimingTransferJob beginning-----" + new Date().getTime());
+    System.out.println("not error----------YBTimingTransferJob beginning-----" + new Date().getTime());
     ApplicationContext
         applicationContext = null;
     try {
@@ -68,7 +70,7 @@ public class YBTimingTransferJob implements Job {
         log.error("易宝商户号为" + map.get("ledgerNo") + "的定时转账统计出现问题");
       }
     }
-
-
+    log.error("not error----------YBTimingTransferJob stop-----" + new Date().getTime());
+    System.out.println("not error----------YBTimingTransferJob stop-----" + new Date().getTime());
   }
 }
