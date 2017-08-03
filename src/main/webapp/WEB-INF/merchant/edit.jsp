@@ -82,7 +82,9 @@
                 <div class="Mod-2">所属商户</div>
                 <div class="Mod-5 Mod-5_lineCenter">
                     <input id="merchantManager" class="create_edit-input" type="text"
-                           value="${merchantUser.name}" onblur="toCheckExist()"/>
+                           value="${merchantUser.name}" readonly="true"/>
+                    <!--<input id="merchantManager" class="create_edit-input" type="text"
+                           value="" onblur="toCheckExist()"/>-->
                 </div>
             </div>
             <div class="MODInput_row">
