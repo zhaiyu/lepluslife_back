@@ -248,9 +248,10 @@ public class SchedulerConfigration {
           scoreAAccountAddCronTriggerBean().getObject(),
           monitorScoreCTriggerBean().getObject(),
           socreDailyTotalTriggerBean().getObject(),
-          ybTimingTransferTriggerBean().getObject(),
+          ybLedgerStatementTriggerBean().getObject(),
           ybStoreStatementTriggerBean().getObject(),
-          ybLedgerStatementTriggerBean().getObject());
+          ybTimingTransferTriggerBean().getObject()
+      );
       bean.setSchedulerName("orderConfrim");
     }
     return bean;
