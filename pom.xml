@@ -45,7 +45,8 @@
         <run.addResources>false</run.addResources>
         <shiro.version>1.2.4</shiro.version>
         <sonar-maven-plugin.version>2.6</sonar-maven-plugin.version>
-        <sonar.exclusions>src/main/webapp/assets/**/*.*, src/main/webapp/bower_components/**/*.*, src/main/webapp/dist/**/*.*</sonar.exclusions>
+        <sonar.exclusions>src/main/webapp/assets/**/*.*, src/main/webapp/bower_components/**/*.*,
+            src/main/webapp/dist/**/*.*</sonar.exclusions>
         <sonar.jacoco.itReportPath>${project.testresult.directory}/coverage/jacoco/jacoco-it.exec</sonar.jacoco.itReportPath>
         <sonar.jacoco.reportPath>${project.testresult.directory}/coverage/jacoco/jacoco.exec</sonar.jacoco.reportPath>
         <sonar.java.codeCoveragePlugin>jacoco</sonar.java.codeCoveragePlugin>
@@ -86,7 +87,7 @@
             <artifactId>jackson-datatype-json-org</artifactId>
             <version>${jackson.version}</version>
         </dependency>
-        <dependency>s
+        <dependency>
             <groupId>com.fasterxml.jackson.datatype</groupId>
             <artifactId>jackson-datatype-jsr310</artifactId>
         </dependency>
