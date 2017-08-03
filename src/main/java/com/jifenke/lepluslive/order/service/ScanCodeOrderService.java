@@ -101,6 +101,11 @@ public class ScanCodeOrderService {
     return repository.findByOrderSid(orderSid);
   }
 
+  @Transactional(propagation = Propagation.REQUIRED)
+  public void saveOrder(ScanCodeOrder order) {
+    repository.save(order);
+  }
+
   /**
    * 点击退款，获取退款信息  2016/12/22
    *
