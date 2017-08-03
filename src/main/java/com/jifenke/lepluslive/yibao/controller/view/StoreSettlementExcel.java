@@ -41,7 +41,7 @@ public class StoreSettlementExcel extends AbstractExcelView {
     public void setExcelHeader(HSSFSheet excelSheet) {
         HSSFRow excelHeader = excelSheet.createRow(0);
         excelHeader.createCell(0).setCellValue("结算单编号");
-        excelHeader.createCell(1).setCellValue("门店ID");
+        excelHeader.createCell(1).setCellValue("门店SID");
         excelHeader.createCell(2).setCellValue("门店名称");
         excelHeader.createCell(3).setCellValue("清算日期");
         excelHeader.createCell(4).setCellValue("易宝商户号");
@@ -59,9 +59,8 @@ public class StoreSettlementExcel extends AbstractExcelView {
         for (StoreSettlement settlement : settlementList) {
             HSSFRow excelRow = excelSheet.createRow(record++);
             excelRow.createCell(0).setCellValue(settlement.getOrderSid());
-            excelRow.createCell(1).setCellValue(settlement.getMerchant().getId());
+            excelRow.createCell(1).setCellValue(settlement.getMerchant().getMerchantSid());
             excelRow.createCell(2).setCellValue(settlement.getMerchant().getName());
-            SimpleDateFormat sdf = new SimpleDateFormat("yyyy.MM.dd");
             if (settlement.getTradeDate() != null) {
                 excelRow.createCell(3).setCellValue(settlement.getTradeDate());
             } else {

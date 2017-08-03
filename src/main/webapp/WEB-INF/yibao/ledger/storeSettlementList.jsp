@@ -271,14 +271,14 @@
                            initPage(1, totalPage);
                        }
                        headContent.innerHTML +=
-                               '<th>结算单号</th><th>门店ID</th><th>门店名称</th><th>清算日期</th><th>易宝商户号</th><th>微信应入账</th><th>支付宝应入账</th><th>鼓励金应入账</th>';
+                               '<th>结算单号</th><th>门店SID</th><th>门店名称</th><th>清算日期</th><th>易宝商户号</th><th>微信应入账</th><th>支付宝应入账</th><th>鼓励金应入账</th>';
                        headContent.innerHTML +=
                                '<th>退款笔数</th><th>退款支出</th><th>实际应转账</th><th>通道结算单</th>';
                        for (i = 0; i < content.length; i++) {
                            var contentStr = '<tr><td>' + content[i].orderSid + '</td>';
                            if(merchants[i]!=null&&merchants[i].id!="") {
                                contentStr +=
-                                       '<td><span>' + merchants[i].id + '</span></td>';
+                                       '<td><span>' + merchants[i].merchantSid + '</span></td>';
                                contentStr +=
                                        '<td><span>' + merchants[i].name + '</span></td>'
                            }else  {

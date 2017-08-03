@@ -198,7 +198,7 @@ public class SchedulerConfigration {
     CronTriggerFactoryBean tigger = new CronTriggerFactoryBean();
     tigger.setJobDetail(monitorScoreCDetail().getObject());
     try {
-      tigger.setCronExpression("0 0 9 * * ? ");//每1小时执行一次
+      tigger.setCronExpression("0 0 9 * * ? ");//每天早九点执行
     } catch (Exception e) {
       e.printStackTrace();
     }

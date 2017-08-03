@@ -133,40 +133,40 @@
     //    时间选择器
     $(document).ready(function () {
         $('#date-end').daterangepicker({
-            maxDate: moment(), //最大时间
-            showDropdowns: true,
-            showWeekNumbers: false, //是否显示第几周
-            timePicker: true, //是否显示小时和分钟
-            timePickerIncrement: 60, //时间的增量，单位为分钟
-            timePicker12Hour: false, //是否使用12小时制来显示时间
-            ranges: {
-                '最近1小时': [moment().subtract('hours', 1), moment()],
-                '今日': [moment().startOf('day'), moment()],
-                '昨日': [moment().subtract('days', 1).startOf('day'),
-                    moment().subtract('days', 1).endOf('day')],
-                '最近7日': [moment().subtract('days', 6), moment()],
-                '最近30日': [moment().subtract('days', 29), moment()]
-            },
-            opens: 'right', //日期选择框的弹出位置
-            buttonClasses: ['btn btn-default'],
-            applyClass: 'btn-small btn-primary blue',
-            cancelClass: 'btn-small',
-            format: 'YYYY-MM-DD HH:mm:ss', //控件中from和to 显示的日期格式
-            separator: ' to ',
-            locale: {
-                applyLabel: '确定',
-                cancelLabel: '取消',
-                fromLabel: '起始时间',
-                toLabel: '结束时间',
-                customRangeLabel: '自定义',
-                daysOfWeek: ['日', '一', '二', '三', '四', '五', '六'],
-                monthNames: ['一月', '二月', '三月', '四月', '五月', '六月',
-                    '七月', '八月', '九月', '十月', '十一月', '十二月'],
-                firstDay: 1
-            }
-        }, function (start, end, label) {//格式化日期显示框
+                                           maxDate: moment(), //最大时间
+                                           showDropdowns: true,
+                                           showWeekNumbers: false, //是否显示第几周
+                                           timePicker: true, //是否显示小时和分钟
+                                           timePickerIncrement: 60, //时间的增量，单位为分钟
+                                           timePicker12Hour: false, //是否使用12小时制来显示时间
+                                           ranges: {
+                                               '最近1小时': [moment().subtract('hours', 1), moment()],
+                                               '今日': [moment().startOf('day'), moment()],
+                                               '昨日': [moment().subtract('days', 1).startOf('day'),
+                                                      moment().subtract('days', 1).endOf('day')],
+                                               '最近7日': [moment().subtract('days', 6), moment()],
+                                               '最近30日': [moment().subtract('days', 29), moment()]
+                                           },
+                                           opens: 'right', //日期选择框的弹出位置
+                                           buttonClasses: ['btn btn-default'],
+                                           applyClass: 'btn-small btn-primary blue',
+                                           cancelClass: 'btn-small',
+                                           format: 'YYYY-MM-DD HH:mm:ss', //控件中from和to 显示的日期格式
+                                           separator: ' to ',
+                                           locale: {
+                                               applyLabel: '确定',
+                                               cancelLabel: '取消',
+                                               fromLabel: '起始时间',
+                                               toLabel: '结束时间',
+                                               customRangeLabel: '自定义',
+                                               daysOfWeek: ['日', '一', '二', '三', '四', '五', '六'],
+                                               monthNames: ['一月', '二月', '三月', '四月', '五月', '六月',
+                                                            '七月', '八月', '九月', '十月', '十一月', '十二月'],
+                                               firstDay: 1
+                                           }
+                                       }, function (start, end, label) {//格式化日期显示框
             $('#date-end span').html(start.format('YYYY/MM/DD HH:mm:ss') + ' - '
-                    + end.format('YYYY/MM/DD HH:mm:ss'));
+                                     + end.format('YYYY/MM/DD HH:mm:ss'));
         });
         settlementCriteria.offset = 1;
         getFinancialByAjax(settlementCriteria);
@@ -177,78 +177,81 @@
         headContent.innerHTML = "";
         dateContent.innerHTML = "";
         $.ajax({
-            type: "post",
-            url: "/manage/settlement/ledger/findByCriteria",
-            async: false,
-            data: JSON.stringify(settlementCriteria),
-            contentType: "application/json",
-            success: function (data) {
-                var page = data.data.page;
-                var content = page.content;
-                var merchants = data.data.merchantUsers;
-                var totalPage = page.totalPages;
-                $("#totalElements").html(page.totalElements);
-                if (totalPage == 0) {
-                    totalPage = 1;
-                }
-                if (flag) {
-                    initPage(settlementCriteria.offset, totalPage);
-                    flag = false;
-                }
-                if (init1) {
-                    initPage(1, totalPage);
-                }
-                headContent.innerHTML =
-                        '<th>通道结算单号</th><th>易宝商户号</th><th>乐加商户ID</th><th>清算日期</th><th>日转账交易金额</th><th>实际转账金额</th>';
-                headContent.innerHTML +=
-                        '<th>实际结算金额</th><th>结算状态</th><th>操作</th>';
-                for (var i = 0; i < content.length; i++) {
-                    var contentStr = '<tr><td>' + content[i].orderSid + '</td>';
-                    contentStr +=
-                            '<td><span>' + content[i].ledgerNo + '</span></td>';
-                    if (merchants[i] != null && merchants[i].name != "") {
-                        contentStr +=
-                                '<td><span>' + merchants[i].name + '(' + merchants[i].id + ')</span></td>';
-                    } else {
-                        contentStr +=
-                                '<td><span>' + content[i].merchantUserId + '</span></td>';
+                   type: "post",
+                   url: "/manage/settlement/ledger/findByCriteria",
+                   async: false,
+                   data: JSON.stringify(settlementCriteria),
+                   contentType: "application/json",
+                   success: function (data) {
+                       var page = data.data.page;
+                       var content = page.content;
+                       var merchants = data.data.merchantUsers;
+                       var totalPage = page.totalPages;
+                       $("#totalElements").html(page.totalElements);
+                       if (totalPage == 0) {
+                           totalPage = 1;
+                       }
+                       if (flag) {
+                           initPage(settlementCriteria.offset, totalPage);
+                           flag = false;
+                       }
+                       if (init1) {
+                           initPage(1, totalPage);
+                       }
+                       headContent.innerHTML =
+                           '<th>通道结算单号</th><th>易宝商户号</th><th>乐加商户ID</th><th>清算日期</th><th>日转账交易金额</th><th>实际转账金额</th>';
+                       headContent.innerHTML +=
+                           '<th>实际结算金额</th><th>结算状态</th><th>操作</th>';
+                       for (var i = 0; i < content.length; i++) {
+                           var contentStr = '<tr><td>' + content[i].orderSid + '</td>';
+                           contentStr +=
+                               '<td><span>' + content[i].ledgerNo + '</span></td>';
+                           if (merchants[i] != null && merchants[i].name != "") {
+                               contentStr +=
+                                   '<td><span>' + merchants[i].name + '(' + merchants[i].id
+                                   + ')</span></td>';
+                           } else {
+                               contentStr +=
+                                   '<td><span>' + content[i].merchantUserId + '</span></td>';
 
-                    }
-                    contentStr +=
-                            '<td><span>'
-                            + new Date(content[i].tradeDate).format('yyyy-MM-dd')
-                            + '</span></td>';
-                    contentStr +=
-                            '<td><span>' + content[i].totalTransfer / 100.0 + '</span></td>';
-                    contentStr +=
-                            '<td><span>' + content[i].actualTransfer / 100.0 + '</span></td>';
-                    contentStr +=
-                            '<td><span>' + content[i].actualTransfer / 100.0 + '</span></td>';
-                    if (content[i].state == 0) {
-                        contentStr += '<td>待查询</td>'
-                    } else if (content[i].state == 1) {
-                        contentStr += '<td>转账成功</td>';
-                    } else if (content[i].state == 2) {
-                        contentStr += '<td>已退回</td>';
-                    } else if (content[i].state == 3) {
-                        contentStr += '<td>已扣款未打款</td>';
-                    } else if (content[i].state == 4) {
-                        contentStr += '<td>打款中</td>';
-                    } else if (content[i].state == -1) {
-                        contentStr += '<td>打款失败</td>';
-                    } else if (content[i].state == -2){
-                        contentStr += '<td>银行返回打款失败</td>';
-                    } else {
-                        contentStr += '<td>未知</td>';
-                    }
-                    contentStr +=
-                            '<td><span><a onclick="searchState(' + content[i].id + ')">查询状态</a></span></td></tr>';
-                    financialContent.innerHTML += contentStr;
-                }
+                           }
+                           contentStr +=
+                               '<td><span>'
+                               + new Date(content[i].tradeDate).format('yyyy-MM-dd')
+                               + '</span></td>';
+                           contentStr +=
+                               '<td><span>' + content[i].totalTransfer / 100.0 + '</span></td>';
+                           contentStr +=
+                               '<td><span>' + content[i].actualTransfer / 100.0 + '</span></td>';
+                           contentStr +=
+                               '<td><span>' + content[i].actualTransfer / 100.0 + '</span></td>';
+                           if (content[i].state == 0) {
+                               contentStr += '<td>待查询</td>'
+                           } else if (content[i].state == 1) {
+                               contentStr += '<td>转账成功</td>';
+                           } else if (content[i].state == 2) {
+                               contentStr += '<td>已退回</td>';
+                           } else if (content[i].state == 3) {
+                               contentStr += '<td>已扣款未打款</td>';
+                           } else if (content[i].state == 4) {
+                               contentStr += '<td>打款中</td>';
+                           } else if (content[i].state == -1) {
+                               contentStr += '<td>打款失败</td>';
+                           } else if (content[i].state == -2) {
+                               contentStr += '<td>银行返回打款失败</td>';
+                           } else {
+                               contentStr += '<td>未知</td>';
+                           }
+                           contentStr +=
+                               '<td><button class="btn btn-primary" onclick="searchState(\''
+                               + content[i].id
+                               + '\')">查询状态</button></td></tr>';
+                           financialContent.innerHTML += contentStr;
+                       }
 
-                initPage(settlementCriteria.offset, totalPage);
-            }
-        });
+                       initPage(settlementCriteria.offset, totalPage);
+                   }
+               });
     }
     Date.prototype.format = function (fmt) {
         var o = {
@@ -275,15 +278,17 @@
         }
         if (/(E+)/.test(fmt)) {
             fmt =
-                    fmt.replace(RegExp.$1,
-                            ((RegExp.$1.length > 1) ? (RegExp.$1.length > 2 ? "\u661f\u671f" : "\u5468")
-                                    : "") + week[this.getDay() + ""]);
+                fmt.replace(RegExp.$1,
+                            ((RegExp.$1.length > 1) ? (RegExp.$1.length > 2 ? "\u661f\u671f"
+                                : "\u5468")
+                                : "") + week[this.getDay() + ""]);
         }
         for (var k in o) {
             if (new RegExp("(" + k + ")").test(fmt)) {
                 fmt =
-                        fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr((""
-                        + o[k]).length)));
+                    fmt.replace(RegExp.$1,
+                                (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr((""
+                                                                                          + o[k]).length)));
             }
         }
         return fmt;
@@ -349,18 +354,48 @@
     function initPage(currPage, totalPage) {
         $('.tcdPageCode').unbind();
         $(".tcdPageCode").createPage({
-            pageCount: totalPage,
-            current: currPage,
-            backFn: function (p) {
-                //单击回调方法，p是当前页码
-                init1 = 0;
-                settlementCriteria.offset = p;
-                getFinancialByAjax(settlementCriteria);
-            }
-        });
+                                         pageCount: totalPage,
+                                         current: currPage,
+                                         backFn: function (p) {
+                                             //单击回调方法，p是当前页码
+                                             init1 = 0;
+                                             settlementCriteria.offset = p;
+                                             getFinancialByAjax(settlementCriteria);
+                                         }
+                                     });
     }
     function searchState(id) {
-        // TO_DO
+        $.get('/manage/settlement/querySettlement?settlementId=' + id, function (map) {
+            if (eval(map.code) === 1) {
+                var msg = '';
+                //0=待查询，1=打款成功，2=已退回，3=已扣款未打款，4=打款中，-1=打款失败，-2=银行返回打款失败
+                switch (eval(map.status)) {
+                    case 1:
+                        msg = "打款成功";
+                        break;
+                    case 2:
+                        msg = "已退回";
+                        break;
+                    case 3:
+                        msg = "已扣款未打款";
+                        break;
+                    case 4:
+                        msg = "打款中";
+                        break;
+                    case -1:
+                        msg = "打款失败";
+                        break;
+                    case -2:
+                        msg = "银行返回打款失败";
+                        break;
+                    default:
+                        msg = "未知状态";
+                }
+                alert(msg + '(' + map.info + ')');
+            } else {
+                alert('请求错误，错误码：' + map.code + '(' + map.msg + ')');
+            }
+        });
     }
 </script>
 </body>
