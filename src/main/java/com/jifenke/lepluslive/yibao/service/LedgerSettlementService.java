@@ -13,6 +13,7 @@ import com.jifenke.lepluslive.weixin.service.WxTemMsgService;
 import com.jifenke.lepluslive.yibao.domain.criteria.LedgerSettlementCriteria;
 import com.jifenke.lepluslive.yibao.domain.entities.LedgerSettlement;
 import com.jifenke.lepluslive.yibao.repository.LedgerSettlementRepository;
+import com.jifenke.lepluslive.yibao.util.YbRequestUtils;
 
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -136,6 +137,32 @@ public class LedgerSettlementService {
                   settlement.getMerchantUserId());
       }
     }
+  }
+
+  /**
+   * 结算结果查询 2017/8/3
+   *
+   * @param settlementId 结算单ID
+   */
+  @Transactional(propagation = Propagation.REQUIRED)
+  public Map querySettlement(Long settlementId) {
+
+    LedgerSettlement settlement = ledgerSettlementRepository.findOne(settlementId);
+    if (settlement != null) {
+      Map<String, String>
+          queryMap =
+          YbRequestUtils.querySettlement(settlement.getLedgerNo(), settlement.getTradeDate());
+      if ("1".equals(queryMap.get("code"))) {
+        String[] info = queryMap.get("info").split(",");
+        int state = parseState(info[3]);
+        if (state == 1 && settlement.getState() != 1) {
+          updateLedgerSettlement(queryMap, settlementId, settlement.getTradeDate());
+        }
+        queryMap.put("status", "" + state);
+      }
+      return queryMap;
+    }
+    return null;
   }
 
   /**

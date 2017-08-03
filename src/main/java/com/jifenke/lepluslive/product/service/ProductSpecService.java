@@ -8,6 +8,7 @@ import com.jifenke.lepluslive.product.domain.entities.ProductSpec;
 import com.jifenke.lepluslive.product.domain.entities.ProductSpecLog;
 import com.jifenke.lepluslive.product.repository.ProductSpecLogRepository;
 import com.jifenke.lepluslive.product.repository.ProductSpecRepository;
+import com.jifenke.lepluslive.weixin.service.DictionaryService;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -35,6 +36,9 @@ public class ProductSpecService {
 
   @Inject
   private ProductRebatePolicyService productRebatePolicyService;
+
+  @Inject
+  private DictionaryService dictionaryService;
 
   public ProductSpec findProductSpecById(Integer id) {
 
@@ -143,7 +147,7 @@ public class ProductSpecService {
     return LejiaResult.build(200, "成功修改规格数量");
   }
 
-  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  @Transactional(propagation = Propagation.REQUIRED)
   public LejiaResult putOnProductSpec(Integer id) {
     ProductSpec productSpec = productSpecRepository.findOne(id);
     if (productSpec == null) {
@@ -154,7 +158,7 @@ public class ProductSpecService {
     return LejiaResult.build(200, "成功上架商品规格");
   }
 
-  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  @Transactional(propagation = Propagation.REQUIRED)
   public LejiaResult pullOffProductSpec(Integer id) {
     ProductSpec productSpec = productSpecRepository.findOne(id);
     if (productSpec == null) {
@@ -184,6 +188,8 @@ public class ProductSpecService {
     long toPartnerManager = 0L;
     long toLePlusLife = 0L;
 
+    String[] split = dictionaryService.findDictionaryById(66L).getValue().split("_");
+
     //毛利润
     BigDecimal profit = totalPrice.subtract(costPrice).subtract(otherPrice);
 
@@ -196,14 +202,14 @@ public class ProductSpecService {
     try {
       if (profit.doubleValue() != 0) {
         //可用金币
-        BigDecimal minScoreDecimal = profit.multiply(BigDecimal.valueOf(0.3))
+        BigDecimal minScoreDecimal = profit.multiply(new BigDecimal(split[0]))
             .setScale(0, BigDecimal.ROUND_HALF_UP);
         minScore = minScoreDecimal.multiply(X100).longValue();
         minPrice = price - minScore; //实付
         //返鼓励金
         BigDecimal
             rebateScoreDecimal =
-            profit.multiply(BigDecimal.valueOf(0.1)).setScale(2, BigDecimal.ROUND_HALF_UP);
+            profit.multiply(new BigDecimal(split[1])).setScale(2, BigDecimal.ROUND_HALF_UP);
         rebateScore = rebateScoreDecimal.multiply(X100).longValue();
 
         //分润总金额
@@ -213,15 +219,15 @@ public class ProductSpecService {
         commission = totalCommission.multiply(X100).longValue();
         //锁定商家合伙人
         toMerchant =
-            totalCommission.multiply(BigDecimal.valueOf(0.4)).setScale(2, BigDecimal.ROUND_HALF_UP)
+            totalCommission.multiply(new BigDecimal(split[2])).setScale(2, BigDecimal.ROUND_HALF_UP)
                 .multiply(X100).longValue();
         //锁定商圈合伙人
         toPartner =
-            totalCommission.multiply(BigDecimal.valueOf(0.3)).setScale(2, BigDecimal.ROUND_HALF_UP)
+            totalCommission.multiply(new BigDecimal(split[3])).setScale(2, BigDecimal.ROUND_HALF_UP)
                 .multiply(X100).longValue();
         //锁定城市合伙人
         toPartnerManager =
-            totalCommission.multiply(BigDecimal.valueOf(0.15)).setScale(2, BigDecimal.ROUND_HALF_UP)
+            totalCommission.multiply(new BigDecimal(split[4])).setScale(2, BigDecimal.ROUND_HALF_UP)
                 .multiply(X100).longValue();
         //积分客
         toLePlusLife = commission - toMerchant - toPartner - toPartnerManager;
