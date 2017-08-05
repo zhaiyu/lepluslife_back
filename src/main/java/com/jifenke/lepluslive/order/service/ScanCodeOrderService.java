@@ -494,7 +494,7 @@ public class ScanCodeOrderService {
   }
 
   /**
-   * 富友扫码订单分页条件查询  16/12/20
+   * 通道订单分页条件查询  16/12/20
    *
    * @param criteria 查询条件
    * @param limit    查询条数
@@ -525,7 +525,7 @@ public class ScanCodeOrderService {
 
         if (orderCriteria.getPayment() != null) {  //付款方式  0=纯现金|1=纯红包|2=混合
           predicate.getExpressions().add(
-              cb.equal(r.<ScanCodeOrderExt>get("scanCodeOrderExt").get("useScoreA"),
+              cb.equal(r.<ScanCodeOrderExt>get("scanCodeOrderExt").get("payment"),
                        orderCriteria.getPayment()));
         }
 

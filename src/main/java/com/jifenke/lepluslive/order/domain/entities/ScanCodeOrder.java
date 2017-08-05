@@ -50,7 +50,7 @@ public class ScanCodeOrder {
   private Integer state = 0; //支付状态  0=未支付|1=已支付|2=已退款
 
   @NotNull
-  private Long orderType;//订单类型 todo:几种？
+  private Long orderType;//订单类型 对应category.id
 
   @NotNull
   private Long totalPrice = 0L;
