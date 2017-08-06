@@ -1,7 +1,5 @@
 package com.jifenke.lepluslive.yibao.domain.entities;
 
-import com.jifenke.lepluslive.global.util.MvUtil;
-
 import java.util.Date;
 
 import javax.persistence.Column;
@@ -27,7 +25,7 @@ public class LedgerRefundOrder {
 
   private Date dateCompleted;  //退款完成时间
 
-  private String refundOrderSid = MvUtil.getOrderNumber();  //自己的退款单号
+  private String refundOrderSid;  //退款请求号
 
   @Column(nullable = false, length = 30)
   private String orderSid; //对应要退款订单的订单号
@@ -40,9 +38,9 @@ public class LedgerRefundOrder {
   private Integer orderType = 1;  //1=普通订单,2=乐加订单
 
   @Column(nullable = false, length = 10)
-  private String merchantId;  //交易门店ID
+  private String merchantId;  //交易门店SID
 
-  @Column(nullable = false, length = 30)
+  @Column(length = 30)
   private String orderId; //第三方的退款流水号，纯红包退款=" "
 
   /**
@@ -72,9 +70,9 @@ public class LedgerRefundOrder {
 
   private Long transferMoneyFromScore = 0L;   //因产生退款，应收商户的=对应order.transferMoneyFromScore
 
-  private Long realScoreA = 0L; //该退款单向会员实际追回的鼓励金
+  private Long realScoreA = 0L; //追回会员本笔交易获得的鼓励金
 
-  private Long realScoreC = 0L; //该退款单向会员实际追回的金币
+  private Long realScoreC = 0L; //追回会员本笔交易获得的金币
 
   /**
    * 0： 追回至余额0为止。

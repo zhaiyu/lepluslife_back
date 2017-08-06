@@ -234,10 +234,7 @@
                         contentStr +=
                                 '<td><span>微信</span></td>'
                     }
-                    contentStr +=
-                            '<td>'
-                            + new Date(content[i].tradeDate).format('yyyy-MM-dd HH:mm:ss')
-                            + '</td>';
+                    contentStr += '<td>' + content[i].tradeDate + '</td>';
                     contentStr +=
                             '<td>'
                             + new Date(content[i].dateCompleted).format('yyyy-MM-dd HH:mm:ss')

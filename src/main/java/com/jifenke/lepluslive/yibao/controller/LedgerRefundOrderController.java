@@ -1,7 +1,9 @@
 package com.jifenke.lepluslive.yibao.controller;
 
 import com.jifenke.lepluslive.global.util.LejiaResult;
+import com.jifenke.lepluslive.global.util.MD5Util;
 import com.jifenke.lepluslive.global.util.MvUtil;
+import com.jifenke.lepluslive.weixin.service.DictionaryService;
 import com.jifenke.lepluslive.yibao.controller.view.LedgerRefundOrderExcel;
 import com.jifenke.lepluslive.yibao.domain.criteria.LedgerRefundOrderCriteria;
 import com.jifenke.lepluslive.yibao.domain.entities.LedgerRefundOrder;
@@ -29,6 +31,9 @@ public class LedgerRefundOrderController {
 
   @Inject
   private LedgerRefundOrderExcel ledgerSettlementExcel;
+
+  @Inject
+  private DictionaryService dictionaryService;
 
   /**
    * 跳转到列表页面
@@ -72,12 +77,23 @@ public class LedgerRefundOrderController {
   /**
    * 退款提交   2016/12/23
    *
-   * @param orderSid 要退款的订单号
-   * @param force    是否强制退款
+   * @param orderSid         要退款的订单号
+   * @param shareRecoverType 0： 追回至余额0为止。1： 全额追回，无法追回则无法退款。
+   * @param pwd              密钥
    */
   @RequestMapping(value = "/refundSubmit", method = RequestMethod.POST)
-  public Map refundSubmit(@RequestParam String orderSid, @RequestParam Integer force) {
-    return ledgerRefundOrderService.refundSubmit(orderSid, force);
+  public Map refundSubmit(@RequestParam String orderSid, @RequestParam Integer shareRecoverType,
+                          @RequestParam String pwd) {
+    String secret = dictionaryService.findDictionaryById(67L).getValue();
+    if (MD5Util.MD5Encode(pwd.trim(), "utf-8").equals(secret)) {
+      return ledgerRefundOrderService.refundCommit(orderSid, shareRecoverType);
+    } else {
+      Map<String, Object> map = new HashMap<>();
+      map.put("status", 2000);
+      map.put("msg", "密码错误");
+      return map;
+    }
+
   }
 
   /**
