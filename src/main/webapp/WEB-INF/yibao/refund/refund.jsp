@@ -266,24 +266,24 @@
                         <div>
                             <div><input type="radio" name="RecoveryStrategy"
                                         checked="checked"
-                                        value="0"><span>若账户余额不足以抵扣，则无法退款。</span>
+                                        value="1"><span>若账户余额不足以抵扣，则无法退款。</span>
                             </div>
                             <div><input type="radio"
                                         name="RecoveryStrategy"
-                                        value="1"><span>若账户余额不足以抵扣，则会扣减到0。</span></div>
+                                        value="0"><span>若账户余额不足以抵扣，则会扣减到0。</span></div>
                         </div>
                     </div>
                     <div class="Mod-10">
-                        <div>校验手机号：</div>
+                        <div>校验密码：</div>
                         <div>
-                            <span>15501066812</span><span
-                                style="margin: 0 2% 0 5%">验证码</span><input
-                                type="number" name="validateCode">
+                            <%--<span>15501066812</span><span--%>
+                            <%--style="margin: 0 2% 0 5%">验证码</span>--%>
+                            <input name="validateCode">
                         </div>
-                        <button class="ModButton ModButton_ordinary ModRadius"
-                                onclick="getVerify()"
-                                id="sendCode">发送验证码
-                        </button>
+                        <%--<button class="ModButton ModButton_ordinary ModRadius"--%>
+                        <%--onclick="getVerify()"--%>
+                        <%--id="sendCode">发送验证码--%>
+                        <%--</button>--%>
                     </div>
                     <div class="recover_button">
                         <button class="ModButton ModButton_ordinary ModRadius Refund_end"
@@ -308,6 +308,26 @@
 <script src="${resourceUrl}/js/moment.min.js"></script>
 <script src="${resourceUrl}/js/jquery.page.js"></script>
 <script>
+    //***********************保留2位小数*************************************
+    function toDecimal(x) {
+        var f = parseFloat(x);
+        if (isNaN(f)) {
+            return false;
+        }
+        var f = Math.round(x * 100) / 100;
+        var s = f.toString();
+        var rs = s.indexOf('.');
+        if (rs < 0) {
+            rs = s.length;
+            s += '.';
+        }
+        while (s.length <= rs + 2) {
+            s += '0';
+        }
+        return s;
+    }
+</script>
+<script>
     var orderSid = '';
     function query() {
         orderSid = $('input[name="orderSid"]').val();
@@ -316,11 +336,10 @@
                    url: "/manage/refund/refund/" + orderSid,
                    async: false,
                    contentType: "application/json",
-                   success: function (data) {
-                       if (data.status != 200) {
-                           alert(data.msg);
+                   success: function (map) {
+                       if (map.status != 200) {
+                           alert(map.msg);
                        } else {
-                           var map = data.data;
                            var order = map.order;
                            var user = map.user;
                            var userScoreA = map.userScoreA;
@@ -434,18 +453,18 @@
     function refundSubmit() {
         var code = $("input[name='validateCode']").val();
         if (code == null || code == '') {
-            alert("请输入验证码");
+            alert("请输入密码");
             return false
         }
-        $("input[name='validateCode']").val('');
-        var force = $('input[type="radio"][name="RecoveryStrategy"]:checked').val();
+        var shareRecoverType = $('input[type="radio"][name="RecoveryStrategy"]:checked').val();
         $.post("/manage/refund/refundSubmit",
-               {orderSid: orderSid, force: force},
+               {orderSid: orderSid, shareRecoverType: shareRecoverType, pwd: code},
                function (res) {
                    if (res.status == 200) {
                        alert("退款成功！");
+                       window.location.href = '/manage/refund/ledger/list';
                    } else {
-                       alert("退款失败！===" + res.msg);
+                       alert(res.msg);
                    }
                })
     }

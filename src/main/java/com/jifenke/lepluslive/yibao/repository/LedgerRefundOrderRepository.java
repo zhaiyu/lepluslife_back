@@ -13,4 +13,6 @@ public interface LedgerRefundOrderRepository extends JpaRepository<LedgerRefundO
 
     Page findAll(Specification<LedgerRefundOrder> whereClause, Pageable pageRequest);
 
+    LedgerRefundOrder findByOrderSid(String orderSid);
+
 }

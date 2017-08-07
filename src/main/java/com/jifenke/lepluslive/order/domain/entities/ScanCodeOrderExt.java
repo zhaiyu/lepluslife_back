@@ -26,7 +26,9 @@ public class ScanCodeOrderExt {
 
   private Integer payType = 0; //0代表微信 1 代表支付宝
 
-  private Integer useScoreA = 0; //付款方式 0=不用（纯通道） 1=使用（纯鼓励金）  2=混合
+  private Integer useScoreA = 0; //是否使用鼓励金 0=不用 1=使用
+
+  private Integer payment = 0; //付款方式 0=不用（纯通道） 1=使用（纯鼓励金）  2=混合
 
   private String merchantNum;  //该订单使用的通道子商户号
 
@@ -78,6 +80,14 @@ public class ScanCodeOrderExt {
 
   public void setUseScoreA(Integer useScoreA) {
     this.useScoreA = useScoreA;
+  }
+
+  public Integer getPayment() {
+    return payment;
+  }
+
+  public void setPayment(Integer payment) {
+    this.payment = payment;
   }
 
   public String getMerchantNum() {

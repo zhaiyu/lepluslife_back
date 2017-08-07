@@ -198,6 +198,44 @@ public class YbRequestUtils {
   }
 
   /**
+   * 退款  2017/8/6
+   *
+   * @param orderSid 要退款的订单号
+   * @param amount   退款金额（注意：需小于等于该订单金额，此时单位为分，调用接口时需/100转换为元）
+   * @return map　退款结果
+   */
+  public static Map<String, String> refund(String orderSid, Long amount) {
+
+    //请求加密参数
+    Map<String, String> dataMap = getCommonDataMap();
+    dataMap.put("requestid", MvUtil.getOrderNumber());
+    dataMap.put("orderrequestid", orderSid);
+    dataMap.put("amount", "" + amount / 100.0);
+    dataMap.put("confirm", "1");
+
+    String data = ZGTUtils.buildData(dataMap, ZGTUtils.REFUNDAPI_REQUEST_HMAC_ORDER);
+    Map<String, String> map = ZGTUtils.httpPost(YBConstants.REFUND_URL, data);
+    return callBack(map);
+  }
+
+  /**
+   * 退款结果查询  2017/8/6
+   *
+   * @param orderSid 要退款的订单号
+   * @return map　退款结果
+   */
+  public static Map<String, String> queryRefund(String orderSid) {
+
+    //请求加密参数
+    Map<String, String> dataMap = getCommonDataMap();
+    dataMap.put("orderrequestid", orderSid);
+
+    String data = ZGTUtils.buildData(dataMap, ZGTUtils.QUERYREFUNDAPI_REQUEST_HMAC_ORDER);
+    Map<String, String> map = ZGTUtils.httpPost(YBConstants.QUERY_REFUND_URL, data);
+    return callBack(map);
+  }
+
+  /**
    * 结算结果查询  2017/7/25
    *
    * @param ledgerNos 易宝的子商户号(可多个，多个已‘|’分隔)
