@@ -60,4 +60,10 @@ public final class YBConstants {
   //分账方审核结果查询
   public static final String QUERY_CHECK_RECORD_URL = PREFIX_URL + "queryCheckRecord";
 
+  //退款接口
+  public static final String REFUND_URL = PREFIX_URL + "refund";
+
+  //退款结果查询接口
+  public static final String QUERY_REFUND_URL = PREFIX_URL + "queryRefund";
+
 }

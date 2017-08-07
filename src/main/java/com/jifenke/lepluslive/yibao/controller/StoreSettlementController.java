@@ -50,6 +50,7 @@ public class StoreSettlementController {
         if(content!=null) {
             for (StoreSettlement storeSettlement : content) {
                 Merchant existMerchant = storeSettlement.getMerchant();
+                existMerchant.getName();
                 merchants.add(existMerchant);
             }
         }

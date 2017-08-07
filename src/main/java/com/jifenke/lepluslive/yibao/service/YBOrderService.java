@@ -70,6 +70,32 @@ public class YBOrderService {
   }
 
   /**
+   * 某日某子商编订单入账统计(用于易宝退款)  2017/8/6
+   *
+   * @param currDay  订单结算时间yyyy-MM-dd
+   * @param ledgerNo 子商编
+   */
+  public Long countTransferByMerchantNum(String currDay, String ledgerNo) {
+    StringBuffer sql = new StringBuffer();
+    //统一转账切点 目前为 23:30:00
+    String beforeDate = currDay + " 23:30:00";
+    sql.append("SELECT SUM(o.transfer_money) AS transferMoney");
+    sql.append(
+        " FROM scan_code_order o INNER JOIN scan_code_order_ext e ON o.scan_code_order_ext_id = e.id");
+    sql.append(" WHERE o.settle_date = '").append(currDay).append("'");
+    sql.append(" AND e.merchant_num = '").append(ledgerNo).append("'");
+    sql.append(" AND o.state IN (1, 2)");
+    sql.append(" AND o.complete_date <= '").append(beforeDate).append("'");
+    System.out.println(sql.toString());
+    Query query = entityManager.createNativeQuery(sql.toString());
+    Object singleResult = query.getSingleResult();
+    if (singleResult != null) {
+      return Long.valueOf("" + singleResult);
+    }
+    return 0L;
+  }
+
+  /**
    * 每日退款完成统计(group by merchantNum)(用于易宝转账)  2017/7/21
    *
    * @param currDay 退款结算时间（订单结算时间）yyyy-MM-dd
@@ -113,6 +139,29 @@ public class YBOrderService {
       }
     }
     return map;
+  }
+
+  /**
+   * 某日某子商编退款入账统计(用于易宝退款)  2017/8/6
+   *
+   * @param currDay  退款结算时间（订单结算时间）yyyy-MM-dd
+   * @param ledgerNo 子商编
+   */
+  public Long countRefundByMerchantNum(String currDay, String ledgerNo) {
+    StringBuffer sql = new StringBuffer();
+    sql.append(
+        "SELECT SUM(transfer_money) AS transferMoney FROM yb_ledger_refund_order");
+    sql.append(" WHERE trade_date = '").append(currDay).append("'");
+    sql.append(" AND ledger_no = '").append(ledgerNo).append("'");
+    sql.append(" AND state = 2 AND order_from = 1");
+
+    System.out.println(sql.toString());
+    Query query = entityManager.createNativeQuery(sql.toString());
+    Object singleResult = query.getSingleResult();
+    if (singleResult != null) {
+      return Long.valueOf("" + singleResult);
+    }
+    return 0L;
   }
 
   /**

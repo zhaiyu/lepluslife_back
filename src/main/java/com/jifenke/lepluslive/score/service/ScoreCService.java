@@ -2,6 +2,8 @@ package com.jifenke.lepluslive.score.service;
 
 import com.jifenke.lepluslive.score.domain.criteria.ScoreCriteria;
 import com.jifenke.lepluslive.score.domain.criteria.ScoreDetailCriteria;
+import com.jifenke.lepluslive.score.domain.entities.ScoreA;
+import com.jifenke.lepluslive.score.domain.entities.ScoreADetail;
 import com.jifenke.lepluslive.score.domain.entities.ScoreB;
 import com.jifenke.lepluslive.score.domain.entities.ScoreC;
 import com.jifenke.lepluslive.score.domain.entities.ScoreCDetail;
@@ -35,6 +37,22 @@ public class ScoreCService {
 
     @Inject
     private ScoreCDetailRepository scoreCDetailRepository;
+
+    /**
+     * 保存用户金币  2016/12/26
+     */
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void saveScore(ScoreC scoreC) {
+        scoreCRepository.save(scoreC);
+    }
+
+    /**
+     * 保存用户金币记录  2016/12/26
+     */
+    @Transactional(propagation = Propagation.REQUIRED)
+    public void saveDetail(ScoreCDetail detail) {
+        scoreCDetailRepository.save(detail);
+    }
 
     @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
     public ScoreC findScoreCByWeiXinUser(LeJiaUser leJiaUser) {
