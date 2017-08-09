@@ -265,7 +265,7 @@ public class BannerController {
   //新建或修改-启动广告
   @RequestMapping(value = "/start_ad/save_start_ad", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
   public LejiaResult save_start_ad(@RequestBody Banner banner) {
-    int status = bannerService.editBannerHomePage(banner);
+    int status = bannerService.editGrouponBanner(banner);
     return LejiaResult.build(status, "ok");
   }
 
@@ -303,4 +303,16 @@ public class BannerController {
     int status = bannerService.editBannerForSmovie(banner);
     return LejiaResult.build(status, "ok");
   }
+
+  /**
+   * ************************************************** 团购轮播图管理 strat *****************************************************
+   */
+  @RequestMapping(value = "/banner/saveGrouponBanner", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+  public LejiaResult saveGrouponBanner(@RequestBody Banner banner) {
+    int status = bannerService.editBannerForSmovie(banner);
+    return LejiaResult.build(status, "ok");
+  }
+  /**
+   * ************************************************** 团购轮播图管理 end *****************************************************
+   */
 }

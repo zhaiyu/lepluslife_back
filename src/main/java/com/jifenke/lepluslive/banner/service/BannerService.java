@@ -472,4 +472,72 @@ public class BannerService {
     return 200;
   }
 
+  /**
+   *  团购专区Banner图管理
+   */
+  //新建或修改-首页管理
+  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  public int editGrouponBanner(Banner banner) {
+    Banner DBBanner = null;
+    Date date = new Date();
+    Long id = banner.getId();
+    Integer afterType = banner.getAfterType();  //后置类型  1=链接  2=商品   3=商家  4=无跳转
+    try {
+      if (id != null) {
+        List<Banner> listb = bannerRepository.findBannerBySidAndBannerType(banner.getSid(), banner.getBannerType());
+        if (listb.size() > 1){
+          return 509;
+        }
+        DBBanner = bannerRepository.findOne(id);
+        if (DBBanner == null) {
+          return 404;
+        }
+      } else { //新建
+        List<Banner> listb = bannerRepository.findBannerBySidAndBannerType(banner.getSid(), banner.getBannerType());
+        if (listb.size() > 0){
+          return 509;
+        }
+        DBBanner = new Banner();
+        DBBanner.setBannerType(banner.getBannerType());
+        DBBanner.setCreateDate(date);
+      }
+      DBBanner.setSid(banner.getSid());
+      DBBanner.setPicture(banner.getPicture());
+      DBBanner.setAfterType(afterType);
+      if (banner.getUrl() != null) {
+        DBBanner.setUrl(banner.getUrl());
+      }
+      if (banner.getUrlTitle() != null) {
+        DBBanner.setUrlTitle(banner.getUrlTitle());
+      }
+      if (banner.getMerchant() != null) {
+        if (banner.getMerchant().getMerchantSid() != null) {
+          Merchant merchant = merchantService.findMerchantByMerchantSid(banner.getMerchant().getMerchantSid());
+          if (merchant == null) {
+            return 506;
+          }
+          DBBanner.setMerchant(merchant);
+        }else{
+          return 5062;
+        }
+      }
+      if (banner.getTitle() != null) {
+        DBBanner.setTitle(banner.getTitle());
+      }
+      //保存城市
+      if (banner.getCity() != null && banner.getCity().getId() != null) {
+        DBBanner.setCity(banner.getCity());
+      }
+      if (banner.getArea() != null && banner.getArea().getId() != null) {
+        DBBanner.setArea(banner.getArea());
+      }
+      DBBanner.setIntroduce(banner.getIntroduce());
+      DBBanner.setLastUpDate(date);
+      bannerRepository.save(DBBanner);
+    } catch (Exception e) {
+      e.printStackTrace();
+      return 500;
+    }
+    return 200;
+  }
 }
