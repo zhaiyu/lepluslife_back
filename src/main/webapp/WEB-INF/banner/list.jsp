@@ -967,6 +967,11 @@
                             </div>
                             <div>
                                 <input type="radio" name="type17"
+                                       value="2"/><span>商品详情（跳转到商品的详情页面）</span>
+                                <input class="w-input"  id="pid17"  type="text" placeholder="请输入商品ID"/>
+                            </div>
+                            <div>
+                                <input type="radio" name="type17"
                                        value="3"/><span>团购门店详情（跳转到店铺的详情页面）</span>
                                 <input class="w-input" id="mid17" type="text" placeholder="请输入商户序号"/>
                             </div>
@@ -2050,6 +2055,7 @@
         var urlTitle =  $("#urlTitle17").val();
         var urlLink = $("#urlLink17").val();
         var mid = $("#mid17").val();
+        var pid = $("#pid17").val();
         if (afterType == 1) {
             if (urlTitle == null || urlTitle == "") {
                 alert("请输入页面标题");
@@ -2073,6 +2079,8 @@
         if (afterType == 1) {
             banner.url = urlLink;
             banner.urlTitle = urlTitle;
+        } else if (afterType == 2) {
+            banner.introduce = pid;
         } else if (afterType == 3) {
             var merchant = {};
             merchant.merchantSid = mid;
@@ -3250,6 +3258,8 @@
                             contentStr += '<td><span>商户详情</span></td>';
                         } else if (content[i].afterType == 4) {
                             contentStr += '<td><span>无跳转</span></td>';
+                        } else if (content[i].afterType == 2) {
+                            contentStr += '<td><span>产品详情</span></td>';
                         } else {
                             contentStr += '<td><span>未知</span></td>';
                         }
@@ -3336,7 +3346,11 @@
                                             radioChecked.next().next().val(banner.url);
                                             radioChecked.next().next().next().val(banner.urlTitle)
                                         } else if (afterType == 2) {
-                                            radioChecked.parent().find(".w-input").val(banner.product.id);
+                                            if(banner.product!=null) {
+                                                radioChecked.parent().find(".w-input").val(banner.product.id);
+                                            }else {
+                                                radioChecked.parent().find(".w-input").val(banner.introduce);       // 团购产品
+                                            }
                                         } else if (afterType == 3) {
                                             radioChecked.parent().find(".w-input").val(banner.merchant.merchantSid);
                                         }

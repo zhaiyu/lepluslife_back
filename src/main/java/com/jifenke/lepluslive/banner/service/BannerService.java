@@ -4,6 +4,8 @@ import com.jifenke.lepluslive.banner.domain.criteria.BannerCriteria;
 import com.jifenke.lepluslive.banner.domain.entities.Banner;
 import com.jifenke.lepluslive.banner.domain.entities.BannerType;
 import com.jifenke.lepluslive.banner.repository.BannerRepository;
+import com.jifenke.lepluslive.groupon.domain.entities.GrouponProduct;
+import com.jifenke.lepluslive.groupon.service.GrouponProductService;
 import com.jifenke.lepluslive.merchant.domain.entities.City;
 import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
 import com.jifenke.lepluslive.merchant.service.MerchantService;
@@ -42,6 +44,9 @@ public class BannerService {
 
   @Inject
   private MerchantService merchantService;
+
+  @Inject
+  private GrouponProductService grouponProductService;
 
   @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
   public Banner findById(Long id) {
@@ -531,7 +536,15 @@ public class BannerService {
       if (banner.getArea() != null && banner.getArea().getId() != null) {
         DBBanner.setArea(banner.getArea());
       }
-      DBBanner.setIntroduce(banner.getIntroduce());
+      String productId = banner.getIntroduce();
+      if(productId!=null&&!"".equals(productId)) {
+        GrouponProduct product = grouponProductService.findById(new Long(productId));
+        if(product!=null) {
+          DBBanner.setIntroduce(productId);
+        }else {
+          return 505;
+        }
+      }
       DBBanner.setLastUpDate(date);
       bannerRepository.save(DBBanner);
     } catch (Exception e) {
