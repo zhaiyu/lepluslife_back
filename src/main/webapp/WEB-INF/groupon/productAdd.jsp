@@ -699,6 +699,7 @@
     }
     //  设置参数
     function setParam() {
+        grouponProduct.id = $("#productId").val();
         //  团购名称
         if ($("#productName").val() != null && $("#productName").val() != '') {
             grouponProduct.name = $("#productName").val();
@@ -872,7 +873,7 @@
         }
         //  单图
         if ($("#displayPicture").attr("src") != '') {
-            grouponProduct.displayPicture = $("#explainPicture").attr("src");
+            grouponProduct.displayPicture = $("#displayPicture").attr("src");
         } else {
             alert("请上传列表展示图片~");
             return false;

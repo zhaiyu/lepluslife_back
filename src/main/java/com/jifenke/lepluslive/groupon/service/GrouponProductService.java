@@ -257,12 +257,12 @@ public class GrouponProductService {
                 MerchantUser merchantUser = merchantUserRepository.findOne(product.getMerchantUser().getId());
                 existProduct.setMerchantUser(merchantUser);
             }
-            grouponProductRepository.save(product);
+            grouponProductRepository.save(existProduct);
             //   修改产品门店对应关系
             List<Merchant> merchantList = grouponProductDto.getMerchantList();
             if (merchantList != null || merchantList.size() > 0) {
                 // 删除原有的对应关系
-                List<GrouponMerchant> existMerchants = grouponMerchantRepository.findByGrouponProduct(product);
+                List<GrouponMerchant> existMerchants = grouponMerchantRepository.findByGrouponProduct(existProduct);
                 for(int i = 0 ; i<existMerchants.size();i++) {
                     GrouponMerchant existMerchant = existMerchants.get(i);
                     grouponMerchantRepository.delete(existMerchant.getId());
@@ -272,14 +272,14 @@ public class GrouponProductService {
                     GrouponMerchant grouponMerchant = new GrouponMerchant();
                     Merchant existMerchant = merchantRepository.findOne(merchant.getId());
                     grouponMerchant.setMerchant(existMerchant);
-                    grouponMerchant.setGrouponProduct(product);
+                    grouponMerchant.setGrouponProduct(existProduct);
                     grouponMerchantRepository.save(grouponMerchant);
                 }
             }
             //   保存产品详情图
             List<GrouponProductDetail> detailList = grouponProductDto.getDelDetailList();
-            Long detailSid =  grouponProductDetailRepository.countGrouponProductDetailByGrouponProduct(product);
-            Long scrollSid =  grouponScrollPictureRepository.countGrouponScrollPictureByGrouponProduct(product);
+            Long detailSid =  grouponProductDetailRepository.countGrouponProductDetailByGrouponProduct(existProduct);
+            Long scrollSid =  grouponScrollPictureRepository.countGrouponScrollPictureByGrouponProduct(existProduct);
             for(int j=0;j<detailList.size();j++) {
                 GrouponProductDetail grouponProductDetail = detailList.get(j);
                 //  如果详情已存在 ， 修改图片路径
@@ -290,9 +290,9 @@ public class GrouponProductService {
                 }else {
                //  如果图片不存在，新增图片
                     GrouponProductDetail newDetial = new GrouponProductDetail();
-                    newDetial.setGrouponProduct(product);
+                    newDetial.setGrouponProduct(existProduct);
                     newDetial.setPicture(grouponProductDetail.getPicture());
-                    newDetial.setDescription(product.getDescription());
+                    newDetial.setDescription(existProduct.getDescription());
                     detailSid++;
                     newDetial.setSid(detailSid.intValue());
                     grouponProductDetailRepository.save(newDetial);
@@ -309,9 +309,9 @@ public class GrouponProductService {
                 }else {
                     GrouponScrollPicture newScroll = new GrouponScrollPicture();
                     scrollSid++;
-                    newScroll.setDescription(product.getDescription());
+                    newScroll.setDescription(existProduct.getDescription());
                     newScroll.setSid(scrollSid.intValue());
-                    newScroll.setGrouponProduct(product);
+                    newScroll.setGrouponProduct(existProduct);
                     grouponScrollPictureRepository.save(newScroll);
                 }
             }
