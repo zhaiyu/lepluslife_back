@@ -304,7 +304,7 @@ public class GrouponProductService {
                 GrouponScrollPicture grouponScrollPicture = scorePictureList.get(i);
                 if(grouponScrollPicture.getId()!=null) {
                     GrouponScrollPicture existScroll = grouponScrollPictureRepository.findOne(grouponScrollPicture.getId());
-                    existScroll.setPicture(existScroll.getPicture());
+                    existScroll.setPicture(grouponScrollPicture.getPicture());
                     grouponScrollPictureRepository.save(existScroll);
                 }else {
                     GrouponScrollPicture newScroll = new GrouponScrollPicture();
