@@ -124,7 +124,7 @@ public class GrouponProductController {
     @RequestMapping(value = "/grouponProduct/saveEdit", method = RequestMethod.POST)
     @ResponseBody
     public LejiaResult saveEdit(@RequestBody GrouponProductDto grouponProductDto) {
-        boolean result = grouponProductService.saveProduct(grouponProductDto);
+        boolean result = grouponProductService.saveEdit(grouponProductDto);
         if (result) {
             return LejiaResult.ok();
         } else {

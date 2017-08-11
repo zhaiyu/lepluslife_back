@@ -303,4 +303,16 @@ public class BannerController {
     int status = bannerService.editBannerForSmovie(banner);
     return LejiaResult.build(status, "ok");
   }
+
+  /**
+   * ************************************************** 团购轮播图管理 strat *****************************************************
+   */
+  @RequestMapping(value = "/banner/saveGrouponBanner", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
+  public LejiaResult saveGrouponBanner(@RequestBody Banner banner) {
+    int status = bannerService.editGrouponBanner(banner);
+    return LejiaResult.build(status, "ok");
+  }
+  /**
+   * ************************************************** 团购轮播图管理 end *****************************************************
+   */
 }

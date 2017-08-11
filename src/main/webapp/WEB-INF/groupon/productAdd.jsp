@@ -299,7 +299,7 @@
             </div>
             <div class="MODInput_row jdrq">
                 <div class="Mod-2"></div>
-                <div class="Mod-2">
+                <div class="Mod-3">
                     <%--<input id="validity2" style="width: 20%" type="text" value="${product.validity}"><span>前使用（填写方式如：2017-1-1）</span>--%>
                     <div id="date-end" class="form-control">
                         <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
@@ -699,6 +699,7 @@
     }
     //  设置参数
     function setParam() {
+        grouponProduct.id = $("#productId").val();
         //  团购名称
         if ($("#productName").val() != null && $("#productName").val() != '') {
             grouponProduct.name = $("#productName").val();
@@ -872,7 +873,7 @@
         }
         //  单图
         if ($("#displayPicture").attr("src") != '') {
-            grouponProduct.displayPicture = $("#explainPicture").attr("src");
+            grouponProduct.displayPicture = $("#displayPicture").attr("src");
         } else {
             alert("请上传列表展示图片~");
             return false;
@@ -972,7 +973,7 @@
             buttonClasses: ['btn btn-default'],
             applyClass: 'btn-small btn-primary blue',
             cancelClass: 'btn-small',
-            format: 'YYYY-MM-DD', //控件中from和to 显示的日期格式
+            format: 'YYYY-MM-DD HH:mm:ss', //控件中from和to 显示的日期格式
             separator: ' to ',
             locale: {
                 applyLabel: '确定',
@@ -987,8 +988,8 @@
                 firstDay: 1
             }
         }, function (start, end, label) {//格式化日期显示框
-            $('#date-end span').html(start.format('YYYY-MM-DD') + '~'
-                    + end.format('YYYY-MM-DD'));
+            $('#date-end span').html(start.format('YYYY-MM-DD HH:mm:ss') + '~'
+                    + end.format('YYYY-MM-DD HH:mm:ss'));
         });
     });
 </script>

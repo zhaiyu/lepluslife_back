@@ -113,6 +113,7 @@
                     <li><a href="#tab9" data-toggle="tab" onclick="searchByType(9)">首页轮播管理</a></li>
                     <li><a href="#tab10" data-toggle="tab" onclick="searchByType(10)">首页好店推荐管理</a></li>
                     <li><a href="#tab11" data-toggle="tab" onclick="searchByType(11)">首页臻品推荐管理</a></li>
+                    <li><a href="#tab11" data-toggle="tab" onclick="searchByType(17)">团购首页管理</a></li>
                 </ul>
                 <div id="myTabContent" class="tab-content">
                     <div class="tab-pane fade in active" id="tab1">
@@ -916,6 +917,83 @@
 </div>
 
 
+<!--团购首页-->
+<!--添加或修改 首页臻品推荐-->
+<div class="modal" id="type17">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header">
+                <button type="button" class="close" data-dismiss="modal"><span
+                        aria-hidden="true">×</span><span class="sr-only">Close</span></button>
+                <h4 class="modal-title">团购专区首页轮播图</h4>
+            </div>
+            <div class="modal-body">
+                <form class="form-horizontal">
+                    <input name="bannerId17" type="hidden" class="o-input" value=""/>
+
+                    <div class="form-group">
+                        <label for="sid17" class="col-sm-3 control-label">首页轮播序号</label>
+
+                        <div class="col-sm-6">
+                            <input name="bannerType" type="text" class="form-control o-input"
+                                   id="sid17"
+                                   value="1">
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="bannerPicture2"
+                               class="col-sm-3 control-label">图片(宽高比:670*330)</label>
+
+                        <div class="col-sm-6">
+                            <!--<div class="thumbnail">-->
+                            <img style="width: 100%" src="" alt="..." id="picture17">
+                            <!--</div>-->
+                            <input type="file" class="form-control" id="bannerPicture17" name="file"
+                                   data-url="/manage/file/saveImage"/>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label for="afterType17"
+                               class="col-sm-3 control-label">后置类型(点击图片后的跳转情况)</label>
+
+                        <div class="col-sm-6" id="afterType17">
+                            <div>
+                                <input type="radio" name="type17" class="checked17" checked="true"
+                                       value="1"/><span>H5页面（跳转到一个H5页面）</span>
+                                <input class="w-input" id="urlLink17" type="text" placeholder="请输入页面链接地址"/>
+                                <input class="w-input" id="urlTitle17" type="text" placeholder="请输入网页标题"/>
+                            </div>
+                            <div>
+                                <input type="radio" name="type17"
+                                       value="2"/><span>商品详情（跳转到商品的详情页面）</span>
+                                <input class="w-input"  id="pid17"  type="text" placeholder="请输入商品ID"/>
+                            </div>
+                            <div>
+                                <input type="radio" name="type17"
+                                       value="3"/><span>团购门店详情（跳转到店铺的详情页面）</span>
+                                <input class="w-input" id="mid17" type="text" placeholder="请输入商户序号"/>
+                            </div>
+                            <div>
+                                <input type="radio" name="type17" value="4"/><span>无跳转（无跳转后置）</span>
+                                <input class="w-input" type="text" style="display:none" value="无跳转" />
+                            </div>
+                        </div>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">取消</button>
+                <button type="button" class="btn btn-primary" data-dismiss="modal"
+                        id="bannerSubmit17">确认
+                </button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
 <script src="${resourceUrl}/js/bootstrap.min.js"></script>
 <script src="${resourceUrl}/js/daterangepicker.js"></script>
 <script src="${resourceUrl}/js/moment.min.js"></script>
@@ -971,6 +1049,12 @@
     $("input[name=type11]").click(function (e) {
         $("input[type=radio]").removeClass("checked11");
         $(this).attr("class", "checked11");
+        $(".w-input").attr("disabled", "true");
+        $(this).nextAll().removeAttr("disabled");
+    });
+    $("input[name=type17]").click(function (e) {
+        $("input[type=radio]").removeClass("checked9");
+        $(this).attr("class", "checked9");
         $(".w-input").attr("disabled", "true");
         $(this).nextAll().removeAttr("disabled");
     });
@@ -1180,7 +1264,20 @@
                                                                     + resp.data);
                                             }
                                         });
-
+        $('#bannerPicture17').fileupload({
+            dataType: 'json',
+            maxFileSize: 5000000,
+            acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+            add: function (e, data) {
+                data.submit();
+            },
+            done: function (e, data) {
+                var resp = data.result;
+                $('#picture17').attr('src',
+                    '${ossImageReadRoot}/'
+                    + resp.data);
+            }
+        });
         // 时间选择器
         $(document).ready(function () {
             $('#date-end').daterangepicker({
@@ -1951,6 +2048,68 @@
                });
     });
 
+    $('#bannerSubmit17').on('click', function () {
+        var banner = {}, bannerType = {};
+        var picture = $("#picture17").attr("src");
+        var afterType = $("input[name='type17']:checked").val();;
+        var urlTitle =  $("#urlTitle17").val();
+        var urlLink = $("#urlLink17").val();
+        var mid = $("#mid17").val();
+        var pid = $("#pid17").val();
+        if (afterType == 1) {
+            if (urlTitle == null || urlTitle == "") {
+                alert("请输入页面标题");
+                return false;
+            }
+        }
+        if (picture == null || picture == "") {
+            alert("请选择一张图片");
+            return false;
+        }
+        if (afterType == null) {
+            alert("请选择一种后置类型");
+            return false;
+        }
+        bannerType.id = 17;
+        banner.id = $('input[name=bannerId17]').val();
+        banner.sid = $('#sid17').val();
+        banner.picture = picture;
+        banner.bannerType = bannerType;
+        banner.afterType = afterType;
+        if (afterType == 1) {
+            banner.url = urlLink;
+            banner.urlTitle = urlTitle;
+        } else if (afterType == 2) {
+            banner.introduce = pid;
+        } else if (afterType == 3) {
+            var merchant = {};
+            merchant.merchantSid = mid;
+            banner.merchant = merchant;
+        }
+        $.ajax({
+            type: "post",
+            url: "/manage/banner/saveGrouponBanner",
+            contentType: "application/json",
+            data: JSON.stringify(banner),
+            success: function (data) {
+                if (data.status == 200) {
+                    alert("success");
+                    location.href = "/manage/banner?type=17"
+                } else {
+                    if (data.status == 509) {
+                        alert("此序号已存在！请调整序号！");
+                    }else if (data.status == 506) {
+                        alert("商户不存在！");
+                    }else if (data.status == 505) {
+                        alert("商品不存在！");
+                    }else{
+                        alert(data.status);
+                    }
+                }
+            }
+        });
+    });
+
 
     function searchByType(type) {
         bannerCriteria.offset = 1;
@@ -2040,6 +2199,13 @@
             }, 1);
         }else if (bannerType == 11) {
             $("#add").html("新建首页臻品推荐");
+            setTimeout(function () {
+                $('#add').unbind('click').bind('click', function () {
+                    resetAndShow(bannerType);
+                });
+            }, 1);
+        }else if (bannerType == 17) {
+            $("#add").html("新建团购首页推荐");
             setTimeout(function () {
                 $('#add').unbind('click').bind('click', function () {
                     resetAndShow(bannerType);
@@ -3056,6 +3222,149 @@
                            });
                        }
                    });
+        }else if (type == 17) {  //首页轮播图
+            tr.innerHTML =
+                "<th>序号</th><th>图片</th><th>后置类型</th><th>状态</th><th>操作</th>";
+            $.ajax({
+                type: "post",
+                url: "/manage/banner/ajaxList",
+                async: false,
+                data: JSON.stringify(criteria),
+                contentType: "application/json",
+                success: function (data) {
+                    var page = data.data;
+                    var content = page.content;
+                    var totalPage = page.totalPages;
+                    $("#totalElements").html(page.totalElements);
+                    if (totalPage == 0) {
+                        totalPage = 1;
+                    }
+                    if (flag) {
+                        flag = false;
+                        initPage(criteria.offset, totalPage);
+                    }
+                    if (init1) {
+                        initPage(1, totalPage);
+                    }
+
+                    for (i = 0; i < content.length; i++) {
+                        var contentStr = '<tr><td>' + content[i].sid + '</td>';
+                        contentStr +=
+                            '<td><img style="height: 200px" src="' + content[i].picture
+                            + '" alt="..."></td>';
+                        if (content[i].afterType == 1) {
+                            contentStr += '<td><span>H5页面</span></td>';
+                        } else if (content[i].afterType == 3) {
+                            contentStr += '<td><span>商户详情</span></td>';
+                        } else if (content[i].afterType == 4) {
+                            contentStr += '<td><span>无跳转</span></td>';
+                        } else if (content[i].afterType == 2) {
+                            contentStr += '<td><span>产品详情</span></td>';
+                        } else {
+                            contentStr += '<td><span>未知</span></td>';
+                        }
+
+                        if (content[i].status == 1) {
+                            contentStr += '<td><span>上架</span></td>';
+                            contentStr +=
+                                '<td><input type="hidden" class="id-hidden" value="'
+                                + content[i].id
+                                + '"><button class="btn btn-primary changeStatus">下架</button>'
+//                                   + '<br/>'
+                                + '<button class="btn btn-primary editBanner">编辑</button></td></tr>';
+                        } else {
+                            contentStr +=
+                                '<td><span style="color: red">下架</span></td>';
+                            contentStr +=
+                                '<td><input type="hidden" class="id-hidden" value="'
+                                + content[i].id
+                                + '"><button class="btn btn-primary changeStatus">上架</button>'
+//                                   + '<br/>'
+                                + '<button class="btn btn-primary editBanner">编辑</button>'
+
+                                + '<button type="button" class="btn btn-primary deleteWarn" data-target="#deleteWarn" onclick="deleteBanner('
+                                + content[i].id + ')">删除</button></td></tr>';
+                        }
+                        bannerContent.innerHTML += contentStr;
+                    }
+                    $(".changeStatus").each(function (i) {
+                        $(".changeStatus").eq(i).bind("click", function () {
+                            var id = $(this).parent().find(".id-hidden").val();
+
+                            if (!confirm("确定修改？")) {
+                                return false;
+                            }
+                            $.ajax({
+                                type: "get",
+                                url: "/manage/banner/status/" + id,
+                                contentType: "application/json",
+                                success: function (data) {
+                                    getBannerListByType(bannerCriteria);
+                                }
+                            });
+
+                        });
+                    });
+                    $(".editBanner").each(function (i) {
+                        $(".editBanner").eq(i).bind("click", function () {
+                            var id = $(this).parent().find(".id-hidden").val();
+                            $.ajax({
+                                type: "get",
+                                url: "/manage/banner/find/" + id,
+                                contentType: "application/json",
+                                success: function (data) {
+                                    if (data.status == 200) {
+                                        $(".w-input").val("");
+                                        var banner = data.data;
+                                        var afterType = banner.afterType;
+                                        var bannerType = banner.bannerType.id;
+                                        var bannerSid = "sid" + bannerType;
+                                        var bannerId = "bannerId" + bannerType;
+                                        var picture = "picture" + bannerType;
+                                        var model = "type" + bannerType;
+                                        var myDiv = "afterType" + bannerType;
+                                        var checkType = "checked" + bannerType;
+                                        $('#' + bannerSid + '').val(banner.sid);
+                                        $('input[name=' + bannerId
+                                            + ']').val(banner.id);
+                                        $("#" + picture + "").attr("src",
+                                            banner.picture);
+                                        var radioChecked = $('#' + myDiv
+                                            + ' input[type=radio][value='
+                                            + afterType
+                                            + ']');
+
+                                        $('#' + myDiv
+                                            + '  input[type=radio]').removeClass(checkType);
+                                        $('#' + myDiv
+                                            + '  input[type=radio]').removeAttr("checked");
+                                        radioChecked[0].checked = true;
+                                        radioChecked.attr("class", checkType);
+                                        $(".w-input").attr("disabled", "true");
+                                        radioChecked.nextAll().removeAttr("disabled");
+                                        if (afterType == 1) {
+                                            radioChecked.next().next().val(banner.url);
+                                            radioChecked.next().next().next().val(banner.urlTitle)
+                                        } else if (afterType == 2) {
+                                            if(banner.product!=null) {
+                                                radioChecked.parent().find(".w-input").val(banner.product.id);
+                                            }else {
+                                                radioChecked.parent().find(".w-input").val(banner.introduce);       // 团购产品
+                                            }
+                                        } else if (afterType == 3) {
+                                            radioChecked.parent().find(".w-input").val(banner.merchant.merchantSid);
+                                        }
+                                        $("#" + model + "").modal("show");
+                                    } else {
+                                        alert("服务器异常");
+                                    }
+                                }
+                            });
+
+                        });
+                    });
+                }
+            });
         }
     }
 
