@@ -313,7 +313,7 @@
                 <div class="Mod-5">
                     <div class="listImg fixClear">
                         <div>
-                            <div><img id="instruction" src="${product.explainPicture}" alt=""></div>
+                            <div><img id="instruction" src="${product.instruction}" alt=""></div>
                             <div class="update">点击上传</div>
                             <div><input id="instructionUpload" class="form-control" name="file" type="file"
                                         data-url="/manage/file/saveImage"></div>
@@ -326,7 +326,7 @@
                 <div class="Mod-5">
                     <div class="listImg fixClear">
                         <div>
-                            <div><img id="explainPicture" src="${product.instruction}" alt=""></div>
+                            <div><img id="explainPicture" src="${product.explainPicture}" alt=""></div>
                             <div class="update">点击上传</div>
                             <div><input id="explainPictureUpload" class="form-control" name="file" type="file"
                                         data-url="/manage/file/saveImage"></div>
@@ -881,7 +881,7 @@
         if ($("#explainPicture").attr("src") != '') {
             grouponProduct.explainPicture = $("#explainPicture").attr("src");
         } else {
-            alert("请上传使用说明图片~");
+            alert("请上传详情明细图片~");
             return false;
         }
         if ($("#instruction").attr("src") != '') {
