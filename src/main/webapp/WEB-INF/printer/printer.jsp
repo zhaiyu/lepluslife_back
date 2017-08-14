@@ -61,7 +61,8 @@
                 <hr>
                 <ul id="myTab" class="nav nav-tabs">
                     <li><a href="#lunbotu" data-toggle="tab">打印记录</a></li>
-                    <li class="active"><a href="#xiangqing" data-toggle="tab" onclick="getPrinterByCriteria()">打印机列表</a>
+                    <li class="active"><a href="#xiangqing" data-toggle="tab"
+                                          onclick="getPrinterByCriteria()">打印机列表</a>
                     </li>
                 </ul>
                 <div id="myTabContent" class="tab-content" style="margin-top: 10px">
@@ -117,14 +118,12 @@
                             <tr class="active">
                                 <th>易连云单号</th>
                                 <th>订单号</th>
-                                <th>订单类型</th>
-                                <th>订单金额</th>
                                 <th>打印机终端号</th>
                                 <th>所属门店</th>
                                 <th>打印联数</th>
                                 <th>状态</th>
-                                <th>订单完成时间</th>
-                                <th>提交打印时间</th>
+                                <th>打印时间</th>
+                                <th>订单类型</th>
                             </tr>
                             </thead>
                             <tbody id="receiptContent">
@@ -135,7 +134,8 @@
                         <div style="display: inline;"> 共有 <span id="totalElements2"></span> 个</div>
                     </div>
                     <div class="tab-pane fade" id="xiangqing">
-                        <button class="btn btn-primary pull-right" style="margin-top: 5px" onclick="addPrinterM()">
+                        <button class="btn btn-primary pull-right" style="margin-top: 5px"
+                                onclick="addPrinterM()">
                             添加打印终端
                         </button>
                         <table class="table table-bordered table-hover">
@@ -176,7 +176,8 @@
             <div class="modal-body">
                 <div class="input-group input-group-lg">
                     <span class="input-group-addon">打印机名称</span>
-                    <input type="text" class="form-control" placeholder="printerName" id="printerName">
+                    <input type="text" class="form-control" placeholder="printerName"
+                           id="printerName">
                 </div>
                 <br>
                 <div class="input-group input-group-lg">
@@ -186,12 +187,14 @@
                 <br>
                 <div class="input-group input-group-lg">
                     <span class="input-group-addon">打印联数</span>
-                    <input type="text" class="form-control" placeholder="printerCount" id="printerCount">
+                    <input type="text" class="form-control" placeholder="printerCount"
+                           id="printerCount">
                 </div>
                 <br>
                 <div class="input-group input-group-lg">
                     <span class="input-group-addon">终端号</span>
-                    <input type="text" class="form-control" placeholder="machineCode" id="machineCode">
+                    <input type="text" class="form-control" placeholder="machineCode"
+                           id="machineCode">
                 </div>
                 　　
                 <div id="addDiv">
@@ -228,7 +231,8 @@
             <div class="modal-body">
                 <div class="input-group input-group-lg">
                     <span class="input-group-addon">打印机名称</span>
-                    <input type="text" class="form-control" placeholder="printerName" id="printerName2">
+                    <input type="text" class="form-control" placeholder="printerName"
+                           id="printerName2">
                     <input type="hidden" id="printerId2">
                 </div>
                 <br>
@@ -239,17 +243,19 @@
                 <br>
                 <div class="input-group input-group-lg">
                     <span class="input-group-addon">打印联数</span>
-                    <input type="text" class="form-control" placeholder="printerCount" id="printerCount2">
+                    <input type="text" class="form-control" placeholder="printerCount"
+                           id="printerCount2">
                 </div>
                 <br>
                 <div class="input-group input-group-lg">
                     <span class="input-group-addon">终端号</span>
-                    <input type="text" class="form-control" placeholder="machineCode" id="machineCode2">
+                    <input type="text" class="form-control" placeholder="machineCode"
+                           id="machineCode2">
                 </div>
                 　　
                 <div id="editDiv">
                     <span>所在门店</span>
-                    　　　　　　　　　　<select id="editSelect"   name="editSelect" >
+                    　　　　　　　　　　<select id="editSelect" name="editSelect">
                     <c:forEach items="${merchantList}" var="merchant">
                         　　　　　　　　　　　　<option value = "0"></option>
                         <option value="${merchant.id}">${merchant.name}</option>
@@ -280,13 +286,10 @@
     var flag = true;
     var init = 0;
 
-
-
     var receiptCriteria = {};
     var receiptContent = document.getElementById("receiptContent");
     var flag2 = true;
     var init2 = 0;
-
 
     $(function () {
         $('#myTab li:eq(0) a').tab('show');
@@ -298,59 +301,52 @@
 //                                     + ' - ' +
 //                                     moment().format('YYYY/MM/DD HH:mm:ss'));
             $('#date-end').daterangepicker({
-                maxDate: moment(), //最大时间
+                                               maxDate: moment(), //最大时间
 //                                               dateLimit: {
 //                                                   days: 30
 //                                               }, //起止时间的最大间隔
-                showDropdowns: true,
-                showWeekNumbers: false, //是否显示第几周
-                timePicker: true, //是否显示小时和分钟
-                timePickerIncrement: 60, //时间的增量，单位为分钟
-                timePicker12Hour: false, //是否使用12小时制来显示时间
-                ranges: {
-                    '最近1小时': [moment().subtract('hours', 1),
-                        moment()],
-                    '今日': [moment().startOf('day'), moment()],
-                    '昨日': [moment().subtract('days',
-                            1).startOf('day'),
-                        moment().subtract('days',
-                                1).endOf('day')],
-                    '最近7日': [moment().subtract('days', 6), moment()],
-                    '最近30日': [moment().subtract('days', 29),
-                        moment()]
-                },
-                opens: 'right', //日期选择框的弹出位置
-                buttonClasses: ['btn btn-default'],
-                applyClass: 'btn-small btn-primary blue',
-                cancelClass: 'btn-small',
-                format: 'YYYY-MM-DD HH:mm:ss', //控件中from和to 显示的日期格式
-                separator: ' to ',
-                locale: {
-                    applyLabel: '确定',
-                    cancelLabel: '取消',
-                    fromLabel: '起始时间',
-                    toLabel: '结束时间',
-                    customRangeLabel: '自定义',
-                    daysOfWeek: ['日', '一', '二', '三', '四', '五', '六'],
-                    monthNames: ['一月', '二月', '三月', '四月', '五月', '六月',
-                        '七月', '八月', '九月', '十月', '十一月',
-                        '十二月'],
-                    firstDay: 1
-                }
-            }, function (start, end, label) {//格式化日期显示框
+                                               showDropdowns: true,
+                                               showWeekNumbers: false, //是否显示第几周
+                                               timePicker: true, //是否显示小时和分钟
+                                               timePickerIncrement: 60, //时间的增量，单位为分钟
+                                               timePicker12Hour: false, //是否使用12小时制来显示时间
+                                               ranges: {
+                                                   '最近1小时': [moment().subtract('hours', 1),
+                                                             moment()],
+                                                   '今日': [moment().startOf('day'), moment()],
+                                                   '昨日': [moment().subtract('days',
+                                                                            1).startOf('day'),
+                                                          moment().subtract('days',
+                                                                            1).endOf('day')],
+                                                   '最近7日': [moment().subtract('days', 6), moment()],
+                                                   '最近30日': [moment().subtract('days', 29),
+                                                             moment()]
+                                               },
+                                               opens: 'right', //日期选择框的弹出位置
+                                               buttonClasses: ['btn btn-default'],
+                                               applyClass: 'btn-small btn-primary blue',
+                                               cancelClass: 'btn-small',
+                                               format: 'YYYY-MM-DD HH:mm:ss', //控件中from和to 显示的日期格式
+                                               separator: ' to ',
+                                               locale: {
+                                                   applyLabel: '确定',
+                                                   cancelLabel: '取消',
+                                                   fromLabel: '起始时间',
+                                                   toLabel: '结束时间',
+                                                   customRangeLabel: '自定义',
+                                                   daysOfWeek: ['日', '一', '二', '三', '四', '五', '六'],
+                                                   monthNames: ['一月', '二月', '三月', '四月', '五月', '六月',
+                                                                '七月', '八月', '九月', '十月', '十一月',
+                                                                '十二月'],
+                                                   firstDay: 1
+                                               }
+                                           }, function (start, end, label) {//格式化日期显示框
                 $('#date-end span').html(start.format('YYYY/MM/DD HH:mm:ss') + ' - '
-                        + end.format('YYYY/MM/DD HH:mm:ss'));
+                                         + end.format('YYYY/MM/DD HH:mm:ss'));
             });
         })
 
-
     })
-
-
-
-
-
-
 
     function getReceiptByCriteria() {
         var dateStr = $('#date-end span').text().split("-");
@@ -380,12 +376,11 @@
         } else {
             receiptCriteria.receiptSid = null;
         }
-        if ($("#receiptState").val()=="nullValue") {
+        if ($("#receiptState").val() == "nullValue") {
             receiptCriteria.state = null;
         } else {
             receiptCriteria.state = $("#receiptState").val();
         }
-
 
         receiptCriteria.offset = 1;
         getReceiptByAjax(receiptCriteria);
@@ -394,115 +389,82 @@
     function getReceiptByAjax(receiptCriteria) {
         receiptContent.innerHTML = "";
         $.ajax({
-            type: "post",
-            url: "/manage/receiptList",
-            async: false,
-            data: JSON.stringify(receiptCriteria),
-            contentType: "application/json",
-            success: function (data){
+                   type: "post",
+                   url: "/manage/receiptList",
+                   async: false,
+                   data: JSON.stringify(receiptCriteria),
+                   contentType: "application/json",
+                   success: function (data) {
 
-                var page = data.data;
-                var content = page.content;
-                var totalPage = page.totalPages;
-                $("#totalElements2").html(page.totalElements);
-                if (totalPage == 0) {
-                    totalPage = 1;
-                }
-                if (flag2) {
-                    flag2= false;
-                    initPage2(receiptCriteria.offset, totalPage);
-                }
-                if (init2) {
-                    initPage2(1, totalPage);
-                }
-                for (i = 0; i < content.length; i++) {
-                    var contentStr = '<tr><td>' + content[i].receiptSid + '</td>';
-                    contentStr +=
-                            '<td>' + content[i].offLineOrder.orderSid + '</td>';
+                       var page = data.data;
+                       var content = page.content;
+                       var totalPage = page.totalPages;
+                       $("#totalElements2").html(page.totalElements);
+                       if (totalPage == 0) {
+                           totalPage = 1;
+                       }
+                       if (flag2) {
+                           flag2 = false;
+                           initPage2(receiptCriteria.offset, totalPage);
+                       }
+                       if (init2) {
+                           initPage2(1, totalPage);
+                       }
+                       for (i = 0; i < content.length; i++) {
+                           var contentStr = '<tr><td>' + content[i].receiptSid + '</td>';
+                           contentStr +=
+                               '<td>' + content[i].orderSid + '</td>';
 
-                    if (content[i].offLineOrder.rebateWay == 0) {
-                        contentStr +=
-                                '<td><span>普通订单(非会员)</span></td>';
-                    } else if (content[i].offLineOrder.rebateWay == 2) {
-                        contentStr +=
-                                '<td><span>普通订单(会员)</span></td>';
-                    } else if (content[i].offLineOrder.rebateWay == 1) {
-                        contentStr +=
-                                '<td><span>导流订单</span></td>';
-                    } else if (content[i].offLineOrder.rebateWay == 3) {
-                        contentStr +=
-                                '<td><span>会员订单</span></td>';
-                    } else if (content[i].offLineOrder.rebateWay == 4) {
-                        contentStr +=
-                                '<td><span>非会员纯支付码</span></td>';
-                    } else if(content[i].offLineOrder.rebateWay == 5){
-                        contentStr +=
-                                '<td><span>会员纯支付码</span></td>';
-                    }else if(content[i].offLineOrder.rebateWay == 6){
-                        contentStr +=
-                                '<td><span>会员订单(普通费率)</span></td>';
-                    }
+                           contentStr +=
+                               '<td>' + content[i].printer.machineCode + '</td>';
 
-                    contentStr +=
-                            '<td>' + '￥'+content[i].offLineOrder.totalPrice/100 +'('+ '微信￥'+content[i].offLineOrder.truePay/100+"+"+'红包￥'+content[i].offLineOrder.trueScore/100+')'+'</td>';
+                           contentStr +=
+                               '<td>' + content[i].printer.merchant.name + '</td>';
 
-                    contentStr +=
-                            '<td>' + content[i].printer.machineCode + '</td>';
+                           contentStr +=
+                               '<td>' + content[i].printer.printerCount + '</td>';
 
-                    contentStr +=
-                            '<td>' + content[i].printer.merchant.name + '</td>';
+                           if (content[i].state == 0) {
+                               contentStr +=
+                                   '<td><span>失败</span></td>';
+                           } else if (content[i].state == 1) {
+                               contentStr +=
+                                   '<td><span>成功</span></td>';
+                           } else if (content[i].state == 3) {
+                               contentStr +=
+                                   '<td><span>补打成功</span></td>';
+                           } else if (content[i].state == 4) {
+                               contentStr +=
+                                   '<td><span>补打失败</span></td>';
+                           }
 
-                    contentStr +=
-                            '<td>' + content[i].printer.printerCount + '</td>';
+                           contentStr +=
+                               '<td><span>'
+                               + new Date(content[i].completeDate).format('yyyy-MM-dd HH:mm:ss')
+                               + '</span></td>';
+                           if (content[i].type == 2) {
+                               contentStr += '<td>通道订单</td></tr>';
+                           } else {
+                               contentStr += '<td>乐加订单</td></tr>';
+                           }
 
-                    if (content[i].state == 0) {
-                        contentStr +=
-                                '<td><span>失败</span></td>';
-                    } else if (content[i].state == 1) {
-                        contentStr +=
-                                '<td><span>成功</span></td>';
-                    } else if (content[i].state == 3) {
-                        contentStr +=
-                                '<td><span>补打成功</span></td>';
-                    }else if (content[i].state == 4) {
-                        contentStr +=
-                                '<td><span>补打失败</span></td>';
-                    }
-
-                    contentStr +=
-                            '<td><span>'
-                            + new Date(content[i].completeDate).format('yyyy-MM-dd HH:mm:ss')
-                            + '</span></td>';
-
-                    contentStr +=
-                            '<td><span>'
-                            + new Date( content[i].offLineOrder.completeDate).format('yyyy-MM-dd HH:mm:ss')
-                            + '</span></td>';
-
-
-                    contentStr +=
-                            '</tr>';
-
-                    receiptContent.innerHTML += contentStr;
-                }
-            }
-        });
-        }
+                           receiptContent.innerHTML += contentStr;
+                       }
+                   }
+               });
+    }
     function initPage2(page, totalPage) {
         $('#tcdPageCode2').unbind();
         $("#tcdPageCode2").createPage({
-            pageCount: totalPage,
-            current: page,
-            backFn: function (p) {
-                receiptCriteria.offset = p;
-                init2 = 0;
-                getReceiptByAjax(receiptCriteria);
-            }
-        });
+                                          pageCount: totalPage,
+                                          current: page,
+                                          backFn: function (p) {
+                                              receiptCriteria.offset = p;
+                                              init2 = 0;
+                                              getReceiptByAjax(receiptCriteria);
+                                          }
+                                      });
     }
-
-
-
 
     function post(URL, PARAMS) {
         var temp = document.createElement("form");
@@ -540,15 +502,15 @@
         printer.merchant = merchant;
 
         $.ajax({
-            type: "post",
-            data: JSON.stringify(printer),
-            contentType: "application/json",
-            url: "/manage/addPrinter",
-            success: function (data) {
-                alert(data.msg);
-                getPrinterByCriteria();
-            }
-        });
+                   type: "post",
+                   data: JSON.stringify(printer),
+                   contentType: "application/json",
+                   url: "/manage/addPrinter",
+                   success: function (data) {
+                       alert(data.msg);
+                       getPrinterByCriteria();
+                   }
+               });
         ;
         $("#printerName").val("");
         $("#mKey").val("");
@@ -564,113 +526,116 @@
     function getPrinterByAjax(printerCriteria) {
         printerContent.innerHTML = "";
         $.ajax({
-            type: "post",
-            url: "/manage/printerList",
-            async: false,
-            data: JSON.stringify(printerCriteria),
-            contentType: "application/json",
-            success: function (data) {
-                var page = data.data;
-                var content = page.content;
-                var totalPage = page.totalPages;
-                $("#totalElements").html(page.totalElements);
-                if (totalPage == 0) {
-                    totalPage = 1;
-                }
-                if (flag) {
-                    flag = false;
-                    initPage(printerCriteria.offset, totalPage);
-                }
-                if (init) {
-                    initPage(1, totalPage);
-                }
-                for (i = 0; i < content.length; i++) {
-                    var contentStr = '<tr><td>' + content[i].machineCode + '</td>';
-                    contentStr +=
-                            '<td>' + content[i].name + '</td>';
-                    contentStr +=
-                            '<td>' + content[i].merchant.name + '</td>';
-                    contentStr +=
-                            '<td>' + content[i].merchantUser.name + '</td>';
+                   type: "post",
+                   url: "/manage/printerList",
+                   async: false,
+                   data: JSON.stringify(printerCriteria),
+                   contentType: "application/json",
+                   success: function (data) {
+                       var page = data.data;
+                       var content = page.content;
+                       var totalPage = page.totalPages;
+                       $("#totalElements").html(page.totalElements);
+                       if (totalPage == 0) {
+                           totalPage = 1;
+                       }
+                       if (flag) {
+                           flag = false;
+                           initPage(printerCriteria.offset, totalPage);
+                       }
+                       if (init) {
+                           initPage(1, totalPage);
+                       }
+                       for (i = 0; i < content.length; i++) {
+                           var contentStr = '<tr><td>' + content[i].machineCode + '</td>';
+                           contentStr +=
+                               '<td>' + content[i].name + '</td>';
+                           contentStr +=
+                               '<td>' + content[i].merchant.name + '</td>';
+                           contentStr +=
+                               '<td>' + content[i].merchantUser.name + '</td>';
 
-                    if (content[i].state == 0) {
-                        contentStr +=
-                                '<td><span>已停用</span></td>';
-                    } else {
-                        contentStr +=
-                                '<td><span>使用中</span></td>';
-                    }
-                    contentStr +=
-                            '<td><span>'
-                            + new Date(content[i].createDate).format('yyyy-MM-dd HH:mm:ss')
-                            + '</span></td>';
-                    if (content[i].state == 0) {
-                        contentStr +=
-                                '<td><input type="hidden" class="id-hidden" value="' + content[i].id
-                                + '"><button class="btn btn-primary editPrinter")">编辑</button><button class="btn btn-primary changePrinter")">启动</button></td></tr>';
-                    } else {
-                        contentStr +=
-                                '<td><input type="hidden" class="id-hidden" value="' + content[i].id
-                                + '"><button class="btn btn-primary editPrinter")">编辑</button><button class="btn btn-primary changePrinter")">停用</button></td></tr>';
-                    }
-                    printerContent.innerHTML += contentStr;
-                }
+                           if (content[i].state == 0) {
+                               contentStr +=
+                                   '<td><span>已停用</span></td>';
+                           } else {
+                               contentStr +=
+                                   '<td><span>使用中</span></td>';
+                           }
+                           contentStr +=
+                               '<td><span>'
+                               + new Date(content[i].createDate).format('yyyy-MM-dd HH:mm:ss')
+                               + '</span></td>';
+                           if (content[i].state == 0) {
+                               contentStr +=
+                                   '<td><input type="hidden" class="id-hidden" value="'
+                                   + content[i].id
+                                   + '"><button class="btn btn-primary editPrinter")">编辑</button><button class="btn btn-primary changePrinter")">启动</button></td></tr>';
+                           } else {
+                               contentStr +=
+                                   '<td><input type="hidden" class="id-hidden" value="'
+                                   + content[i].id
+                                   + '"><button class="btn btn-primary editPrinter")">编辑</button><button class="btn btn-primary changePrinter")">停用</button></td></tr>';
+                           }
+                           printerContent.innerHTML += contentStr;
+                       }
 
+                       $(".changePrinter").each(function (i) {
+                           $(".changePrinter").eq(i).bind("click", function () {
+                               var printerId = $(this).parent().find(".id-hidden").val();
+                               $.ajax({
+                                          type: "get",
+                                          data: {printerId: printerId},
+                                          url: "/manage/changePrinter",
+                                          success: function (data) {
+                                              getPrinterByAjax(printerCriteria);
+                                          }
+                                      });
 
-                $(".changePrinter").each(function (i) {
-                    $(".changePrinter").eq(i).bind("click", function () {
-                        var printerId = $(this).parent().find(".id-hidden").val();
-                        $.ajax({
-                            type: "get",
-                            data: {printerId: printerId},
-                            url: "/manage/changePrinter",
-                            success: function (data) {
-                                getPrinterByAjax(printerCriteria);
-                            }
-                        });
+                           });
+                       });
 
-                    });
-                });
+                       $(".editPrinter").each(function (i) {
+                           $(".editPrinter").eq(i).bind("click", function () {
+                               var printerId = $(this).parent().find(".id-hidden").val();
 
-                $(".editPrinter").each(function (i) {
-                    $(".editPrinter").eq(i).bind("click", function () {
-                        var printerId = $(this).parent().find(".id-hidden").val();
+                               $.ajax({
+                                          type: "get",
+                                          data: {printerId: printerId},
+                                          url: "/manage/editPage",
+                                          success: function (data) {
+                                              $("#printerName2").val(data.data.name);
+                                              $("#mKey2").val(data.data.mKey);
+                                              $("#printerCount2").val(data.data.printerCount);
+                                              $("#machineCode2").val(data.data.machineCode);
+                                              $("#printerId2").val(data.data.id);
+                                              var merchantId = data.data.merchant.id;
+                                              var merchantName = data.data.merchant.name;
 
-                        $.ajax({
-                            type: "get",
-                            data: {printerId: printerId},
-                            url: "/manage/editPage",
-                            success: function (data) {
-                                $("#printerName2").val(data.data.name);
-                                $("#mKey2").val(data.data.mKey);
-                                $("#printerCount2").val(data.data.printerCount);
-                                $("#machineCode2").val(data.data.machineCode);
-                                $("#printerId2").val(data.data.id);
-                                var merchantId=data.data.merchant.id;
-                                var merchantName=data.data.merchant.name;
+                                              $("#editDiv .combo-input").val(merchantName);
+                                              $("#editSelect").find(
+                                                  'option[value="' + merchantId + '"]').attr(
+                                                  {"selected": true});
+                                          }
+                                      });
+                               $("#editM").modal("toggle");
+                           });
+                       });
 
-                                $("#editDiv .combo-input").val(merchantName);
-                                $("#editSelect").find('option[value="'+merchantId+'"]').attr({"selected":true});
-                    }
-                        });
-                        $("#editM").modal("toggle");
-                    });
-                });
-
-            }
-        });
+                   }
+               });
     }
     function initPage(page, totalPage) {
         $('#tcdPageCode1').unbind();
         $("#tcdPageCode1").createPage({
-            pageCount: totalPage,
-            current: page,
-            backFn: function (p) {
-                printerCriteria.offset = p;
-                init1 = 0;
-                getPrinterByAjax(printerCriteria);
-            }
-        });
+                                          pageCount: totalPage,
+                                          current: page,
+                                          backFn: function (p) {
+                                              printerCriteria.offset = p;
+                                              init1 = 0;
+                                              getPrinterByAjax(printerCriteria);
+                                          }
+                                      });
     }
     Date.prototype.format = function (fmt) {
         var o = {
@@ -697,15 +662,17 @@
         }
         if (/(E+)/.test(fmt)) {
             fmt =
-                    fmt.replace(RegExp.$1,
-                            ((RegExp.$1.length > 1) ? (RegExp.$1.length > 2 ? "\u661f\u671f" : "\u5468")
-                                    : "") + week[this.getDay() + ""]);
+                fmt.replace(RegExp.$1,
+                            ((RegExp.$1.length > 1) ? (RegExp.$1.length > 2 ? "\u661f\u671f"
+                                : "\u5468")
+                                : "") + week[this.getDay() + ""]);
         }
         for (var k in o) {
             if (new RegExp("(" + k + ")").test(fmt)) {
                 fmt =
-                        fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr((""
-                        + o[k]).length)));
+                    fmt.replace(RegExp.$1,
+                                (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr((""
+                                                                                          + o[k]).length)));
             }
         }
         return fmt;
@@ -713,7 +680,7 @@
     function editPrinter() {
         var merchant = {};
         var printer = {};
-        printer.id=$("#printerId2").val();
+        printer.id = $("#printerId2").val();
 
         printer.name = $("#printerName2").val();
 
@@ -728,15 +695,15 @@
         printer.merchant = merchant;
 
         $.ajax({
-            type: "post",
-            data: JSON.stringify(printer),
-            contentType: "application/json",
-            url: "/manage/editPrinter",
-            success: function (data) {
-                alert(data.msg);
-                getPrinterByAjax(printerCriteria);
-            }
-        });
+                   type: "post",
+                   data: JSON.stringify(printer),
+                   contentType: "application/json",
+                   url: "/manage/editPrinter",
+                   success: function (data) {
+                       alert(data.msg);
+                       getPrinterByAjax(printerCriteria);
+                   }
+               });
         $("#printerId2").val("");
         $("#printerName2").val("");
         $("#mKey2").val("");

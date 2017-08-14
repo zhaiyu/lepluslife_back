@@ -1,6 +1,7 @@
 package com.jifenke.lepluslive.merchant.repository;
 
 import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
+import com.jifenke.lepluslive.merchant.domain.entities.MerchantUser;
 import com.jifenke.lepluslive.merchant.domain.entities.TemporaryMerchantUserShop;
 
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -14,6 +15,8 @@ public interface TemporaryMerchantUserShopRepository
     extends JpaRepository<TemporaryMerchantUserShop, Long> {
 
   List<TemporaryMerchantUserShop> findByMerchant(Merchant merchant);
+
+  List<TemporaryMerchantUserShop> findByMerchantUser(MerchantUser merchantUser);
 
 
 }

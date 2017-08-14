@@ -3,7 +3,9 @@ package com.jifenke.lepluslive.printer.service;
 import com.google.common.collect.Lists;
 
 import com.jifenke.lepluslive.order.domain.entities.OffLineOrder;
+import com.jifenke.lepluslive.order.domain.entities.ScanCodeOrder;
 import com.jifenke.lepluslive.order.repository.OffLineOrderRepository;
+import com.jifenke.lepluslive.order.service.ScanCodeOrderService;
 import com.jifenke.lepluslive.printer.domain.MD5;
 import com.jifenke.lepluslive.printer.domain.criteria.ReceiptCriteria;
 import com.jifenke.lepluslive.printer.domain.entities.Printer;
@@ -56,7 +58,6 @@ import javax.persistence.criteria.Root;
  * Created by lss on 2016/12/27.
  */
 @Service
-@Transactional(readOnly = false)
 public class ReceiptService {
 
   @Inject
@@ -67,6 +68,9 @@ public class ReceiptService {
 
   @Inject
   private PrinterRepository printerRepository;
+
+  @Inject
+  private ScanCodeOrderService scanCodeOrderService;
 
   @Value("${printer.partner}")
   private String partner;
@@ -93,8 +97,7 @@ public class ReceiptService {
         if (receiptCriteria.getOfflineOrderSid() != null
             && receiptCriteria.getOfflineOrderSid() != "") {
           predicate.getExpressions().add(
-              cb.equal(r.<LeJiaUser>get("offLineOrder").get("orderSid"),
-                       receiptCriteria.getOfflineOrderSid()));
+              cb.equal(r.get("orderSid"), receiptCriteria.getOfflineOrderSid()));
         }
 
         if (receiptCriteria.getMachineCode() != null && receiptCriteria.getMachineCode() != "") {
@@ -105,7 +108,7 @@ public class ReceiptService {
 
         if (receiptCriteria.getMerchantName() != null && receiptCriteria.getMerchantName() != "") {
           predicate.getExpressions().add(
-              cb.like(r.<LeJiaUser>get("offLineOrder").get("merchant").get("name"),
+              cb.like(r.<Printer>get("printer").get("merchant").get("name"),
                       "%" + receiptCriteria.getMerchantName() + "%"));
         }
 
@@ -136,7 +139,7 @@ public class ReceiptService {
 
 
   //打印上一次未成功订单
-  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  @Transactional(propagation = Propagation.REQUIRED)
   public void printUnsuccessfulOrder(String sid) {
     Receipt unsuccessfulReceipt = receiptRepository.findBySid(sid);
     if (unsuccessfulReceipt != null) {
@@ -152,10 +155,7 @@ public class ReceiptService {
         unsuccessfulReceipt.setState(1);
         receiptRepository.save(unsuccessfulReceipt);
       }
-
     }
-
-
   }
 
 
@@ -177,29 +177,32 @@ public class ReceiptService {
     }
   }
 
-
-  public void addReceipt(String paramms) {
+  @Transactional(propagation = Propagation.REQUIRED)
+  public void addReceipt(String orderSid, String orderType, Long merchantId) {
     try {
-      String a[] = paramms.split("&");
-      String orderSid = a[0].split("=")[1];
-//        String  sign= a[1].split("=")[1];
-      OffLineOrder offLineOrder = offLineOrderRepository.findOneByOrderSid(orderSid);
-      Long merchantId = offLineOrder.getMerchant().getId();
       Printer printer = printerRepository.findPrinterByMerchantId(merchantId);
       if (printer != null) {
         if (printer.getState() == 1) {
-          String sb = createReceiptContent(offLineOrder, printer);
           Receipt receipt = new Receipt();
+          String sb = "";
+          if ("scan".equals(orderType)) {//1=乐加|2=通道
+            receipt.setType(2);
+            ScanCodeOrder scanCodeOrder = scanCodeOrderService.findByOrderSid(orderSid);
+            sb = createReceiptContent(scanCodeOrder, printer);
+          } else {
+            receipt.setType(1);
+            OffLineOrder offLineOrder = offLineOrderRepository.findOneByOrderSid(orderSid);
+            sb = createReceiptContent(offLineOrder, printer);
+          }
           receipt.setCompleteDate(new Date());
-          receipt.setOffLineOrder(offLineOrder);
+          receipt.setOrderSid(orderSid);
           receipt.setPrinter(printer);
           sendFirsitContent(sb, receipt);
         }
       }
-    }catch (Exception e){
+    } catch (Exception e) {
       e.printStackTrace();
     }
-
   }
 
   private String createReceiptContent(OffLineOrder offLineOrder, Printer printer) {
@@ -208,11 +211,6 @@ public class ReceiptService {
       printerCount = printer.getPrinterCount();
     }
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
-    String merchantName = "----";
-    if (offLineOrder.getMerchant().getMerchantUser() != null
-        && offLineOrder.getMerchant().getMerchantUser().getMerchantName() != null) {
-      merchantName = offLineOrder.getMerchant().getMerchantUser().getMerchantName();
-    }
     String merchantShop = offLineOrder.getMerchant().getName();
     String merchantNumber = offLineOrder.getMerchant().getMerchantSid();
     String orderNumer = offLineOrder.getOrderSid();
@@ -234,18 +232,16 @@ public class ReceiptService {
     StringBuffer sb = new StringBuffer("");
     sb.append("<MN>" + printerCount + "</MN>");
     sb.append("----------------------\r");
-    sb.append("商户名称：" + merchantName + "\r");
-    sb.append("商户门店：" + merchantShop + "\r");
+    sb.append("商户名称：" + merchantShop + "\r");
     sb.append("商户编号：" + merchantNumber + "\r");
     sb.append("订单编号：" + orderNumer + "\r");
     sb.append("交易时间：" + tradeTime + "\r");
     sb.append("支付金额:\r");
     sb.append("<FS2>RMB" + "  " + payAmount + "</FS2>\r");
-    sb.append("(使用鼓励金" + scoreaPay + "元,微信支付" + weiXinPay + "元)\r");
+    sb.append("(使用鼓励金" + scoreaPay + "元,实付" + weiXinPay + "元)\r");
     sb.append("----------------------\r");
     sb.append("订单类型：" + orderKind + "\r");
-    if (offLineOrder.getRebateWay() == 1 || offLineOrder.getRebateWay() == 3
-        || offLineOrder.getRebateWay() == 6) {
+    if (offLineOrder.getRebate() != null && offLineOrder.getRebate() > 0) {
       sb.append("乐加会员ID:" + userSid + "\r");
       sb.append("奖励鼓励金：<FB>" + "￥" + Double.valueOf(offLineOrder.getRebate().toString()) / 100.0
                 + "</FB>\r");
@@ -253,31 +249,83 @@ public class ReceiptService {
       sb.append("\r");
       sb.append("\r");
     }
+    if (offLineOrder.getScoreC() != null && offLineOrder.getScoreC() > 0) {
 
-    sb.append("奖励金币：<FB>" + Double.valueOf(offLineOrder.getScoreC().toString()) / 100.0 + "金币"
-              + "</FB>\r");
+      sb.append("奖励金币：<FB>" + Double.valueOf(offLineOrder.getScoreC().toString()) / 100.0 + "金币"
+                + "</FB>\r");
+    }
     sb.append("----------------------\r");
     sb.append("     扫码进入\"乐加生活公众号\"\r\n");
     sb.append("        立即购买<FB>超值商品</FB>\r\n");
     sb.append("          1金币=1块钱\n");
     sb.append("<QR>http://weixin.qq.com/r/gD_2rnnEBiR5rT3N92qS</QR>");
-//        String encode=null;
-//        try {
-//            encode =URLEncoder.encode(sb.toString());
-//        } catch (Exception e) {
-//            e.printStackTrace();
-//        }
-//       // return encode;
-//        System.out.println(sb.toString() + "============" + encode);
     return sb.toString();
   }
 
-  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+
+  private String createReceiptContent(ScanCodeOrder order, Printer printer) {
+    Integer printerCount = 1;
+    if (printer.getPrinterCount() != null) {
+      printerCount = printer.getPrinterCount();
+    }
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
+    String merchantShop = order.getMerchant().getName();
+    String merchantNumber = order.getMerchant().getMerchantSid();
+    String orderNumer = order.getOrderSid();
+    String tradeTime = sdf.format(order.getCompleteDate());
+
+    String
+        payAmount =
+        String.valueOf(Double.valueOf(order.getTotalPrice().toString()) / 100.0);
+    String
+        scorePay =
+        String.valueOf(Double.valueOf(order.getTrueScore().toString()) / 100.0);
+    String weiXinPay = String.valueOf(Double.valueOf(order.getTruePay().toString()) / 100.0);
+    String orderKind = "普通订单";
+    Long orderType = order.getOrderType();
+    if (orderType == 12004L || orderType == 12005L) {
+      orderKind = "乐加订单";
+    }
+    String userSid = order.getLeJiaUser().getUserSid();
+
+    StringBuffer sb = new StringBuffer("");
+    sb.append("<MN>" + printerCount + "</MN>");
+    sb.append("----------------------\r");
+    sb.append("商户门店：" + merchantShop + "\r");
+    sb.append("商户编号：" + merchantNumber + "\r");
+    sb.append("订单编号：" + orderNumer + "\r");
+    sb.append("交易时间：" + tradeTime + "\r");
+    sb.append("支付金额:\r");
+    sb.append("<FS2>RMB" + "  " + payAmount + "</FS2>\r");
+    sb.append("(使用鼓励金" + scorePay + "元,实付" + weiXinPay + "元)\r");
+    sb.append("----------------------\r");
+    sb.append("订单类型：" + orderKind + "\r");
+    if (order.getRebate() != null && order.getRebate() > 0) {
+      sb.append("乐加会员ID:" + userSid + "\r");
+      sb.append("奖励鼓励金：<FB>" + "￥" + Double.valueOf(order.getRebate().toString()) / 100.0
+                + "</FB>\r");
+    } else {
+      sb.append("\r");
+      sb.append("\r");
+    }
+    if (order.getScoreC() != null && order.getScoreC() > 0) {
+      sb.append("奖励金币：<FB>" + Double.valueOf(order.getScoreC().toString()) / 100.0 + "金币"
+                + "</FB>\r");
+    }
+    sb.append("----------------------\r");
+    sb.append("     扫码进入\"乐加生活公众号\"\r\n");
+    sb.append("        立即购买<FB>超值商品</FB>\r\n");
+    sb.append("          1金币=1块钱\n");
+    sb.append("<QR>http://weixin.qq.com/r/gD_2rnnEBiR5rT3N92qS</QR>");
+    return sb.toString();
+  }
+
+  @Transactional(propagation = Propagation.REQUIRED)
   public boolean sendFirsitContent(String content, Receipt receipt) {
     JSONObject obj = sendContent(content, receipt);
     if (obj != null) {
       if ("1".equals(obj.getString("state"))) {//数据已经发送到客户端
-        receipt.setState(0);
+        receipt.setState(1);
         receipt.setReceiptSid(obj.getString("id"));
         receiptRepository.save(receipt);
         return true;
@@ -295,7 +343,7 @@ public class ReceiptService {
   public JSONObject sendContent(String content, Receipt receipt) {
     String machine_code = receipt.getPrinter().getMachineCode();
     String mKey = receipt.getPrinter().getmKey();
-    Map<String, String> params2 = new HashMap<String, String>();
+    Map<String, String> params2 = new HashMap<>();
     params2.put("partner", partner);
     params2.put("machine_code", machine_code);
     String time = String.valueOf(System.currentTimeMillis());

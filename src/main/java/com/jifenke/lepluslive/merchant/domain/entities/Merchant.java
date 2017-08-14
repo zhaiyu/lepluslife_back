@@ -86,7 +86,7 @@ public class Merchant {
 
   private BigDecimal scoreARebate = new BigDecimal(0); //返a积分比 单位百分比  【导流订单红包】
 
-  private BigDecimal scoreBRebate = new BigDecimal(0); //普通订单返B积分策略   【普通订单积分】
+  private BigDecimal scoreBRebate = new BigDecimal(0); //普通订单返B积分策略   【普通订单积分】 todo:已废弃
 
   private String contact; //联系人
 

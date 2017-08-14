@@ -321,12 +321,6 @@ public class OffLineOrderService {
     financialReviseRepository.save(financialRevise);
   }
 
-  @Transactional(propagation = Propagation.REQUIRED, readOnly = true)
-  public FinancialStatistic findFinancialStatisticById(Long id) {
-    FinancialStatistic financialStatistic = financialStatisticRepository.findOne(id);
-    return financialStatistic;
-  }
-
   /**
    * 统计某个门店的累计流水和累计收取红包  2017/02/10
    *
