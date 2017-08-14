@@ -93,6 +93,8 @@ public class LedgerTransferService {
             state = 3;
           }
         }
+      } else {
+        state = 2;
       }
     } else {
       state = 1;
@@ -101,7 +103,7 @@ public class LedgerTransferService {
     transfer.setState(state);
     ledgerTransferRepository.save(transfer);
     log.setDateCompleted(new Date());
-    log.setState(state);
+    log.setState(Integer.valueOf(code));
     ledgerTransferLogService.saveLog(log);
   }
 
@@ -148,6 +150,8 @@ public class LedgerTransferService {
                 state = 3;
               }
             }
+          } else {
+            state = 2;
           }
         } else {
           state = 1;
@@ -156,7 +160,7 @@ public class LedgerTransferService {
         transfer.setState(state);
         ledgerTransferRepository.save(transfer);
         log.setDateCompleted(new Date());
-        log.setState(state);
+        log.setState(Integer.valueOf(code));
         ledgerTransferLogService.saveLog(log);
       } catch (Exception e) {
         e.printStackTrace();

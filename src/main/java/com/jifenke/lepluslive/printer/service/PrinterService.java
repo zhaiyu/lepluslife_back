@@ -121,43 +121,6 @@ public class PrinterService {
         return encryptStr;
     }
 
-//    public boolean addM(Map<String,String> params,String msign){
-//        try{
-//            String parameter="partner="+partner+"&machine_code="+params.get("machine_code")+"&username="+params.get("username")+"&printname="+params.get("printname")+"&mobilephone="+params.get("mobilephone")+"&msign="+msign+"&sign="+params.get("sign");
-//            byte[] data = (parameter).getBytes();
-//            URL url = new URL("http://open.10ss.net:8888/addprint.php");
-//            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-//            conn.setRequestMethod("POST");
-//            conn.setConnectTimeout(5 * 1000);
-//            conn.setDoOutput(true);
-//            conn.setRequestProperty("Content-Type","application/x-www-form-urlencoded;charset=utf-8");
-//            conn.setRequestProperty("Content-Length",String.valueOf(data.length));
-//            OutputStream outStream = conn.getOutputStream();
-//            outStream.write(data);
-//            outStream.flush();
-//            outStream.close();
-//            InputStream is = conn.getInputStream();
-//            if (conn.getResponseCode() == 200) {
-//                int i = -1;
-//                byte[] b = new byte[1024];
-//                StringBuffer result = new StringBuffer();
-//                while ((i = is.read(b)) != -1) {
-//                    result.append(new String(b, 0, i));
-//                }
-//                String sub = result.toString();
-//                if(sub.equals("1")){//数据已经发送到客户端
-//                    return true;
-//                }else{
-//                    return false;
-//                }
-//            }
-//            return true;
-//        }catch(Exception e){
-//            e.printStackTrace();
-//            return false;
-//        }
-//    }
-
 
 
     public boolean addM(Map<String,String> params3,String msign) {

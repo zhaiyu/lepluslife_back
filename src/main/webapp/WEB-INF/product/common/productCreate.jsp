@@ -477,6 +477,20 @@
 </script>
 <script>
 
+    //返回值：arg1乘以 arg2的精确结果
+    function accMul(arg1, arg2) {
+        var m = 0, s1 = arg1.toString(), s2 = arg2.toString();
+        try {
+            m += s1.split(".")[1].length
+        } catch (e) {
+        }
+        try {
+            m += s2.split(".")[1].length
+        } catch (e) {
+        }
+        return Number(s1.replace(".", "")) * Number(s2.replace(".", "")) / Math.pow(10, m)
+    }
+
     $("#save").click(function () {
         var product = {}, productType = {}, mark = {}, scrollPictureList = [],
             productDetailList = [], goOn = 0;
@@ -548,14 +562,14 @@
                 $("input[name=postagePrice]").focus();
                 return
             } else {
-                product.postage = postagePrice * 100;
+                product.postage = accMul(postagePrice, 100);
             }
             if (freePrice == "") {
                 alert("请输入满包邮");
                 $("input[name=freePrice]").focus();
                 return
             } else {
-                product.freePrice = freePrice * 100;
+                product.freePrice = accMul(freePrice, 100);
             }
         }
         //零售价和市场价
@@ -565,16 +579,16 @@
             $("#productMinPrice").focus();
             return
         }
-        product.minPrice = minPrice * 100;
+        product.minPrice = accMul(minPrice, 100);
         var maxPrice = $("#productPrice").val();
         if (maxPrice == null || maxPrice == "") {
             alert("请输入市场价");
             $("#productPrice").focus();
             return
         }
-        product.price = maxPrice * 100;
+        product.price = accMul(maxPrice, 100);
         //展示用金币
-        product.minScore = (maxPrice - minPrice) * 100;
+        product.minScore = accMul((maxPrice - minPrice), 100);
         //自定义初始销量
         if ($("#customSale").val() == "") {
             alert("请输入初始销量");
@@ -587,7 +601,7 @@
         if (backPartner == null || backPartner == "") {
             backPartner = 0;
         }
-        product.backPartner = backPartner * 100;
+        product.backPartner = accMul(backPartner, 100);
         //轮播图
         var scrollList = $(".banner > div");
         if (scrollList.length < 1) {

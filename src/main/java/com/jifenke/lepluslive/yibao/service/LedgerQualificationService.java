@@ -26,6 +26,9 @@ public class LedgerQualificationService {
   @Inject
   private LedgerQualificationRepository repository;
 
+  @Inject
+  private MerchantUserLedgerService merchantUserLedgerService;
+
   public LedgerQualification findByMerchantUserLedger(MerchantUserLedger ledger) {
     return repository.findByMerchantUserLedger(ledger);
   }
@@ -46,10 +49,11 @@ public class LedgerQualificationService {
   public Map<String, String> uploadQualification(Long qualificationId, String picPath,
                                                  Integer type) {
     LedgerQualification qualification = repository.findOne(qualificationId);
+    MerchantUserLedger merchantUserLedger = qualification.getMerchantUserLedger();
     Map<String, String>
         resultMap =
         YbRequestUtils
-            .uploadQualification(qualification.getMerchantUserLedger().getLedgerNo(), picPath,
+            .uploadQualification(merchantUserLedger.getLedgerNo(), picPath,
                                  type);
     if (resultMap == null) {
       resultMap = new HashMap<>();
@@ -107,6 +111,10 @@ public class LedgerQualificationService {
         resultMap.put("code", "309");
         resultMap.put("msg", "图片类型异常");
         return resultMap;
+    }
+    if ("true".equals(resultMap.get("active"))) {
+      merchantUserLedger.setState(1);
+      merchantUserLedgerService.saveLedger(merchantUserLedger);
     }
     repository.save(qualification);
     return resultMap;
