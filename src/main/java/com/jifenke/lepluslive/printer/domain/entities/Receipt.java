@@ -1,7 +1,5 @@
 package com.jifenke.lepluslive.printer.domain.entities;
 
-import com.jifenke.lepluslive.order.domain.entities.OffLineOrder;
-
 import java.util.Date;
 
 import javax.persistence.Entity;
@@ -24,12 +22,9 @@ public class Receipt {
 
   private String receiptSid;
 
-  private Integer state; //1 成功 0失败 3补打成功 4补打失败
+  private Integer state = 0; //1 成功 0失败 3补打成功 4补打失败
 
   private Date completeDate;
-
-  @ManyToOne
-  private OffLineOrder offLineOrder;  //todo:待删除
 
   @ManyToOne
   private Printer printer;
@@ -68,14 +63,6 @@ public class Receipt {
 
   public void setCompleteDate(Date completeDate) {
     this.completeDate = completeDate;
-  }
-
-  public OffLineOrder getOffLineOrder() {
-    return offLineOrder;
-  }
-
-  public void setOffLineOrder(OffLineOrder offLineOrder) {
-    this.offLineOrder = offLineOrder;
   }
 
   public Printer getPrinter() {
