@@ -55,7 +55,7 @@ public class ReceiptController {
     String sign = a[1];
     String str = MD5.MD5Encode(apiKey + orderSid).toUpperCase();
     if (str.equals(sign)) {
-      receiptService.addReceipt(orderSid, a[2], Long.valueOf(a[3]));
+      receiptService.addReceipt(orderSid, a[2], Long.valueOf(a[3]), 1);
     }
     return "1";
   }
@@ -68,10 +68,10 @@ public class ReceiptController {
                                   @RequestParam String sign,
                                   @RequestParam String machine_code   //打印机终端号
   ) {
+    log.info(machine_code + "====" + dataid);
     String str = MD5.MD5Encode(apiKey + time).toUpperCase();
     if (str.equals(sign)) {
       if ("1".equals(state)) {
-        System.out.println("打印完成");
         Receipt receipt = receiptService.findBySid(dataid);
         if (receipt.getState() == 0) {
           receipt.setState(1);
@@ -81,7 +81,7 @@ public class ReceiptController {
         }
         receiptService.saveOne(receipt);
       } else {
-        System.out.println("重新打印");
+        log.info("重新打印=dataid=" + dataid);
         receiptService.printUnsuccessfulOrder(dataid);
       }
     }

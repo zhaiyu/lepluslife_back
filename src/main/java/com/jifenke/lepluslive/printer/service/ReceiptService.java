@@ -26,6 +26,8 @@ import org.apache.http.client.methods.HttpPost;
 import org.apache.http.impl.client.CloseableHttpClient;
 import org.apache.http.impl.client.HttpClients;
 import org.apache.http.message.BasicNameValuePair;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -59,6 +61,8 @@ import javax.persistence.criteria.Root;
  */
 @Service
 public class ReceiptService {
+
+  private static Logger log = LoggerFactory.getLogger(ReceiptService.class);
 
   @Inject
   private ReceiptRepository receiptRepository;
@@ -143,17 +147,13 @@ public class ReceiptService {
   public void printUnsuccessfulOrder(String sid) {
     Receipt unsuccessfulReceipt = receiptRepository.findBySid(sid);
     if (unsuccessfulReceipt != null) {
-      OffLineOrder offLineOrder = unsuccessfulReceipt.getOffLineOrder();
-      Printer printer = unsuccessfulReceipt.getPrinter();
-      String sb = createReceiptContent(offLineOrder, printer);
-      Receipt receipt = new Receipt();
-      receipt.setCompleteDate(new Date());
-      receipt.setOffLineOrder(offLineOrder);
-      receipt.setPrinter(printer);
-      boolean b = sendSupplementReceipt(sb, receipt);
-      if (b) {
-        unsuccessfulReceipt.setState(1);
-        receiptRepository.save(unsuccessfulReceipt);
+      if (unsuccessfulReceipt.getState() == 0) {
+        Printer printer = unsuccessfulReceipt.getPrinter();
+        addReceipt(unsuccessfulReceipt.getOrderSid(),
+                   unsuccessfulReceipt.getType() == 1 ? "leJia" : "scan",
+                   printer.getMerchant().getId(), 2);
+      } else {
+        log.info("重新打印失败---orderSid=" + unsuccessfulReceipt.getOrderSid());
       }
     }
   }
@@ -177,8 +177,16 @@ public class ReceiptService {
     }
   }
 
+  /**
+   * 发送打印命令
+   *
+   * @param orderSid   订单号
+   * @param orderType  订单类型  leJia=乐加|scan=通道
+   * @param merchantId 门店ID
+   * @param type       1=第一次打印|2=第二次打印
+   */
   @Transactional(propagation = Propagation.REQUIRED)
-  public void addReceipt(String orderSid, String orderType, Long merchantId) {
+  public void addReceipt(String orderSid, String orderType, Long merchantId, int type) {
     try {
       Printer printer = printerRepository.findPrinterByMerchantId(merchantId);
       if (printer != null) {
@@ -197,7 +205,11 @@ public class ReceiptService {
           receipt.setCompleteDate(new Date());
           receipt.setOrderSid(orderSid);
           receipt.setPrinter(printer);
-          sendFirsitContent(sb, receipt);
+          if (type == 1) {
+            sendFirsitContent(sb, receipt);
+          } else {
+            sendSupplementReceipt(sb, receipt);
+          }
         }
       }
     } catch (Exception e) {
@@ -325,12 +337,10 @@ public class ReceiptService {
     JSONObject obj = sendContent(content, receipt);
     if (obj != null) {
       if ("1".equals(obj.getString("state"))) {//数据已经发送到客户端
-        receipt.setState(1);
         receipt.setReceiptSid(obj.getString("id"));
         receiptRepository.save(receipt);
         return true;
       } else {
-        receipt.setState(0);
         receiptRepository.save(receipt);
         return false;
       }
@@ -431,7 +441,7 @@ public class ReceiptService {
   }
 
 
-  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
+  @Transactional(propagation = Propagation.REQUIRED)
   public void saveOne(Receipt receipt) {
     receiptRepository.save(receipt);
   }
