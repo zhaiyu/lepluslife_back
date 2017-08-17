@@ -68,8 +68,8 @@ public class ScanCodeOrderViewExcel extends AbstractExcelView {
     excelHeader.createCell(18).setCellValue("商户总应入账");
     excelHeader.createCell(19).setCellValue("商户应入账（实付）");
     excelHeader.createCell(20).setCellValue("商户应入账（红包）");
-    excelHeader.createCell(21).setCellValue("发放积分");
-    excelHeader.createCell(22).setCellValue("发放红包");
+    excelHeader.createCell(21).setCellValue("发放金币");
+    excelHeader.createCell(22).setCellValue("发放鼓励金");
     excelHeader.createCell(23).setCellValue("分润金额");
   }
 
@@ -139,12 +139,13 @@ public class ScanCodeOrderViewExcel extends AbstractExcelView {
         default:
           excelRow.createCell(10).setCellValue(s[6]);
       }
-      if (order.getTruePay() == 0) {
-        excelRow.createCell(11).setCellValue("纯红包");
-      } else if (order.getScanCodeOrderExt().getUseScoreA() == 1) {
-        excelRow.createCell(11).setCellValue("混合支付");
+      //付款方式 0=不用（纯通道） 1=使用（纯鼓励金）  2=混合
+      if (order.getScanCodeOrderExt().getPayment() == 0) {
+        excelRow.createCell(11).setCellValue("纯通道");
+      } else if (order.getScanCodeOrderExt().getPayment() == 2) {
+        excelRow.createCell(11).setCellValue("混合");
       } else {
-        excelRow.createCell(11).setCellValue("纯现金");
+        excelRow.createCell(11).setCellValue("纯鼓励金");
       }
       excelRow.createCell(12).setCellValue(order.getTotalPrice() / 100.0);
       excelRow.createCell(13).setCellValue(order.getTrueScore() / 100.0);
@@ -155,7 +156,7 @@ public class ScanCodeOrderViewExcel extends AbstractExcelView {
       excelRow.createCell(18).setCellValue(order.getTransferMoney() / 100.0);
       excelRow.createCell(19).setCellValue(order.getTransferMoneyFromTruePay() / 100.0);
       excelRow.createCell(20).setCellValue(order.getTransferMoneyFromScore() / 100.0);
-      excelRow.createCell(21).setCellValue(order.getScoreB());
+      excelRow.createCell(21).setCellValue(order.getScoreC() / 100.0);
       excelRow.createCell(22).setCellValue(order.getRebate() / 100.0);
       excelRow.createCell(23).setCellValue(order.getShare() / 100.0);
     }
