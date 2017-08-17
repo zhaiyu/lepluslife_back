@@ -97,12 +97,12 @@ public class LedgerSettlementService {
         Long totalTransfer = ybOrderService.findTotalTransfer(diff, startDate, info[0]);
         settlement.setTotalTransfer(totalTransfer);
       }
-      ledgerSettlementRepository.save(settlement);
+      LedgerSettlement save = ledgerSettlementRepository.save(settlement);
       //更新对应门店结算单状态 多出无结算记录
       ybOrderService.resetStoreSettlementState(diff, startDate, info[0], state);
       //结算成功时发送微信模板消息
       if (state == 1) {
-        sendWxMsg(info[2], tradeDate, bankNo, settlement.getOrderSid(), merchantUserId);
+        sendWxMsg(info[2], tradeDate, bankNo, String.valueOf(save.getId()), merchantUserId);
       }
     }
   }
@@ -133,7 +133,8 @@ public class LedgerSettlementService {
           ybOrderService.resetStoreSettlementState(diff, startDate, info[0], state);
         }
         //结算成功时发送微信模板消息
-        sendWxMsg(info[2], tradeDate, settlement.getBankAccountNumber(), settlement.getOrderSid(),
+        sendWxMsg(info[2], tradeDate, settlement.getBankAccountNumber(),
+                  String.valueOf(settlement.getId()),
                   settlement.getMerchantUserId());
       }
     }
@@ -171,10 +172,10 @@ public class LedgerSettlementService {
    * @param transferMoney  转入金额
    * @param tradeDate      转入时间
    * @param bankNo         银行卡号
-   * @param orderSid       结算单号
+   * @param orderId        结算单ID
    * @param merchantUserId 商户ID
    */
-  private void sendWxMsg(String transferMoney, String tradeDate, String bankNo, String orderSid,
+  private void sendWxMsg(String transferMoney, String tradeDate, String bankNo, String orderId,
                          Long merchantUserId) {
     String[] keys = new String[3];
     keys[0] = "***************" + bankNo.substring(bankNo.length() - 4, bankNo.length());
@@ -194,7 +195,7 @@ public class LedgerSettlementService {
               merchantWeiXinUsers =
               merchantWeiXinUserService.findMerchantWeiXinUserByMerchantUser(s.getMerchantUser());
           for (MerchantWeiXinUser merchantWeiXinUser : merchantWeiXinUsers) {
-            wxTemMsgService.sendTemMessage(merchantWeiXinUser.getOpenId(), 12L, 9L, keys, orderSid);
+            wxTemMsgService.sendTemMessage(merchantWeiXinUser.getOpenId(), 12L, 9L, keys, orderId);
           }
         }
       }

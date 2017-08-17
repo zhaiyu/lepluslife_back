@@ -236,7 +236,7 @@ public class ScanCodeOrderService {
     PartnerManager tradePartnerManager = null;
     PartnerManagerWallet tradePartnerManagerWallet = null;
     Long a = scoreA.getScore() + order.getTrueScore() - order.getRebate();
-    Long b = scoreB.getScore() - order.getScoreB();
+    Long b = scoreB.getScore() - order.getScoreC();
     if (force == 0) {//账户余额不足以抵扣，则无法退款
       if (a < 0) { //用户红包不足
         result.put("status", 1002);
@@ -349,7 +349,7 @@ public class ScanCodeOrderService {
         b = 0L;
         refundOrder.setRealScoreB(scoreB.getScore());
       } else {
-        refundOrder.setRealScoreB(order.getScoreB());
+        refundOrder.setRealScoreB(order.getScoreC());
       }
       //消费者红包积分处理
       scoreA.setScore(a);
@@ -370,7 +370,7 @@ public class ScanCodeOrderService {
       bDetail.setOrigin(15002);
       bDetail.setScoreB(scoreB);
       bDetail.setOperate("线下支付退款");
-      bDetail.setNumber(-order.getScoreB());
+      bDetail.setNumber(-order.getScoreC());
       bDetail.setOrderSid(orderSid);
       scoreBService.saveDetail(bDetail);
       //如果有分润，追回
