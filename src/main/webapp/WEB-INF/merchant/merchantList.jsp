@@ -392,84 +392,79 @@
                            var contentStr = '<tr><td>' + content[i].merchantSid + '</td>';
                            contentStr += '<td>' + content[i].city.name + '</td>'
                            contentStr +=
-                           '<td>' + content[i].merchantType.name + '</td>'
+                               '<td>' + content[i].merchantType.name + '</td>'
                            contentStr +=
-                           '<td>' + content[i].name + '</td>';
+                               '<td>' + content[i].name + '</td>';
                            contentStr +=
-                           '<td>' + content[i].partner.name + '</td>';
+                               '<td>' + content[i].partner.name + '</td>';
                            contentStr +=
-                           '<td>' + binds[i] + '/' + content[i].userLimit + '</td>';
+                               '<td>' + binds[i] + '/' + content[i].userLimit + '</td>';
                            if (content[i].partnership == 0) {
                                contentStr +=
-                               '<td>普通商户</td>'
+                                   '<td>普通商户</td>'
                            } else {
                                contentStr +=
-                               '<td>联盟商户</td>'
+                                   '<td>联盟商户</td>'
                            }
                            contentStr +=
-                           '<td>' + content[i].ljCommission + '%</td>'
-                           if(posCount[i]==0) {
+                               '<td>' + content[i].ljCommission + '%</td>'
+                           if (posCount[i] == 0) {
                                contentStr +=
-                                       '<td>未进件</td>'
-                           }else {
+                                   '<td>未进件</td>'
+                           } else {
                                contentStr +=
-                                       '<td>'+posCount[i]+'个</td>'
+                                   '<td>' + posCount[i] + '个</td>'
                            }
                            if (content[i].state == 0) {
                                contentStr +=
-                               '<td>未开启</td>'
+                                   '<td>未开启</td>'
                            } else {
                                contentStr +=
-                               '<td>已开启</td>'
+                                   '<td>已开启</td>'
                            }
                            if (content[i].receiptAuth == 0) {
                                contentStr +=
-                               '<td>未开通</td>'
+                                   '<td>未开通</td>'
                            } else {
                                contentStr +=
-                               '<td>已开通</td>'
+                                   '<td>已开通</td>'
                            }
                            contentStr +=
-                           '<td><span>'
-                           + new Date(content[i].createDate).format('yyyy-MM-dd HH:mm:ss')
-                           + '</span></td>';
+                               '<td><span>'
+                               + new Date(content[i].createDate).format('yyyy-MM-dd HH:mm:ss')
+                               + '</span></td>';
 //                           contentStr +=
 //                           '<td><span>'
 //                           + content[i].merchantSid
 //                           + '</span></td>';
                            contentStr +=
-                           '<td><input type="hidden" class="name-hidden" value="' + content[i].name
-                           + '"><input type="hidden" class="id-hidden" value="' + content[i].id
-                           + '"><button type="button" class="btn btn-default createUser">账户</button>';
+                               '<td><input type="hidden" class="name-hidden" value="'
+                               + content[i].name
+                               + '"><input type="hidden" class="id-hidden" value="' + content[i].id
+                               + '">';
                            contentStr +=
-                           '<button type="button" class="btn btn-default showQRCode">二维码</button>';
+                               '<button type="button" class="btn btn-default showQRCode">二维码</button>';
                            contentStr +=
-                           '<button type="button" class="btn btn-default posManage">pos管理</button>';
+                               '<button type="button" class="btn btn-default posManage">pos管理</button>';
                            contentStr +=
-                           '<shiro:hasPermission name="merchant:edit"><button type="button" class="btn btn-default editMerchant">编辑</button></shiro:hasPermission>';
+                               '<shiro:hasPermission name="merchant:edit"><button type="button" class="btn btn-default editMerchant">编辑</button></shiro:hasPermission>';
                            contentStr +=
-                           '<button type="button" class="btn btn-default editMerchantContent">内容管理</button>';
+                               '<button type="button" class="btn btn-default editMerchantContent">内容管理</button>';
                            if (content[i].partnership == 1) {
                                contentStr +=
-                               '<button type="button" class="btn btn-default showPureQRCode">纯支付码</button>';
+                                   '<button type="button" class="btn btn-default showPureQRCode">纯支付码</button>';
                            }
                            if (content[i].state == 0) {
                                contentStr +=
-                               '<button type="button" class="btn btn-default disableMerchant">开启乐店</button></td></tr>';
+                                   '<button type="button" class="btn btn-default disableMerchant">开启乐店</button></td></tr>';
                            } else {
                                contentStr +=
-                               '<button type="button" class="btn btn-default disableMerchant">乐店编辑</button></td></tr>';
+                                   '<button type="button" class="btn btn-default disableMerchant">乐店编辑</button></td></tr>';
                            }
 
                            merchantContent.innerHTML += contentStr;
 
                        }
-                       $(".createUser").each(function (i) {
-                           $(".createUser").eq(i).bind("click", function () {
-                               var id = $(this).parent().find(".id-hidden").val();
-                               location.href = "/manage/merchant/user/" + id;
-                           });
-                       });
                        $(".posManage").each(function (i) {
                            $(".posManage").eq(i).bind("click", function () {
                                var id = $(this).parent().find(".id-hidden").val();
@@ -491,24 +486,28 @@
                                               $("#qrWarn").modal("show");
                                               var url = "${merchantUrl}" + merchant.merchantSid;
                                               $("#merchantUrl").html(url);
-                                              document.querySelector(".savePic").addEventListener("click",
-                                                                                                  function () {
-                                                                                                      html2canvas($(".modal-body .main"),
-                                                                                                                  {
-                                                                                                                      allowTaint: true,
-                                                                                                                      taintTest: false,
-                                                                                                                      onrendered: function (canvas) {
-                                                                                                                          canvas.id =
-                                                                                                                          "mycanvas";
-                                                                                                                          var dataUrl = canvas.toDataURL();
-                                                                                                                          $("#myShowImage").attr("src",
-                                                                                                                                                 dataUrl).css({'display': 'block'});
-                                                                                                                          $(".main").css({'display': 'none'});
+                                              document.querySelector(".savePic").addEventListener(
+                                                  "click",
+                                                  function () {
+                                                      html2canvas($(".modal-body .main"),
+                                                                  {
+                                                                      allowTaint: true,
+                                                                      taintTest: false,
+                                                                      onrendered: function (canvas) {
+                                                                          canvas.id =
+                                                                              "mycanvas";
+                                                                          var dataUrl = canvas.toDataURL();
+                                                                          $("#myShowImage").attr(
+                                                                              "src",
+                                                                              dataUrl).css(
+                                                                              {'display': 'block'});
+                                                                          $(".main").css(
+                                                                              {'display': 'none'});
 //
-                                                                                                                      }
-                                                                                                                  });
-                                                                                                  },
-                                                                                                  false);
+                                                                      }
+                                                                  });
+                                                  },
+                                                  false);
                                           }
                                       });
                            });
@@ -533,7 +532,7 @@
                        $(".editMerchant").each(function (i) {
                            $(".editMerchant").eq(i).bind("click", function () {
                                var id = $(this).parent().find(".id-hidden").val();
-                               location.href = "/manage/merchant/edit/" + id;
+                               location.href = "/manage/merchant/edit?type=1&id=" + id;
                            });
                        });
                        $(".editMerchantContent").each(function (i) {
@@ -553,9 +552,6 @@
                });
     }
 
-   /* function createMerchant() {
-        location.href = "/manage/merchant/edit";
-    }*/
     function initPage(page, totalPage) {
         $('.tcdPageCode').unbind();
         $(".tcdPageCode").createPage({
@@ -600,7 +596,7 @@
         } else {
             merchantCriteria.city = null;
         }
-        if ($("#partner").val()!= 0) {
+        if ($("#partner").val() != 0) {
             merchantCriteria.partner = $("#partner").val();
         } else {
             merchantCriteria.partner = null;
@@ -650,15 +646,17 @@
         }
         if (/(E+)/.test(fmt)) {
             fmt =
-            fmt.replace(RegExp.$1,
-                        ((RegExp.$1.length > 1) ? (RegExp.$1.length > 2 ? "\u661f\u671f" : "\u5468")
+                fmt.replace(RegExp.$1,
+                            ((RegExp.$1.length > 1) ? (RegExp.$1.length > 2 ? "\u661f\u671f"
+                                : "\u5468")
                                 : "") + week[this.getDay() + ""]);
         }
         for (var k in o) {
             if (new RegExp("(" + k + ")").test(fmt)) {
                 fmt =
-                fmt.replace(RegExp.$1, (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr((""
-                                                                                                 + o[k]).length)));
+                    fmt.replace(RegExp.$1,
+                                (RegExp.$1.length == 1) ? (o[k]) : (("00" + o[k]).substr((""
+                                                                                          + o[k]).length)));
             }
         }
         return fmt;
@@ -666,7 +664,8 @@
     function exportExcel(merchantCriteria) {
         var city = $("#city").val();
         location.href =
-        "/manage/merchant/merchantExport?merchantCriteria=" + merchantCriteria + "&&city=" + city;
+            "/manage/merchant/merchantExport?merchantCriteria=" + merchantCriteria + "&&city="
+            + city;
     }
 </script>
 </body>
