@@ -654,8 +654,6 @@
                 break;
         }
     });
-
-
 </script>
 </body>
 </html>

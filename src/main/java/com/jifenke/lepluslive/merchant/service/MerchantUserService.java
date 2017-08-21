@@ -103,6 +103,11 @@ public class MerchantUserService {
     MerchantBank merchantBank = merchantUser.getMerchantBank();              // 保存商户银行信息
     merchantBankRepository.save(merchantBank);
     merchantUserRepository.save(merchantUser);
+    // 判断创建者是否为空,如果为主商户，创建者为自身
+    if(merchantUser.getCreateUserId()==null) {
+      merchantUser.setCreateUserId(merchantUser.getId());
+      merchantUserRepository.save(merchantUser);
+    }
   }
 
   /**
@@ -421,7 +426,11 @@ public class MerchantUserService {
     origin.setName(merchantUser.getName());
     origin.setType(merchantUser.getType());
     merchantUserRepository.save(origin);
-
+    // 判断创建者是否为空,如果为管理员，创建者为自身
+    if(origin.getCreateUserId()==null) {
+      origin.setCreateUserId(origin.getId());
+      merchantUserRepository.save(origin);
+    }
     List<MerchantUserShop> dels = merchantUserShopService.countByMerchantUser(origin);
     for (MerchantUserShop shop : dels) {
       merchantUserShopService.deleteShop(shop);

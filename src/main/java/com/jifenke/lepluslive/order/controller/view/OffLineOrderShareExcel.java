@@ -144,7 +144,7 @@ public class OffLineOrderShareExcel extends AbstractExcelView {
                 excelRow.createCell(19).setCellValue(share.getOffLineOrder().getRebate() / 100.0);
             } else {
                 excelRow.createCell(17).setCellValue(0L);
-                excelRow.createCell(18).setCellValue(share.getShareMoney());
+                excelRow.createCell(18).setCellValue(share.getShareMoney()/100.0);
                 excelRow.createCell(19).setCellValue(0L);
             }
         }

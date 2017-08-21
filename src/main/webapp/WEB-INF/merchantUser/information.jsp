@@ -951,7 +951,7 @@
                         <div class="Mod-6">
                             <select id="role">
                                 <option value="2">子账号</option>
-                                <option value="9">系统管理员</option>
+                                <option value="8">系统管理员</option>
                             </select>
                         </div>
                     </div>
