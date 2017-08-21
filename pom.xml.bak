@@ -60,19 +60,23 @@
     </properties>
 
     <dependencies>
-        <!--富友加解密jar-->
+        <!--http文件上传-->
         <dependency>
-            <groupId>com.zhangfu</groupId>
-            <artifactId>fuiou-encrypt</artifactId>
-            <version>0.0.1</version>
+            <groupId>commons-httpclient</groupId>
+            <artifactId>commons-httpclient</artifactId>
+            <version>3.1</version>
         </dependency>
-        <!--银联商务加解密-->
+        <!--json转换-->
         <dependency>
-            <groupId>com.yinlian</groupId>
-            <artifactId>encode</artifactId>
-            <version>0.0.1</version>
+            <groupId>com.alibaba</groupId>
+            <artifactId>fastjson</artifactId>
+            <version>1.2.34</version>
         </dependency>
-
+        <dependency>
+            <groupId>commons-codec</groupId>
+            <artifactId>commons-codec</artifactId>
+            <version>1.10</version>
+        </dependency>
         <dependency>
             <groupId>com.aliyun.oss</groupId>
             <artifactId>aliyun-sdk-oss</artifactId>
@@ -128,6 +132,12 @@
                 </exclusion>
             </exclusions>
         </dependency>
+        <!--银联商务加解密-->
+        <dependency>
+            <groupId>com.yinlian</groupId>
+            <artifactId>encode</artifactId>
+            <version>0.0.1</version>
+        </dependency>
         <dependency>
             <groupId>com.zaxxer</groupId>
             <artifactId>HikariCP</artifactId>
@@ -137,6 +147,12 @@
                     <groupId>com.sun</groupId>
                 </exclusion>
             </exclusions>
+        </dependency>
+        <!--富友加解密jar-->
+        <dependency>
+            <groupId>com.zhangfu</groupId>
+            <artifactId>fuiou-encrypt</artifactId>
+            <version>0.0.1</version>
         </dependency>
         <!-- The HikariCP Java Agent is disabled by default, as it is experimental
           <dependency>
@@ -436,19 +452,22 @@
     <build>
         <defaultGoal>spring-boot:run</defaultGoal>
         <resources>
+            <!-- 打包时将jsp文件拷贝到META-INF目录下-->
             <resource>
-                <filtering>true</filtering>
-                <directory>src/main/resources</directory>
+                <!-- 指定resources插件处理哪个目录下的资源文件 -->
+                <directory>src/main/webapp</directory>
+                <!--注意此次必须要放在此目录下才能被访问到-->
+                <targetPath>META-INF/resources</targetPath>
                 <includes>
-                    <include>**/*.xml</include>
+                    <include>**/**</include>
                 </includes>
             </resource>
             <resource>
-                <filtering>false</filtering>
                 <directory>src/main/resources</directory>
-                <excludes>
-                    <exclude>**/*.xml</exclude>
-                </excludes>
+                <includes>
+                    <include>**/**</include>
+                </includes>
+                <filtering>false</filtering>
             </resource>
         </resources>
         <pluginManagement>
