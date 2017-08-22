@@ -2,6 +2,7 @@
 //
 //import com.jifenke.lepluslive.Application;
 //import com.jifenke.lepluslive.global.config.Constants;
+//import com.jifenke.lepluslive.global.util.MvUtil;
 //import com.jifenke.lepluslive.yibao.service.LedgerTransferService;
 //import com.jifenke.lepluslive.yibao.service.YBOrderService;
 //import com.jifenke.lepluslive.yibao.util.YbRequestUtils;
@@ -58,11 +59,11 @@
 //    List<Map<String, Object>> list = new ArrayList<>();
 //    Map<String, Object> map1 = new HashMap<>();
 //    map1.put("ledgerNo", "10015388496"); //-张文
-//    map1.put("transferMoney", 500);
+//    map1.put("transferMoney", 1111);
 //    list.add(map1);
 //    Map<String, Object> map2 = new HashMap<>();
 //    map2.put("ledgerNo", "10015389723"); //-张强
-//    map2.put("transferMoney", 1000);
+//    map2.put("transferMoney", 1);
 //    list.add(map2);
 ////    Map<String, Object> map3 = new HashMap<>();
 ////    map3.put("ledgerNo", "10015343947");
@@ -73,10 +74,10 @@
 //    System.out.println("===================主商户转账前余额===================");
 //    YbRequestUtils.queryBalance("");
 //
-////    //每日退款完成统计
-////    Map<String, Object> objectMap = new HashMap<>();
-//////    objectMap.put("10014282423",2);
-//////    objectMap.put("10015331444",1);
+//    //每日退款完成统计
+//    Map<String, Object> objectMap = new HashMap<>();
+////    objectMap.put("10014282423",2);
+////    objectMap.put("10015331444",1);
 ////
 ////    for (Map<String, Object> map : list) {
 ////      try {
@@ -100,4 +101,9 @@
 //
 //  }
 //
+//  //转账接口测试
+//  @Test
+//  public void singleTransferTest() throws Exception {
+//    YbRequestUtils.transfer("10015388496", 11042L, MvUtil.getOrderNumber());
+//  }
 //}

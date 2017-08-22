@@ -134,9 +134,9 @@
         /******************************门店编辑/新建************************************/
         function editMerchant(merchantId) {
             if (merchantId == -1) {
-                location.href = "/manage/merchant/edit?merchantUserId=" + merchantUserId;
+                location.href = "/manage/merchant/edit?type=0&id=" + merchantUserId;
             } else {
-                location.href = "/manage/merchant/edit/" + merchantId;
+                location.href = "/manage/merchant/edit?type=1&id=" + merchantId;
             }
         }
         /******************************获取账户列表信息************************************/

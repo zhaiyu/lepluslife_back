@@ -3,21 +3,23 @@ package com.jifenke.lepluslive.merchant.controller;
 import com.jifenke.lepluslive.global.util.LejiaResult;
 import com.jifenke.lepluslive.global.util.MvUtil;
 import com.jifenke.lepluslive.merchant.controller.dto.MerchantDto;
-import com.jifenke.lepluslive.merchant.controller.dto.MerchantUserDto;
 import com.jifenke.lepluslive.merchant.controller.view.MerchantViewExcel;
 import com.jifenke.lepluslive.merchant.domain.criteria.MerchantCriteria;
-import com.jifenke.lepluslive.merchant.domain.entities.*;
-import com.jifenke.lepluslive.merchant.service.*;
+import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
+import com.jifenke.lepluslive.merchant.domain.entities.MerchantScanPayWay;
+import com.jifenke.lepluslive.merchant.domain.entities.MerchantUser;
+import com.jifenke.lepluslive.merchant.service.CityService;
+import com.jifenke.lepluslive.merchant.service.MerchantPosService;
+import com.jifenke.lepluslive.merchant.service.MerchantScanPayWayService;
+import com.jifenke.lepluslive.merchant.service.MerchantService;
+import com.jifenke.lepluslive.merchant.service.MerchantUserService;
+import com.jifenke.lepluslive.merchant.service.MerchantWeiXinUserService;
 import com.jifenke.lepluslive.partner.service.PartnerService;
-
-import com.jifenke.lepluslive.sales.domain.entities.SalesStaff;
 import com.jifenke.lepluslive.sales.service.SalesService;
-import com.jifenke.lepluslive.weixin.service.DictionaryService;
 import com.jifenke.lepluslive.yibao.domain.entities.MerchantUserLedger;
 import com.jifenke.lepluslive.yibao.service.MerchantLedgerService;
 import com.jifenke.lepluslive.yibao.service.MerchantUserLedgerService;
 
-import org.apache.shiro.authz.annotation.RequiresPermissions;
 import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.ui.Model;
@@ -69,22 +71,10 @@ public class MerchantController {
   private MerchantPosService merchantPosService;
 
   @Inject
-  private MerchantRebatePolicyService merchantReBatePolicyService;
-
-  @Inject
   private MerchantUserService merchantUserService;
 
   @Inject
   private MerchantScanPayWayService merchantScanPayWayService;
-
-  @Inject
-  private MerchantSettlementStoreService merchantSettlementStoreService;
-
-  @Inject
-  private MerchantSettlementService merchantSettlementService;
-
-  @Inject
-  private DictionaryService dictionaryService;
 
   @Inject
   private MerchantLedgerService merchantLedgerService;
@@ -117,120 +107,21 @@ public class MerchantController {
     return LejiaResult.ok(list);
   }
 
-
   /**
-   * 创建门店页面  2017/01/10
-   *
-   * @param merchantUserId 商户ID
+   * 创建门店
    */
-  @RequestMapping(value = "/merchant/edit", method = RequestMethod.GET)
-  public ModelAndView goCreateMerchantPage(@RequestParam Long merchantUserId, Model model) {
-    model.addAttribute("merchantUser", merchantUserService.findById(merchantUserId));
-    model.addAttribute("merchantTypes", merchantService.findAllMerchantTypes());
-    model.addAttribute("partners", partnerService.findAllParter());
-    List<SalesStaff> salesStaffList = salesService.findAllSaleStaff();
-    model.addAttribute("sales", salesStaffList);
-    model.addAttribute("rebateStage", dictionaryService.findDictionaryById(50L).getValue());
-    //新加内容 01/10
-    //获取商户所有的商户号
-    List<MerchantSettlement>
-        settlementList =
-        merchantSettlementService.findByMerchantUser(merchantUserId);
-    model.addAttribute("settlementList",
-                       settlementList);
-    if (settlementList.size() == 0) {
-      model.addAttribute("display_show",
-                         false);
-    } else {
-      model.addAttribute("display_show",
-                         true);
-    }
-    //新加易宝 获取商户所有易宝子商户
-    List<MerchantUserLedger>
-        ledgerList =
-        merchantUserLedgerService.findAllByMerchantUser(new MerchantUser(merchantUserId, ""));
-    if (ledgerList == null || ledgerList.size() == 0) {
-      model.addAttribute("display_show_yb", false);
-    } else {
-      model.addAttribute("ledgerList", ledgerList);
-      model.addAttribute("display_show_yb", true);
-    }
-    return MvUtil.go("/merchant/edit");
-  }
-
-  /**
-   * 修改门店页面  2017/01/10
-   *
-   * @param id 门店ID
-   */
-  @RequiresPermissions("merchant:edit")
-  @RequestMapping(value = "/merchant/edit/{id}", method = RequestMethod.GET)
-  public ModelAndView goEditMerchantPage(@PathVariable Long id, Model model) {
-    Merchant merchant = merchantService.findMerchantById(id);
-    model.addAttribute("merchant", merchant);
-    model.addAttribute("merchantTypes", merchantService.findAllMerchantTypes());
-    model.addAttribute("merchantUser", merchant.getMerchantUser());
-    model.addAttribute("partners", partnerService.findAllParter());
-    model.addAttribute("merchantRebatePolicy", merchantReBatePolicyService.findByMerchant(id));
-    SalesStaff salesStaff = merchant.getSalesStaff();
-    model.addAttribute("salesStaff", salesStaff);
-    List<SalesStaff> salesStaffList = salesService.findAllSaleStaff();
-//    salesStaffList.remove(salesStaff);
-    model.addAttribute("sales", salesStaffList);
-    //新加内容 01/10
-    //获取商户所有的商户号
-    List<MerchantSettlement> settlementList = merchantSettlementService
-        .findByMerchantUser(merchant.getMerchantUser().getId());
-    if (merchant.getMerchantUser() != null) {
-      model.addAttribute("settlementList", settlementList);
-    }
-    if (settlementList.size() == 0) {
-      model.addAttribute("display_show",
-                         false);
-    } else {
-      model.addAttribute("display_show",
-                         true);
-    }
-    //获取门店结算方式和使用商户号信息 (没有就创建)
-    MerchantScanPayWay scanPayWay = merchantScanPayWayService.findByMerchantId(id);
-    model.addAttribute("scanPayWay", scanPayWay);
-    model.addAttribute("store", merchantSettlementStoreService.findByMerchantId(id));
-    model.addAttribute("rebateStage", dictionaryService.findDictionaryById(50L).getValue());
-    //新加易宝 获取商户所有易宝子商户
-    List<MerchantUserLedger>
-        ledgerList =
-        merchantUserLedgerService.findAllByMerchantUser(merchant.getMerchantUser());
-    if (ledgerList == null || ledgerList.size() == 0) {
-      model.addAttribute("display_show_yb", false);
-    } else {
-      model.addAttribute("ledgerList", ledgerList);
-      model.addAttribute("display_show_yb", true);
-    }
-    if (scanPayWay.getType() == 3) {
-      model.addAttribute("merchantLedger", merchantLedgerService.findByMerchant(merchant));
-    }
-    return MvUtil.go("/merchant/edit");
-  }
-
   @RequestMapping(value = "/merchant", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
   public LejiaResult createMerchant(@RequestBody MerchantDto merchantDto) {
     Merchant merchant = merchantDto.getMerchant();
     try {
       Merchant dbMerchant = merchantService.createMerchant(merchant);
-      MerchantRebatePolicy policy = merchantDto.getMerchantRebatePolicy();
-      policy.setMerchantId(dbMerchant.getId());
-      merchantReBatePolicyService.saveMerchantRebatePolicy(policy);
-      //新加内容 01/13
-      //保存支付方式和商户号使用信息
+      //保存支付方式
       MerchantScanPayWay scanPayWay = merchantDto.getMerchantScanPayWay();
       scanPayWay.setMerchantId(dbMerchant.getId());
-      MerchantSettlementStore store = merchantDto.getMerchantSettlementStore();
-      store.setMerchantId(dbMerchant.getId());
       merchantScanPayWayService.savePayWay(scanPayWay);
-      merchantSettlementStoreService.saveSettlementStore(store);
-      //新加 如果选择易宝支付，保存门店选择的子商编
+      //如果选择易宝支付，保存门店选择的子商编
       if (scanPayWay.getType() == 3) {
-        merchantLedgerService.saveByMerchant(merchantDto.getMerchantLedger(), merchant);
+        merchantLedgerService.saveByMerchant(merchantDto.getMerchantLedger(), dbMerchant);
       }
     } catch (Exception e) {
       e.printStackTrace();
@@ -239,29 +130,17 @@ public class MerchantController {
     return LejiaResult.build(200, "添加商户成功");
   }
 
+  /**
+   * 修改门店
+   */
   @RequestMapping(value = "/merchant", method = RequestMethod.PUT)
   public LejiaResult editMerchant(@RequestBody MerchantDto merchantDto) {
     Merchant merchant = merchantDto.getMerchant();
-    MerchantUser merchantUser = null;
-    if (merchant.getMerchantUser() != null && merchant.getMerchantUser().getName() != null) {
-      merchantUser =
-          merchantUserService.findMerchantManagerByName(merchant.getMerchantUser().getName());
-    }
     try {
-      merchantService.editMerchant(merchant, merchantUser);
-      MerchantRebatePolicy policy = merchantDto.getMerchantRebatePolicy();
-      if (policy.getId() == null) {
-        policy.setMerchantId(merchant.getId());
-        merchantReBatePolicyService.saveMerchantRebatePolicy(policy);
-      } else {
-        merchantReBatePolicyService.editMerchantRebatePolicy(policy);
-      }
-      //新加内容 01/13
-      //保存支付方式和商户号使用信息
+      merchantService.editMerchant(merchant);
+      //保存支付方式
       MerchantScanPayWay scanPayWay = merchantDto.getMerchantScanPayWay();
-      MerchantSettlementStore store = merchantDto.getMerchantSettlementStore();
       merchantScanPayWayService.savePayWay(scanPayWay);
-      merchantSettlementStoreService.saveSettlementStore(store);
       //新加 如果选择易宝支付，保存门店选择的子商编
       if (scanPayWay.getType() == 3) {
         merchantLedgerService.saveByMerchant(merchantDto.getMerchantLedger(), merchant);
@@ -270,7 +149,7 @@ public class MerchantController {
       e.printStackTrace();
       return LejiaResult.build(500, "修改异常");
     }
-    return LejiaResult.build(200, "修改门店成功", merchantUser.getId());
+    return LejiaResult.build(200, "修改门店成功");
   }
 
   @RequestMapping(value = "/merchant/disable/{id}", method = RequestMethod.GET, produces = MediaType.APPLICATION_JSON_VALUE)
@@ -278,22 +157,6 @@ public class MerchantController {
     merchantService.disableMerchant(id);
 
     return LejiaResult.ok("成功停用商户");
-  }
-
-  /**
-   * fixme:待删除  2017/02/07 转移到merchantUserController
-   */
-  @RequestMapping(value = "/merchant/user/{id}", method = RequestMethod.GET)
-  public ModelAndView goMerchantUserPage(@PathVariable Long id, Model model) {
-    Merchant merchant = merchantService.findMerchantById(id);
-    model.addAttribute("merchant", merchantService.findMerchantById(id));
-    List<MerchantUser>
-        merchantUsers =
-        merchantService.findMerchantUsersByMerchant(merchant);
-    model.addAttribute("merchantUsers", merchantUsers);
-    model.addAttribute("merchantWeiXinUsers",
-                       merchantService.findmerchantWeixinUserByMerchanUsers(merchantUsers));
-    return MvUtil.go("/merchant/merchantUser");
   }
 
   @RequestMapping(value = "/merchant/openStore", method = RequestMethod.POST)
@@ -316,64 +179,12 @@ public class MerchantController {
     return MvUtil.go("/merchant/openStore");
   }
 
-  /**
-   * fixme:待删除  2017/02/09 转移到merchantUserController
-   */
-  @RequestMapping(value = "/merchant/user/{id}", method = RequestMethod.DELETE, produces = MediaType.APPLICATION_JSON_VALUE)
-  public
-  @ResponseBody
-  LejiaResult deleteMerchantUser(@PathVariable Long id) {
-    merchantService.deleteMerchantUser(id);
-    return LejiaResult.ok("成功停用商户");
-  }
-
   @RequestMapping(value = "/merchant/weiXinUser/{id}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
   public
   @ResponseBody
   LejiaResult unBindMerchantWeiXinUser(@PathVariable Long id) {
     merchantWeiXinUserService.unBindMerchantWeiXinUser(id);
     return LejiaResult.ok("成功解绑用户");
-  }
-
-  /**
-   * fixme:待删除  2017/02/09
-   */
-  @RequestMapping(value = "/merchant/user", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-  public
-  @ResponseBody
-  LejiaResult createMerchantUser(@RequestBody MerchantUserDto merchantUserDto) {
-    MerchantUser merchantUser = merchantUserDto.getMerchantUser();
-    Merchant merchant = merchantUserDto.getMerchant();
-    merchantUser.setMerchant(merchant);
-    merchantService.editMerchantUser(merchantUser);
-
-    return LejiaResult.ok("成功创建用户");
-  }
-
-  /**
-   * fixme:待删除  2017/02/09
-   */
-  @RequestMapping(value = "/merchant/user", method = RequestMethod.PUT, produces = MediaType.APPLICATION_JSON_VALUE)
-  public
-  @ResponseBody
-  LejiaResult editMerchantUser(@RequestBody MerchantUserDto merchantUserDto) {
-    MerchantUser merchantUser = merchantUserDto.getMerchantUser();
-    Merchant merchant = merchantUserDto.getMerchant();
-    merchantUser.setMerchant(merchant);
-    merchantService.editMerchantUser(merchantUser);
-
-    return LejiaResult.ok("成功修改用户");
-  }
-
-  /**
-   * fixme:待删除  2017/02/08 转移到merchantUserController
-   */
-  @RequestMapping(value = "/merchant/user/{id}", method = RequestMethod.POST, produces = MediaType.APPLICATION_JSON_VALUE)
-  public
-  @ResponseBody
-  LejiaResult getMerchantUserById(@PathVariable Long id) {
-
-    return LejiaResult.ok(merchantService.getMerchantUserById(id));
   }
 
   @RequestMapping(value = "/merchant/qrCode", method = RequestMethod.GET)
@@ -429,6 +240,62 @@ public class MerchantController {
     MerchantUser merchantUser = merchantUserService.findById(id);
     List<Map<String, Object>> list = merchantService.findByMerchantUser(merchantUser);
     return LejiaResult.ok(list);
+  }
+
+  /**
+   * 创建或编辑门店页面  2017/08/19
+   *
+   * @param id   商户ID或门店ID(type=0:商户ID|type=1:门店ID)
+   * @param type //0=创建|1=修改
+   */
+  @RequestMapping(value = "/merchant/edit", method = RequestMethod.GET)
+  public ModelAndView editPage(@RequestParam Long id, @RequestParam Integer type, Model model) {
+
+    model.addAttribute("merchantTypes", merchantService.findAllMerchantTypes());
+    model.addAttribute("sales", salesService.findAllSaleStaff());
+
+    if (type == 0) { //创建门店
+      model.addAttribute("createOrEdit", 0);
+
+      MerchantUser merchantUser = merchantUserService.findById(id);
+      model.addAttribute("merchantUser", merchantUser);
+      //获取商户所有易宝子商户
+      List<MerchantUserLedger>
+          ledgerList =
+          merchantUserLedgerService.findAllByMerchantUser(merchantUser);
+      if (ledgerList == null || ledgerList.size() == 0) {
+        model.addAttribute("display_show_yb", false);
+      } else {
+        model.addAttribute("ledgerList", ledgerList);
+        model.addAttribute("display_show_yb", true);
+      }
+
+    } else {//编辑门店
+      model.addAttribute("createOrEdit", 1);
+
+      Merchant merchant = merchantService.findMerchantById(id);
+      model.addAttribute("merchant", merchant);
+      model.addAttribute("merchantUser", merchant.getMerchantUser());
+      model.addAttribute("salesStaff", merchant.getSalesStaff());
+      //获取门店结算方式 (没有就创建)
+      MerchantScanPayWay scanPayWay = merchantScanPayWayService.findByMerchantId(id);
+      model.addAttribute("scanPayWay", scanPayWay);
+      //新加易宝 获取商户所有易宝子商户
+      List<MerchantUserLedger>
+          ledgerList =
+          merchantUserLedgerService.findAllByMerchantUser(merchant.getMerchantUser());
+      if (ledgerList == null || ledgerList.size() == 0) {
+        model.addAttribute("display_show_yb", false);
+      } else {
+        model.addAttribute("ledgerList", ledgerList);
+        model.addAttribute("display_show_yb", true);
+      }
+      if (scanPayWay.getType() == 3) {
+        model.addAttribute("merchantLedger", merchantLedgerService.findByMerchant(merchant));
+      }
+    }
+
+    return MvUtil.go("/merchant/edit");
   }
 
 }

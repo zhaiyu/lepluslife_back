@@ -2,10 +2,7 @@ package com.jifenke.lepluslive.merchant.domain.entities;
 
 import com.jifenke.lepluslive.global.util.MvUtil;
 import com.jifenke.lepluslive.partner.domain.entities.Partner;
-
 import com.jifenke.lepluslive.sales.domain.entities.SalesStaff;
-import org.hibernate.annotations.Cache;
-import org.hibernate.annotations.CacheConcurrencyStrategy;
 
 import java.math.BigDecimal;
 import java.util.Date;
@@ -17,7 +14,6 @@ import javax.persistence.FetchType;
 import javax.persistence.GeneratedValue;
 import javax.persistence.GenerationType;
 import javax.persistence.Id;
-import javax.persistence.JoinColumn;
 import javax.persistence.ManyToOne;
 import javax.persistence.OneToMany;
 import javax.persistence.OneToOne;
@@ -60,7 +56,7 @@ public class Merchant {
 
   private String phoneNumber; //服务电话
 
-  private Integer partnership; //合作关系 0普通商户  1 联盟商户 2 虚拟商户 未天使合伙人创建默认自带商户
+  private Integer partnership; //合作关系 0普通商户  1 联盟商户 2 虚拟商户 为天使合伙人创建默认自带商户
 
   private Double lng = 0.0;
 
@@ -78,11 +74,11 @@ public class Merchant {
 
   private Long userLimit; //会员绑定上线
 
-  private BigDecimal ljCommission; //乐加佣金 单位百分比
+  private BigDecimal ljCommission; //佣金订单费率 如果是普通协议 该值 = ljBrokerage
 
-  private BigDecimal ljBrokerage = new BigDecimal(0); //只有联盟商户才不为空 , 代表非乐加会员消费时,收取的手续费
+  private BigDecimal ljBrokerage = new BigDecimal(0); //普通订单费率
 
-  private BigDecimal memberCommission = new BigDecimal(0); //只有联盟商户才不为空 , 代表会员在绑定商户消费时的手续费
+  private BigDecimal memberCommission = new BigDecimal(0); //todo:待删除
 
   private BigDecimal scoreARebate = new BigDecimal(0); //返a积分比 单位百分比  【导流订单红包】
 
@@ -127,9 +123,9 @@ public class Merchant {
   }
 
   @OneToMany(mappedBy = "merchant", fetch = FetchType.LAZY)
-  private List<MerchantProtocol> merchantProtocols;
+  private List<MerchantProtocol> merchantProtocols;   //todo:暂不用
 
-  private Integer cycle;  //结算周期  1 一个工作日 2 2个工作日
+  private Integer cycle = 1;  //结算周期  1 一个工作日 2 2个工作日  todo:什么用？？？
 
   private String merchantPhone; //绑定电话
 
