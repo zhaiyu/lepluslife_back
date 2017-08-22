@@ -284,7 +284,9 @@ public class ReceiptService {
     String merchantShop = order.getMerchant().getName();
     String merchantNumber = order.getMerchant().getMerchantSid();
     String orderNumer = order.getOrderSid();
-    String tradeTime = sdf.format(order.getCompleteDate());
+    String
+        tradeTime =
+        sdf.format(order.getCompleteDate() == null ? new Date() : order.getCompleteDate());
 
     String
         payAmount =
