@@ -197,8 +197,13 @@ public class ReceiptService {
             receipt.setType(2);
             ScanCodeOrder scanCodeOrder = scanCodeOrderService.findByOrderSid(orderSid);
             if (scanCodeOrder == null) {
-              Thread.sleep(3000);
-              scanCodeOrder = scanCodeOrderService.findByOrderSid(orderSid);
+              for (int i = 0; i < 10; i++) {
+                Thread.sleep(2000);
+                scanCodeOrder = scanCodeOrderService.findByOrderSid(orderSid);
+                if (scanCodeOrder != null) {
+                  break;
+                }
+              }
             }
             sb = createReceiptContent(scanCodeOrder, printer);
           } else {
