@@ -1,7 +1,6 @@
 package com.jifenke.lepluslive.job;
 
-import com.jifenke.lepluslive.order.service.FinanicalStatisticService;
-import com.jifenke.lepluslive.order.service.OffLineOrderService;
+import com.jifenke.lepluslive.groupon.service.GrouponStatisticService;
 
 import org.quartz.Job;
 import org.quartz.JobExecutionContext;
@@ -17,32 +16,28 @@ import java.util.Date;
 import java.util.List;
 
 /**
- * Created by wcg on 16/5/5.
+ * 团购结算统计(每日早上5:00统计) Created by zhangwen on 17/08/23.
  */
 @Component
-public class OffLineOrderJob implements Job {
+public class GrouponStatisticJob implements Job {
 
-  private static final Logger log = LoggerFactory.getLogger(OffLineOrderJob.class);
-
+  private static final Logger log = LoggerFactory.getLogger(GrouponStatisticJob.class);
 
   @Override
   public void execute(JobExecutionContext context) throws JobExecutionException {
+
     ApplicationContext
         applicationContext = null;
     try {
-
       applicationContext =
           (ApplicationContext) context.getScheduler().getContext().get("applicationContextKey");
     } catch (SchedulerException e) {
       log.error("jobExecutionContext.getScheduler().getContext() error!", e);
       throw new RuntimeException(e);
     }
-    OffLineOrderService offLineOrderService =
-        (OffLineOrderService) applicationContext.getBean("offLineOrderService");
-    FinanicalStatisticService
-        finanicalStatisticService =
-        (FinanicalStatisticService) applicationContext.getBean("finanicalStatisticService");
-
+    GrouponStatisticService
+        grouponStatisticService =
+        (GrouponStatisticService) applicationContext.getBean("grouponStatisticService");
     Calendar calendar = Calendar.getInstance();
     calendar.setTime(new Date());
     calendar.add(Calendar.DAY_OF_MONTH, -1);
@@ -56,13 +51,13 @@ public class OffLineOrderJob implements Job {
 
     Date end = calendar.getTime();
 
-    List<Object[]> objects = offLineOrderService.countTransferMoney(start, end);
+    List<Object[]> objects = grouponStatisticService.statistic(start, end);
 
-    for (Object[] object : objects) {
+    for (Object[] obj : objects) {
       try {
-        finanicalStatisticService.createFinancialstatistic(object,end);
+        grouponStatisticService.createStatistic(obj, end);
       } catch (Exception e) {
-        log.error("商户ID为" + object[0] + "的商户统计出现问题");
+        log.error("门店ID为" + obj[1] + "的团购统计出现问题");
       }
     }
   }

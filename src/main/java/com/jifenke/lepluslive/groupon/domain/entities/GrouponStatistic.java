@@ -3,8 +3,16 @@ package com.jifenke.lepluslive.groupon.domain.entities;
 import com.jifenke.lepluslive.global.util.MvUtil;
 import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
 
-import javax.persistence.*;
 import java.util.Date;
+
+import javax.persistence.Column;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
+import javax.persistence.Version;
 
 /**
  * Created by wcg on 2017/6/27.
@@ -28,17 +36,17 @@ public class GrouponStatistic {
 
   private Long transferMoney; //转账金额
 
-  private Date balanceDate = new Date(); //结算日期
+  private Date balanceDate; //结算日期
 
   private Date completeDate;
 
   @Column(unique = true)
-  private String sid = MvUtil.getRandomNumber(12);
+  private String sid = MvUtil.getOrderNumber(6);
 
   @Version
   private Long version = 0L;
 
-  private Integer state = 0;
+  private Integer state = 0;  //0=待结算|1=已结算|2=已挂账待结算
 
   public Long getTotalMoney() {
     return totalMoney;

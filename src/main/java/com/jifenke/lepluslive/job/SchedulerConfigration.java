@@ -143,6 +143,29 @@ public class SchedulerConfigration {
     return tigger;
   }
 
+  /**
+   * 团购结算统计(每日早上5:00统计) Created by zhangwen on 17/08/23.
+   */
+  @Bean(name = "grouponStatisticDetail")
+  public JobDetailFactoryBean grouponStatisticDetail() {
+    JobDetailFactoryBean bean = new JobDetailFactoryBean();
+    bean.setJobClass(GrouponStatisticJob.class);
+    bean.setDurability(false);
+    return bean;
+  }
+
+  @Bean(name = "grouponStatisticTrigger")
+  public CronTriggerFactoryBean grouponStatisticTriggerBean() {
+    CronTriggerFactoryBean tigger = new CronTriggerFactoryBean();
+    tigger.setJobDetail(grouponStatisticDetail().getObject());
+    try {
+      tigger.setCronExpression("0 0 5 * * ? ");//每天早上5:00点执行
+    } catch (Exception e) {
+      e.printStackTrace();
+    }
+    return tigger;
+  }
+
   @Bean(name = "wxRefreshDetail")
   public JobDetailFactoryBean wxRefreshDetail() {
     JobDetailFactoryBean bean = new JobDetailFactoryBean();
@@ -250,7 +273,8 @@ public class SchedulerConfigration {
           socreDailyTotalTriggerBean().getObject(),
           ybLedgerStatementTriggerBean().getObject(),
           ybStoreStatementTriggerBean().getObject(),
-          ybTimingTransferTriggerBean().getObject()
+          ybTimingTransferTriggerBean().getObject(),
+          grouponStatisticTriggerBean().getObject()
       );
       bean.setSchedulerName("orderConfrim");
     }
