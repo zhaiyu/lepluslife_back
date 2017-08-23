@@ -2,9 +2,7 @@ package com.jifenke.lepluslive.groupon.service;
 
 import com.jifenke.lepluslive.groupon.domain.entities.GrouponStatistic;
 import com.jifenke.lepluslive.groupon.repository.GrouponStatisticRepository;
-import com.jifenke.lepluslive.merchant.domain.entities.BankName;
 import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
-import com.jifenke.lepluslive.merchant.service.MerchantService;
 
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
@@ -30,11 +28,7 @@ public class GrouponStatisticService {
   @Inject
   private GrouponStatisticRepository grouponStatisticRepository;
 
-  @Inject
-  private MerchantService merchantService;
-
-  @Transactional(propagation = Propagation.REQUIRED, readOnly = false)
-  public void statistic(Date start, Date end) {
+  public List<Object[]> statistic(Date start, Date end) {
     SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     String starts = sdf.format(start);
     String ends = sdf.format(end);
@@ -46,17 +40,21 @@ public class GrouponStatisticService {
     sql.append(ends);
     sql.append("' group by merchant_id");
     List<Object[]> resultList = entityManager.createNativeQuery(sql.toString()).getResultList();
-    for (Object[] obj : resultList) {
-      Merchant merchant = merchantService.findMerchantById(Long.parseLong(obj[1].toString()));
-      GrouponStatistic grouponStatistic = new GrouponStatistic();
-      grouponStatistic.setCheck(Long.parseLong(obj[2].toString()));
-      grouponStatistic.setTransferMoney(Long.parseLong(obj[0].toString()));
-      grouponStatistic.setBalanceDate(end);
-      grouponStatistic.setCommission(Long.parseLong(obj[4].toString()));
-      grouponStatistic.setTotalMoney(Long.parseLong(obj[3].toString()));
-      grouponStatisticRepository.save(grouponStatistic);
-    }
+    return resultList;
+  }
 
+  @Transactional(propagation = Propagation.REQUIRED)
+  public void createStatistic(Object[] obj, Date end) {
+    Merchant merchant = new Merchant();
+    merchant.setId(Long.parseLong(obj[1].toString()));
+    GrouponStatistic grouponStatistic = new GrouponStatistic();
+    grouponStatistic.setMerchant(merchant);
+    grouponStatistic.setCheck(Long.parseLong(obj[2].toString()));
+    grouponStatistic.setTransferMoney(Long.parseLong(obj[0].toString()));
+    grouponStatistic.setBalanceDate(end);
+    grouponStatistic.setCommission(Long.parseLong(obj[4].toString()));
+    grouponStatistic.setTotalMoney(Long.parseLong(obj[3].toString()));
+    grouponStatisticRepository.save(grouponStatistic);
   }
 
 

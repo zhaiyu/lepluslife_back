@@ -196,10 +196,18 @@ public class ReceiptService {
           if ("scan".equals(orderType)) {//1=乐加|2=通道
             receipt.setType(2);
             ScanCodeOrder scanCodeOrder = scanCodeOrderService.findByOrderSid(orderSid);
+            if (scanCodeOrder == null) {
+              Thread.sleep(3000);
+              scanCodeOrder = scanCodeOrderService.findByOrderSid(orderSid);
+            }
             sb = createReceiptContent(scanCodeOrder, printer);
           } else {
             receipt.setType(1);
             OffLineOrder offLineOrder = offLineOrderRepository.findOneByOrderSid(orderSid);
+            if (offLineOrder == null) {
+              Thread.sleep(2000);
+              offLineOrder = offLineOrderRepository.findOneByOrderSid(orderSid);
+            }
             sb = createReceiptContent(offLineOrder, printer);
           }
           receipt.setCompleteDate(new Date());

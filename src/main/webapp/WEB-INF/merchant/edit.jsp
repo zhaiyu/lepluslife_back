@@ -323,10 +323,10 @@
         if (createOrEdit === 1) { //修改
             merchant.id = '${merchant.id}';
             merchantScanPayWay.id = '${scanPayWay.id}';
-            partner.id = '${merchantUser.partner.id}';
-            merchant.partner = partner;
             merchantBank.id = '${merchant.merchantBank.id}';
         }
+        partner.id = '${merchantUser.partner.id}';
+        merchant.partner = partner;
         merchantUser.id = ${merchantUser.id};
         merchant.merchantUser = merchantUser;
         //所属销售
