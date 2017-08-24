@@ -11,6 +11,8 @@ import com.jifenke.lepluslive.groupon.repository.GrouponMerchantRepository;
 import com.jifenke.lepluslive.groupon.repository.GrouponProductDetailRepository;
 import com.jifenke.lepluslive.groupon.repository.GrouponProductRepository;
 import com.jifenke.lepluslive.groupon.repository.GrouponScrollPictureRepository;
+import com.jifenke.lepluslive.groupon.util.GrouponParameter;
+import com.jifenke.lepluslive.groupon.util.MathUtil;
 import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantUser;
 import com.jifenke.lepluslive.merchant.repository.MerchantRepository;
@@ -127,6 +129,15 @@ public class GrouponProductService {
             product.setSid(MvUtil.getOrderNumber());
             MerchantUser merchantUser = merchantUserRepository.findOne(product.getMerchantUser().getId());
             product.setMerchantUser(merchantUser);
+            //计算分润和返金币鼓励金
+            GrouponParameter parameter = MathUtil.share(product.getLjCommission());
+            product.setRebateScorea(parameter.getScoreA());
+            product.setRebateScorec(parameter.getScoreC());
+            product.setShareToLockMerchant(parameter.getLockMerchant());
+            product.setShareToLockPartner(parameter.getLockPartner());
+            product.setShareToLockPartnerManager(parameter.getLockPartnerManager());
+            product.setShareToTradePartner(parameter.getTradePartner());
+            product.setShareToTradePartnerManager(parameter.getTradePartnerManager());
             grouponProductRepository.save(product);
             //   保存产品门店对应关系
             List<Merchant> merchantList = grouponProductDto.getMerchantList();
@@ -185,21 +196,6 @@ public class GrouponProductService {
             if(product.getCharge()!=null) {
                 existProduct.setCharge(product.getCharge());
             }
-            if(product.getShareToLockMerchant()!=null) {
-                existProduct.setShareToLockMerchant(product.getShareToLockMerchant());
-            }
-            if(product.getShareToLockPartner()!=null) {
-                existProduct.setShareToLockPartner(product.getShareToLockPartner());
-            }
-            if(product.getShareToLockPartnerManager()!=null) {
-                existProduct.setShareToLockPartnerManager(product.getShareToLockPartnerManager());
-            }
-            if(product.getShareToTradePartner()!=null) {
-                existProduct.setShareToTradePartner(product.getShareToTradePartner());
-            }
-            if(product.getShareToTradePartnerManager()!=null) {
-                existProduct.setShareToTradePartnerManager(product.getShareToTradePartnerManager());
-            }
             if(product.getDescription()!=null) {
                 existProduct.setDescription(product.getDescription());
             }
@@ -219,7 +215,16 @@ public class GrouponProductService {
                 existProduct.setOriginPrice(product.getOriginPrice());
             }
             if(product.getLjCommission()!=null) {
-                existProduct.setLjCommission(product.getLjCommission());
+              existProduct.setLjCommission(product.getLjCommission());
+              //计算分润和返金币鼓励金
+              GrouponParameter parameter = MathUtil.share(product.getLjCommission());
+              existProduct.setRebateScorea(parameter.getScoreA());
+              existProduct.setRebateScorec(parameter.getScoreC());
+              existProduct.setShareToLockMerchant(parameter.getLockMerchant());
+              existProduct.setShareToLockPartner(parameter.getLockPartner());
+              existProduct.setShareToLockPartnerManager(parameter.getLockPartnerManager());
+              existProduct.setShareToTradePartner(parameter.getTradePartner());
+              existProduct.setShareToTradePartnerManager(parameter.getTradePartnerManager());
             }
             if(product.getDisplayPicture()!=null) {
                 existProduct.setDisplayPicture(product.getDisplayPicture());
@@ -232,12 +237,6 @@ public class GrouponProductService {
             }
             if(product.getName()!=null) {
                 existProduct.setName(product.getName());
-            }
-            if(product.getRebateScorea()!=null) {
-                existProduct.setRebateScorea(product.getRebateScorea());
-            }
-            if(product.getRebateScorec()!=null) {
-                existProduct.setRebateScorec(product.getRebateScorec());
             }
             if(product.getRefundType()!=null) {
                 existProduct.setRefundType(product.getRefundType());

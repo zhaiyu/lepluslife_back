@@ -154,13 +154,15 @@
                 <div class="Mod-2">团购名称</div>
                 <div class="Mod-5">
                     <input id="productId" type="hidden" value="${product.id}"/>
-                    <input id="productName" type="text" class="create_edit-input" value="${product.name}"/>
+                    <input id="productName" type="text" class="create_edit-input"
+                           value="${product.name}"/>
                 </div>
             </div>
             <div class="MODInput_row">
                 <div class="Mod-2">简介</div>
                 <div class="Mod-5">
-                    <input id="description" type="text" class="create_edit-input" value="${product.description}"/>
+                    <input id="description" type="text" class="create_edit-input"
+                           value="${product.description}"/>
                 </div>
             </div>
             <div class="MODInput_row">
@@ -168,9 +170,11 @@
                 <div class="Mod-5">
                     <div class="listImg fixClear">
                         <div>
-                            <div><img src="${product.displayPicture}" alt="" id="displayPicture"></div>
+                            <div><img src="${product.displayPicture}" alt="" id="displayPicture">
+                            </div>
                             <div class="update">点击上传</div>
-                            <div><input id="displayPictureUpload" class="form-control" name="file" type="file"
+                            <div><input id="displayPictureUpload" class="form-control" name="file"
+                                        type="file"
                                         data-url="/manage/file/saveImage"></div>
                         </div>
                     </div>
@@ -184,11 +188,14 @@
                             <c:forEach var="scroll" items="${scrollPictures}" step="1">
                                 <div>
                                     <div>
-                                        <img id="scrollPicture${scroll.sid}" src="${scroll.picture}" alt="">
-                                        <input id="scrollPictureId${scroll.sid}" type="hidden" value="${scroll.id}"/>
+                                        <img id="scrollPicture${scroll.sid}" src="${scroll.picture}"
+                                             alt="">
+                                        <input id="scrollPictureId${scroll.sid}" type="hidden"
+                                               value="${scroll.id}"/>
                                     </div>
                                     <div id="scrollUpdate${scroll.sid}" class="update">点击上传</div>
-                                    <div><input id="scrollPictureUpload${scroll.sid}" class="form-control" name="file"
+                                    <div><input id="scrollPictureUpload${scroll.sid}"
+                                                class="form-control" name="file"
                                                 type="file"
                                                 data-url="/manage/file/saveImage"></div>
                                 </div>
@@ -198,7 +205,8 @@
                             <div>
                                 <div><img id="scrollPicture1" src="" alt=""></div>
                                 <div id="scrollUpdate1" class="update">点击上传</div>
-                                <div><input id="scrollPictureUpload1" class="form-control" name="file" type="file"
+                                <div><input id="scrollPictureUpload1" class="form-control"
+                                            name="file" type="file"
                                             data-url="/manage/file/saveImage"></div>
                             </div>
                         </c:if>
@@ -216,11 +224,14 @@
                             <c:forEach var="detail" items="${productDetails}" step="1">
                                 <div>
                                     <div>
-                                        <img id="detailPicture${detail.sid}" src="${detail.picture}" alt="">
-                                        <input id="detailPictureId${detail.sid}" type="hidden" value="${detail.id}"/>
+                                        <img id="detailPicture${detail.sid}" src="${detail.picture}"
+                                             alt="">
+                                        <input id="detailPictureId${detail.sid}" type="hidden"
+                                               value="${detail.id}"/>
                                     </div>
                                     <div id="detailUpdate${detail.sid}" class="update">点击上传</div>
-                                    <div><input id="detailPictureUpload${detail.sid}" class="form-control" name="file"
+                                    <div><input id="detailPictureUpload${detail.sid}"
+                                                class="form-control" name="file"
                                                 type="file"
                                                 data-url="/manage/file/saveImage"></div>
                                 </div>
@@ -230,7 +241,8 @@
                             <div>
                                 <div><img id="detailPicture1" src="" alt=""></div>
                                 <div id="detailUpdate1" class="update">点击上传</div>
-                                <div><input id="detailPictureUpload1" class="form-control" name="file" type="file"
+                                <div><input id="detailPictureUpload1" class="form-control"
+                                            name="file" type="file"
                                             data-url="/manage/file/saveImage"></div>
                             </div>
                         </c:if>
@@ -253,7 +265,8 @@
                 <div class="Mod-5 checkArea fixClear">
                     <c:if test="${product!=null}">
                         <div>
-                            <input type="checkbox" class="allCheck" value="0"/><span>全部选择</span><br/>
+                            <input type="checkbox" class="allCheck"
+                                   value="0"/><span>全部选择</span><br/>
                             <c:forEach var="gm" items="${merchants}" step="1">
                                 <input type="checkbox" name="merchant" value="${gm.merchant.id}"
                                        checked="true"/><span>${gm.merchant.name}</span><br/>
@@ -265,7 +278,9 @@
             <div class="MODInput_row create_edit-contractType">
                 <div class="Mod-2">是否需预约</div>
                 <div class="Mod-5 ModRadio2 create_edit-typeChose xyy">
-                    <div class="ModRadius-left ModRadius2_active" onclick="changeReservationType(0)">免预约</div>
+                    <div class="ModRadius-left ModRadius2_active"
+                         onclick="changeReservationType(0)">免预约
+                    </div>
                     <div class="ModRadius-right" onclick="changeReservationType(1)">需要预约</div>
                 </div>
             </div>
@@ -278,15 +293,19 @@
             </div>
             <div class="MODInput_row create_edit-contractType">
                 <div class="Mod-2">退款设定</div>
-                <div class="Mod-5 ModRadio2 create_edit-typeChose">
-                    <div class="ModRadius-left ModRadius2_active" onclick="changeRefundType(0)">随时可退</div>
+                <div class="Mod-5 ModRadio2 create_edit-typeChose changeRefundType">
+                    <div class="ModRadius-left ModRadius2_active" onclick="changeRefundType(0)">
+                        随时可退
+                    </div>
                     <div class="ModRadius-right" onclick="changeRefundType(1)">不能退款</div>
                 </div>
             </div>
             <div class="MODInput_row create_edit-contractType">
                 <div class="Mod-2">有效期</div>
                 <div class="Mod-5 ModRadio2 create_edit-typeChose setrq">
-                    <div class="ModRadius-left ModRadius2_active" onclick="changeValidityType(0)">相对日期</div>
+                    <div class="ModRadius-left ModRadius2_active" onclick="changeValidityType(0)">
+                        相对日期
+                    </div>
                     <div class="ModRadius-right" onclick="changeValidityType(1)">绝对日期</div>
                 </div>
             </div>
@@ -303,7 +322,8 @@
                     <%--<input id="validity2" style="width: 20%" type="text" value="${product.validity}"><span>前使用（填写方式如：2017-1-1）</span>--%>
                     <div id="date-end" class="form-control">
                         <i class="glyphicon glyphicon-calendar fa fa-calendar"></i>
-                        <span id="validity2"><c:if test="${product.validityType==1}">${product.validity}</c:if></span>
+                        <span id="validity2"><c:if
+                                test="${product.validityType==1}">${product.validity}</c:if></span>
                         <b class="caret"></b>
                     </div>
                 </div>
@@ -315,7 +335,8 @@
                         <div>
                             <div><img id="instruction" src="${product.instruction}" alt=""></div>
                             <div class="update">点击上传</div>
-                            <div><input id="instructionUpload" class="form-control" name="file" type="file"
+                            <div><input id="instructionUpload" class="form-control" name="file"
+                                        type="file"
                                         data-url="/manage/file/saveImage"></div>
                         </div>
                     </div>
@@ -326,9 +347,11 @@
                 <div class="Mod-5">
                     <div class="listImg fixClear">
                         <div>
-                            <div><img id="explainPicture" src="${product.explainPicture}" alt=""></div>
+                            <div><img id="explainPicture" src="${product.explainPicture}" alt="">
+                            </div>
                             <div class="update">点击上传</div>
-                            <div><input id="explainPictureUpload" class="form-control" name="file" type="file"
+                            <div><input id="explainPictureUpload" class="form-control" name="file"
+                                        type="file"
                                         data-url="/manage/file/saveImage"></div>
                         </div>
                     </div>
@@ -351,13 +374,15 @@
             <div class="MODInput_row">
                 <div class="Mod-2">普通库存</div>
                 <div class="Mod-5">
-                    <input id="normalStorage" type="number" class="create_edit-input" value="${product.normalStorage}"/>
+                    <input id="normalStorage" type="number" class="create_edit-input"
+                           value="${product.normalStorage}"/>
                 </div>
             </div>
             <div class="MODInput_row">
                 <div class="Mod-2">乐+团购价</div>
                 <div class="Mod-5">
-                    <input id="ljPrice" type="number" class="create_edit-input" value="${product.ljPrice/100.0}"/>
+                    <input id="ljPrice" type="number" class="create_edit-input"
+                           value="${product.ljPrice/100.0}"/>
                 </div>
             </div>
             <div class="MODInput_row">
@@ -370,68 +395,23 @@
             <div class="MODInput_row">
                 <div class="Mod-2">普通手续费</div>
                 <div class="Mod-5">
-                    <input id="charge" type="number" class="create_edit-input" value="${product.charge/100.0}"/>
-                </div>
-            </div>
-            <div class="MODInput_row">
-                <div class="Mod-2">送鼓励金</div>
-                <div class="Mod-5">
-                    <input id="rebateScorea" type="number" class="create_edit-input"
-                           value="${product.rebateScorea/100.0}"/>
-                </div>
-            </div>
-            <div class="MODInput_row">
-                <div class="Mod-2">送金币</div>
-                <div class="Mod-5">
-                    <input id="rebateScorec" type="number" class="create_edit-input"
-                           value="${product.rebateScorec/100.0}"/>
-                </div>
-            </div>
-            <div class="MODInput_row">
-                <div class="Mod-2">会员所在门店分润</div>
-                <div class="Mod-5">
-                    <input id="shareToLockMerchant" type="number" class="create_edit-input"
-                           value="${product.shareToLockMerchant/100.0}"/>
-                </div>
-            </div>
-            <div class="MODInput_row">
-                <div class="Mod-2">会员锁定天使合伙人分润</div>
-                <div class="Mod-5">
-                    <input id="shareToLockPartner" type="number" class="create_edit-input"
-                           value="${product.shareToLockPartner/100.0}"/>
-                </div>
-            </div>
-            <div class="MODInput_row">
-                <div class="Mod-2">会员锁定城市合伙人分润</div>
-                <div class="Mod-5">
-                    <input id="shareToLockPartnerManager" type="number" class="create_edit-input"
-                           value="${product.shareToLockPartnerManager/100.0}"/>
-                </div>
-            </div>
-            <div class="MODInput_row">
-                <div class="Mod-2">核销门店天使合伙人分润</div>
-                <div class="Mod-5">
-                    <input id="shareToTradePartner" type="number" class="create_edit-input"
-                           value="${product.shareToTradePartner/100.0}"/>
-                </div>
-            </div>
-            <div class="MODInput_row">
-                <div class="Mod-2">核销门店城市合伙人分润</div>
-                <div class="Mod-5">
-                    <input id="shareToTradePartnerManager" type="number" class="create_edit-input"
-                           value="${product.shareToTradePartnerManager/100.0}"/>
+                    <input id="charge" type="number" class="create_edit-input"
+                           value="${product.charge/100.0}"/>
                 </div>
             </div>
             <div class="MODInput_row">
                 <div class="Mod-2">乐+库存</div>
                 <div class="Mod-5">
-                    <input id="ljStorage" type="number" class="create_edit-input" value="${product.ljStorage}"/>
+                    <input id="ljStorage" type="number" class="create_edit-input"
+                           value="${product.ljStorage}"/>
                 </div>
             </div>
             <div class="MODInput_row ModButtonMarginDown">
                 <div class="Mod-2"></div>
                 <div class="Mod-5">
-                    <button class="ModButton ModButton_ordinary ModRadius" onclick="saveOrUpdate()">保存信息</button>
+                    <button class="ModButton ModButton_ordinary ModRadius" onclick="saveOrUpdate()">
+                        保存信息
+                    </button>
                 </div>
             </div>
         </div>
@@ -446,9 +426,30 @@
 <script>
     //    set
     var HtmlType = 0;       //  页面类型：创建页面=0 ; 编辑页面=1;
-    var refundType = "${product.refundType}";      //  0 随时退 1 不可退
-    var validityType = "${product.validityType}";     //  有效期类型 0 相对日期 1 绝对日期
-    var reservationType = "${product.reservation}";         // 0 不需要预约
+    var refundType = 0;      //  0 随时退 1 不可退
+    var validityType = 0;     //  有效期类型 0 相对日期 1 绝对日期
+    var reservationType = 0;         // 0 不需要预约
+    //  模糊检索商户
+    loadMerchantUser();
+    if (${product != null}) {
+        if (${product.refundType==1}) {
+            refundType = 1;
+            $(".changeRefundType > div").removeClass("ModRadius2_active");
+            $(".changeRefundType .ModRadius-right").addClass("ModRadius2_active");
+        }
+        if (${product.validityType==1}) {
+            validityType = 1;
+            $(".setrq > div").removeClass("ModRadius2_active");
+            $(".setrq .ModRadius-right").addClass("ModRadius2_active");
+        }
+        if (${product.reservation==1}) {
+            reservationType = 1;
+            $(".xyy > div").removeClass("ModRadius2_active");
+            $(".xyy .ModRadius-right").addClass("ModRadius2_active");
+        }
+        $("#selMcu").val(${product.merchantUser.id});
+    }
+
     var grouponProductDto = {};
     var grouponProduct = {};
     var scrollNum = "${detailSize==null?1:detailSize}";       // 轮播图数量
@@ -460,8 +461,7 @@
         $(this).parent().children().removeClass("ModRadius2_active");
         $(this).addClass("ModRadius2_active");
     });
-    //  模糊检索商户
-    loadMerchantUser();
+
     //    图片上传
     bindFileUpload("displayPictureUpload", "displayPicture")
     bindFileUpload("explainPictureUpload", "explainPicture")
@@ -485,19 +485,19 @@
     }
     function bindFileUpload(pictureUpload, picture) {
         $('#' + pictureUpload).fileupload({
-            dataType: 'json',
-            maxFileSize: 5000000,
-            acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
-            add: function (e, data) {
-                data.submit();
-            },
-            done: function (e, data) {
-                var resp = data.result;
-                $('#' + picture).attr('src',
-                        '${ossImageReadRoot}/'
-                        + resp.data);
-            }
-        });
+                                              dataType: 'json',
+                                              maxFileSize: 5000000,
+                                              acceptFileTypes: /(\.|\/)(gif|jpe?g|png)$/i,
+                                              add: function (e, data) {
+                                                  data.submit();
+                                              },
+                                              done: function (e, data) {
+                                                  var resp = data.result;
+                                                  $('#' + picture).attr('src',
+                                                                        '${ossImageReadRoot}/'
+                                                                        + resp.data);
+                                              }
+                                          });
     }
     //保留2位小数
     $(".create_edit-for2").blur(function () {
@@ -526,13 +526,17 @@
         var btn = "scrollUpdate" + scrollNum;
         var imgDiv = $("<div></div>")
         //               .append($("<input>").attr("type", "hidden").attr("value", "").attr("id", currId).attr("style", "margin:5px;"))
-                .append(
-                        $("<div></div>").append($("<img>").attr("id", picture))
-                ).append(
-                        $("<div></div>").attr("id", btn).html("点击上传")
-                ).append(
-                        $("<div></div>").append($("<input>").attr("id", pictureUpload).attr("name", "file").attr("type", "file").attr("class", "form-control").attr("data-url", "/manage/file/saveImage"))
-                );
+            .append(
+                $("<div></div>").append($("<img>").attr("id", picture))
+            ).append(
+                $("<div></div>").attr("id", btn).html("点击上传")
+            ).append(
+                $("<div></div>").append(
+                    $("<input>").attr("id", pictureUpload).attr("name", "file").attr("type",
+                                                                                     "file").attr(
+                        "class", "form-control").attr("data-url", "/manage/file/saveImage"))
+            );
+
         function delImg(e) {
             $(e).parent().remove();
         }
@@ -550,13 +554,16 @@
         var btn = "detailUpdate" + detailNum;
         var imgDiv = $("<div></div>")
         //                        .append($("<input>").attr("type", "hidden").attr("value", "").attr("id", currId).attr("style", "margin:5px;"))
-                .append(
-                        $("<div></div>").append($("<img>").attr("id", picture))
-                ).append(
-                        $("<div></div>").attr("id", btn).html("点击上传")
-                ).append(
-                        $("<div></div>").append($("<input>").attr("id", pictureUpload).attr("name", "file").attr("type", "file").attr("class", "form-control").attr("data-url", "/manage/file/saveImage"))
-                );
+            .append(
+                $("<div></div>").append($("<img>").attr("id", picture))
+            ).append(
+                $("<div></div>").attr("id", btn).html("点击上传")
+            ).append(
+                $("<div></div>").append(
+                    $("<input>").attr("id", pictureUpload).attr("name", "file").attr("type",
+                                                                                     "file").attr(
+                        "class", "form-control").attr("data-url", "/manage/file/saveImage"))
+            );
         // .append($("<div></div>").append("onclick","delImg(this)").html("删除"))
         $(this).before(imgDiv);
         bindFileUpload(pictureUpload, picture);
@@ -575,7 +582,6 @@
     function changeReservationType(num) {
         reservationType = num;
     }
-
 
     //预约
     $(".xyy > div").click(function () {
@@ -609,7 +615,6 @@
         }
     });
 
-
     //锁定门店多选框
     setTimeout(function () {
         $(".option-item").click(function () {
@@ -627,30 +632,33 @@
         var id = $("#selMcu").val();
         console.log(id);
         $.ajax({
-            type: "get",
-            url: "/manage/merchant/findByMU?id=" + id,
-            async: false,
-            success: function (result) {
-                var list = result.data;
-                $(".checkArea").empty();
-                $(".checkArea").append(
-                        $("<div></div>").append(
-                                $('<input>').attr("type", "checkbox").attr("class", "allCheck").attr("value", 0)
-                        ).append(
-                                $("<span></span>").html("全部选择")
-                        )
-                );
-                for (var i = 0; i < list.length; i++) {
-                    $(".checkArea").append(
-                            $("<div></div>").append(
-                                    $('<input>').attr("type", "checkbox").attr("value", list[i].id).attr("name", "merchant")
-                            ).append(
-                                    $("<span></span>").html(list[i].name)
-                            )
-                    );
-                }
-            }
-        });
+                   type: "get",
+                   url: "/manage/merchant/findByMU?id=" + id,
+                   async: false,
+                   success: function (result) {
+                       var list = result.data;
+                       $(".checkArea").empty();
+                       $(".checkArea").append(
+                           $("<div></div>").append(
+                               $('<input>').attr("type", "checkbox").attr("class", "allCheck").attr(
+                                   "value", 0)
+                           ).append(
+                               $("<span></span>").html("全部选择")
+                           )
+                       );
+                       for (var i = 0; i < list.length; i++) {
+                           $(".checkArea").append(
+                               $("<div></div>").append(
+                                   $('<input>').attr("type", "checkbox").attr("value",
+                                                                              list[i].id).attr(
+                                       "name", "merchant")
+                               ).append(
+                                   $("<span></span>").html(list[i].name)
+                               )
+                           );
+                       }
+                   }
+               });
 
     }
 
@@ -665,35 +673,35 @@
         if (productId != '' && productId != null) {
             //  编辑
             $.ajax({
-                type: "post",
-                url: "/manage/grouponProduct/saveEdit",
-                contentType: "application/json",
-                data: JSON.stringify(grouponProductDto),
-                success: function (data) {
-                    if (data.status == 200) {
-                        alert("修改成功！");
-                        location.href = "/manage/grouponProduct/list";
-                    } else {
-                        alert("编辑失败！");
-                    }
-                }
-            });
+                       type: "post",
+                       url: "/manage/grouponProduct/saveEdit",
+                       contentType: "application/json",
+                       data: JSON.stringify(grouponProductDto),
+                       success: function (data) {
+                           if (data.status == 200) {
+                               alert("修改成功！");
+                               location.href = "/manage/grouponProduct/list";
+                           } else {
+                               alert("编辑失败！");
+                           }
+                       }
+                   });
         } else {
             // 新增
             $.ajax({
-                type: "post",
-                url: "/manage/grouponProduct/save",
-                contentType: "application/json",
-                data: JSON.stringify(grouponProductDto),
-                success: function (data) {
-                    if (data.status == 200) {
-                        alert("添加成功！");
-                        location.href = "/manage/grouponProduct/list";
-                    } else {
-                        alert("添加失败！");
-                    }
-                }
-            });
+                       type: "post",
+                       url: "/manage/grouponProduct/save",
+                       contentType: "application/json",
+                       data: JSON.stringify(grouponProductDto),
+                       success: function (data) {
+                           if (data.status == 200) {
+                               alert("添加成功！");
+                               location.href = "/manage/grouponProduct/list";
+                           } else {
+                               alert("添加失败！");
+                           }
+                       }
+                   });
         }
 
     }
@@ -758,7 +766,6 @@
             return false;
         }
 
-
         //  普通团购价
         if ($("#normalPrice").val() != null && $("#normalPrice").val() != '') {
             grouponProduct.normalPrice = $("#normalPrice").val() * 100;
@@ -794,55 +801,7 @@
             alert("请输入普通手续费~");
             return false;
         }
-        //  送鼓励金
-        if ($("#rebateScorea").val() != null && $("#rebateScorea").val() != '') {
-            grouponProduct.rebateScorea = $("#rebateScorea").val() * 100;
-        } else {
-            alert("请输入送鼓励金~");
-            return false;
-        }
-        //  送金币
-        if ($("#rebateScorec").val() != null && $("#rebateScorec").val() != '') {
-            grouponProduct.rebateScorec = $("#rebateScorec").val() * 100;
-        } else {
-            alert("请输入送金币~");
-            return false;
-        }
-        //  会员所在门店分润
-        if ($("#shareToLockMerchant").val() != null && $("#shareToLockMerchant").val() != '') {
-            grouponProduct.shareToLockMerchant = $("#shareToLockMerchant").val() * 100;
-        } else {
-            alert("请输入门店分润~");
-            return false;
-        }
-        //  会员锁定天使合伙人分润
-        if ($("#shareToLockPartner").val() != null && $("#shareToLockPartner").val() != '') {
-            grouponProduct.shareToLockPartner = $("#shareToLockPartner").val() * 100;
-        } else {
-            alert("请输入天使合伙人分润~");
-            return false;
-        }
-        //  会员锁定城市合伙人分润
-        if ($("#shareToLockPartnerManager").val() != null && $("#shareToLockPartnerManager").val() != '') {
-            grouponProduct.shareToLockPartnerManager = $("#shareToLockPartnerManager").val() * 100;
-        } else {
-            alert("请输入城市合伙人分润分润~");
-            return false;
-        }
-        //  核销门店天使合伙人分润
-        if ($("#shareToTradePartner").val() != null && $("#shareToTradePartner").val() != '') {
-            grouponProduct.shareToTradePartner = $("#shareToTradePartner").val() * 100;
-        } else {
-            alert("请输入核销门店合伙人分润分润~");
-            return false;
-        }
-        //  核销门店城市合伙人分润
-        if ($("#shareToTradePartnerManager").val() != null && $("#shareToTradePartnerManager").val() != '') {
-            grouponProduct.shareToTradePartnerManager = $("#shareToTradePartnerManager").val() * 100;
-        } else {
-            alert("请输入核销门店城市合伙人分润分润~");
-            return false;
-        }
+
         //  乐+库存
         if ($("#ljStorage").val() != null && $("#ljStorage").val() != '') {
             grouponProduct.ljStorage = $("#ljStorage").val();
@@ -893,7 +852,8 @@
         //  多图
         if ($("#detailPicture1").attr("src") != '') {
             for (var i = 1; i <= detailNum; i++) {
-                if ($("#detailPicture" + i).attr("src") != '' && $("#detailPicture" + i).attr("src") != null) {
+                if ($("#detailPicture" + i).attr("src") != '' && $("#detailPicture" + i).attr("src")
+                                                                 != null) {
                     var grouponProductDetail = {};
                     var picture = $("#detailPicture" + i).attr("src");
                     if ($("#detailPictureId" + i) != null) {
@@ -933,16 +893,17 @@
     }
     function loadMerchantUser() {
         $.ajax({
-            type: "get",
-            url: "/manage/merchantUser/findAll",
-            async: false,
-            success: function (result) {
-                var list = result.data;
-                for (var i = 0; i < list.length; i++) {
-                    $("#selMcu").append("<option value=" + list[i].id + ">" + list[i].name + "</option>");
-                }
-            }
-        });
+                   type: "get",
+                   url: "/manage/merchantUser/findAll",
+                   async: false,
+                   success: function (result) {
+                       var list = result.data;
+                       for (var i = 0; i < list.length; i++) {
+                           $("#selMcu").append(
+                               "<option value=" + list[i].id + ">" + list[i].name + "</option>");
+                       }
+                   }
+               });
     }
     // 跳转到商品列表页面
     function productList() {
@@ -951,45 +912,45 @@
     // 日期加载
     $(document).ready(function () {
         $('#date-end').daterangepicker({
-            maxDate: moment(), //最大时间
-            showDropdowns: true,
-            showWeekNumbers: false, //是否显示第几周
-            timePicker: true, //是否显示小时和分钟
-            timePickerIncrement: 60, //时间的增量，单位为分钟
-            timePicker12Hour: false, //是否使用12小时制来显示时间
-            ranges: {
-                '最近1小时': [moment().subtract('hours', 1),
-                    moment()],
-                '今日': [moment().startOf('day'), moment()],
-                '昨日': [moment().subtract('days',
-                        1).startOf('day'),
-                    moment().subtract('days',
-                            1).endOf('day')],
-                '最近7日': [moment().subtract('days', 6), moment()],
-                '最近30日': [moment().subtract('days', 29),
-                    moment()]
-            },
-            opens: 'right', //日期选择框的弹出位置
-            buttonClasses: ['btn btn-default'],
-            applyClass: 'btn-small btn-primary blue',
-            cancelClass: 'btn-small',
-            format: 'YYYY-MM-DD HH:mm:ss', //控件中from和to 显示的日期格式
-            separator: ' to ',
-            locale: {
-                applyLabel: '确定',
-                cancelLabel: '取消',
-                fromLabel: '起始时间',
-                toLabel: '结束时间',
-                customRangeLabel: '自定义',
-                daysOfWeek: ['日', '一', '二', '三', '四', '五', '六'],
-                monthNames: ['一月', '二月', '三月', '四月', '五月', '六月',
-                    '七月', '八月', '九月', '十月', '十一月',
-                    '十二月'],
-                firstDay: 1
-            }
-        }, function (start, end, label) {//格式化日期显示框
+                                           maxDate: moment(), //最大时间
+                                           showDropdowns: true,
+                                           showWeekNumbers: false, //是否显示第几周
+                                           timePicker: true, //是否显示小时和分钟
+                                           timePickerIncrement: 60, //时间的增量，单位为分钟
+                                           timePicker12Hour: false, //是否使用12小时制来显示时间
+                                           ranges: {
+                                               '最近1小时': [moment().subtract('hours', 1),
+                                                         moment()],
+                                               '今日': [moment().startOf('day'), moment()],
+                                               '昨日': [moment().subtract('days',
+                                                                        1).startOf('day'),
+                                                      moment().subtract('days',
+                                                                        1).endOf('day')],
+                                               '最近7日': [moment().subtract('days', 6), moment()],
+                                               '最近30日': [moment().subtract('days', 29),
+                                                         moment()]
+                                           },
+                                           opens: 'right', //日期选择框的弹出位置
+                                           buttonClasses: ['btn btn-default'],
+                                           applyClass: 'btn-small btn-primary blue',
+                                           cancelClass: 'btn-small',
+                                           format: 'YYYY-MM-DD HH:mm:ss', //控件中from和to 显示的日期格式
+                                           separator: ' to ',
+                                           locale: {
+                                               applyLabel: '确定',
+                                               cancelLabel: '取消',
+                                               fromLabel: '起始时间',
+                                               toLabel: '结束时间',
+                                               customRangeLabel: '自定义',
+                                               daysOfWeek: ['日', '一', '二', '三', '四', '五', '六'],
+                                               monthNames: ['一月', '二月', '三月', '四月', '五月', '六月',
+                                                            '七月', '八月', '九月', '十月', '十一月',
+                                                            '十二月'],
+                                               firstDay: 1
+                                           }
+                                       }, function (start, end, label) {//格式化日期显示框
             $('#date-end span').html(start.format('YYYY-MM-DD HH:mm:ss') + '~'
-                    + end.format('YYYY-MM-DD HH:mm:ss'));
+                                     + end.format('YYYY-MM-DD HH:mm:ss'));
         });
     });
 </script>
