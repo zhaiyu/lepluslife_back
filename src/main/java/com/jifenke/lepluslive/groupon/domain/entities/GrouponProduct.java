@@ -2,8 +2,14 @@ package com.jifenke.lepluslive.groupon.domain.entities;
 
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantUser;
 
-import javax.persistence.*;
 import java.util.Date;
+
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 /**
  * Created by wcg on 2017/6/14. 团购商品

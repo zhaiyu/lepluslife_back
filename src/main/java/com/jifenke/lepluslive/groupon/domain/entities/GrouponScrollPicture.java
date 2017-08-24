@@ -1,6 +1,11 @@
 package com.jifenke.lepluslive.groupon.domain.entities;
 
-import javax.persistence.*;
+import javax.persistence.Entity;
+import javax.persistence.GeneratedValue;
+import javax.persistence.GenerationType;
+import javax.persistence.Id;
+import javax.persistence.ManyToOne;
+import javax.persistence.Table;
 
 /**
  * Created by wcg on 16/3/11. 轮播图

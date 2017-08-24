@@ -15,8 +15,7 @@ import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
 import com.jifenke.lepluslive.merchant.domain.entities.MerchantUser;
 import com.jifenke.lepluslive.merchant.repository.MerchantRepository;
 import com.jifenke.lepluslive.merchant.repository.MerchantUserRepository;
-import com.sun.org.apache.regexp.internal.RE;
-import org.apache.commons.lang.RandomStringUtils;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
@@ -24,17 +23,16 @@ import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Propagation;
 import org.springframework.transaction.annotation.Transactional;
-import org.springframework.web.bind.annotation.RequestMapping;
-import org.springframework.web.servlet.ModelAndView;
+
+import java.util.ArrayList;
+import java.util.Date;
+import java.util.List;
 
 import javax.inject.Inject;
 import javax.persistence.criteria.CriteriaBuilder;
 import javax.persistence.criteria.CriteriaQuery;
 import javax.persistence.criteria.Predicate;
 import javax.persistence.criteria.Root;
-import java.util.ArrayList;
-import java.util.Date;
-import java.util.List;
 
 /**
  * 团购产品 Service

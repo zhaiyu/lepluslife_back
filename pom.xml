@@ -61,6 +61,12 @@
     </properties>
 
     <dependencies>
+        <!--阿里云MQ-->
+        <dependency>
+            <groupId>com.aliyun.openservices</groupId>
+            <artifactId>ons-client</artifactId>
+            <version>1.6.0.Final</version>
+        </dependency>
         <!--json转换-->
         <dependency>
             <groupId>com.alibaba</groupId>

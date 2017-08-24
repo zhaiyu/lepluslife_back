@@ -31,6 +31,8 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="library" name="Maven: org.bouncycastle:bcprov-jdk15on:1.57" level="project" />
+    <orderEntry type="library" name="Maven: com.aliyun.openservices:ons-client:1.6.0.Final" level="project" />
+    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.13" level="project" />
     <orderEntry type="library" name="Maven: com.alibaba:fastjson:1.2.34" level="project" />
     <orderEntry type="library" name="Maven: com.aliyun.oss:aliyun-sdk-oss:2.2.1" level="project" />
     <orderEntry type="library" name="Maven: org.apache.httpcomponents:httpclient:4.5.1" level="project" />
@@ -54,7 +56,6 @@
     <orderEntry type="library" scope="TEST" name="Maven: cglib:cglib-nodep:2.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: org.objenesis:objenesis:1.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: com.jayway.jsonpath:json-path:2.0.0" level="project" />
-    <orderEntry type="library" name="Maven: org.slf4j:slf4j-api:1.7.13" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: net.minidev:json-smart:2.1.1" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: net.minidev:asm:1.0.2" level="project" />
     <orderEntry type="library" scope="TEST" name="Maven: asm:asm:3.3.1" level="project" />
