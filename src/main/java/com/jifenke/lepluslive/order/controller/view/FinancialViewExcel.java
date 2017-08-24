@@ -68,10 +68,10 @@ public class FinancialViewExcel extends AbstractExcelView {
 
   public void setExcelRows(HSSFSheet excelSheet, List<FinancialStatistic> financialList) {
     int record = 1;
+    SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
     for (FinancialStatistic financialStatistic : financialList) {
       HSSFRow excelRow = excelSheet.createRow(record++);
       excelRow.createCell(0).setCellValue(financialStatistic.getStatisticId());
-      SimpleDateFormat sdf = new SimpleDateFormat("yyyy-MM-dd HH:mm:ss");
       excelRow.createCell(1).setCellValue(sdf.format(financialStatistic.getBalanceDate()));
       excelRow.createCell(2).setCellValue(financialStatistic.getTransferDate() == null ? "结算未完成"
                                                                                        : sdf

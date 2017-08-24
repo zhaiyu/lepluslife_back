@@ -1,6 +1,7 @@
 package com.jifenke.lepluslive.groupon.repository;
 
 import com.jifenke.lepluslive.groupon.domain.entities.GrouponProduct;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.domain.Specification;

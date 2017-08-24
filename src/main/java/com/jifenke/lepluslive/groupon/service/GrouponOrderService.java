@@ -1,11 +1,9 @@
 package com.jifenke.lepluslive.groupon.service;
 
 import com.jifenke.lepluslive.groupon.domain.criteria.GrouponOrderCriteria;
-import com.jifenke.lepluslive.groupon.domain.criteria.GrouponProductCriteria;
 import com.jifenke.lepluslive.groupon.domain.entities.GrouponOrder;
-import com.jifenke.lepluslive.groupon.domain.entities.GrouponProduct;
 import com.jifenke.lepluslive.groupon.repository.GrouponOrderRepository;
-import com.jifenke.lepluslive.merchant.domain.entities.Merchant;
+
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;

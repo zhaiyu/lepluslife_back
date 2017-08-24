@@ -2,6 +2,7 @@ package com.jifenke.lepluslive.groupon.repository;
 
 import com.jifenke.lepluslive.groupon.domain.entities.GrouponProduct;
 import com.jifenke.lepluslive.groupon.domain.entities.GrouponScrollPicture;
+
 import org.springframework.data.jpa.repository.JpaRepository;
 
 import java.util.List;

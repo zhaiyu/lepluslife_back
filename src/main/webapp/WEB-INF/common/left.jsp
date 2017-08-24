@@ -205,6 +205,7 @@
                     </shiro:hasPermission>
                     <shiro:hasPermission name="product:query"> <a
                             href='/manage/refundOrder/list'>退款管理</a> </shiro:hasPermission>
+                    <a href='/manage/groupon/statisticList'>结算管理</a>
                 </div>
             </li>
         </shiro:hasPermission>
@@ -364,9 +365,7 @@
             $(".none2").parent('li').addClass('selected');
             $(".none2").slideDown(300);
         }
-        if (url.indexOf("/manage/grouponProduct") != -1 || url.indexOf("/manage/grouponCode") != -1
-            || url.indexOf("/manage/grouponOrder") != -1 || url.indexOf("/manage/refundOrder")
-                                                            != -1) {
+        if (url.indexOf("/manage/refundOrder") != -1 || url.indexOf("/manage/groupon") != -1) {
             $(".none13").parent('li').addClass('selected');
             $(".none13").slideDown(300);
         }
