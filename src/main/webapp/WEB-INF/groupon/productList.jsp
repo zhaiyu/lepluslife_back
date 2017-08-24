@@ -27,13 +27,12 @@
     <link type="text/css" rel="stylesheet" href="${resourceUrl}/css/create-edit-store.css"/>
 
 
-
+    <script type="text/javascript" src="${resourceUrl}/js/jquery.min.js"></script>
     <script type="text/javascript" src="${resourceUrl}/js/html5shiv.min.js"></script>
     <script type="text/javascript" src="${resourceUrl}/js/respond.min.js"></script>
     <script type="text/javascript" src="${resourceUrl}/js/vendor/jquery.ui.widget.js"></script>
     <script type="text/javascript" src="${resourceUrl}/js/jquery.iframe-transport.js"></script>
     <script type="text/javascript" src="${resourceUrl}/js/jquery.fileupload.js"></script>
-    <script type="text/javascript" src="${resourceUrl}/js/jquery.min.js"></script>
     <script type="text/javascript" src="${resourceUrl}/js/Mod/common.js"></script>
     <script type="text/javascript" src="${resourceUrl}/js/jquery.combo.select.js"></script>
     <script type="text/javascript" src="${resourceUrl}/js/Mod/RetainDecimalFor2.js"></script>
